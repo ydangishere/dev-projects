@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🚀 LRU Cache System - Performance Demo</title>
+    <style>
+        body { font-family: Arial; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .feature-box { 
+            background: white; 
+            padding: 20px; 
+            margin: 15px 0; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        .result { 
+            background: #f8f9fa; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            border-left: 4px solid #007bff;
+        }
+        .performance { border-left: 4px solid #28a745; }
+        .error { border-left: 4px solid #dc3545; }
+        .warning { border-left: 4px solid #ffc107; }
+        
+        button { 
+            padding: 10px 18px; 
+            margin: 5px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-warning { background: #ffc107; color: black; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-info { background: #17a2b8; color: white; }
+        
+        input { 
+            padding: 8px; 
+            margin: 3px; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+        }
+        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        h1 { color: #333; text-align: center; }
+        h2 { color: #555; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        
+        .metrics { 
+            display: flex; 
+            justify-content: space-around; 
+            background: #e9ecef; 
+            padding: 10px; 
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .metric { text-align: center; }
+        .metric-value { font-size: 24px; font-weight: bold; color: #007bff; }
+        .metric-label { font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Advanced LRU Cache System</h1>
+        
+        <div class="feature-box">
+            <h2>📊 Live Cache Metrics</h2>
+            <div class="metrics">
+                <div class="metric">
+                    <div id="cacheType" class="metric-value">-</div>
+                    <div class="metric-label">Cache Type</div>
+                </div>
+                <div class="metric">
+                    <div id="cacheSize" class="metric-value">-</div>
+                    <div class="metric-label">Size</div>
+                </div>
+                <div class="metric">
+                    <div id="latency" class="metric-value">-</div>
+                    <div class="metric-label">Avg Latency (ns)</div>
+                </div>
+            </div>
+            <button class="btn-info" onclick="refreshMetrics()">🔄 Refresh Metrics</button>
+        </div>
+
+        <div class="grid">
+            <!-- BASIC CACHE OPERATIONS -->
+            <div class="feature-box">
+                <h2>💾 Basic Cache Operations</h2>
+                <input type="text" id="key" placeholder="Key" value="user:123">
+                <input type="text" id="value" placeholder="Value" value="John Doe">
+                
+                <div>
+                    <button class="btn-primary" onclick="putCache()">PUT</button>
+                    <button class="btn-success" onclick="getCache()">GET</button>
+                    <button class="btn-danger" onclick="clearCache()">CLEAR ALL</button>
+                </div>
+                
+                <div id="basicResult" class="result"></div>
+            </div>
+
+            <!-- LRU EVICTION TEST -->
+            <div class="feature-box">
+                <h2>🗑️ LRU Eviction Test</h2>
+                <p>Capacity: 10 items. Test auto-eviction:</p>
+                
+                <div>
+                    <button class="btn-warning" onclick="fillCache()">Fill Cache (10 items)</button>
+                    <button class="btn-warning" onclick="addOverflow()">Add 11th Item (Evict)</button>
+                    <button class="btn-info" onclick="testLRUOrder()">Test LRU Order</button>
+                </div>
+                
+                <div id="evictionResult" class="result"></div>
+            </div>
+
+            <!-- PERFORMANCE BENCHMARK -->
+            <div class="feature-box">
+                <h2>⚡ Performance Benchmark</h2>
+                <p>Compare Redis vs In-Memory performance:</p>
+                
+                <div>
+                    <button class="btn-success" onclick="benchmarkPerformance()">🏁 Run Benchmark</button>
+                    <button class="btn-info" onclick="switchToMemory()">Force In-Memory</button>
+                    <button class="btn-info" onclick="switchToRedis()">Force Redis</button>
+                </div>
+                
+                <div id="benchmarkResult" class="result performance"></div>
+            </div>
+        </div>
+
+        <!-- HYBRID SYSTEM TEST -->
+        <div class="feature-box">
+            <h2>🔄 Hybrid System - Auto Fallback Test</h2>
+            <p>Test Redis failure resilience và write-back synchronization:</p>
+            
+            <div class="grid-2">
+                <div>
+                    <h3>Test Scenario:</h3>
+                    <button class="btn-warning" onclick="simulateRedisFailure()">❌ Simulate Redis Down</button>
+                    <button class="btn-success" onclick="simulateRedisRecovery()">✅ Simulate Redis Recovery</button>
+                    <button class="btn-info" onclick="testWriteBack()">📝 Test Write-back</button>
+                </div>
+                <div>
+                    <h3>Current Status:</h3>
+                    <div id="systemStatus" style="padding: 10px; background: #e9ecef; border-radius: 5px;">
+                        Click "Refresh Metrics" to see status
+                    </div>
+                </div>
+            </div>
+            
+            <div id="hybridResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        let benchmarkHistory = [];
+
+        async function apiCall(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                return {
+                    status: response.status,
+                    data: await response.json(),
+                    headers: Object.fromEntries(response.headers)
+                };
+            } catch (error) {
+                return {
+                    status: 'ERROR',
+                    data: { error: error.message },
+                    headers: {}
+                };
+            }
+        }
+
+        function formatResult(result, title) {
+            return `${title}
+Status: ${result.status}
+Response: ${JSON.stringify(result.data, null, 2)}
+Time: ${new Date().toLocaleTimeString()}
+${'='.repeat(60)}`;
+        }
+
+        async function refreshMetrics() {
+            const result = await apiCall('/api/cache');
+            if (result.data) {
+                document.getElementById('cacheType').textContent = result.data.cacheType || 'Unknown';
+                document.getElementById('cacheSize').textContent = result.data.size || '0';
+                document.getElementById('latency').textContent = result.data.avgLatencyNs || '-';
+                
+                document.getElementById('systemStatus').innerHTML = `
+                    <strong>Cache Type:</strong> ${result.data.cacheType || 'Unknown'}<br>
+                    <strong>Size:</strong> ${result.data.size}/${result.data.capacity || 10}<br>
+                    <strong>Utilization:</strong> ${result.data.utilization || '0%'}
+                `;
+            }
+        }
+
+        async function putCache() {
+            const key = document.getElementById('key').value;
+            const value = document.getElementById('value').value;
+            
+            const result = await apiCall(`/api/cache/${key}`, {
+                method: 'PUT',
+                body: JSON.stringify({ value: value })
+            });
+            
+            document.getElementById('basicResult').textContent = formatResult(result, `💾 PUT ${key}=${value}`);
+            refreshMetrics();
+        }
+
+        async function getCache() {
+            const key = document.getElementById('key').value;
+            const result = await apiCall(`/api/cache/${key}`);
+            
+            document.getElementById('basicResult').textContent = formatResult(result, `🔍 GET ${key}`);
+            refreshMetrics();
+        }
+
+        async function clearCache() {
+            const result = await apiCall('/api/cache', { method: 'DELETE' });
+            document.getElementById('basicResult').textContent = formatResult(result, '🧹 CLEAR ALL CACHE');
+            refreshMetrics();
+        }
+
+        async function fillCache() {
+            let results = [];
+            for (let i = 1; i <= 10; i++) {
+                const result = await apiCall(`/api/cache/item${i}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ value: `value${i}` })
+                });
+                results.push(`item${i}=${result.data.value} (${result.data.cacheType})`);
+            }
+            
+            document.getElementById('evictionResult').textContent = 
+                `📦 FILLED CACHE WITH 10 ITEMS:\n${results.join('\n')}\n\nCache now at capacity!`;
+            refreshMetrics();
+        }
+
+        async function addOverflow() {
+            const result = await apiCall('/api/cache/overflow', {
+                method: 'PUT',
+                body: JSON.stringify({ value: 'This should evict oldest item' })
+            });
+            
+            document.getElementById('evictionResult').textContent = formatResult(result, '➕ ADDED 11TH ITEM - Should evict LRU');
+            refreshMetrics();
+        }
+
+        async function benchmarkPerformance() {
+            document.getElementById('benchmarkResult').textContent = '🏁 Running performance benchmark...';
+            
+            const result = await apiCall('/api/cache/benchmark');
+            
+            if (result.data) {
+                const memory = result.data.inMemory;
+                const redis = result.data.redis;
+                
+                let output = `⚡ PERFORMANCE BENCHMARK (${result.data.iterations} operations)
+
+📈 IN-MEMORY CACHE:
+   Total: ${memory.totalNs.toLocaleString()} ns
+   Average: ${memory.avgNsPerOp} ns per operation
+   Average: ${memory.avgMsPerOp.toFixed(6)} ms per operation
+
+`;
+                
+                if (redis && !redis.error) {
+                    output += `☁️  REDIS CACHE:
+   Total: ${redis.totalNs.toLocaleString()} ns  
+   Average: ${redis.avgNsPerOp} ns per operation
+   Average: ${redis.avgMsPerOp.toFixed(6)} ms per operation
+   
+🔥 PERFORMANCE COMPARISON:
+   Redis is ${redis.slowdownFactor.toFixed(1)}x slower than in-memory
+   But still ${redis.avgMsPerOp < 1 ? 'sub-millisecond' : 'fast'} performance!
+`;
+                } else {
+                    output += `☁️  REDIS: ${redis?.error || 'Not available'}\n`;
+                }
+                
+                document.getElementById('benchmarkResult').textContent = output;
+            }
+        }
+
+        async function switchToMemory() {
+            const result = await apiCall('/api/cache/switch/memory', { method: 'POST' });
+            document.getElementById('hybridResult').textContent = formatResult(result, '🔧 SWITCHED TO IN-MEMORY MODE');
+            refreshMetrics();
+        }
+
+        async function switchToRedis() {
+            const result = await apiCall('/api/cache/switch/redis', { method: 'POST' });
+            document.getElementById('hybridResult').textContent = formatResult(result, '🔧 SWITCHED TO REDIS MODE');
+            refreshMetrics();
+        }
+
+        // Auto-refresh metrics every 5 seconds
+        setInterval(refreshMetrics, 5000);
+        
+        // Load initial metrics
+        window.addEventListener('load', () => {
+            refreshMetrics();
+            console.log('🚀 LRU Cache Demo UI Loaded');
+        });
+    </script>
+</body>
+</html>

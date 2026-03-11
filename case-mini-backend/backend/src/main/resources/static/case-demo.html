@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🎯 Case Management System - Demo All Features</title>
+    <style>
+        body { font-family: Arial; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .feature-box { 
+            background: white; 
+            padding: 20px; 
+            margin: 15px 0; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        .result { 
+            background: #f0f0f0; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success { border-left: 4px solid #4CAF50; }
+        .error { border-left: 4px solid #f44336; }
+        .info { border-left: 4px solid #2196F3; }
+        button { 
+            padding: 12px 20px; 
+            margin: 8px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-primary { background: #2196F3; color: white; }
+        .btn-success { background: #4CAF50; color: white; }
+        .btn-warning { background: #ff9800; color: white; }
+        .btn-danger { background: #f44336; color: white; }
+        input, textarea { 
+            width: 100%; 
+            padding: 10px; 
+            margin: 5px 0; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+        }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        h1 { color: #333; text-align: center; }
+        h2 { color: #555; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .status { font-weight: bold; }
+        .status-200 { color: #4CAF50; }
+        .status-201 { color: #2196F3; }
+        .status-400 { color: #ff9800; }
+        .status-404 { color: #f44336; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Case Management System - Complete Demo</h1>
+        
+        <div class="feature-box info">
+            <h2>✅ Implemented Features Checklist</h2>
+            <ul>
+                <li>✅ <strong>Layered Design:</strong> Controller → Service → Repository</li>
+                <li>✅ <strong>DTOs:</strong> CreateCaseRequest, CaseResponse (no Entity exposure)</li>
+                <li>✅ <strong>REST Standards:</strong> 201 Created + Location header</li>
+                <li>✅ <strong>Validation:</strong> Bean Validation (@NotBlank, @Size)</li>
+                <li>✅ <strong>Error Handling:</strong> Global Exception Handler (400/404)</li>
+                <li>✅ <strong>Idempotency:</strong> Idempotency-Key header support</li>
+                <li>✅ <strong>Auto Timestamps:</strong> createdAt, updatedAt</li>
+            </ul>
+        </div>
+
+        <div class="grid">
+            <!-- CREATE CASE TESTS -->
+            <div class="feature-box">
+                <h2>🆕 Create Case (POST /api/cases)</h2>
+                <input type="text" id="caseTitle" placeholder="Case Title" value="Bug Report: Login Issue">
+                <textarea id="caseDescription" placeholder="Description">User cannot login with correct credentials after password reset</textarea>
+                <input type="text" id="caseStatus" placeholder="Status" value="OPEN">
+                
+                <div>
+                    <button class="btn-success" onclick="createCase()">Create Case (Normal)</button>
+                    <button class="btn-primary" onclick="createCaseWithIdempotency()">Create with Idempotency Key</button>
+                    <button class="btn-warning" onclick="createCaseInvalid()">Test Validation Error (400)</button>
+                </div>
+                
+                <div id="createResult" class="result"></div>
+            </div>
+
+            <!-- GET CASE TESTS -->
+            <div class="feature-box">
+                <h2>🔍 Get Case (GET /api/cases/{id})</h2>
+                <input type="number" id="getCaseId" placeholder="Case ID" value="1">
+                
+                <div>
+                    <button class="btn-primary" onclick="getCaseById()">Get Existing Case (200)</button>
+                    <button class="btn-danger" onclick="getCaseNotFound()">Get Non-existent (404)</button>
+                </div>
+                
+                <div id="getResult" class="result"></div>
+            </div>
+        </div>
+
+        <!-- IDEMPOTENCY TEST -->
+        <div class="feature-box">
+            <h2>🔄 Idempotency Test - Same Key Should Return Same Case</h2>
+            <input type="text" id="idempotencyKey" placeholder="Idempotency Key" value="demo-key-123">
+            
+            <div>
+                <button class="btn-success" onclick="testIdempotency(1)">First Request</button>
+                <button class="btn-primary" onclick="testIdempotency(2)">Second Request (Same Key)</button>
+                <button class="btn-warning" onclick="clearIdempotencyResults()">Clear Results</button>
+            </div>
+            
+            <div id="idempotencyResults" class="result"></div>
+        </div>
+
+        <!-- DATABASE VIEW -->
+        <div class="feature-box">
+            <h2>🗄️ Database Evidence</h2>
+            <p><strong>H2 Console:</strong> <a href="/h2-console" target="_blank">http://localhost:8080/h2-console</a></p>
+            <p><strong>Connection:</strong> jdbc:h2:mem:testdb | User: sa | Password: (empty)</p>
+            <p><strong>Tables Created:</strong></p>
+            <ul>
+                <li><code>cases</code> - Main cases table with auto timestamps</li>
+                <li><code>idempotency_records</code> - Idempotency key tracking</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let idempotencyResults = {};
+
+        async function apiCall(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.json();
+                const locationHeader = response.headers.get('Location') || 'N/A';
+                
+                return {
+                    status: response.status,
+                    statusText: response.statusText,
+                    location: locationHeader,
+                    data: data
+                };
+            } catch (error) {
+                return {
+                    status: 'ERROR',
+                    statusText: error.message,
+                    location: 'N/A',
+                    data: null
+                };
+            }
+        }
+
+        function formatResult(result, title) {
+            const statusClass = `status-${result.status}`;
+            return `
+${title}
+Status: ${result.status} ${result.statusText}
+Location Header: ${result.location}
+Response: ${JSON.stringify(result.data, null, 2)}
+Time: ${new Date().toLocaleTimeString()}
+${'='.repeat(50)}`;
+        }
+
+        async function createCase() {
+            const body = {
+                title: document.getElementById('caseTitle').value,
+                description: document.getElementById('caseDescription').value,
+                status: document.getElementById('caseStatus').value
+            };
+            
+            const result = await apiCall('/api/cases', {
+                method: 'POST',
+                body: JSON.stringify(body)
+            });
+            
+            document.getElementById('createResult').innerHTML = formatResult(result, '📝 CREATE CASE - Normal Request');
+            document.getElementById('createResult').className = `result ${result.status === 201 ? 'success' : 'error'}`;
+        }
+
+        async function createCaseWithIdempotency() {
+            const body = {
+                title: "Idempotent Case: " + document.getElementById('caseTitle').value,
+                description: document.getElementById('caseDescription').value,
+                status: document.getElementById('caseStatus').value
+            };
+            
+            const result = await apiCall('/api/cases', {
+                method: 'POST',
+                headers: {
+                    'Idempotency-Key': 'ui-demo-key-' + Date.now()
+                },
+                body: JSON.stringify(body)
+            });
+            
+            document.getElementById('createResult').innerHTML = formatResult(result, '🔑 CREATE CASE - With Idempotency Key');
+            document.getElementById('createResult').className = `result ${result.status === 201 ? 'success' : 'error'}`;
+        }
+
+        async function createCaseInvalid() {
+            const body = {
+                title: "", // Empty title should trigger validation error
+                description: "x".repeat(1500), // Too long description 
+                status: ""  // Empty status
+            };
+            
+            const result = await apiCall('/api/cases', {
+                method: 'POST',
+                body: JSON.stringify(body)
+            });
+            
+            document.getElementById('createResult').innerHTML = formatResult(result, '❌ CREATE CASE - Validation Error (Expected 400)');
+            document.getElementById('createResult').className = `result ${result.status === 400 ? 'success' : 'error'}`;
+        }
+
+        async function getCaseById() {
+            const id = document.getElementById('getCaseId').value;
+            const result = await apiCall(`/api/cases/${id}`);
+            
+            document.getElementById('getResult').innerHTML = formatResult(result, `🔍 GET CASE ID=${id} - Existing Case`);
+            document.getElementById('getResult').className = `result ${result.status === 200 ? 'success' : 'error'}`;
+        }
+
+        async function getCaseNotFound() {
+            const result = await apiCall('/api/cases/99999');
+            
+            document.getElementById('getResult').innerHTML = formatResult(result, '❌ GET CASE ID=99999 - Not Found (Expected 404)');
+            document.getElementById('getResult').className = `result ${result.status === 404 ? 'success' : 'error'}`;
+        }
+
+        async function testIdempotency(requestNumber) {
+            const key = document.getElementById('idempotencyKey').value;
+            const body = {
+                title: `Idempotency Test Case`,
+                description: `Testing idempotency with key: ${key}`,
+                status: "OPEN"
+            };
+            
+            const result = await apiCall('/api/cases', {
+                method: 'POST',
+                headers: {
+                    'Idempotency-Key': key
+                },
+                body: JSON.stringify(body)
+            });
+            
+            idempotencyResults[`request${requestNumber}`] = result;
+            
+            let output = formatResult(result, `🔄 IDEMPOTENCY TEST - Request #${requestNumber}`);
+            
+            if (idempotencyResults.request1 && idempotencyResults.request2) {
+                const case1Id = idempotencyResults.request1.data?.id;
+                const case2Id = idempotencyResults.request2.data?.id;
+                
+                if (case1Id === case2Id) {
+                    output += `\n✅ IDEMPOTENCY SUCCESS: Both requests returned same Case ID (${case1Id})`;
+                } else {
+                    output += `\n❌ IDEMPOTENCY FAILED: Different Case IDs (${case1Id} vs ${case2Id})`;
+                }
+            }
+            
+            document.getElementById('idempotencyResults').innerHTML = output;
+            document.getElementById('idempotencyResults').className = 'result info';
+        }
+
+        function clearIdempotencyResults() {
+            idempotencyResults = {};
+            document.getElementById('idempotencyResults').innerHTML = 'Idempotency test results cleared. Click "First Request" to start.';
+            document.getElementById('idempotencyResults').className = 'result';
+        }
+
+        // Auto-load some demo data on page load
+        window.addEventListener('load', () => {
+            console.log('🎯 Case Management Demo UI Loaded');
+            console.log('✅ All features implemented and ready to test!');
+        });
+    </script>
+</body>
+</html>

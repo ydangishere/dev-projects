@@ -1,0 +1,144 @@
+services:
+  - type: keyvalue
+    name: microservices-redis
+    plan: free
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: everywhere
+
+  - type: web
+    name: microservices-auth
+    runtime: docker
+    plan: free
+    region: oregon
+    branch: main
+    dockerContext: .
+    dockerfilePath: ./services/auth-service/Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_HOST
+        fromDatabase:
+          name: microservices-db
+          property: host
+      - key: DB_PORT
+        value: "5432"
+      - key: DB_NAME
+        fromDatabase:
+          name: microservices-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: microservices-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: microservices-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 24h
+
+  - type: web
+    name: microservices-people
+    runtime: docker
+    plan: free
+    region: oregon
+    branch: main
+    dockerContext: .
+    dockerfilePath: ./services/people-service/Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_HOST
+        fromDatabase:
+          name: microservices-db
+          property: host
+      - key: DB_PORT
+        value: "5432"
+      - key: DB_NAME
+        fromDatabase:
+          name: microservices-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: microservices-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: microservices-db
+          property: password
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: microservices-redis
+          property: connectionString
+      - key: KAFKA_ENABLED
+        value: "false"
+      - key: JWT_SECRET
+        fromService:
+          type: web
+          name: microservices-auth
+          envVarKey: JWT_SECRET
+
+  - type: web
+    name: microservices-case
+    runtime: docker
+    plan: free
+    region: oregon
+    branch: main
+    dockerContext: .
+    dockerfilePath: ./services/case-service/Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_HOST
+        fromDatabase:
+          name: microservices-db
+          property: host
+      - key: DB_PORT
+        value: "5432"
+      - key: DB_NAME
+        fromDatabase:
+          name: microservices-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: microservices-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: microservices-db
+          property: password
+      - key: ES_ENABLED
+        value: "false"
+      - key: KAFKA_ENABLED
+        value: "false"
+      - key: JWT_SECRET
+        fromService:
+          type: web
+          name: microservices-auth
+          envVarKey: JWT_SECRET
+
+  - type: web
+    name: microservices-admin-ui
+    runtime: static
+    plan: free
+    region: oregon
+    branch: main
+    buildCommand: ""
+    staticPublishPath: ./admin-ui
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+databases:
+  - name: microservices-db
+    plan: free
+    region: oregon

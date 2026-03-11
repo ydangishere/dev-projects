@@ -1,0 +1,446 @@
+{
+  "info": {
+    "name": "Microservices API",
+    "description": "Collection for testing Auth, People, and Case services",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url_auth",
+      "value": "http://localhost:3001",
+      "type": "string"
+    },
+    {
+      "key": "base_url_people",
+      "value": "http://localhost:3002",
+      "type": "string"
+    },
+    {
+      "key": "base_url_case",
+      "value": "http://localhost:3003",
+      "type": "string"
+    },
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth Service",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has user data\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.eql(true);",
+                  "    pm.expect(jsonData.data).to.have.property('email');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\",\n  \"full_name\": \"Test User\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url_auth}}/api/auth/register",
+              "host": ["{{base_url_auth}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has token\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.eql(true);",
+                  "    pm.expect(jsonData.data).to.have.property('token');",
+                  "    ",
+                  "    // Save token to collection variable",
+                  "    pm.collectionVariables.set(\"jwt_token\", jsonData.data.token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url_auth}}/api/auth/login",
+              "host": ["{{base_url_auth}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url_auth}}/api/auth/profile",
+              "host": ["{{base_url_auth}}"],
+              "path": ["api", "auth", "profile"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "People Service",
+      "item": [
+        {
+          "name": "Create Person",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Person created\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.eql(true);",
+                  "    pm.expect(jsonData.data).to.have.property('id');",
+                  "    ",
+                  "    // Save person ID",
+                  "    pm.collectionVariables.set(\"person_id\", jsonData.data.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"0123456789\",\n  \"address\": \"123 Main Street\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url_people}}/api/people",
+              "host": ["{{base_url_people}}"],
+              "path": ["api", "people"]
+            }
+          }
+        },
+        {
+          "name": "Get Person (Cache Test)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url_people}}/api/people/{{person_id}}",
+              "host": ["{{base_url_people}}"],
+              "path": ["api", "people", "{{person_id}}"]
+            }
+          }
+        },
+        {
+          "name": "List People",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url_people}}/api/people?page=1&limit=10",
+              "host": ["{{base_url_people}}"],
+              "path": ["api", "people"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Person",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"0987654321\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url_people}}/api/people/{{person_id}}",
+              "host": ["{{base_url_people}}"],
+              "path": ["api", "people", "{{person_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Case Service",
+      "item": [
+        {
+          "name": "Create Case",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Case created\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.eql(true);",
+                  "    pm.expect(jsonData.data).to.have.property('id');",
+                  "    ",
+                  "    pm.collectionVariables.set(\"case_id\", jsonData.data.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Bug in login page\",\n  \"description\": \"Users cannot login with email. Getting 500 error.\",\n  \"status\": \"open\",\n  \"priority\": \"high\",\n  \"person_id\": {{person_id}}\n}"
+            },
+            "url": {
+              "raw": "{{base_url_case}}/api/cases",
+              "host": ["{{base_url_case}}"],
+              "path": ["api", "cases"]
+            }
+          }
+        },
+        {
+          "name": "Search Cases (Elasticsearch)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url_case}}/api/cases/search?q=login&status=open&priority=high",
+              "host": ["{{base_url_case}}"],
+              "path": ["api", "cases", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "login"
+                },
+                {
+                  "key": "status",
+                  "value": "open"
+                },
+                {
+                  "key": "priority",
+                  "value": "high"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Case",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url_case}}/api/cases/{{case_id}}",
+              "host": ["{{base_url_case}}"],
+              "path": ["api", "cases", "{{case_id}}"]
+            }
+          }
+        },
+        {
+          "name": "List Cases",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url_case}}/api/cases?page=1&limit=10",
+              "host": ["{{base_url_case}}"],
+              "path": ["api", "cases"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Case",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"in_progress\",\n  \"priority\": \"medium\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url_case}}/api/cases/{{case_id}}",
+              "host": ["{{base_url_case}}"],
+              "path": ["api", "cases", "{{case_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Checks",
+      "item": [
+        {
+          "name": "Auth Health",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url_auth}}/health",
+              "host": ["{{base_url_auth}}"],
+              "path": ["health"]
+            }
+          }
+        },
+        {
+          "name": "People Health",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url_people}}/health",
+              "host": ["{{base_url_people}}"],
+              "path": ["health"]
+            }
+          }
+        },
+        {
+          "name": "Case Health",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url_case}}/health",
+              "host": ["{{base_url_case}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

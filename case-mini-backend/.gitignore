@@ -1,0 +1,22 @@
+# Java / Maven / Spring
+**/target/
+**/*.class
+**/*.log
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# OS
+Thumbs.db
+Desktop.ini
+
+# Secrets / env
+.env
+**/*secrets*
+**/*credentials*
+

@@ -1,0 +1,34 @@
+{
+  "name": "microservices-project",
+  "version": "1.0.0",
+  "description": "Microservices architecture with Kafka, Redis, Elasticsearch, JWT",
+  "private": true,
+  "workspaces": [
+    "services/*",
+    "shared"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "dev:auth": "npm run dev --workspace=services/auth-service",
+    "dev:people": "npm run dev --workspace=services/people-service",
+    "dev:case": "npm run dev --workspace=services/case-service",
+    "docker:up": "docker-compose -f infrastructure/docker-compose.yml up -d",
+    "docker:down": "docker-compose -f infrastructure/docker-compose.yml down",
+    "docker:logs": "docker-compose -f infrastructure/docker-compose.yml logs -f"
+  },
+  "keywords": [
+    "microservices",
+    "kafka",
+    "redis",
+    "elasticsearch",
+    "jwt",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.3"
+  }
+}

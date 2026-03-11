@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: order-api
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+    healthCheckPath: /

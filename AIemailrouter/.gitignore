@@ -1,0 +1,13 @@
+# API keys, secrets
+.env
+.env.local
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# Output
+email_classification_results.json

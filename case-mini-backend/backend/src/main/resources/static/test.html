@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test Page</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        .result { background: #f0f0f0; padding: 10px; margin: 10px 0; }
+        .error { color: red; }
+        .success { color: green; }
+        button { padding: 10px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🚀 Spring Boot API Test</h1>
+    
+    <h2>Search Clients</h2>
+    <button onclick="searchABC()">Search ABC (200)</button>
+    <button onclick="searchEmpty()">Search Empty (400)</button>
+    <button onclick="searchXYZ()">Search XYZ (200)</button>
+    
+    <h2>Update Client</h2>
+    <button onclick="updateValid()">Update ID=1 Age=30 (200)</button>
+    <button onclick="updateInvalid()">Update ID=9999 (404)</button>
+    
+    <div id="result" class="result">Kết quả sẽ hiện ở đây...</div>
+    
+    <script>
+        async function apiCall(url, method = 'GET', body = null) {
+            try {
+                const options = { method };
+                if (body) {
+                    options.headers = { 'Content-Type': 'application/json' };
+                    options.body = body;
+                }
+                const response = await fetch(url, options);
+                const data = await response.json();
+                
+                document.getElementById('result').innerHTML = 
+                    `<div class="${response.ok ? 'success' : 'error'}">
+                        <strong>Status:</strong> ${response.status}<br>
+                        <strong>Response:</strong> ${JSON.stringify(data, null, 2)}
+                    </div>`;
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+        
+        function searchABC() {
+            apiCall('/api/clients?search=ABC');
+        }
+        
+        function searchEmpty() {
+            apiCall('/api/clients?search=');
+        }
+        
+        function searchXYZ() {
+            apiCall('/api/clients?search=XYZ');
+        }
+        
+        function updateValid() {
+            apiCall('/api/clients/1', 'PATCH', '{"age":30}');
+        }
+        
+        function updateInvalid() {
+            apiCall('/api/clients/9999', 'PATCH', '{"age":30}');
+        }
+    </script>
+</body>
+</html>

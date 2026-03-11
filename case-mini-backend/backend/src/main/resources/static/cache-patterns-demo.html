@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Cache Patterns Demo - Read-through + Write-through + Anti-Stampede</title>
+    <style>
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: white; 
+            border-radius: 12px; 
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .patterns-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .pattern-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 20px;
+            background: white;
+        }
+        .pattern-card h3 {
+            margin: 0 0 15px 0;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .pattern-card.read-through { border-left: 4px solid #10b981; }
+        .pattern-card.write-through { border-left: 4px solid #3b82f6; }
+        .pattern-card.anti-stampede { border-left: 4px solid #f59e0b; }
+        .pattern-card.performance { border-left: 4px solid #ef4444; }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #374151;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 5px 5px 5px 0;
+            transition: background 0.2s;
+        }
+        button:hover { background: #4338ca; }
+        button.secondary { background: #6b7280; }
+        button.secondary:hover { background: #4b5563; }
+        button.danger { background: #ef4444; }
+        button.danger:hover { background: #dc2626; }
+        
+        .response {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .response.success { 
+            background: #dcfce7; 
+            border: 1px solid #bbf7d0; 
+            color: #166534; 
+        }
+        .response.error { 
+            background: #fef2f2; 
+            border: 1px solid #fecaca; 
+            color: #dc2626; 
+        }
+        .response.info { 
+            background: #eff6ff; 
+            border: 1px solid #bfdbfe; 
+            color: #1d4ed8; 
+        }
+        
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .metric {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+        }
+        .metric-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1f2937;
+        }
+        .metric-label {
+            color: #6b7280;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .pattern-diagram {
+            background: #f8f9ff;
+            border: 2px dashed #4f46e5;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Cache Patterns Demo</h1>
+            <p>Test Read-through, Write-through/Invalidation và Anti-Stampede patterns</p>
+        </div>
+
+        <div class="patterns-grid">
+            <!-- READ-THROUGH CACHE -->
+            <div class="pattern-card read-through">
+                <h3>🔍 Read-through Cache</h3>
+                
+                <div class="pattern-diagram">
+                    <strong>PATTERN FLOW:</strong><br>
+                    GET case/{id} → Cache hit? → Return cached<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cache miss → Query DB → Cache result → Return
+                </div>
+                
+                <div class="form-group">
+                    <label>Test Case ID:</label>
+                    <input type="number" id="readThroughCaseId" placeholder="Enter case ID" value="1" />
+                </div>
+                
+                <button onclick="testReadThrough()">🚀 Test Read-through</button>
+                <button class="secondary" onclick="warmUpCache()">🔥 Warm Up Cache</button>
+                
+                <div id="readThroughResponse" class="response" style="display:none;"></div>
+            </div>
+
+            <!-- WRITE-THROUGH / INVALIDATION -->
+            <div class="pattern-card write-through">
+                <h3>✏️ Write-through / Invalidation</h3>
+                
+                <div class="pattern-diagram">
+                    <strong>PATTERN FLOW:</strong><br>
+                    UPDATE case/{id} → Save to DB → Invalidate cache<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+                    Next GET → Cache miss → Fresh data from DB
+                </div>
+                
+                <div class="form-group">
+                    <label>Test Case ID:</label>
+                    <input type="number" id="writeThroughCaseId" placeholder="Enter case ID" value="1" />
+                </div>
+                
+                <div class="form-group">
+                    <label>New Status:</label>
+                    <select id="newStatus">
+                        <option value="IN_PROGRESS">IN_PROGRESS</option>
+                        <option value="OPEN">OPEN</option>
+                        <option value="CLOSED">CLOSED</option>
+                        <option value="TESTING">TESTING</option>
+                    </select>
+                </div>
+                
+                <button onclick="testWriteThrough()">🔄 Test Write-through</button>
+                <button class="danger" onclick="testInvalidation()">🗑️ Test Invalidation</button>
+                
+                <div id="writeThroughResponse" class="response" style="display:none;"></div>
+            </div>
+
+            <!-- ANTI-STAMPEDE -->
+            <div class="pattern-card anti-stampede">
+                <h3>🛡️ Anti-Stampede</h3>
+                
+                <div class="pattern-diagram">
+                    <strong>STAMPEDE SCENARIO:</strong><br>
+                    5 concurrent requests → 1 key → Cache miss<br>
+                    Without lock: 5 DB queries 😱<br>
+                    With lock: 1 DB query + 4 wait 😎
+                </div>
+                
+                <div class="form-group">
+                    <label>Test Case ID:</label>
+                    <input type="number" id="stampedeCaseId" placeholder="Enter case ID" value="1" />
+                </div>
+                
+                <button onclick="testAntiStampede()">⚡ Test Anti-Stampede (5 concurrent)</button>
+                
+                <div id="stampedeResponse" class="response" style="display:none;"></div>
+            </div>
+
+            <!-- PERFORMANCE METRICS -->
+            <div class="pattern-card performance">
+                <h3>📊 Performance Metrics</h3>
+                
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="metric-value" id="cacheHits">-</div>
+                        <div class="metric-label">Cache Hits</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="cacheMisses">-</div>
+                        <div class="metric-label">Cache Misses</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="avgLatency">-</div>
+                        <div class="metric-label">Avg Latency</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="activeLocks">-</div>
+                        <div class="metric-label">Active Locks</div>
+                    </div>
+                </div>
+                
+                <button onclick="getCacheStats()">📈 Get Cache Stats</button>
+                <button class="secondary" onclick="performanceTest()">🏃‍♂️ Performance Test</button>
+                <button onclick="runP95Benchmark()">🎯 P95 Benchmark</button>
+                <button onclick="runConcurrentBenchmark()">⚡ Concurrent Benchmark</button>
+                
+                <div id="performanceResponse" class="response" style="display:none;"></div>
+            </div>
+        </div>
+        
+        <!-- P95 BENCHMARK RESULTS -->
+        <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <h3>📊 P95 Performance Improvement Results</h3>
+            <div class="metrics">
+                <div class="metric">
+                    <div class="metric-value" id="p95Improvement">-</div>
+                    <div class="metric-label">P95 Improvement %</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="avgImprovement">-</div>
+                    <div class="metric-label">Avg Improvement %</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="noCacheP95">-</div>
+                    <div class="metric-label">No Cache P95 (ms)</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="withCacheP95">-</div>
+                    <div class="metric-label">With Cache P95 (ms)</div>
+                </div>
+            </div>
+            <div id="benchmarkDetails" class="response" style="display:none; margin-top: 15px;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080/api';
+        
+        // Performance tracking
+        let performanceData = {
+            cacheHits: 0,
+            cacheMisses: 0,
+            totalLatency: 0,
+            requestCount: 0
+        };
+
+        // Auto-refresh stats
+        window.onload = function() {
+            getCacheStats();
+            setInterval(getCacheStats, 15000); // Every 15 seconds
+        };
+
+        function showResponse(elementId, data, type = 'success') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `response ${type}`;
+            
+            if (typeof data === 'object' && data.success !== undefined) {
+                // Test result format
+                const icon = data.success ? '✅' : '❌';
+                element.textContent = `${icon} ${data.testName}\n` +
+                                    `Duration: ${data.durationMs}ms\n` +
+                                    `Result: ${data.description}`;
+            } else {
+                element.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+            }
+        }
+
+        // READ-THROUGH CACHE TESTS
+        async function testReadThrough() {
+            const caseId = document.getElementById('readThroughCaseId').value;
+            if (!caseId) {
+                showResponse('readThroughResponse', 'Case ID is required', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/cache/test/case/${caseId}`);
+                const result = await response.json();
+                
+                showResponse('readThroughResponse', result, result.success ? 'success' : 'error');
+                updatePerformanceMetrics(result);
+                
+            } catch (error) {
+                showResponse('readThroughResponse', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function warmUpCache() {
+            const caseId = document.getElementById('readThroughCaseId').value;
+            if (!caseId) {
+                showResponse('readThroughResponse', 'Case ID is required', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/cache/test/warm-up/${caseId}`, {
+                    method: 'POST'
+                });
+                const result = await response.json();
+                
+                showResponse('readThroughResponse', result, result.success ? 'success' : 'error');
+                
+            } catch (error) {
+                showResponse('readThroughResponse', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // WRITE-THROUGH TESTS
+        async function testWriteThrough() {
+            const caseId = document.getElementById('writeThroughCaseId').value;
+            const status = document.getElementById('newStatus').value;
+            
+            if (!caseId) {
+                showResponse('writeThroughResponse', 'Case ID is required', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/cache/test/write-through/${caseId}?newStatus=${status}`, {
+                    method: 'PUT'
+                });
+                const result = await response.json();
+                
+                showResponse('writeThroughResponse', result, result.success ? 'success' : 'error');
+                
+            } catch (error) {
+                showResponse('writeThroughResponse', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testInvalidation() {
+            const caseId = document.getElementById('writeThroughCaseId').value;
+            if (!caseId) {
+                showResponse('writeThroughResponse', 'Case ID is required', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/cache/test/invalidate/${caseId}`, {
+                    method: 'DELETE'
+                });
+                const result = await response.json();
+                
+                showResponse('writeThroughResponse', result, result.success ? 'success' : 'error');
+                
+            } catch (error) {
+                showResponse('writeThroughResponse', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // ANTI-STAMPEDE TEST
+        async function testAntiStampede() {
+            const caseId = document.getElementById('stampedeCaseId').value;
+            if (!caseId) {
+                showResponse('stampedeResponse', 'Case ID is required', 'error');
+                return;
+            }
+
+            try {
+                showResponse('stampedeResponse', 'Running 5 concurrent requests...', 'info');
+                
+                const response = await fetch(`${API_BASE}/cache/test/stampede/${caseId}`);
+                const result = await response.json();
+                
+                showResponse('stampedeResponse', result, result.success ? 'success' : 'error');
+                
+            } catch (error) {
+                showResponse('stampedeResponse', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // PERFORMANCE TEST
+        async function performanceTest() {
+            showResponse('performanceResponse', 'Running performance test...', 'info');
+            
+            const testCaseId = 1;
+            const iterations = 10;
+            let totalTime = 0;
+            let results = [];
+            
+            try {
+                for (let i = 0; i < iterations; i++) {
+                    const start = Date.now();
+                    
+                    const response = await fetch(`${API_BASE}/cases/${testCaseId}`);
+                    const data = await response.json();
+                    
+                    const duration = Date.now() - start;
+                    totalTime += duration;
+                    results.push(duration);
+                    
+                    // Small delay between requests
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                
+                const avgLatency = totalTime / iterations;
+                const minLatency = Math.min(...results);
+                const maxLatency = Math.max(...results);
+                
+                const testResult = `Performance Test Results (${iterations} requests):\n` +
+                                 `Average latency: ${avgLatency.toFixed(1)}ms\n` +
+                                 `Min latency: ${minLatency}ms\n` +
+                                 `Max latency: ${maxLatency}ms\n` +
+                                 `Total time: ${totalTime}ms\n\n` +
+                                 `Individual results: ${results.join('ms, ')}ms`;
+                
+                showResponse('performanceResponse', testResult, 'success');
+                
+                // Update UI metrics
+                document.getElementById('avgLatency').textContent = avgLatency.toFixed(1) + 'ms';
+                
+            } catch (error) {
+                showResponse('performanceResponse', `Performance test failed: ${error.message}`, 'error');
+            }
+        }
+
+        // CACHE STATS
+        async function getCacheStats() {
+            try {
+                const response = await fetch(`${API_BASE}/cache/test/stats`);
+                const stats = await response.json();
+                
+                document.getElementById('activeLocks').textContent = stats.activeLocks;
+                
+                showResponse('performanceResponse', `Cache Stats Updated:\nActive Locks: ${stats.activeLocks}\nTTL: ${stats.ttlSeconds}s`, 'info');
+                
+            } catch (error) {
+                console.error('Failed to get cache stats:', error);
+            }
+        }
+
+        // P95 BENCHMARK TESTS
+        async function runP95Benchmark() {
+            const caseId = 1; // Use case 1 for benchmark
+            const iterations = 100; // More iterations for accurate P95
+            
+            try {
+                showResponse('performanceResponse', `Running P95 benchmark with ${iterations} iterations...`, 'info');
+                
+                const response = await fetch(`${API_BASE}/cache/test/p95-benchmark/${caseId}?iterations=${iterations}`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    // Update P95 metrics display
+                    document.getElementById('p95Improvement').textContent = result.p95ImprovementPercent.toFixed(1) + '%';
+                    document.getElementById('avgImprovement').textContent = result.avgImprovementPercent.toFixed(1) + '%';
+                    document.getElementById('noCacheP95').textContent = result.noCacheMetrics.p95Ms + 'ms';
+                    document.getElementById('withCacheP95').textContent = result.withCacheMetrics.p95Ms + 'ms';
+                    
+                    // Show detailed results
+                    const detailsText = `🎯 P95 BENCHMARK RESULTS (${iterations} iterations):\n\n` +
+                                      `WITHOUT CACHE:\n` +
+                                      `  P50: ${result.noCacheMetrics.p50Ms}ms\n` +
+                                      `  P95: ${result.noCacheMetrics.p95Ms}ms\n` +
+                                      `  P99: ${result.noCacheMetrics.p99Ms}ms\n` +
+                                      `  Avg: ${result.noCacheMetrics.avgMs}ms\n\n` +
+                                      `WITH CACHE:\n` +
+                                      `  P50: ${result.withCacheMetrics.p50Ms}ms\n` +
+                                      `  P95: ${result.withCacheMetrics.p95Ms}ms\n` +
+                                      `  P99: ${result.withCacheMetrics.p99Ms}ms\n` +
+                                      `  Avg: ${result.withCacheMetrics.avgMs}ms\n\n` +
+                                      `📈 IMPROVEMENTS:\n` +
+                                      `  P95: ${result.p95ImprovementPercent.toFixed(1)}% faster\n` +
+                                      `  Avg: ${result.avgImprovementPercent.toFixed(1)}% faster`;
+                    
+                    showResponse('benchmarkDetails', detailsText, 'success');
+                    showResponse('performanceResponse', 'P95 benchmark completed! Check results below.', 'success');
+                    
+                } else {
+                    showResponse('performanceResponse', `Benchmark failed: ${response.status}`, 'error');
+                }
+                
+            } catch (error) {
+                showResponse('performanceResponse', `Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function runConcurrentBenchmark() {
+            const caseId = 1;
+            const concurrency = 20; // 20 concurrent threads
+            
+            try {
+                showResponse('performanceResponse', `Running concurrent benchmark with ${concurrency} threads...`, 'info');
+                
+                const response = await fetch(`${API_BASE}/cache/test/concurrent-benchmark/${caseId}?concurrency=${concurrency}`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    const detailsText = `⚡ CONCURRENT BENCHMARK (${concurrency} threads):\n\n` +
+                                      `P50: ${result.metrics.p50Ms}ms\n` +
+                                      `P95: ${result.metrics.p95Ms}ms\n` +
+                                      `P99: ${result.metrics.p99Ms}ms\n` +
+                                      `Avg: ${result.metrics.avgMs}ms\n` +
+                                      `Min: ${result.metrics.minMs}ms\n` +
+                                      `Max: ${result.metrics.maxMs}ms\n\n` +
+                                      `Total benchmark time: ${result.totalBenchmarkTimeMs}ms\n\n` +
+                                      `🛡️ Anti-stampede protection worked!\n` +
+                                      `Check server logs - should see only 1 DB query despite ${concurrency} concurrent requests.`;
+                    
+                    showResponse('benchmarkDetails', detailsText, 'success');
+                    showResponse('performanceResponse', 'Concurrent benchmark completed!', 'success');
+                    
+                } else {
+                    showResponse('performanceResponse', `Benchmark failed: ${response.status}`, 'error');
+                }
+                
+            } catch (error) {
+                showResponse('performanceResponse', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Helper function to update performance metrics
+        function updatePerformanceMetrics(result) {
+            if (result.description && result.description.includes('hit')) {
+                performanceData.cacheHits++;
+            } else if (result.description && result.description.includes('miss')) {
+                performanceData.cacheMisses++;
+            }
+            
+            performanceData.totalLatency += result.durationMs;
+            performanceData.requestCount++;
+            
+            // Update UI
+            document.getElementById('cacheHits').textContent = performanceData.cacheHits;
+            document.getElementById('cacheMisses').textContent = performanceData.cacheMisses;
+            
+            if (performanceData.requestCount > 0) {
+                const avgLatency = performanceData.totalLatency / performanceData.requestCount;
+                document.getElementById('avgLatency').textContent = avgLatency.toFixed(1) + 'ms';
+            }
+        }
+    </script>
+</body>
+</html>

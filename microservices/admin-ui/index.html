@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microservices Admin UI</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Microservices Admin UI</h1>
+            <div id="user-info" class="user-info" style="display: none;">
+                <span id="user-email"></span>
+                <button onclick="logout()" class="btn btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <!-- Services not running warning -->
+        <div id="services-warning" class="section" style="display: none; background: #fed7d7; border: 2px solid #f56565;">
+            <h2>⚠️ Services chưa chạy!</h2>
+            <p>Để Login được, mở <strong>3 cửa sổ PowerShell</strong> và chạy lần lượt:</p>
+            <ol>
+                <li><code>cd d:\microservices</code> rồi <code>npx ts-node services/auth-service/src/index.ts</code></li>
+                <li><code>cd d:\microservices</code> rồi <code>npx ts-node services/people-service/src/index.ts</code></li>
+                <li><code>cd d:\microservices</code> rồi <code>npx ts-node services/case-service/src/index.ts</code></li>
+            </ol>
+            <p>Chờ mỗi terminal hiện "running on port 3101/3002/3003" rồi <strong>Refresh trang (F5)</strong> và thử Login lại.</p>
+            <button onclick="checkServicesOnLoad()" class="btn btn-secondary">Kiểm tra lại</button>
+        </div>
+
+        <!-- Login Section -->
+        <div id="login-section" class="section">
+            <h2>🔐 Login / Register</h2>
+            <div class="form-group">
+                <input type="email" id="email" placeholder="Email" value="test@example.com">
+                <input type="password" id="password" placeholder="Password" value="password123">
+                <input type="text" id="full_name" placeholder="Full Name (for register only)" value="Test User">
+            </div>
+            <div class="button-group">
+                <button onclick="register()" class="btn btn-primary">Register</button>
+                <button onclick="login()" class="btn btn-success">Login</button>
+            </div>
+            <div id="login-result" class="result"></div>
+        </div>
+
+        <!-- Main Content (hidden until login) -->
+        <div id="main-content" style="display: none;">
+            
+            <!-- People Section -->
+            <div class="section">
+                <h2>👥 People Management</h2>
+                
+                <!-- Create Person -->
+                <div class="form-group">
+                    <h3>Create New Person</h3>
+                    <input type="text" id="first_name" placeholder="First Name" value="John">
+                    <input type="text" id="last_name" placeholder="Last Name" value="Doe">
+                    <input type="email" id="person_email" placeholder="Email" value="john@example.com">
+                    <input type="text" id="phone" placeholder="Phone" value="0123456789">
+                    <input type="text" id="address" placeholder="Address" value="123 Main St">
+                    <button onclick="createPerson()" class="btn btn-primary">Create Person</button>
+                </div>
+                <div id="create-person-result" class="result"></div>
+
+                <!-- List People -->
+                <div>
+                    <h3>People List</h3>
+                    <div class="button-group">
+                        <button onclick="listPeople()" class="btn btn-secondary">Refresh List</button>
+                        <span class="info-text">Check console for cache hit/miss info</span>
+                    </div>
+                    <div id="people-list" class="list"></div>
+                </div>
+            </div>
+
+            <!-- Cases Section -->
+            <div class="section">
+                <h2>📋 Case Management</h2>
+                
+                <!-- Create Case -->
+                <div class="form-group">
+                    <h3>Create New Case</h3>
+                    <input type="text" id="case_title" placeholder="Title" value="Bug in login page">
+                    <textarea id="case_description" placeholder="Description" rows="3">Users cannot login with email. Getting 500 error when submitting form.</textarea>
+                    <select id="case_status">
+                        <option value="open">Open</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                    <select id="case_priority">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                    <input type="number" id="person_id" placeholder="Person ID (optional)">
+                    <button onclick="createCase()" class="btn btn-primary">Create Case</button>
+                </div>
+                <div id="create-case-result" class="result"></div>
+
+                <!-- Search Cases -->
+                <div>
+                    <h3>🔍 Search Cases (Elasticsearch)</h3>
+                    <div class="form-group">
+                        <input type="text" id="search_query" placeholder="Search keyword (e.g., 'login', 'bug')" value="login">
+                        <select id="search_status">
+                            <option value="">All Status</option>
+                            <option value="open">Open</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                        <select id="search_priority">
+                            <option value="">All Priority</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                        <button onclick="searchCases()" class="btn btn-success">Search</button>
+                    </div>
+                    <div id="search-result" class="list"></div>
+                </div>
+
+                <!-- List Cases -->
+                <div>
+                    <h3>All Cases</h3>
+                    <button onclick="listCases()" class="btn btn-secondary">Refresh List</button>
+                    <div id="cases-list" class="list"></div>
+                </div>
+            </div>
+
+            <!-- Health Check Section -->
+            <div class="section">
+                <h2>🏥 System Health</h2>
+                <button onclick="checkHealth()" class="btn btn-secondary">Check All Services</button>
+                <div id="health-result" class="result"></div>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="section">
+            <h3>📖 Instructions</h3>
+            <ol>
+                <li><strong>Start all services</strong> first (see README.md)</li>
+                <li><strong>Register</strong> a new user or use existing credentials</li>
+                <li><strong>Login</strong> to get JWT token</li>
+                <li><strong>Create People</strong> - Watch console for Redis cache info</li>
+                <li><strong>Create Cases</strong> - Auto-indexed to Elasticsearch</li>
+                <li><strong>Search Cases</strong> - Test Elasticsearch full-text search</li>
+                <li><strong>Check console</strong> for detailed logs (cache hits, API calls)</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

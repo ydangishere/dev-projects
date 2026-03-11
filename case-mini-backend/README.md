@@ -1,10 +1,23 @@
-## Case Mini Backend
+# Case Mini Backend (Spring Boot)
 
-Mini order/case management backend built with Spring Boot.
+Mini order/case management API: CRUD, validation, pagination.
 
-- **Tech**: Java 17, Spring Boot 3.2, Spring Web, Spring Data JPA, Validation, Redis, SpringDoc OpenAPI, Docker (optional).
-- **Features**: CRUD endpoints with validation and pagination, Swagger UI docs at `/swagger-ui.html` when running locally.
-- **Original repo**: `https://github.com/ydangishere/case-mini-backend`
+## Tech
 
-See the original README for full run instructions and extra helper HTML files for testing.
+- **Java 17**, **Spring Boot 3.2**
+- Spring Data JPA, Spring Web, Validation
+- Redis (caching), SpringDoc OpenAPI (Swagger UI)
+- Docker (optional)
 
+## Run
+
+```bash
+cd backend
+./mvnw spring-boot:run
+```
+
+API docs (when running): http://localhost:8080/swagger-ui.html
+
+## Repo
+
+Part of [java-backend-repos](https://github.com/ydangishere/java-backend-repos).

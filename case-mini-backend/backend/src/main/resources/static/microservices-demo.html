@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏗️ Microservices Architecture Demo - Casebook</title>
+    <style>
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: white; 
+            border-radius: 12px; 
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .architecture-diagram {
+            background: #f8f9ff;
+            border: 2px dashed #4f46e5;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            line-height: 1.6;
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .service-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 20px;
+            background: white;
+        }
+        .service-card h3 {
+            margin: 0 0 15px 0;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .service-card.people { border-left: 4px solid #10b981; }
+        .service-card.case { border-left: 4px solid #3b82f6; }
+        .service-card.notes { border-left: 4px solid #f59e0b; }
+        .service-card.events { border-left: 4px solid #ef4444; }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #374151;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        textarea { height: 80px; resize: vertical; }
+        
+        button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 5px 5px 5px 0;
+            transition: background 0.2s;
+        }
+        button:hover { background: #4338ca; }
+        button.secondary {
+            background: #6b7280;
+        }
+        button.secondary:hover { background: #4b5563; }
+        
+        .response {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .response.success { 
+            background: #dcfce7; 
+            border: 1px solid #bbf7d0; 
+            color: #166534; 
+        }
+        .response.error { 
+            background: #fef2f2; 
+            border: 1px solid #fecaca; 
+            color: #dc2626; 
+        }
+        .response.info { 
+            background: #eff6ff; 
+            border: 1px solid #bfdbfe; 
+            color: #1d4ed8; 
+        }
+        
+        .flow-demo {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        .flow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .step {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            margin: 0 5px;
+        }
+        .step.active {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        .step-arrow {
+            color: #6b7280;
+            font-size: 20px;
+        }
+        
+        .monitoring {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .metric {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1f2937;
+        }
+        .metric-label {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏗️ Microservices Architecture Demo</h1>
+            <p>Casebook System: People → Case → Notes Flow với Event-Driven + Outbox Pattern</p>
+        </div>
+
+        <div class="architecture-diagram">
+            <strong>🏛️ ARCHITECTURE FLOW:</strong><br><br>
+            People Service ←─── Case Service ──(outbox)──→ Event Publisher ──(kafka)──→ Notes Service<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+            &nbsp;&nbsp;&nbsp;validate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;save&nbsp;case&nbsp;+&nbsp;event&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;create&nbsp;note<br>
+            &nbsp;&nbsp;&nbsp;assignee&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(atomic&nbsp;transaction)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(idempotent)
+        </div>
+
+        <div class="services-grid">
+            <!-- PEOPLE SERVICE -->
+            <div class="service-card people">
+                <h3>👥 People Microservice</h3>
+                
+                <div class="form-group">
+                    <label>Create New Person:</label>
+                    <input type="text" id="personName" placeholder="Full Name" />
+                    <input type="email" id="personEmail" placeholder="Email" />
+                    <input type="text" id="personDept" placeholder="Department" />
+                    <input type="text" id="personRole" placeholder="Role" />
+                </div>
+                <button onclick="createPerson()">Create Person</button>
+                <button class="secondary" onclick="loadActiveMembers()">List Active Members</button>
+                
+                <div id="peopleResponse" class="response" style="display:none;"></div>
+            </div>
+
+            <!-- CASE SERVICE -->
+            <div class="service-card case">
+                <h3>📋 Case Microservice</h3>
+                
+                <div class="form-group">
+                    <label>Create New Case:</label>
+                    <input type="text" id="caseTitle" placeholder="Case Title" />
+                    <textarea id="caseDesc" placeholder="Case Description"></textarea>
+                    <select id="assigneeSelect">
+                        <option value="">No Assignee</option>
+                    </select>
+                </div>
+                <button onclick="createCaseWithMicroservices()">🚀 Create Case (Microservices Flow)</button>
+                
+                <div id="caseResponse" class="response" style="display:none;"></div>
+            </div>
+
+            <!-- NOTES SERVICE -->
+            <div class="service-card notes">
+                <h3>📝 Notes Microservice</h3>
+                
+                <div class="form-group">
+                    <label>Get Notes for Case ID:</label>
+                    <input type="number" id="noteCaseId" placeholder="Case ID" />
+                </div>
+                <button onclick="getNotes()">Get Case Notes</button>
+                
+                <div class="form-group">
+                    <label>Add Manual Note:</label>
+                    <input type="number" id="manualCaseId" placeholder="Case ID" />
+                    <textarea id="noteContent" placeholder="Note content..."></textarea>
+                </div>
+                <button onclick="createManualNote()">Add Note</button>
+                
+                <div id="notesResponse" class="response" style="display:none;"></div>
+            </div>
+
+            <!-- EVENT SYSTEM -->
+            <div class="service-card events">
+                <h3>⚡ Event System</h3>
+                
+                <button onclick="getOutboxStats()">📊 Outbox Statistics</button>
+                <button class="secondary" onclick="publishEvents()">🔄 Trigger Event Publishing</button>
+                
+                <div class="monitoring">
+                    <div class="metric">
+                        <div class="metric-value" id="totalEvents">-</div>
+                        <div class="metric-label">Total Events</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="pendingEvents">-</div>
+                        <div class="metric-label">Pending</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="publishedEvents">-</div>
+                        <div class="metric-label">Published</div>
+                    </div>
+                </div>
+                
+                <div id="eventsResponse" class="response" style="display:none;"></div>
+            </div>
+        </div>
+
+        <!-- FLOW DEMO -->
+        <div class="flow-demo">
+            <h3>🎯 Complete Microservices Flow Test</h3>
+            <p>Kiểm tra toàn bộ flow: validate assignee → create case → emit event → create note</p>
+            
+            <div class="flow-steps">
+                <div class="step" id="step1">
+                    <strong>1. Create Person</strong><br>
+                    <small>Setup assignee</small>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step" id="step2">
+                    <strong>2. Create Case</strong><br>
+                    <small>Validate + emit event</small>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step" id="step3">
+                    <strong>3. Event Published</strong><br>
+                    <small>Outbox → Kafka sim</small>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step" id="step4">
+                    <strong>4. Note Created</strong><br>
+                    <small>Auto-generated</small>
+                </div>
+            </div>
+            
+            <button onclick="runCompleteFlow()">🚀 Run Complete Flow Test</button>
+            <button class="secondary" onclick="resetFlow()">🔄 Reset</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080/api';
+        
+        // Auto-load data on page load
+        window.onload = function() {
+            loadActiveMembers();
+            getOutboxStats();
+            
+            // Auto-refresh outbox stats every 10 seconds
+            setInterval(getOutboxStats, 10000);
+        };
+
+        function showResponse(elementId, data, type = 'success') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `response ${type}`;
+            element.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+        }
+
+        // PEOPLE SERVICE FUNCTIONS
+        async function createPerson() {
+            const person = {
+                fullName: document.getElementById('personName').value,
+                email: document.getElementById('personEmail').value,
+                department: document.getElementById('personDept').value,
+                role: document.getElementById('personRole').value
+            };
+            
+            if (!person.fullName || !person.email) {
+                showResponse('peopleResponse', 'Full name and email are required', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/people`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(person)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showResponse('peopleResponse', result, 'success');
+                    loadActiveMembers(); // Refresh dropdown
+                    
+                    // Clear form
+                    document.getElementById('personName').value = '';
+                    document.getElementById('personEmail').value = '';
+                    document.getElementById('personDept').value = '';
+                    document.getElementById('personRole').value = '';
+                } else {
+                    showResponse('peopleResponse', `Error: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                showResponse('peopleResponse', `Network error: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadActiveMembers() {
+            try {
+                const response = await fetch(`${API_BASE}/people/active`);
+                
+                if (response.ok) {
+                    const people = await response.json();
+                    
+                    // Update dropdown
+                    const select = document.getElementById('assigneeSelect');
+                    select.innerHTML = '<option value="">No Assignee</option>';
+                    
+                    people.forEach(person => {
+                        const option = document.createElement('option');
+                        option.value = person.id;
+                        option.textContent = `${person.fullName} (${person.department})`;
+                        select.appendChild(option);
+                    });
+                    
+                    showResponse('peopleResponse', `Loaded ${people.length} active members`, 'info');
+                } else {
+                    showResponse('peopleResponse', `Error loading members: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                showResponse('peopleResponse', `Error loading members: ${error.message}`, 'error');
+            }
+        }
+
+        // CASE SERVICE FUNCTIONS
+        async function createCaseWithMicroservices() {
+            const caseData = {
+                title: document.getElementById('caseTitle').value,
+                description: document.getElementById('caseDesc').value,
+                status: 'OPEN'
+            };
+            
+            const assigneeId = document.getElementById('assigneeSelect').value;
+            
+            if (!caseData.title) {
+                showResponse('caseResponse', 'Case title is required', 'error');
+                return;
+            }
+
+            try {
+                let url = `${API_BASE}/cases`;
+                if (assigneeId) {
+                    url += `?assigneeId=${assigneeId}`;
+                }
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Idempotency-Key': `case-${Date.now()}`
+                    },
+                    body: JSON.stringify(caseData)
+                });
+                
+                if (response.status === 201) {
+                    const result = await response.json();
+                    showResponse('caseResponse', result, 'success');
+                    
+                    // Clear form
+                    document.getElementById('caseTitle').value = '';
+                    document.getElementById('caseDesc').value = '';
+                    
+                    // Auto-refresh outbox stats after case creation
+                    setTimeout(getOutboxStats, 1000);
+                    
+                } else {
+                    const error = await response.text();
+                    showResponse('caseResponse', `Error: ${error}`, 'error');
+                }
+            } catch (error) {
+                showResponse('caseResponse', `Network error: ${error.message}`, 'error');
+            }
+        }
+
+        // NOTES SERVICE FUNCTIONS
+        async function getNotes() {
+            const caseId = document.getElementById('noteCaseId').value;
+            
+            if (!caseId) {
+                showResponse('notesResponse', 'Case ID is required', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/notes/case/${caseId}`);
+                
+                if (response.ok) {
+                    const notes = await response.json();
+                    showResponse('notesResponse', notes, 'success');
+                } else {
+                    showResponse('notesResponse', `Error: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                showResponse('notesResponse', `Network error: ${error.message}`, 'error');
+            }
+        }
+
+        async function createManualNote() {
+            const caseId = document.getElementById('manualCaseId').value;
+            const content = document.getElementById('noteContent').value;
+            
+            if (!caseId || !content) {
+                showResponse('notesResponse', 'Case ID and content are required', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/notes?caseId=${caseId}&content=${encodeURIComponent(content)}&createdBy=USER`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showResponse('notesResponse', result, 'success');
+                    
+                    // Clear form
+                    document.getElementById('noteContent').value = '';
+                } else {
+                    showResponse('notesResponse', `Error: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                showResponse('notesResponse', `Network error: ${error.message}`, 'error');
+            }
+        }
+
+        // EVENT SYSTEM FUNCTIONS
+        async function getOutboxStats() {
+            try {
+                const response = await fetch(`${API_BASE}/events/outbox/stats`);
+                
+                if (response.ok) {
+                    const stats = await response.json();
+                    
+                    document.getElementById('totalEvents').textContent = stats.totalEvents;
+                    document.getElementById('pendingEvents').textContent = stats.pendingEvents;
+                    document.getElementById('publishedEvents').textContent = stats.publishedEvents;
+                    
+                    showResponse('eventsResponse', stats, 'info');
+                } else {
+                    showResponse('eventsResponse', `Error: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                showResponse('eventsResponse', `Network error: ${error.message}`, 'error');
+            }
+        }
+
+        async function publishEvents() {
+            try {
+                const response = await fetch(`${API_BASE}/events/publish`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    const result = await response.text();
+                    showResponse('eventsResponse', result, 'success');
+                    
+                    // Refresh stats after manual publish
+                    setTimeout(getOutboxStats, 1000);
+                } else {
+                    showResponse('eventsResponse', `Error: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                showResponse('eventsResponse', `Network error: ${error.message}`, 'error');
+            }
+        }
+
+        // COMPLETE FLOW TEST
+        async function runCompleteFlow() {
+            resetFlow();
+            
+            try {
+                // Step 1: Create person
+                document.getElementById('step1').classList.add('active');
+                const testPerson = {
+                    fullName: `Test User ${Date.now()}`,
+                    email: `test${Date.now()}@company.com`,
+                    department: 'Testing',
+                    role: 'QA Engineer'
+                };
+                
+                const personResponse = await fetch(`${API_BASE}/people`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(testPerson)
+                });
+                
+                if (!personResponse.ok) throw new Error('Failed to create person');
+                const person = await personResponse.json();
+                
+                await sleep(1000);
+                
+                // Step 2: Create case with assignee
+                document.getElementById('step1').classList.remove('active');
+                document.getElementById('step2').classList.add('active');
+                
+                const caseResponse = await fetch(`${API_BASE}/cases?assigneeId=${person.id}`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Idempotency-Key': `flow-test-${Date.now()}`
+                    },
+                    body: JSON.stringify({
+                        title: `Flow Test Case ${Date.now()}`,
+                        description: 'This case was created during complete flow test',
+                        status: 'OPEN'
+                    })
+                });
+                
+                if (!caseResponse.ok) throw new Error('Failed to create case');
+                const caseData = await caseResponse.json();
+                
+                await sleep(2000);
+                
+                // Step 3: Event should be published (check outbox)
+                document.getElementById('step2').classList.remove('active');
+                document.getElementById('step3').classList.add('active');
+                
+                await getOutboxStats();
+                
+                await sleep(3000);
+                
+                // Step 4: Check if note was created
+                document.getElementById('step3').classList.remove('active');
+                document.getElementById('step4').classList.add('active');
+                
+                const notesResponse = await fetch(`${API_BASE}/notes/case/${caseData.id}`);
+                if (!notesResponse.ok) throw new Error('Failed to get notes');
+                const notes = await notesResponse.json();
+                
+                alert(`✅ Complete flow test successful!\n\n` +
+                     `Person: ${person.fullName}\n` +
+                     `Case: ${caseData.title}\n` +
+                     `Notes: ${notes.length} notes created\n` +
+                     `Case ID: ${caseData.id}`);
+                
+            } catch (error) {
+                alert(`❌ Flow test failed: ${error.message}`);
+            }
+        }
+
+        function resetFlow() {
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+</html>

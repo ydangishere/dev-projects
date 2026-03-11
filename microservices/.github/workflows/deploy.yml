@@ -1,0 +1,75 @@
+name: Deploy Pipeline
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed
+    branches: [main]
+
+jobs:
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to staging
+        run: |
+          echo "Deploying to staging environment..."
+          # Thực tế sẽ có commands deploy lên server staging
+          # Ví dụ: kubectl apply, helm upgrade, docker-compose pull, etc.
+
+      - name: Run smoke tests
+        run: |
+          echo "Running smoke tests on staging..."
+          # curl health check endpoints
+          # Verify basic functionality
+
+      - name: Notify success
+        if: success()
+        run: echo "✅ Deployment to staging successful"
+
+      - name: Notify failure
+        if: failure()
+        run: echo "❌ Deployment to staging failed"
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    environment:
+      name: production
+      url: https://api.production.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to production (Blue-Green)
+        run: |
+          echo "Deploying to production (blue-green deployment)..."
+          # 1. Deploy to "green" environment
+          # 2. Run health checks
+          # 3. Switch traffic từ blue → green
+          # 4. Monitor metrics
+          # 5. Keep blue làm rollback point
+
+      - name: Health check
+        run: |
+          echo "Running production health checks..."
+          # Verify all services are up
+
+      - name: Notify deployment
+        run: |
+          echo "🚀 Production deployment completed"
+          # Send notification to Slack/Teams
+
+# Metrics to track:
+# - Build time: Thời gian build + test
+# - Deploy frequency: Số lần deploy/ngày
+# - Change failure rate: % deploy bị rollback
+# - MTTR (Mean Time To Recovery): Thời gian fix lỗi production
