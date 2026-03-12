@@ -1,0 +1,17 @@
+{
+  "name": "shopify-automation",
+  "version": "1.0.0",
+  "description": "Custom Shopify features & automation — order webhooks to database",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.98.0",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

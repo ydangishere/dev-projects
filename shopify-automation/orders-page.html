@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Orders — Shopify → Database</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; margin: 1rem; background: #1a1a2e; color: #eee; }
+    h1 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+    .hint { color: #888; font-size: 0.9rem; margin-bottom: 1rem; }
+    table { width: 100%; border-collapse: collapse; background: #16213e; border-radius: 8px; overflow: hidden; }
+    th, td { padding: 0.6rem 0.8rem; text-align: left; border-bottom: 1px solid #0f3460; }
+    th { background: #0f3460; font-weight: 600; }
+    tr:hover { background: #1a2a4a; }
+    .err { color: #e94560; }
+    .empty { color: #888; padding: 1rem; }
+    .btn { margin-top: 0.5rem; padding: 0.5rem 1rem; background: #0f3460; color: #eee; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+    .btn:hover { background: #1a4a7a; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <h1>Orders — Shopify → Database</h1>
+  <p class="hint">Data from webhook <code>/webhooks/orders-create</code> and mock <code>POST /orders-create-mock</code>.</p>
+  <button id="addTest" class="btn" style="display:none">Add test order</button>
+  <div id="root">Loading…</div>
+  <script>
+    async function load() {
+      const root = document.getElementById("root");
+      const btn = document.getElementById("addTest");
+      try {
+        const r = await fetch("/orders");
+        const j = await r.json();
+        if (!r.ok) {
+          root.innerHTML = '<p class="err">' + (j.error || r.status) + (j.hint ? ' — ' + j.hint : '') + '</p>';
+          return;
+        }
+        const orders = j.orders || [];
+        btn.style.display = "inline-block";
+        if (orders.length === 0) {
+          root.innerHTML = '<p class="empty">No orders yet. Click "Add test order" below or use POST /orders-create-mock.</p>';
+          return;
+        }
+        root.innerHTML = '<table><thead><tr><th>Order #</th><th>Email</th><th>Total</th><th>Status</th><th>Shop</th><th>Created</th></tr></thead><tbody>' +
+          orders.map(o => '<tr><td>' + (o.order_number || o.shopify_order_id) + '</td><td>' + (o.email || '—') + '</td><td>' + (o.total_price != null ? o.total_price : '—') + '</td><td>' + (o.financial_status || '—') + '</td><td>' + (o.shop_domain || '—') + '</td><td>' + (o.created_at ? new Date(o.created_at).toLocaleString() : '—') + '</td></tr>').join('') +
+          '</tbody></table><p class="hint">Count: ' + (j.count || orders.length) + '</p>';
+      } catch (e) {
+        root.innerHTML = '<p class="err">Request failed: ' + e.message + '</p>';
+      }
+    }
+    document.getElementById("addTest").onclick = async function() {
+      this.disabled = true;
+      try {
+        const r = await fetch("/orders-create-mock", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+        const j = await r.json();
+        if (j.stored) location.reload();
+        else alert(j.error || j.message || "Failed");
+      } catch (e) { alert(e.message); }
+      this.disabled = false;
+    };
+    load();
+  </script>
+</body>
+</html>

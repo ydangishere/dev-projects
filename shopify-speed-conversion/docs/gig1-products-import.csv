@@ -1,0 +1,11 @@
+Handle,Title,Body (HTML),Vendor,Type,Tags,Published,Option1 Name,Option1 Value,Variant SKU,Variant Grams,Variant Inventory Tracker,Variant Inventory Policy,Variant Fulfillment Service,Variant Price,Variant Compare At Price,Variant Requires Shipping,Variant Taxable,Variant Barcode,Image Src,Image Alt Text
+product-1,Demo Product 1,<p>Demo product for speed optimization test.</p>,Demo,Test,demogig1,true,Title,Default,SKU-001,0,shopify,deny,manual,29.99,39.99,true,true,,,
+product-2,Demo Product 2,<p>Demo product for speed optimization test.</p>,Demo,Test,demogig1,true,Title,Default,SKU-002,0,shopify,deny,manual,19.99,,true,true,,,
+product-3,Demo Product 3,<p>Demo product for speed optimization test.</p>,Demo,Test,demogig1,true,Title,Default,SKU-003,0,shopify,deny,manual,49.99,59.99,true,true,,,
+product-4,Demo Product 4,<p>Demo product for speed optimization test.</p>,Demo,Test,demogig1,true,Title,Default,SKU-004,0,shopify,deny,manual,14.99,,true,true,,,
+product-5,Demo Product 5,<p>Demo product for speed optimization test.</p>,Demo,Test,demogig1,true,Title,Default,SKU-005,0,shopify,deny,manual,34.99,44.99,true,true,,,
+product-6,Demo Product 6,<p>Demo product for speed optimization test.</p>,Demo,Test,demogig1,true,Title,Default,SKU-006,0,shopify,deny,manual,24.99,,true,true,,,
+product-7,Demo Product 7,<p>Demo product for speed optimization test.</p>,Demo,Test,demogig1,true,Title,Default,SKU-007,0,shopify,deny,manual,39.99,49.99,true,true,,,
+product-8,Demo Product 8,<p>Demo product for speed optimization test.</p>,Demo,Test,demogig1,true,Title,Default,SKU-008,0,shopify,deny,manual,9.99,,true,true,,,
+product-9,Demo Product 9,<p>Demo product for speed optimization test.</p>,Demo,Test,demogig1,true,Title,Default,SKU-009,0,shopify,deny,manual,59.99,69.99,true,true,,,
+product-10,Demo Product 10,<p>Demo product for speed optimization test.</p>,Demo,Test,demogig1,true,Title,Default,SKU-010,0,shopify,deny,manual,44.99,,true,true,,,

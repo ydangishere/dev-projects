@@ -1,0 +1,167 @@
+{%- liquid
+  assign og_title = page_title | default: shop.name
+  assign og_url = canonical_url | default: request.origin
+  assign og_type = 'website'
+  assign og_description = page_description | default: shop.description | default: shop.name
+
+  if request.page_type == 'product' and product
+    assign og_title = product.title | default: og_title
+    assign og_description = product.description | strip_html | strip_newlines | truncate: 160 | default: og_description
+    assign og_type = 'product'
+  elsif request.page_type == 'collection' and collection
+    assign og_title = collection.title | default: og_title
+    assign og_description = collection.description | strip_html | strip_newlines | truncate: 160 | default: og_description
+  elsif request.page_type == 'article' and article
+    assign og_title = article.title | default: og_title
+    assign og_description = article.excerpt_or_content | strip_html | strip_newlines | truncate: 160 | default: og_description
+    assign og_type = 'article'
+  elsif request.page_type == 'page' and page
+    assign og_title = page.title | default: og_title
+    assign og_description = page.content | strip_html | strip_newlines | truncate: 160 | default: og_description
+  elsif request.page_type == 'password'
+    assign og_url = request.origin
+  endif
+%}
+
+<meta property="og:site_name" content="{{ shop.name }}">
+<meta property="og:url" content="{{ og_url }}">
+<meta property="og:title" content="{{ og_title | escape }}">
+<meta property="og:type" content="{{ og_type }}">
+<meta property="og:description" content="{{ og_description | escape }}">
+
+{%- if page_image -%}
+  <meta property="og:image" content="http:{{ page_image | image_url }}">
+  <meta property="og:image:secure_url" content="https:{{ page_image | image_url }}">
+  <meta property="og:image:width" content="{{ page_image.width }}">
+  <meta property="og:image:height" content="{{ page_image.height }}">
+{%- endif -%}
+
+{%- if request.page_type == 'product' -%}
+  <meta property="og:price:amount" content="{{ product.price | money_without_currency | strip_html }}">
+  <meta property="og:price:currency" content="{{ cart.currency.iso_code }}">
+{%- endif -%}
+
+{%- if settings.social_twitter_link != blank -%}
+  <meta name="twitter:site" content="{{ settings.social_twitter_link | split: 'twitter.com/' | last | prepend: '@' }}">
+{%- endif -%}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ og_title | escape }}">
+<meta name="twitter:description" content="{{ og_description | escape }}">
+
+{%- if request.page_type == 'product' and product -%}
+  {%- liquid
+    assign current_variant = product.selected_or_first_available_variant
+    assign variant_sku = current_variant.sku | default: product.variants.first.sku
+    assign product_brand = product.vendor | default: shop.name
+    assign product_price = current_variant.price | divided_by: 100.0
+    assign product_availability = 'https://schema.org/OutOfStock'
+    if current_variant.available
+      assign product_availability = 'https://schema.org/InStock'
+    endif
+  -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": {{ product.title | json }},
+      "url": {{ canonical_url | json }},
+      "description": {{ product.description | strip_html | strip_newlines | truncate: 500 | json }},
+      "sku": {{ variant_sku | json }},
+      "brand": {
+        "@type": "Brand",
+        "name": {{ product_brand | json }}
+      },
+      "image": [
+        {{ product.featured_image | image_url: width: 1200 | prepend: 'https:' | json }}
+      ],
+      "offers": {
+        "@type": "Offer",
+        "url": {{ canonical_url | json }},
+        "priceCurrency": {{ cart.currency.iso_code | json }},
+        "price": {{ product_price }},
+        "availability": {{ product_availability | json }},
+        "itemCondition": "https://schema.org/NewCondition"
+      }
+    }
+  </script>
+{%- endif -%}
+
+{%- unless request.page_type == 'password' -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": {{ request.origin | append: routes.root_url | json }}
+        }
+        {%- if request.page_type == 'product' and product -%}
+          {%- if collection -%}
+            ,
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": {{ collection.title | json }},
+              "item": {{ request.origin | append: collection.url | json }}
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": {{ product.title | json }},
+              "item": {{ request.origin | append: product.url | json }}
+            }
+          {%- else -%}
+            ,
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": {{ product.title | json }},
+              "item": {{ request.origin | append: product.url | json }}
+            }
+          {%- endif -%}
+        {%- elsif request.page_type == 'collection' and collection -%}
+          ,
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": {{ collection.title | json }},
+            "item": {{ request.origin | append: collection.url | json }}
+          }
+        {%- elsif request.page_type == 'article' and article -%}
+          ,
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": {{ blog.title | json }},
+            "item": {{ request.origin | append: blog.url | json }}
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": {{ article.title | json }},
+            "item": {{ request.origin | append: article.url | json }}
+          }
+        {%- elsif request.page_type == 'blog' and blog -%}
+          ,
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": {{ blog.title | json }},
+            "item": {{ request.origin | append: blog.url | json }}
+          }
+        {%- elsif request.page_type == 'page' and page -%}
+          ,
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": {{ page.title | json }},
+            "item": {{ request.origin | append: page.url | json }}
+          }
+        {%- endif -%}
+      ]
+    }
+  </script>
+{%- endunless -%}
