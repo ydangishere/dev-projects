@@ -33,9 +33,8 @@ This monorepo collects several backend and AI-related projects from the `ydangis
   - Original repo: `https://github.com/ydangishere/shopify-automation`
 
 
-- **TradingView Alerts to Telegram** (AIautomationbot): Python app that opens TradingView, screenshots each alert, and sends them via Telegram.
- - Monorepo folder: [AIautomationbot](https://github.com/ydangishere/dev-projects/tree/main/AIautomationbot)
- - Part of dev-projects (no separate repo)
+- **TradingView Alerts to Telegram** (`AIautomationbot`): Python app that opens TradingView, screenshots each alert, and sends them via Telegram.  
+  - Monorepo folder: [`AIautomationbot`](https://github.com/ydangishere/dev-projects/tree/main/AIautomationbot)
 
 Each subfolder in this repo corresponds to one of the original projects, contains its own `README.md`, and links back to the source repository.
 
