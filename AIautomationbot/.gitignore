@@ -1,0 +1,9 @@
+tradingview_session.json
+telegram_config.py
+chart_screenshot.png
+alert_screenshots/
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
