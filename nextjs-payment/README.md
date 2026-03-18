@@ -13,25 +13,26 @@ Demo payment flow: create order → redirect → callback → verify → update 
 
 ### 1. Clone / Pull
 
-```bash
-# If cloning from remote
-git clone <repository-url>
-cd nextjs-payment
+```sh
+# Clone monorepo
+git clone https://github.com/ydangishere/dev-projects.git
+cd dev-projects/nextjs-payment
 
-# If already have the project, pull latest
+# Or if already have the repo, pull latest
 git pull
+cd nextjs-payment
 ```
 
 ### 2. Install Dependencies
 
-```bash
+```sh
 cd nextjs-payment
 npm install
 ```
 
 ### 3. Run the App
 
-```bash
+```sh
 npm run dev
 ```
 
