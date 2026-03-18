@@ -32,9 +32,11 @@ This monorepo collects several backend and AI-related projects from the `ydangis
   - Monorepo folder: [`shopify-automation`](https://github.com/ydangishere/dev-projects/tree/main/shopify-automation)  
   - Original repo: `https://github.com/ydangishere/shopify-automation`
 
-
 - **TradingView Alerts to Telegram** (`AIautomationbot`): Python app that opens TradingView, screenshots each alert, and sends them via Telegram.  
   - Monorepo folder: [`AIautomationbot`](https://github.com/ydangishere/dev-projects/tree/main/AIautomationbot)
+
+- **Mini Payment Gateway Simulation** (`nextjs-payment`): Next.js demo of payment flow (create → redirect → callback → verify → update DB) with SQLite, idempotency, and admin token protection.  
+  - Monorepo folder: [`nextjs-payment`](https://github.com/ydangishere/dev-projects/tree/main/nextjs-payment)
 
 Each subfolder in this repo corresponds to one of the original projects, contains its own `README.md`, and links back to the source repository.
 
