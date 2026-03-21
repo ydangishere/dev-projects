@@ -1,0 +1,21 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sso_auth
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:sso-mini-secret-key-at-least-256-bits-for-hs256}
+    expiration-ms: 3600000
+  allowed-redirect-uris: http://localhost:8081/callback,http://localhost:8082/callback

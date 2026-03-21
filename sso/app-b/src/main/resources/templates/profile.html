@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile - App B</title>
+    <style>
+        body { font-family: system-ui; max-width: 600px; margin: 60px auto; padding: 20px; }
+        h1 { color: #059669; }
+        a { color: #059669; }
+        .logout { display: inline-block; margin-top: 20px; padding: 8px 16px; background: #dc2626; color: white; text-decoration: none; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1 th:text="${appName}">App B</h1>
+    <p>Xin chào, <strong th:text="${displayName}">User</strong>!</p>
+    <p>Username: <code th:text="${username}">username</code></p>
+    <p><a href="http://localhost:8081/">Mở App A (SSO)</a></p>
+    <a href="/logout" class="logout">Logout</a>
+</body>
+</html>

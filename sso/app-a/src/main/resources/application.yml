@@ -1,0 +1,12 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: app-a
+
+app:
+  auth-service-url: http://localhost:8080
+  callback-url: http://localhost:8081/callback
+  jwt:
+    secret: ${JWT_SECRET:sso-mini-secret-key-at-least-256-bits-for-hs256}

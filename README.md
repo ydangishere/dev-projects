@@ -38,5 +38,8 @@ This monorepo collects several backend and AI-related projects from the `ydangis
 - **Mini Payment Gateway Simulation** (`nextjs-payment`): Next.js demo of payment flow (create → redirect → callback → verify → update DB) with SQLite, idempotency, and admin token protection.  
   - Monorepo folder: [`nextjs-payment`](https://github.com/ydangishere/dev-projects/tree/main/nextjs-payment)
 
+- **SSO Mini** (`sso`): Spring Boot SSO system. Login once, use many apps. Auth service (IdP) + 2 client apps (app-a, app-b) with JWT.  
+  - Monorepo folder: [`sso`](https://github.com/ydangishere/dev-projects/tree/main/sso)
+
 Each subfolder in this repo corresponds to one of the original projects, contains its own `README.md`, and links back to the source repository.
 
