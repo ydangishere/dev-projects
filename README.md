@@ -41,7 +41,7 @@ This monorepo collects several backend and AI-related projects from the `ydangis
 - **SSO Mini** (`sso`): Spring Boot SSO system. Login once, use many apps. Auth service (IdP) + 2 client apps (app-a, app-b) with JWT.  
   - Monorepo folder: [`sso`](https://github.com/ydangishere/dev-projects/tree/main/sso)
 
-- **AI Video Maker Auto** (`videomakerauto`): Python pipeline tạo video tự động từ topic. GPT viết script → ElevenLabs tạo voice → MoviePy ghép video. Chạy `python main.py "chủ đề"` để tạo video TikTok/Shorts.  
+- **AI Video Maker Auto** (`videomakerauto`): Python pipeline to create videos from a topic. GPT → ElevenLabs → MoviePy. Pull, run `run.bat` (Windows) or `run.sh` (Mac/Linux), enter API keys + topic, done. No manual install.  
   - Monorepo folder: [`videomakerauto`](https://github.com/ydangishere/dev-projects/tree/main/videomakerauto)
 
 Each subfolder in this repo corresponds to one of the original projects, contains its own `README.md`, and links back to the source repository.
