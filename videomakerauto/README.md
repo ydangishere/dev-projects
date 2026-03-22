@@ -1,203 +1,130 @@
 # AI Video Maker Auto
 
-Pipeline tự động tạo video từ ý tưởng: đưa topic vào → AI viết script → tạo giọng đọc → ghép thành video MP4.
+Automated pipeline to create videos from an idea: enter a topic → AI writes script → generates voiceover → outputs MP4 video.
+
+**Usage:** Pull repo → run `run.bat` (Windows) or `run.sh` (Mac/Linux) → enter API keys (first time) → enter topic → done. No manual installation.
 
 ---
 
-## 1. Yêu cầu
+## Prerequisite
 
-- Windows 10/11
-- Python 3.8 trở lên
-- Tài khoản OpenAI (có API key)
-- Tài khoản ElevenLabs (có API key)
+- **Python 3.8+** only. [Download](https://www.python.org/downloads/) if needed.  
+- OpenAI and ElevenLabs accounts (for API keys).
 
----
-
-## 2. Cài đặt từng bước
-
-### Bước 2.1: Kiểm tra Python
-
-Mở PowerShell, chạy:
-
-```powershell
-python --version
-```
-
-Nếu hiện `Python 3.8.x` trở lên là dùng được. Nếu chưa có Python, tải tại: https://www.python.org/downloads/
-
-### Bước 2.2: Vào thư mục project
-
-```powershell
-cd "d:\dev project\videomakerauto"
-```
-
-### Bước 2.3: Cài thư viện
-
-```powershell
-pip install -r requirements.txt
-```
-
-Chờ cài xong (khoảng 1–2 phút). Các thư viện: OpenAI, ElevenLabs, MoviePy, python-dotenv.
+Dependencies install automatically when you run the script.
 
 ---
 
-## 3. Lấy API keys
+## How to use
 
-### Bước 3.1: OpenAI API key
+### Step 1: Pull the repo
 
-1. Vào https://platform.openai.com/
-2. Đăng nhập hoặc đăng ký
-3. Vào **API keys** → **Create new secret key**
-4. Copy key (bắt đầu bằng `sk-`), lưu lại vì chỉ hiện một lần
+```bash
+git clone https://github.com/ydangishere/dev-projects.git
+cd dev-projects/videomakerauto
+```
 
-### Bước 3.2: ElevenLabs API key
+(Or `git pull` if you already have dev-projects)
 
-1. Vào https://elevenlabs.io/
-2. Đăng nhập hoặc đăng ký
-3. Vào **Profile** → **API Key** → **Copy** hoặc tạo key mới
+### Step 2: Run run.bat or run.sh
 
-### Bước 3.3: Voice ID (tùy chọn)
+**Windows:** Double-click `run.bat`
 
-Mặc định dùng giọng Rachel. Muốn đổi:
+**Mac/Linux:**
+```bash
+chmod +x run.sh
+./run.sh
+```
 
-1. Vào https://elevenlabs.io/voice-library
-2. Chọn giọng → mở tab **API** → copy **Voice ID**
+On first run: dependencies install automatically (~1–2 min). Then you're prompted for API keys.
+
+### Step 3: Enter API keys (first run only)
+
+On first run, the script will prompt:
+
+1. **OPENAI_API_KEY:** Paste key from [platform.openai.com](https://platform.openai.com/) → API keys
+2. **ELEVENLABS_API_KEY:** Paste key from [elevenlabs.io](https://elevenlabs.io/) → Profile → API Key
+3. **ELEVENLABS_VOICE_ID:** Press Enter for default (Rachel), or paste another Voice ID from [voice library](https://elevenlabs.io/voice-library)
+
+Keys are saved to `.env` (local only, not committed to git).
+
+### Step 4: Enter video topic
+
+When prompted, type your topic (e.g. `how to make money with TikTok`). Press Enter for default "make money with AI".
+
+### Step 5: Wait for the pipeline
+
+The script runs:
+
+1. **Generating script...** – GPT writes content
+2. **Generating voice...** – ElevenLabs generates voiceover
+3. **Generating scenes...** – MoviePy assembles video
+
+Done. Video is in `output/` folder.
 
 ---
 
-## 4. Cấu hình file .env
+## Subsequent runs
 
-### Bước 4.1: Mở file .env
-
-Trong thư mục project có file `.env`. Mở bằng Notepad hoặc VS Code.
-
-### Bước 4.2: Điền API keys
-
-Sửa các dòng sau bằng key thật:
-
-```
-OPENAI_API_KEY=sk-proj-xxxx (thay bằng key OpenAI của bạn)
-ELEVENLABS_API_KEY=xxxx (thay bằng key ElevenLabs của bạn)
-ELEVENLABS_VOICE_ID=21m00Tcm4TlvDq8ikWAM (có thể giữ hoặc đổi voice khác)
-```
-
-Lưu file.
+Just double-click `run.bat` (or `./run.sh`) → enter topic → Enter. API keys are stored in `.env`, no need to re-enter.
 
 ---
 
-## 5. Chạy pipeline
+## Alternative ways to run
 
-### Bước 5.1: Vào thư mục project
-
-```powershell
-cd "d:\dev project\videomakerauto"
-```
-
-### Bước 5.2: Chạy lệnh
-
-**Cách 1 – Dùng topic mặc định ("make money with AI"):**
+### Use setup then call main.py
 
 ```powershell
-python main.py
+.\setup.ps1
+python main.py "your video topic"
 ```
 
-**Cách 2 – Nhập topic của bạn:**
+### Call main.py directly (when .env exists)
 
 ```powershell
-python main.py "cách kiếm tiền từ TikTok"
+python main.py "how to make money with TikTok"
+python main.py   # use default topic
 ```
 
-**Cách 3 – Topic khác:**
-
-```powershell
-python main.py "bí quyết giảm cân nhanh"
-python main.py "học lập trình cho người mới bắt đầu"
-```
-
-### Bước 5.3: Đợi kết quả
-
-Pipeline chạy lần lượt:
-
-1. **Generating script...** – GPT viết nội dung
-2. **Generating voice...** – ElevenLabs tạo giọng đọc
-3. **Generating scenes...** – MoviePy ghép video
-
-Khi xong, dòng cuối sẽ là: `Xong! Video: d:\dev project\videomakerauto\output\xxx.mp4`
-
-### Bước 5.4: Xem video
-
-Mở thư mục `output/`, mở file `.mp4` vừa tạo.
+**Option:** `--no-cache` – disable cache, call APIs every time
 
 ---
 
-## 6. Tùy chọn dòng lệnh
-
-| Tùy chọn        | Ý nghĩa                                      |
-|-----------------|-----------------------------------------------|
-| `--no-cache`    | Tắt cache, gọi lại API mỗi lần (tốn quota hơn) |
-
-**Ví dụ:**
-
-```powershell
-python main.py "chủ đề" --no-cache
-```
-
----
-
-## 7. Cấu trúc project
+## Project structure
 
 ```
 videomakerauto/
-├── main.py              # Chạy pipeline
-├── requirements.txt     # Danh sách thư viện
-├── .env                 # API keys (không commit lên git)
-├── .env.example         # Mẫu .env
-├── README.md            # File này
+├── run.bat          # One-click run (Windows)
+├── run.sh           # One-click run (Mac/Linux)
+├── run.py           # Interactive script
+├── main.py          # Main pipeline
+├── setup.ps1        # Manual setup
+├── .env.example     # .env template
 ├── src/
-│   ├── script_generator.py   # Step 1: GPT viết script
-│   ├── voice_generator.py    # Step 2: ElevenLabs tạo voice
-│   ├── video_generator.py    # Step 3–4: MoviePy ghép video
-│   └── cache.py              # Cache script + voice
-├── output/              # Video ra đây
-└── cache/                # Cache (script, voice) để tái dùng
+│   ├── script_generator.py
+│   ├── voice_generator.py
+│   ├── video_generator.py
+│   └── cache.py
+├── output/          # Video output
+└── cache/           # Cache for script + voice
 ```
 
 ---
 
-## 8. Pipeline hoạt động thế nào
+## Troubleshooting
 
-1. **Topic** → Bạn nhập chủ đề (ví dụ: "cách kiếm tiền từ TikTok").
-2. **Script** → GPT viết nội dung video (hook, nội dung, CTA).
-3. **Voice** → ElevenLabs chuyển script thành file MP3.
-4. **Video** → MoviePy ghép nền đen + text theo script với giọng đọc.
-
-Output: video MP4 dạng TikTok/Shorts (1080x1920), nền đen, text hiển thị theo nội dung script.
-
----
-
-## 9. Lỗi thường gặp
-
-### Lỗi: "OPENAI_API_KEY not found" hoặc "ELEVENLABS_API_KEY not found"
-
-→ Chưa điền API key vào file `.env`, hoặc `.env` không nằm đúng trong thư mục project.
-
-### Lỗi: "Rate limit" hoặc "Quota exceeded"
-
-→ Hết quota API. Chờ hoặc nâng cấp gói OpenAI/ElevenLabs.
-
-### Lỗi liên quan ImageMagick
-
-→ Trên Windows có thể thiếu ImageMagick. Pipeline sẽ tự dùng Pillow thay thế.
-
-### Video không có tiếng hoặc tiếng lạc
-
-→ Kiểm tra file MP3 trong thư mục `output/` hoặc `cache/`. Nếu ElevenLabs lỗi, thử chạy lại với `--no-cache`.
+| Error | Fix |
+|-------|-----|
+| OPENAI_API_KEY / ELEVENLABS_API_KEY not found | Run `run.bat` again and enter keys when prompted. Or create `.env` from `.env.example` and fill in keys. |
+| Rate limit / Quota exceeded | API quota exhausted. Wait or upgrade your plan. |
+| pip install failed | Run `python -m pip install -r requirements.txt` manually. |
+| ImageMagick | May be missing on Windows. Pipeline falls back to Pillow. |
 
 ---
 
-## 10. Chi phí gần đúng
+## Estimated cost
 
-- **OpenAI (GPT-4o-mini):** ~0.01–0.05$ mỗi video
-- **ElevenLabs:** Theo số ký tự (có free tier)
+- **OpenAI (GPT-4o-mini):** ~$0.01–0.05 per video
+- **ElevenLabs:** Per character (free tier available)
 
-Cache giúp giảm gọi API khi dùng lại topic/script tương tự.
+Cache reduces API calls when reusing similar topics.
