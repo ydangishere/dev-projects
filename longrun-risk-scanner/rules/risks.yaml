@@ -1,0 +1,414 @@
+# Long-run Java / Spring Boot risk catalog — editable at runtime.
+# Version: 1.0 — conservative heuristics; findings are candidates until verified.
+
+risks:
+  - id: RISK_01
+    name: Missing null handling in important flow
+    description: Possible dereference or use of nullable values without clear guards in business logic.
+    category: correctness
+    default_severity: medium
+    long_run_impact: Runtime failures, partial flow breaks, inconsistent behavior under edge cases.
+    signals:
+      - chained_calls_without_null_check
+      - method_return_used_without_guard
+      - optional_or_nullable_ignored
+    local_checks:
+      - Check for Objects.requireNonNull, Optional.orElse, explicit null checks nearby.
+      - Check if method is trivial getter or test-only.
+    llm_questions:
+      - Is this path business-critical?
+      - Is the nullable contract documented or enforced?
+    near_fix_templates:
+      - Add explicit null check or Optional handling before use.
+      - Use Objects.requireNonNull with clear message for invariants.
+    long_term_fix_templates:
+      - "Encode nullability in types (Optional, @NonNull API), validation at boundaries."
+      - Use static analysis (NullAway, Checker Framework) in CI.
+    false_positive_notes:
+      - Generated code or test doubles may omit guards intentionally.
+
+  - id: RISK_02
+    name: Overly broad catch
+    description: Catching Exception or Throwable hides specific failure modes.
+    category: error_handling
+    default_severity: medium
+    long_run_impact: Root causes masked, poor diagnosability, unexpected control flow.
+    signals:
+      - catch_exception
+      - catch_throwable
+    local_checks:
+      - If catch rethrows or wraps in domain exception, lower severity.
+      - If only at top-level controller advice, may be acceptable.
+    llm_questions:
+      - Is this catch at a true boundary or in core logic?
+    near_fix_templates:
+      - Catch specific exception types; wrap with domain exception.
+    long_term_fix_templates:
+      - Centralized error mapping; typed error hierarchy; avoid Throwable except at outermost shell.
+    false_positive_notes:
+      - Framework templates or generated catch blocks.
+
+  - id: RISK_03
+    name: Swallowed exception or fake success
+    description: Exceptions ignored, only logged to stderr, or success returned after failure.
+    category: error_handling
+    default_severity: high
+    long_run_impact: Silent corruption, hidden integration failures, production mysteries.
+    signals:
+      - empty_catch
+      - only_printStackTrace
+      - only_logging_in_catch
+      - return_default_after_catch
+    local_checks:
+      - If catch rethrows or uses structured logging with alert, may be OK.
+    llm_questions:
+      - Does the caller distinguish failure from success?
+    near_fix_templates:
+      - Propagate or wrap; never empty catch in business paths.
+    long_term_fix_templates:
+      - Structured errors, idempotent retries, dead-letter queues for async.
+    false_positive_notes:
+      - Test code or known-benign cleanup.
+
+  - id: RISK_04
+    name: Possible infinite loop
+    description: Unbounded loops such as while(true) or for(;;) without obvious exit.
+    category: control_flow
+    default_severity: high
+    long_run_impact: Stuck threads, CPU burn, backlog growth, hung jobs.
+    signals:
+      - while_true
+      - for_infinite
+      - loop_without_break
+    local_checks:
+      - Server loops often need shutdown hook or timeout; confirm exit strategy.
+    llm_questions:
+      - Is there external cancellation or timeout?
+    near_fix_templates:
+      - Add max iterations, watchdog, or blocking queue with timeout.
+    long_term_fix_templates:
+      - Event-driven design, scheduled polling with backoff, health endpoints.
+    false_positive_notes:
+      - Embedded servers or explicit daemon loops with documented shutdown.
+
+  - id: RISK_05
+    name: Retry without limit or proper backoff
+    description: Retries without max attempts, hammering, or no backoff.
+    category: resilience
+    default_severity: high
+    long_run_impact: Retry storms, cascading failures, noisy downstreams.
+    signals:
+      - retry_loop_no_max
+      - recursive_retry
+      - constant_delay_retry
+      - retryable_without_max
+    local_checks:
+      - Look for maxAttempts, ExponentialBackoff, Resilience4j config.
+    llm_questions:
+      - Is the operation idempotent?
+    near_fix_templates:
+      - Cap attempts; add jittered exponential backoff.
+    long_term_fix_templates:
+      - Circuit breaker, bulkhead, idempotent keys, outbox pattern.
+    false_positive_notes:
+      - Client library internal retries with defaults.
+
+  - id: RISK_06
+    name: Missing timeout around external call
+    description: Network, DB, or blocking IO without visible timeout configuration.
+    category: resilience
+    default_severity: high
+    long_run_impact: Thread starvation, stuck requests, slow degradation under load.
+    signals:
+      - http_client_no_timeout
+      - jdbc_call_no_timeout
+      - blocking_call_no_timeout
+    local_checks:
+      - Same file may set RestTemplate/ WebClient / DataSource timeouts globally.
+    llm_questions:
+      - Are defaults inherited from Spring Boot auto-config?
+    near_fix_templates:
+      - Set connect/read timeouts on clients; query timeouts on JDBC.
+    long_term_fix_templates:
+      - Timeouts as first-class config; bulkheads; async boundaries with deadlines.
+    false_positive_notes:
+      - Timeouts set in configuration classes not in same file.
+
+  - id: RISK_07
+    name: Thread.sleep as core control logic
+    description: Sleep used to wait or poll in service logic.
+    category: concurrency
+    default_severity: medium
+    long_run_impact: Blocks threads, flaky timing, poor scale-out behavior.
+    signals:
+      - thread_sleep_in_service
+    local_checks:
+      - "Test code (@Test) may be acceptable."
+    llm_questions:
+      - Could this be replaced with ScheduledExecutor, LockSupport, or events?
+    near_fix_templates:
+      - Replace with await with timeout or scheduled task.
+    long_term_fix_templates:
+      - Event-driven coordination; backpressure; dedicated worker pools.
+    false_positive_notes:
+      - Throttling in CLI tools or migration scripts.
+
+  - id: RISK_08
+    name: Async result or error not handled
+    description: CompletableFuture or async execution without joining, handling, or exception callback.
+    category: async
+    default_severity: high
+    long_run_impact: Lost failures, dropped work, incomplete business flows.
+    signals:
+      - completable_future_orphan
+      - async_fire_forget
+      - executor_execute_no_tracking
+    local_checks:
+      - whenComplete, exceptionally, or block at boundary lowers risk.
+    llm_questions:
+      - Is there a global exception handler for async errors?
+    near_fix_templates:
+      - Chain whenComplete/exceptionally; block at safe boundary with timeout.
+    long_term_fix_templates:
+      - Structured async tracing; CompletableFuture tracing with Micrometer.
+    false_positive_notes:
+      - Fire-and-forget intentional with separate monitoring.
+
+  - id: RISK_09
+    name: Shared mutable static state
+    description: Static fields holding mutable collections or mutable objects used as shared state.
+    category: concurrency
+    default_severity: high
+    long_run_impact: Cross-request leakage, races, nondeterministic bugs.
+    signals:
+      - static_mutable_collection
+      - static_mutable_object
+    local_checks:
+      - If static final immutable (Collections.unmodifiable), lower risk.
+    llm_questions:
+      - Is access synchronized or confined to single thread?
+    near_fix_templates:
+      - Remove static; use request/session scoped beans; use ConcurrentHashMap.
+    long_term_fix_templates:
+      - Dependency injection; no global mutable singletons in services.
+    false_positive_notes:
+      - Constants and enum singletons.
+
+  - id: RISK_10
+    name: Non-thread-safe collection in concurrent context
+    description: HashMap/ArrayList mutated in service, scheduled, or async code.
+    category: concurrency
+    default_severity: high
+    long_run_impact: Data races, corrupted maps/lists, rare production crashes.
+    signals:
+      - hashmap_in_async_class
+      - arraylist_in_scheduled
+    local_checks:
+      - Local variables only inside synchronized block — harder to detect locally.
+    llm_questions:
+      - Is the collection confined to one thread?
+    near_fix_templates:
+      - Use ConcurrentHashMap, CopyOnWriteArrayList, or synchronize access.
+    long_term_fix_templates:
+      - Immutable data structures; actors; message passing.
+    false_positive_notes:
+      - Collections used only in constructor or single-threaded init.
+
+  - id: RISK_11
+    name: Collection modified during iteration
+    description: Structural modification while iterating (e.g. remove in enhanced for).
+    category: correctness
+    default_severity: medium
+    long_run_impact: ConcurrentModificationException, skipped elements, logic bugs.
+    signals:
+      - remove_in_foreach
+      - add_in_foreach
+    local_checks:
+      - Iterator.remove() is safe; enhanced for with remove is not.
+    llm_questions:
+      - Could this be iterator.remove() or removeIf?
+    near_fix_templates:
+      - Collect removals to separate list; use removeIf; use Iterator.
+    long_term_fix_templates:
+      - Immutable snapshots; streams with careful collection choice.
+    false_positive_notes:
+      - Concurrent collections with weak consistency iteration.
+
+  - id: RISK_12
+    name: Resource leak
+    description: Streams, connections, or executors not closed or shut down.
+    category: resources
+    default_severity: high
+    long_run_impact: FD exhaustion, memory pressure, pool starvation.
+    signals:
+      - stream_not_try_with_resources
+      - connection_not_closed
+    local_checks:
+      - try-with-resources or use-with-resources pattern present.
+    llm_questions:
+      - Is resource lifecycle managed by framework (e.g. JPA)?
+    near_fix_templates:
+      - try-with-resources; use try/finally with explicit close.
+    long_term_fix_templates:
+      - Pooling with metrics; leak detection in staging.
+    false_positive_notes:
+      - Resources closed in framework callbacks.
+
+  - id: RISK_13
+    name: Transaction boundary / partial update risk
+    description: Multiple state changes without clear transactional boundary.
+    category: data_integrity
+    default_severity: high
+    long_run_impact: Inconsistent persisted state; partial business completion.
+    signals:
+      - multi_save_no_transaction
+      - nested_service_calls_no_tx
+    local_checks:
+      - "@Transactional on entry method; propagation REQUIRED."
+    llm_questions:
+      - Should reads be repeatable or serializable?
+    near_fix_templates:
+      - "Single @Transactional boundary; saga/outbox for cross-service."
+    long_term_fix_templates:
+      - Domain events; compensating transactions; idempotent workers.
+    false_positive_notes:
+      - Read-only flows or single-repository updates.
+
+  - id: RISK_14
+    name: Missing idempotency in retry-sensitive flow
+    description: Creation, payment, or messaging without duplicate protection clues.
+    category: data_integrity
+    default_severity: high
+    long_run_impact: Duplicates, double charges, duplicate orders.
+    signals:
+      - retry_without_idempotency_key
+      - external_post_without_dedup
+    local_checks:
+      - Idempotency-Key header, unique business key, database unique constraint.
+    llm_questions:
+      - Is downstream naturally idempotent?
+    near_fix_templates:
+      - Add idempotency keys and server-side dedup store.
+    long_term_fix_templates:
+      - Event sourcing; outbox; exactly-once semantics where required.
+    false_positive_notes:
+      - Read-only GET retries.
+
+  - id: RISK_15
+    name: Lost update / unsafe concurrent write
+    description: Read-modify-write without versioning or locking clues.
+    category: concurrency
+    default_severity: medium
+    long_run_impact: Silent overwrites, lost business updates.
+    signals:
+      - read_modify_write_pattern
+      - no_version_field
+    local_checks:
+      - "@Version, optimistic locking, SELECT FOR UPDATE."
+    near_fix_templates:
+      - "Add version column and JPA @Version; or explicit locking."
+    long_term_fix_templates:
+      - Compare-and-swap at DB; conflict resolution policies.
+    false_positive_notes:
+      - Single-writer queues or naturally exclusive resources.
+
+  - id: RISK_16
+    name: Weak input validation
+    description: External input used in critical paths with weak validation clues.
+    category: security_reliability
+    default_severity: medium
+    long_run_impact: Bad data propagation, unstable behavior, injection vectors.
+    signals:
+      - request_param_direct_use
+      - map_get_without_validation
+    local_checks:
+      - Bean Validation annotations, manual guards, sanitization.
+    llm_questions:
+      - Is input from trusted internal service only?
+    near_fix_templates:
+      - "Validate with @Valid, custom validators, size limits."
+    long_term_fix_templates:
+      - API contracts (OpenAPI), schema validation at edge.
+    false_positive_notes:
+      - Internal DTOs already validated upstream.
+
+  - id: RISK_17
+    name: Load too much data into memory
+    description: Full table or large list materialization without pagination clues.
+    category: scale
+    default_severity: high
+    long_run_impact: OOM risk, GC pressure, latency spikes.
+    signals:
+      - find_all_call
+      - large_list_stream_to_list
+    local_checks:
+      - Pageable, Stream without collect, batch iterators.
+    llm_questions:
+      - Is dataset bounded in production?
+    near_fix_templates:
+      - Pagination, keyset pagination, batch processing.
+    long_term_fix_templates:
+      - CQRS read models; streaming export; cursor APIs.
+    false_positive_notes:
+      - Small reference tables or admin-only tools.
+
+  - id: RISK_18
+    name: N+1 query / repeated call pattern
+    description: Repository or remote calls inside loops.
+    category: performance
+    default_severity: high
+    long_run_impact: Quadratic load on DB/services; collapse at scale.
+    signals:
+      - repo_call_in_loop
+      - http_call_in_loop
+    local_checks:
+      - "Batch methods, JOIN FETCH, @EntityGraph in same method."
+    llm_questions:
+      - Is the collection size bounded small?
+    near_fix_templates:
+      - Batch fetch, join, or single query with IN clause.
+    long_term_fix_templates:
+      - Data loader pattern; caching with coherence strategy.
+    false_positive_notes:
+      - Fixed tiny iterations (e.g. 2–3) with comment.
+
+  - id: RISK_19
+    name: Missing observability in critical path
+    description: Retry, async, or external integration without logging/metrics clues.
+    category: operability
+    default_severity: medium
+    long_run_impact: Untraceable failures; blind spots in production.
+    signals:
+      - risky_path_no_log
+      - catch_without_metrics
+    local_checks:
+      - Structured logging, Micrometer counters, tracing spans.
+    llm_questions:
+      - Is tracing auto-instrumented for this stack?
+    near_fix_templates:
+      - Add log at outcome; metrics for failures and latency.
+    long_term_fix_templates:
+      - SLOs, RED metrics, distributed tracing as default.
+    false_positive_notes:
+      - Thin delegating methods where logging exists in callee.
+
+  - id: RISK_20
+    name: Unbounded queue / cache / pool growth
+    description: Unbounded queues, caches, or collections that grow with load.
+    category: scale
+    default_severity: high
+    long_run_impact: Memory growth, latency tail, service degradation.
+    signals:
+      - unbounded_blocking_queue
+      - unbounded_cache
+      - list_add_in_loop_unbounded
+    local_checks:
+      - Max capacity, TTL, Caffeine maximumSize.
+    llm_questions:
+      - Is there backpressure or drop policy?
+    near_fix_templates:
+      - Bound queue; eviction; drop-oldest or caller-runs policy.
+    long_term_fix_templates:
+      - Reactive backpressure; rate limiting; autoscaling signals.
+    false_positive_notes:
+      - Fixed-size worker queues with documented bounds elsewhere.

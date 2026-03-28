@@ -44,5 +44,8 @@ This monorepo collects several backend and AI-related projects from the `ydangis
 - **AI Video Maker Auto** (`videomakerauto`): Python pipeline to create videos from a topic. GPT → ElevenLabs → MoviePy. Pull, run `run.bat` (Windows) or `run.sh` (Mac/Linux), enter API keys + topic, done. No manual install.  
   - Monorepo folder: [`videomakerauto`](https://github.com/ydangishere/dev-projects/tree/main/videomakerauto)
 
+- **Long-run Risk Scanner** (`longrun-risk-scanner`): Local-first Python CLI + Tkinter GUI for long-term Java/Spring Boot risk patterns (SQLite, optional OpenAI-compatible verify). Run `CHAY_SCAN.bat` / `CHAY_SCAN.sh` or `python app/main.py gui`. Copy `.env.example` → `.env` for API keys (never commit `.env`).  
+  - Monorepo folder: [`longrun-risk-scanner`](https://github.com/ydangishere/dev-projects/tree/main/longrun-risk-scanner)
+
 Each subfolder in this repo corresponds to one of the original projects, contains its own `README.md`, and links back to the source repository.
 

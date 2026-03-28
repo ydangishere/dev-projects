@@ -1,0 +1,31 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtualenv
+.venv/
+venv/
+env/
+
+# Secrets / local config
+.env
+.env.local
+*.pem
+
+# Scanner outputs (keep folder, ignore generated artifacts)
+scans/*.db
+scans/*.json
+scans/*.md
+!scans/.gitkeep
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+*.lnk
