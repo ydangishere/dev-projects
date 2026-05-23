@@ -1,0 +1,13 @@
+services:
+  api:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-whsec_test_secret}
+      DATABASE_URL: sqlite:///./data/stripe_events.db
+    volumes:
+      - stripe_data:/app/data
+
+volumes:
+  stripe_data:

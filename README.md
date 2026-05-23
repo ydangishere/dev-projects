@@ -50,5 +50,8 @@ This monorepo collects several backend and AI-related projects from the `ydangis
 - **Assessment Billing Demo** (`assessment-billing-demo`): Full stack portfolio app with FastAPI backend and Vue 3 + TypeScript SPA for user assessments and billing usage tracking. Includes Docker Compose and pytest API tests.  
   - Monorepo folder: [`assessment-billing-demo`](https://github.com/ydangishere/dev-projects/tree/main/assessment-billing-demo)
 
+- **Stripe Webhook Demo** (`stripe-webhook-demo`): FastAPI microservice for Stripe webhook signature verification, idempotent event processing, and audit logging. Includes Docker Compose, pytest, and Stripe CLI testing guide.  
+  - Monorepo folder: [`stripe-webhook-demo`](https://github.com/ydangishere/dev-projects/tree/main/stripe-webhook-demo)
+
 Each subfolder in this repo corresponds to one of the original projects, contains its own `README.md`, and links back to the source repository.
 
