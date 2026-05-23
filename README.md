@@ -47,5 +47,8 @@ This monorepo collects several backend and AI-related projects from the `ydangis
 - **Long-run Risk Scanner** (`longrun-risk-scanner`): Local-first Python CLI + Tkinter GUI for long-term Java/Spring Boot risk patterns (SQLite, optional OpenAI-compatible verify). Run `CHAY_SCAN.bat` / `CHAY_SCAN.sh` or `python app/main.py gui`. Copy `.env.example` → `.env` for API keys (never commit `.env`).  
   - Monorepo folder: [`longrun-risk-scanner`](https://github.com/ydangishere/dev-projects/tree/main/longrun-risk-scanner)
 
+- **Assessment Billing Demo** (`assessment-billing-demo`): Full stack portfolio app with FastAPI backend and Vue 3 + TypeScript SPA for user assessments and billing usage tracking. Includes Docker Compose and pytest API tests.  
+  - Monorepo folder: [`assessment-billing-demo`](https://github.com/ydangishere/dev-projects/tree/main/assessment-billing-demo)
+
 Each subfolder in this repo corresponds to one of the original projects, contains its own `README.md`, and links back to the source repository.
 

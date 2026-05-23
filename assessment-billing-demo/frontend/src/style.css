@@ -1,0 +1,169 @@
+:root {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: #102a43;
+  background: #f5f7fb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+#app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+header {
+  margin-bottom: 24px;
+}
+
+header h1 {
+  margin: 0 0 8px;
+  font-size: 1.8rem;
+}
+
+header p {
+  margin: 0;
+  color: #486581;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #d9e2ec;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(16, 42, 67, 0.06);
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 1.1rem;
+}
+
+form {
+  display: grid;
+  gap: 12px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #bcccdc;
+  border-radius: 8px;
+}
+
+button {
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: #0b69a3;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button.secondary {
+  background: #829ab1;
+}
+
+button.danger {
+  background: #ba2525;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #e4e7eb;
+  text-align: left;
+  font-size: 0.92rem;
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.status-pill.draft {
+  background: #fff3c4;
+  color: #8d6b00;
+}
+
+.status-pill.submitted {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-pill.reviewed {
+  background: #d3f9d8;
+  color: #2b8a3e;
+}
+
+.billing-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.metric {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: #f0f4f8;
+  border-radius: 8px;
+}
+
+.error {
+  color: #ba2525;
+  font-size: 0.9rem;
+}
+
+.empty {
+  color: #627d98;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
