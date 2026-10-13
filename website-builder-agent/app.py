@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 import engine as e
 from services import generate_concept, send_email, send_chat
 
-app=FastAPI(title='VietPay Website Agent — local MVP',docs_url='/api')
+app=FastAPI(title='Website Builder Agent — local MVP',docs_url='/api')
 app.mount('/static',StaticFiles(directory=Path(__file__).parent/'static'),name='static')
 templates=Jinja2Templates(directory=Path(__file__).parent/'templates')
 
