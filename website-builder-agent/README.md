@@ -11,6 +11,11 @@ This is a **local workflow control center**, not a fully integrated autonomous p
 
 Linux/macOS: `bash start.sh`.
 
+## Figma design reference
+
+- **VietPay website project — frame `all` (node `2063:71`):** [Open the complete Step 1–7 design reference in Figma](https://www.figma.com/design/pWBOixkuMBfbJrkCQphPaJ/Vietpay-website-project--Copy-?node-id=2063-71&t=gwBU9WsaL2EPO8i6-4).
+- This file is the **visual reference** for the original brand/design system, concepts, scaffold, desktop, tablet, mobile, and CMS mockup. The agent's nine-stage workflow adds the requirements review and review/QA/deployment gates; Figma content is not automatically synchronized in this MVP.
+
 ## Nine-stage process
 1. Register approved `design_system` artifact (from Figma/Claude or elsewhere).
 2. Register `requirements` source URL, add ALL reviewers, open a review round, send invite manually, collect explicit decisions. Optional one-by-one reminders capped at 3 across channels.
