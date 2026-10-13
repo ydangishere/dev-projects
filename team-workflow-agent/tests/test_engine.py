@@ -39,7 +39,8 @@ class TeamWorkflowTests(unittest.TestCase):
   e.technical_review(self.id,'Dev',False,'Contract agreed')
   with e.db() as c:self.assertEqual(e._row(c,self.id)['status'],'In Development')
  def test_reminders_three(self):
-  for _ in range(5):e.schedule_reminders(today='2026-12-01')
+  for day in ['2026-12-01','2026-12-01','2026-12-02','2026-12-02','2026-12-03','2026-12-04']:
+   e.schedule_reminders(today=day)
   with e.db() as c:
    count=c.execute('SELECT COUNT(*) FROM reminders WHERE module_id=?',(self.id,)).fetchone()[0]
    self.assertEqual(count,3)

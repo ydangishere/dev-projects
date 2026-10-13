@@ -1,7 +1,7 @@
 """Persistent human-governed workflow. SQLite is authoritative in local mode."""
 import os, sqlite3, json
 from pathlib import Path
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date as Date
 from contextlib import contextmanager
 
 BASE=Path(__file__).resolve().parent
@@ -42,7 +42,8 @@ def notify(c,id,recipient,msg):
  if recipient:
   c.execute('INSERT INTO outbox(module_id,recipient,channel,message,created_at) VALUES(?,?,?,?,?)',(id,recipient,'email',msg,now()))
  if os.getenv('GOOGLE_CHAT_WEBHOOK'):
-  c.execute('INSERT INTO outbox(module_id,recipient,channel,message,created_at) VALUES(?,?,?,?,?)',(id,'workspace','chat',msg,now()))
+  if not c.execute("SELECT 1 FROM outbox WHERE module_id=? AND channel='chat' AND message=? AND status='pending'",(id,msg)).fetchone():
+   c.execute('INSERT INTO outbox(module_id,recipient,channel,message,created_at) VALUES(?,?,?,?,?)',(id,'workspace','chat',msg,now()))
 
 def create(project,module,owner,owner_email,designer_email,dev_email,priority,deadline,requirements_url):
  if not all([project.strip(),module.strip(),owner.strip(),owner_email.strip(),priority.strip(),deadline.strip(),requirements_url.strip()]):raise ValueError('Project/module/owner/email/priority/deadline/requirements link required')
@@ -120,8 +121,11 @@ def schedule_reminders(today=None):
    if not responsible:continue
    count=c.execute('SELECT COUNT(*) FROM reminders WHERE module_id=? AND recipient=? AND stage=?',(m['id'],responsible,m['status'])).fetchone()[0]
    if count>=3:continue
+   last=c.execute('SELECT created_at FROM reminders WHERE module_id=? AND recipient=? AND stage=? ORDER BY id DESC LIMIT 1',(m['id'],responsible,m['status'])).fetchone()
+   interval=max(1,int(os.getenv('REMINDER_INTERVAL_DAYS','1')))
+   if last and (Date.fromisoformat(today)-Date.fromisoformat(last['created_at'][:10])).days<interval:continue
    try:
-    c.execute('INSERT INTO reminders(module_id,recipient,stage,ordinal,created_at) VALUES(?,?,?,?,?)',(m['id'],responsible,m['status'],count+1,now()))
+    c.execute('INSERT INTO reminders(module_id,recipient,stage,ordinal,created_at) VALUES(?,?,?,?,?)',(m['id'],responsible,m['status'],count+1,today+'T00:00:00+00:00'))
     notify(c,m['id'],responsible,f'Reminder {count+1}/3: {m["project"]}/{m["module"]} is overdue since {m["deadline"]}; current status {m["status"]}. Update tracker or ask PM to reschedule.')
     record(c,m['id'],'scheduler','reminder',f'{responsible} #{count+1}/3');made+=1
    except sqlite3.IntegrityError:pass

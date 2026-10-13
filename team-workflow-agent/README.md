@@ -36,7 +36,7 @@ All decisions, stage transitions, change logs and notices are persisted and audi
 
 **AI roles:** Requirements Agent checks DoR consistency; Design Review Agent compares design text/context to requirements; Technical Review Agent identifies development dependencies. They share records through one deterministic **Orchestrator** and produce advisory reports only. They do not replace PM approvals or human design decisions. This is a **multi-specialist AI workflow**, not independent autonomous agents with unsupervised permission to modify tools.
 
-**Reminders:** Click `Check deadlines & queue reminders`, then `Send queued Gmail / Google Chat`. At most 3 reminders per person per status. To automate daily, use Windows Task Scheduler to run `python app.py reminders` with working directory here. Automatic outbound sending is **off** unless `ENABLE_SCHEDULED_DELIVERY=1` is explicitly set. Outbox failed sends may be retried up to three times.
+**Reminders:** Click `Check deadlines & queue reminders`, then `Send queued Gmail / Google Chat`. At most 3 reminders per person per status, spaced by at least `REMINDER_INTERVAL_DAYS` (default: 1 day). To automate daily, use Windows Task Scheduler to run `python app.py reminders` with working directory here. Automatic outbound sending is **off** unless `ENABLE_SCHEDULED_DELIVERY=1` is explicitly set. Outbox failed sends may be retried up to three times.
 
 **Handoff to other agents:** `/modules/{id}/handoff.json` returns approved requirements, Figma link, change log and AI reports for an external Website Builder Agent/Codex workflow. It only becomes available after named design handoff approval. This is a read-only interoperability contract; automatic cross-agent job triggering isn't implemented.
 
