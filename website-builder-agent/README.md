@@ -4,7 +4,7 @@ This is a **local workflow control center**, not a fully integrated autonomous p
 
 ## Start on Windows 11
 1. Install Python 3.11+ from python.org (`py -3 --version`).
-2. Clone this repository. In PowerShell: `cd dev-projects\vietpay-agent` then `powershell -ExecutionPolicy Bypass -File .\start.ps1`.
+2. Clone this repository. In PowerShell: `cd dev-projects\website-builder-agent` then `powershell -ExecutionPolicy Bypass -File .\start.ps1`.
 3. Open http://127.0.0.1:8000. Stop with Ctrl+C.
 4. (Optional) Edit `.env` to supply model API keys, SMTP credentials, Google Chat incoming webhook, Figma link, or approved document URL. **Do not share .env or API keys.**
 5. (Optional) Install and authenticate Codex CLI separately; it must be on PATH for the Codex Execute control.
