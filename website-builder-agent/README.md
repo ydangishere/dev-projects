@@ -1,4 +1,4 @@
-# VietPay Website Agent — working local MVP
+# Website Builder Agent — working local MVP
 
 This is a **local workflow control center**, not a fully integrated autonomous production agent. It tracks requirements, concepts, reviews, approvals and artifacts across nine stages. It can optionally send review emails via SMTP, post announcements to a Google Chat space webhook, call OpenAI/Anthropic model APIs, and run an installed Codex CLI on local source files.
 
