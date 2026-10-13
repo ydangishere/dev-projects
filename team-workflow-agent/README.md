@@ -2,6 +2,11 @@
 
 A **human-governed process automation backbone** for BA / PM / Designer / Developer, built from this [Figma workflow (node 218:30)](https://www.figma.com/design/eVmB2S0UTg8IP2yllKNH4O/temp?node-id=218-30&t=6eljU6Qq20O89JYw-4). Designed for teams experiencing unclear ownership, missed handoffs, requirement drift and schedule slips.
 
+## Figma workflow reference
+
+- **Original workflow diagram:** [Automation workflow — Figma node `218:30`](https://www.figma.com/design/eVmB2S0UTg8IP2yllKNH4O/temp?node-id=218-30&t=6eljU6Qq20O89JYw-4)
+- This frame documents the collaboration and handoff process among **BA / PM / Designer / Developer**. Use it as the reference when changing workflow stages, ownership, notifications and approval gates.
+
 ## Quick start — Windows 11
 
 ```powershell
