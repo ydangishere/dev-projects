@@ -1,4 +1,4 @@
-"""Persistent workflow rules for VietPay Website Agent.
+"""Persistent workflow rules for Website Builder Agent.
 Every external write requires explicit user action. No inferred approvals.
 """
 import os, sqlite3, json, datetime as dt, subprocess, shutil
