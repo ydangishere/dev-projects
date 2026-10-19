@@ -4,12 +4,7 @@ React + TypeScript frontend, NestJS backend, OpenAI Realtime API over WebRTC.
 
 ## Conversation flow
 
-```mermaid
-flowchart LR
-    A["User: start and allow mic"] --> B["React: request session"] --> C["NestJS: get client secret from OpenAI"] --> D["React ↔ OpenAI: WebRTC audio and events"] --> E["User: hear reply, view transcript, mute or stop"]
-```
-
-NestJS uses `OPENAI_API_KEY` only for session setup. Live audio and events travel directly between the browser and OpenAI.
+End-to-end voice flow (conceptual): mic audio → streaming STT → LLM → streaming TTS → voice output; server VAD handles turn detection/barge-in, and WebRTC carries the session.
 
 ## Requirements
 - Node.js 20+
