@@ -5,34 +5,11 @@ React + TypeScript frontend, NestJS backend, OpenAI Realtime API over WebRTC.
 ## Conversation flow
 
 ```mermaid
-sequenceDiagram
-    actor User
-    participant Browser as React app (browser)
-    participant Backend as NestJS backend
-    participant OpenAI as OpenAI Realtime API
-
-    User->>Browser: Start conversation
-    Browser->>Browser: Request microphone access
-    Browser->>Backend: POST /api/session (via Vite proxy)
-    Backend->>OpenAI: POST /v1/realtime/client_secrets (server API key)
-    OpenAI-->>Backend: Short-lived client secret
-    Backend-->>Browser: Client secret
-    Browser->>Browser: Create peer connection, audio track, and data channel
-    Browser->>OpenAI: POST /v1/realtime/calls (SDP offer, client secret)
-    OpenAI-->>Browser: SDP answer
-
-    loop Live conversation
-        Browser->>OpenAI: Microphone audio over WebRTC
-        OpenAI-->>Browser: Assistant audio over WebRTC
-        OpenAI-->>Browser: Data channel events (VAD, transcripts, responses, errors)
-        Browser-->>User: Play audio and show status/transcripts when available
-    end
-
-    User->>Browser: Mute/unmute or stop
-    Browser->>Browser: Toggle mic track or close connection and stop microphone
+flowchart LR
+    A["User: start and allow mic"] --> B["React: request session"] --> C["NestJS: get client secret from OpenAI"] --> D["React ↔ OpenAI: WebRTC audio and events"] --> E["User: hear reply, view transcript, mute or stop"]
 ```
 
-The backend uses `OPENAI_API_KEY` only to create the session secret. After the SDP handshake, audio and Realtime events travel directly between the browser and OpenAI; the backend does not relay the conversation.
+NestJS uses `OPENAI_API_KEY` only for session setup. Live audio and events travel directly between the browser and OpenAI.
 
 ## Requirements
 - Node.js 20+
