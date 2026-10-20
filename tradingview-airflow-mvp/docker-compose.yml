@@ -1,0 +1,32 @@
+services:
+  airflow:
+    image: apache/airflow:2.10.5-python3.11
+    command: standalone
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'false'
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      SHARED_DB: /opt/shared/signals.db
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./config:/opt/config:ro
+      - shared_data:/opt/shared
+      - airflow_data:/opt/airflow
+    ports:
+      - '127.0.0.1:8080:8080'
+    restart: unless-stopped
+  receiver:
+    build: ./app
+    environment:
+      SHARED_DB: /data/signals.db
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET:?Set WEBHOOK_SECRET in .env}
+    volumes:
+      - shared_data:/data
+    ports:
+      - '127.0.0.1:8000:8000'
+    restart: unless-stopped
+volumes:
+  shared_data:
+  airflow_data:
