@@ -1,0 +1,25 @@
+{
+  "alert_matching": {
+    "enabled": false,
+    "allowed_alert_ids": [],
+    "window_hours": 4,
+    "require_same_symbol": true,
+    "require_same_side": true,
+    "notes": "PLACEHOLDER: configure matching criteria later."
+  },
+  "ai_research": {
+    "enabled": false,
+    "provider": null,
+    "skill": null,
+    "sources": [],
+    "decision_criteria": null
+  },
+  "risk_check": {
+    "enabled": false,
+    "rules": null
+  },
+  "execution": {
+    "enabled": false,
+    "notes": "Locked: no exchange connection or real orders."
+  }
+}
