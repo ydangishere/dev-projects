@@ -19,7 +19,7 @@ source = spark.readStream.format("kafka").option("kafka.bootstrap.servers", boot
 features = (source.select(from_json(col("value").cast("string"), schema).alias("p"))
     .select("p.*").filter(col("event_id").isNotNull())
     .withColumn("large_amount", col("amount") >= lit(5000000)))
-out = features.selectExpr("CAST(event_id AS STRING) AS key").join(features.select("event_id",to_json(struct("*")).alias("value")), col("key")==col("event_id")).selectExpr("CAST(key AS STRING) key", "CAST(value AS STRING) value")
+out = features.select(col("event_id").cast("string").alias("key"), to_json(struct("*")).alias("value"))
 query = (out.writeStream.format("kafka").option("kafka.bootstrap.servers", bootstrap)
     .option("topic", "payment.features").option("checkpointLocation", "/tmp/spark-checkpoints/payment-features")
     .outputMode("append").start())
