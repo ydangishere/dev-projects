@@ -2,7 +2,34 @@
 
 **Portfolio demo only.** No real money movement, bank integration, or real VietPay data. This project does **not** demonstrate 100,000 concurrent users in production.
 
-## Architecture
+## Architecture flow (as shown in the design)
+
+```mermaid
+flowchart TD
+    U["100.000 VietPay App Users"] --> LB["Load Balancer (cân bằng tải)"]
+    LB --> P1["Payment 1"]
+    LB --> P2["Payment 2"]
+    LB --> P3["Payment 3"]
+    P1 --> CORE["Payment Core + Database<br/>Chống giao dịch trùng, lưu trạng thái, kết nối ngân hàng"]
+    P2 --> CORE
+    P3 --> CORE
+    CORE --> APP["Trả kết quả App"]
+    CORE --> K["Kafka<br/>Event streaming"]
+    K --> SP["Spark<br/>Xử lý dữ liệu giao dịch lớn"]
+    K --> R["Ray<br/>Phân phối tác vụ AI/Python"]
+    SP --> REPORT["Fraud Analytics & Reporting<br/>Phát hiện gian lận, báo cáo doanh thu, cảnh báo"]
+    R --> REPORT
+    classDef users fill:#07152c,color:#fff,stroke:#07152c
+    classDef done fill:#063d2b,color:#fff,stroke:#063d2b
+    classDef stream fill:#3c2805,color:#fff,stroke:#3c2805
+    class U users
+    class APP done
+    class K stream
+```
+
+> This diagram reproduces the requested **conceptual architecture**. The MVP's implemented analytics path is sequential: Kafka payment.events → Spark → Kafka payment.features → Ray → Kafka payment.risk. Spark and Ray are not independent consumers of the same payment.events topic in this demo. The payment gateway/bank connection and 100,000 concurrent users are not implemented.
+
+## Implementation architecture
 
 ```text
 Client -> FastAPI Payment Simulator -> SQLite (idempotent transaction + outbox)
