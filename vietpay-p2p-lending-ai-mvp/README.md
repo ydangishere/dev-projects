@@ -31,9 +31,10 @@ curl -X POST http://localhost:8080/deals -H "Content-Type: application/json" -d 
 curl -X POST http://localhost:8080/applications -H "Content-Type: application/json" -d '{"dealId":1,"borrowerAlias":"demo-user"}'
 curl -X POST http://localhost:8080/applications/1/verify
 curl -X POST http://localhost:8080/applications/1/analyze
-curl -X POST http://localhost:8080/applications/1/approve
+curl -X POST http://localhost:8080/applications/1/approve -H "X-Demo-Reviewer: approved"
 curl -X POST http://localhost:8080/applications/1/sign
 curl -X POST http://localhost:8080/applications/1/disburse
+curl -X POST http://localhost:8080/applications/1/monitor
 curl http://localhost:8080/applications/1
 ```
 
