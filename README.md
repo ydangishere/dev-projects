@@ -1,5 +1,33 @@
 ## Dev Projects
 
+## Solution Architecture Portfolio (implementation-backed case studies)
+
+The following links show **Solution Architecture Reviews** added to existing project READMEs. Each review distinguishes the implemented flow from architecture decisions, security/performance/cost trade-offs, measurable quality checks and production hardening still required. Architecture documentation is **not evidence of production deployment** or client-delivered outcomes.
+
+| Architecture focus | Project | Evidence and limitation |
+| --- | --- | --- |
+| Human-governed AI orchestration | [Team Workflow Agent](./team-workflow-agent/README.md#solution-architecture-review-implementation-backed) | Approval gates, specialist advisory prompts, Figma context retrieval, audit records; local-only MVP |
+| AI coding-agent enablement | [Website Builder Agent](./website-builder-agent/README.md#solution-architecture-review-implementation-backed) | GPT/Claude concepts, opt-in Codex CLI, nine-stage reviews; no autonomous production publish |
+| AI-assisted code review | [Long-run Risk Scanner](./longrun-risk-scanner/README.md#solution-architecture-review-implementation-backed) | Java risk rules, bounded source-context retrieval, optional LLM verification; not vector RAG |
+| Real-time model integration | [Voice AI MVP](./voice-ai-mvp/README.md#solution-architecture-review-implementation-backed) | Ephemeral Realtime credential + browser WebRTC; live end-to-end test pending |
+| Governed decision-support simulation | [VietPay P2P Lending AI MVP](./vietpay-p2p-lending-ai-mvp/README.md#solution-architecture-review-implementation-backed) | Spring Boot, Kafka, Spark, Ray, LangGraph; mock evidence, no credit decision |
+| Stream processing architecture | [VietPay Payment Streaming MVP](./vietpay-payment-streaming-mvp/README.md#solution-architecture-review-implementation-backed) | Transaction outbox → Kafka → Spark → Ray; simulator, not production bank integration |
+| Distributed service design | [Microservices](./microservices/README.md#solution-architecture-review-implementation-backed) | Authentication, REST, Kafka, Redis, Elasticsearch, CI workflows |
+| Workflow orchestration | [TradingView Airflow MVP](./tradingview-airflow-mvp/README.md#solution-architecture-review-implementation-backed) | Secure webhook and two-alert matching scaffold; AI research/risk/report not implemented |
+| Transactional integrity | [Payment Transaction API](./payment-transaction-api/README.md#solution-architecture-review-implementation-backed) | Idempotency-key contract and PostgreSQL transactional workflow |
+| SaaS webhook integration | [Stripe Webhook Demo](./stripe-webhook-demo/README.md#solution-architecture-review-implementation-backed) | Signature check, event-ID deduplication, local audit/test flow |
+
+**RAG-style flows (single horizontal line each):**
+
+- **Source-code context retrieval, Long-run Risk Scanner:** `Risk finding → Nearby Java code + symbol references → Bounded context pack → Optional LLM review → Reconciled finding`.
+- **Read-only Figma context, Team Workflow Agent:** `Requirements + change log → Optional Figma text fetch → Specialist LLM review → Advisory report → Human approval`.
+
+These are **non-vector retrieval-augmented context patterns**. No dedicated end-to-end vector database RAG system (embeddings → vector search → reranking → grounded answer) is currently implemented in this monorepo. Other projects should not be represented as RAG deployments.
+
+### How to present the work in a solution-architect interview
+
+Explain **the business problem → why this architecture → what code runs today → security and cost trade-offs → how you would validate at production scale**. Use repository source and tests as implementation evidence and clearly label simulations, untested integrations and future designs. The portfolio alone does not verify customer workshops, live production delivery, cloud costs or operational service levels.
+
 This monorepo collects several backend and AI-related projects from the `ydangishere` GitHub account.
 
 ### Included sub-projects
