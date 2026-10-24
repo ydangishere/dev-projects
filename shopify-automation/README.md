@@ -48,3 +48,22 @@ Full steps: see **WEBHOOK-SETUP.md**.
 ## License
 
 ISC
+
+---
+
+## Solution Architecture Review (implementation-backed)
+
+**Business problem:** Synchronize Shopify order events into a separate operational database while verifying inbound webhook authenticity.
+
+**Implemented flow (one line):** Shopify orders/create webhook → Node.js/Express HMAC check → Order parsing → Supabase/PostgreSQL write → Orders API/HTML viewer.
+
+**Architecture decisions**
+- **Trust boundary:** Verify the incoming message authentication code before accepting external order state. Never use a public shared database key as an unrestricted privileged credential.
+- **Event delivery:** Shopify can retry; use an event/order identifier, unique constraints and idempotent upserts for exactly-once *effects*, not assumptions about exactly-once message delivery.
+- **Consistency:** Orders can arrive late or out of order, so a production sync should reconcile periodically and model state transitions explicitly.
+- **Scaling/cost:** A single Express process is adequate for a demo; queue workers, backpressure, retry/dead-letter tracking and metrics support production bursts.
+- **Evaluation:** Test invalid signatures, duplicate deliveries, Supabase outages, partial updates and delayed events.
+
+**RAG status:** No Generative AI or RAG.
+
+**Status:** Webhook-to-database integration example, not an independently audited Shopify application.

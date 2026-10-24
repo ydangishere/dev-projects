@@ -94,3 +94,24 @@ npm run build
 You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+
+---
+
+## Solution Architecture Review (implementation-backed)
+
+**Business problem:** Represent a small HR product with employee directory, leave requests and separate admin/employee access concepts.
+
+**Current demo flow (one line):** SvelteKit UI routes → Local mock employee/leave data → Dashboard and management views.
+
+**Proposed connected flow (not yet live):** SvelteKit server routes → Supabase auth → PostgreSQL + RLS policies → Role-specific HR data.
+
+**Architecture decisions**
+- **Trust boundary:** Supabase client/server helpers and database row-level-security migrations prepare an authorization approach, but mock-data screens do not verify live Supabase enforcement.
+- **UI/data separation:** Route and domain modules can be connected to a real backend without rewriting every page.
+- **Privacy:** Real HR records would require least-privilege permissions, encrypted transport, retention rules and auditability.
+- **Production path:** Wire live authentication, enforce RLS with integration tests, add access-policy tests, pagination, reliable migrations and tenant-specific data boundaries.
+- **Evaluation:** Verify role matrix, unauthorized access attempts, leave transition rules and page/data performance.
+
+**RAG status:** No AI knowledge retrieval or RAG.
+
+**Status:** Local, mock-data frontend with Supabase-ready files; not a deployed HR data system.

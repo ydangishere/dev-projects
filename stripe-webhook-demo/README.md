@@ -87,3 +87,22 @@ pytest -v
 ## Why this project
 
 Demonstrates production-ready Stripe integration: signature verification, idempotency, event logging, and test workflow — aligned with billing microservice requirements in full-stack SaaS roles.
+
+---
+
+## Solution Architecture Review (implementation-backed)
+
+**Business problem:** Accept payment/subscription notifications without processing forged or duplicated webhook messages.
+
+**Implemented flow (one line):** Stripe event → FastAPI webhook endpoint → Stripe-Signature verification → Event-ID deduplication → SQLite audit record → Status/read API.
+
+**Architecture decisions**
+- **Security first:** Validate the Stripe signature using the configured signing secret before trusting event type and content.
+- **Idempotency:** Store processed Stripe event identifiers; duplicate deliveries should not create repeated side effects.
+- **Billing boundary:** A webhook record alone is not a complete subscription ledger; production needs reconciliation with Stripe state and explicit entitlement transitions.
+- **Quality:** Pytest coverage and Stripe CLI local event simulation support repeatable inspection; add invalid-signature, replay, ordering and outage scenarios.
+- **Production path:** Use durable PostgreSQL persistence, background jobs, tenant/account mapping, secret rotation, retry monitoring, health checks and authenticated audit access.
+
+**RAG status:** Not applicable; this integration has no LLM or RAG.
+
+**Status:** Local Stripe integration demo; production subscription operations are not established by test fixtures.

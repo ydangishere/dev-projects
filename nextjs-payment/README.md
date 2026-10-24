@@ -90,3 +90,22 @@ App runs at http://localhost:3000
 - **Redirect vs Webhook**: Redirect for UI flow, webhook for backend confirmation
 - **Idempotency**: Callback may be called multiple times; only update when status = pending
 - **Verification**: Signature check to prevent fake callbacks
+
+---
+
+## Solution Architecture Review (implementation-backed)
+
+**Business problem:** Explain the steps of an online checkout without charging a real payment instrument.
+
+**Implemented simulation flow (one line):** Next.js checkout → Create pending order in SQLite → Fake payment page → Signed/demo callback handling → Update order status → Result/admin display.
+
+**Architecture decisions**
+- **State ownership:** The server stores order/payment status; callback verification and idempotent state transitions prevent trusting UI redirects as payment proof.
+- **Separation:** App Router routes distinguish order creation, callback, status queries and administrative views.
+- **Security:** Demo tokens and callback signatures are illustrative; real PSP integrations require provider-specific verification, replay controls, secret rotation and secure admin auth.
+- **Consistency:** Payment callbacks may be duplicated or delivered late; validate legal transitions and transactional updates before exposing to money movement.
+- **Evaluation:** Test repeated callbacks, tampered signatures, concurrent updates, interrupted redirects and status-read consistency.
+
+**RAG status:** No LLM retrieval or RAG.
+
+**Status:** Mock gateway; payment success/failure buttons are not financial settlement.
