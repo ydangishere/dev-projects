@@ -49,3 +49,22 @@ AI worker health: `http://localhost:8001/health`. Spark prints aggregate event c
 - Event publishing in this educational example is best effort; production needs transactional outbox, idempotent consumers, retry/dead-letter strategy, authorization, audit trail, encrypted personal data, and independent risk/compliance controls.
 - Spark runs in local mode and Ray uses local workers. Neither demonstrates a production distributed cluster.
 - Risk score is illustrative and must **never** be used for lending eligibility or automated financial decisions.
+
+---
+
+## Solution Architecture Review (implementation-backed)
+
+**Business problem:** Demonstrate how a high-level lending workflow could isolate transactional state from analytics and route uncertain evidence to a human reviewer.
+
+**Implemented simulation flow (one line):** Deal/application → Spring Boot + PostgreSQL state → Kafka lending events → Spark aggregates + FastAPI/Ray mock evidence → LangGraph human-review recommendation → Simulated approval/sign/disbursement.
+
+**Architecture decisions**
+- **System of record:** Spring Boot owns application states and enforces legal transition order; AI/analytics processes are side inputs and cannot release funds.
+- **Async decoupling:** Kafka separates lifecycle events from Spark summarization and worker processing. Local Ray tasks return explicit `NOT_CHECKED`/`NOT_PERFORMED` evidence, not risk scores.
+- **Guardrail:** LangGraph is used for a short deterministic state graph that ends with `HUMAN_REVIEW_REQUIRED`; it does not call an LLM or make lending decisions.
+- **Security & governance:** Reviewer header and signing/disbursement are simulations, not identity verification or compliant e-signatures. Never use this project to assess real borrowers.
+- **Production path:** Authentication, regulator/consent review, transactional outbox, idempotent consumers, audit records, reliable retry/dead-letter handling, encryption, monitoring and actual performance tests.
+
+**RAG status:** **Not implemented.** LangGraph orchestration is not synonymous with LLM or RAG, and this project contains no vector search.
+
+**Status:** Educational local simulation; 1M users and 300k applications/day are design targets, not load-test results.

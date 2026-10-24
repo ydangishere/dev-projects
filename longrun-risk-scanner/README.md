@@ -151,3 +151,24 @@ This layout is suitable to wrap later in a **Cursor extension** or a small UI wi
 ## Adding to the `dev-projects` monorepo
 
 To place this folder inside [ydangishere/dev-projects](https://github.com/ydangishere/dev-projects) without leaking API keys, follow **`MONOREPO.md`** (verify `.env` stays ignored before `git push`).
+
+---
+
+## Solution Architecture Review (implementation-backed)
+
+**Business problem:** Detect and triage long-running operational risks in Java/Spring Boot code without sending entire private repositories to a language model.
+
+**Implemented flow (one line):** Java project/snippet → YAML rule scanner → Candidate findings → File/class/method context expansion → Local validation + optional LLM verification → SQLite findings → JSON/Markdown report.
+
+**Architecture decisions**
+- **Deterministic first pass:** Editable YAML risk rules identify candidates; local verification remains functional with no model key or internet connection.
+- **Bounded retrieval and privacy:** The context expander reads the flagged snippet, surrounding lines, inferred class/method, annotations, rule excerpt and limited project symbol references. Only this capped context pack is sent to an optional OpenAI-compatible model.
+- **Human-review semantics:** Findings include confidence, evidence and false-positive notes; neither pattern matches nor LLM output establish proof of a defect without review.
+- **Evaluation approach:** Existing pytest tests cover scanner/report/storage behavior. Before claiming accuracy, add a labeled Java fixture set and measure precision, false-positive rate, missed risky patterns, review time, token usage and per-scan cost.
+- **Deployment trade-off:** Local-first CLI/Tkinter + SQLite is easy to audit and keeps most code on-device; larger teams would need authenticated service access, background scan jobs and central observability.
+
+**RAG-style code retrieval flow (implemented, non-vector; one horizontal line):** `Risk finding → Nearby Java code + symbol-reference retrieval → Bounded context pack → Optional LLM JSON verification → Local-rule reconciliation → Reviewable finding/report`
+
+This is a **lightweight retrieval-augmented verification pattern**, **not** embedding search or vector-store RAG; no FAISS, vector database, reranking or semantic index exists in this implementation.
+
+**Status:** Local tool with optional model verification and repository tests. A production-grade, benchmarked AI code-review service is not demonstrated.

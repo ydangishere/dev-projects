@@ -68,3 +68,22 @@ Requires `pip install httpx` on the host. Raise load carefully; 100k *users* is 
 - The Ray risk score is a deterministic illustrative heuristic; never use it to block real transactions.
 - No authentication, encryption at rest, PII controls, PCI DSS assessment, observability/SLOs, production load test or real funds.
 - For scale testing use distributed load generators, real latency/error metrics, Kafka partition planning, backpressure monitoring, and failure injection.
+
+---
+
+## Solution Architecture Review (implementation-backed)
+
+**Business problem:** Keep a simulated payment-response path independent of asynchronous transaction analytics and avoid duplicate processing on request retries.
+
+**Implemented flow (one line):** Client → FastAPI payment simulator → SQLite transaction + outbox → Kafka payment.events → Spark feature aggregation → Kafka payment.features → Ray heuristic workers → Kafka payment.risk.
+
+**Architecture decisions**
+- **Consistency boundary:** The payment record and event outbox share a SQLite transaction; a retrying publisher decouples event delivery from the client response. Idempotency keys guard repeated payment requests.
+- **Stream responsibilities:** Spark consumes events and emits derived features. Ray consumes the feature topic and applies demonstration-only rules; neither component authorizes a payment.
+- **Reliability trade-off:** At-least-once delivery requires downstream event deduplication; Spark checkpoints and Kafka consumer offsets alone do not ensure financial exactly-once semantics.
+- **Evaluation plan:** Measure duplicate-event handling, request latency, consumer lag, end-to-end pipeline delay, restart recovery and resource cost under explicit load tests.
+- **Production path:** PostgreSQL with durable transaction controls, authentication, bank/PSP integrations, encrypted data, PCI assessment, tracing, SLOs, partition strategy, worker scaling and fault injection.
+
+**RAG status:** No LLM, vector database or RAG. Rule-based Ray risk scores must not be represented as an AI credit/fraud model.
+
+**Status:** Local payment-and-analytics **simulation**, not an integrated gateway or proven 100,000-user system.

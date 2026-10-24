@@ -40,3 +40,23 @@ Not implemented: OAuth/Google Docs comment ingestion, Google Chat direct message
 - Codex `--full-auto` can alter files within the working site; keep the site under version control, review diffs and don't run untrusted instructions. Codex CLI authentication is separate from model API keys.
 - API docs available at `/api`, state export `/export`; SQLite at `workspace/agent.sqlite3`. Back up the database and `workspace/site`.
 - Requirements source is `VietPay_Website_Additional_Requirements_En`, including 6 requirements groups, VI/EN launch, Next.js + Sanity decision and no invented product claims.
+
+---
+
+## Solution Architecture Review (implementation-backed)
+
+**Business problem:** Coordinate design-system, requirements, model-generated concepts, code generation, QA and deployment decisions while preserving human ownership and an auditable handoff.
+
+**Implemented flow (one line):** Requirements/design system → GPT + Claude concepts → Human selection/review → Opt-in Codex CLI build → Desktop/mobile artifacts → Human QA gate → Manually registered deployment URL.
+
+**Architecture decisions**
+- **Workflow control:** Nine ordered stages with persisted artifacts, reviewer responses, deadlines and explicit approval gates in SQLite; no inferred approval from silent reviewers.
+- **Model and tool boundary:** GPT and Claude are independent concept providers; Codex CLI execution occurs only on user action in a constrained local project folder. Source edits must be reviewed in version control.
+- **Client discovery & scope:** Approved design system and requirements URL are inputs; concept briefs, acceptance criteria, dimensions and review rounds support discovery and design validation, not automatic fact generation.
+- **Security and governance:** Missing API keys or reviewer decisions block external action; integration errors should remain observable. The project records reviewer names but does **not** authenticate their identity.
+- **Evaluation & costs:** Compare concept compliance, supported product facts, accessibility issues, visual QA coverage and model/API cost per iteration; measured results are not yet published.
+- **Production path:** Add SSO, role-based access, async job queues, secrets management, testable deployment adapters, visual regression checks and authenticated reviewer attestations.
+
+**RAG status:** No document embedding/vector retrieval or full RAG pipeline is implemented; design/reference URLs and operator-provided briefs do not constitute vector RAG.
+
+**Status:** Working local MVP with optional model/tool integrations, not a hosted autonomous website factory; Figma writes, automated publishing and full cross-agent handoff remain unimplemented.

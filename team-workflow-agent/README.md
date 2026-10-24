@@ -59,3 +59,24 @@ All decisions, stage transitions, change logs and notices are persisted and audi
 - Figma text fetch is optional. It does not inspect images, geometry or visual defects.
 - No secret keys, customer data or internal document contents should be committed to the public GitHub repo.
 - No autonomous deployment or source code changes in this application; team members retain control over implementation.
+
+---
+
+## Solution Architecture Review (implementation-backed)
+
+**Business problem:** A BA/PM/Designer/Developer team needs traceable requirements, named approvals, explicit handoffs and bounded AI assistance without giving agents final authority.
+
+**Implemented flow (one line):** Module + requirements → Definition-of-Ready gate → Figma review → Named handoff approval → Technical review → Developer delivery URL → SQLite audit trail.
+
+**Architecture decisions**
+- **Control plane:** A deterministic Python/FastAPI workflow engine owns transitions, reminders and approval gates; SQLite is the single local source of truth. AI-generated advice never updates a project's approval status.
+- **Integrations:** Optional read-only Figma text retrieval, GitHub issue creation on request, Google Sheets one-way export, manual SMTP/Google Chat dispatch and OpenAI specialist reviews. External integrations fail visibly when credentials are missing.
+- **AI pattern:** Requirements, design and technical specialist prompts return advisory reports attached to a module; the human owner decides. Explicitly distinguish *multi-specialist orchestration* from unsupervised autonomous agents.
+- **Quality & observability:** Event/change logs, state versioning, retry-capped outbox and unit tests support replayable investigation. Success indicators to measure in a pilot: missing handoffs, late approvals, unresolved blocker age, AI review usefulness and reminder failures.
+- **Architecture trade-off:** Single-operator SQLite simplifies reproducibility and avoids premature infrastructure; a shared deployment would require identity verification, role-based authorization, CSRF protection, queue workers and credential isolation.
+
+**RAG-style contextual retrieval (implemented, non-vector; one horizontal line):** `Module requirements + change log → Optional Figma API text retrieval → Bounded review context → OpenAI specialist analysis → Advisory report in SQLite → Human approval`
+
+This is **retrieval-augmented prompting**, **not** a vector-database RAG pipeline: no embeddings, similarity index, hybrid search or reranker are implemented.
+
+**Status:** Local, trusted-operator MVP; tests exist, but no production deployment, performance benchmark or enterprise multi-user security is demonstrated.

@@ -566,3 +566,22 @@ npm test -- --coverage  # Run with coverage
 **Testing**: Unit + integration tests  
 **CI/CD**: GitHub Actions, Docker  
 **Metrics**: Latency, cache hit rate, consumer lag, error rate
+
+---
+
+## Solution Architecture Review (implementation-backed)
+
+**Business problem:** Separate authentication, people records and case processing so services can evolve independently while retaining secure API access and event-driven updates.
+
+**Implemented flow (one line):** Client/Admin UI → Auth service (JWT) → People or Case REST API → PostgreSQL/Redis → Kafka people events → Case consumer/Elasticsearch search.
+
+**Architecture decisions**
+- **Service boundaries:** Independent Auth, People and Case modules with separate persistence concerns; HTTP/REST for request-response and Kafka for asynchronous cross-service propagation.
+- **Performance:** Redis caches repeat reads while Elasticsearch supports search-oriented queries; stale cache/index consistency remains an operational concern.
+- **Security:** JWT authentication/authorization checks at service boundaries; in a real deployment add key rotation, stronger secrets handling, service-to-service trust and centralized policy.
+- **Delivery:** Docker-based local topology plus GitHub Actions workflow files and tests provide build/deploy scaffolding. Do not infer successful production deployment from configuration files alone.
+- **Evaluation plan:** Track p95 latency, failed auths, Kafka consumer lag, retry/deduplication, service error rates and recovery after broker or database outages.
+
+**RAG status:** Elasticsearch full-text case search is **not** LLM-based RAG or vector retrieval.
+
+**Status:** Development/reference microservice architecture; requires stronger tracing, consumer idempotency and production hardening for enterprise use.
