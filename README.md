@@ -1,5 +1,21 @@
 ## Dev Projects
 
+## Standalone GitHub projects discovered in portfolio re-audit
+
+The projects below are in **separate GitHub repositories** (not copies of this monorepo). They should be evaluated on their actual implementation and authorship before being described as customer-delivered or production systems.
+
+| Project | Architectural relevance | Verified scope |
+| --- | --- | --- |
+| [CaptoGPT / Live Caption RAG Assistant](https://github.com/ydangishere/captogpt) | **Highest priority for RAG portfolio** | Local Markdown section retrieval with lexical ranking → relevant snippets in OpenAI prompt; role-specific knowledge and tests. **No vector database or model training.** |
+| [ScrapeNeatly](https://github.com/ydangishere/scrapeneatly) | Browser-based data ingestion + schema-constrained LLM extraction | Playwright HTML acquisition + OpenAI/OpenRouter JSON extraction. No embedding/vector RAG; confirm project authorship and operational tests before CV ownership claims. |
+| [AIJobScraper](https://github.com/ydangishere/aijobscraper) | Multi-source data ingestion and AI job filtering | Scraping → LLM filtering → Excel; README references an upstream AIJobScraper repository, so treat as reference/adaptation until original contribution is established. |
+| [AI Hotjar 2](https://github.com/ydangishere/aihotjar2) | Conceptual AI-based UI behavior analysis | Reader and simulated click behavior use mock data; **not** a validated GPT-4 Vision or user-analytics implementation. |
+| [React Component CI](https://github.com/ydangishere/react-component-ci) | Code testing / CI foundation | React/Jest/GitHub Actions sample; useful supporting engineering evidence but not an AI architecture case study. |
+
+**Verified standalone RAG flow (one horizontal line):** `Windows Live Captions → Question/domain detection → Local Markdown keyword retrieval → Bounded context → GPT → Answer`.
+
+**Portfolio hygiene:** [CaptoGPT Enter](https://github.com/ydangishere/captogpt-enter) is an older related version without the documented knowledge-base architecture; do not double-count it as a distinct RAG system. Forked repositories such as [AutoGPT](https://github.com/ydangishere/AutoGPT) are not evidence of independent authorship. The [AutoGPT YouTube summarizer pull request](https://github.com/Significant-Gravitas/AutoGPT/pull/12987) was closed **without merging**, so describe it as a proposed contribution, not a merged feature.
+
 ## Solution Architecture Portfolio (implementation-backed case studies)
 
 The following links show **Solution Architecture Reviews** added to existing project READMEs. Each review distinguishes the implemented flow from architecture decisions, security/performance/cost trade-offs, measurable quality checks and production hardening still required. Architecture documentation is **not evidence of production deployment** or client-delivered outcomes.
