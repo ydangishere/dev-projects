@@ -136,3 +136,22 @@ ai-job-finder/
 ├── results.json    # Output (auto-created)
 └── requirements.txt
 ```
+
+---
+
+## Solution Architecture Review (implementation-backed)
+
+**Business problem:** Collect job listings from multiple sources and filter them by backend role requirements using a language model.
+
+**Implemented flow (one line):** User-selected job source/URL → Scraper/Playwright or HTTP → Job text normalization → LLM relevance classification → Desktop results + optional export/notification.
+
+**Architecture decisions**
+- **Data-source boundary:** Separate scraping/parsing from model evaluation so job-source changes do not require rewriting matching logic.
+- **Model trade-off:** Natural-language matching handles varied job descriptions but increases cost and can hallucinate attributes; display original posting links and treat AI selection as advisory.
+- **Resilience:** External sites can rate-limit or change markup; add source-specific error handling, freshness checks and duplicate detection rather than assuming uninterrupted scraping.
+- **Security:** User-provided URLs are untrusted, so allowlist supported destinations and isolate browser automation before cloud hosting.
+- **Evaluation & scale path:** Test precision/recall against manually labeled jobs, track stale listings and token cost per posting; production would need scheduled ingestion, shared persistence and monitoring.
+
+**RAG status:** Scraping a posting and classifying its text is **not** vector-based RAG; there is no retrieved knowledge corpus or grounded-answer search pipeline.
+
+**Status:** Desktop portfolio tool using external data and optional API credentials; site accessibility and current job availability are not guaranteed.

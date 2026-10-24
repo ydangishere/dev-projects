@@ -472,3 +472,22 @@ MIT License - see LICENSE file for details
 **Use Cases**: E-commerce payments, Digital wallets, Subscription billing, Payment gateways  
 **Version**: 1.0.0  
 **Last Updated**: 2024-02-18
+
+---
+
+## Solution Architecture Review (implementation-backed)
+
+**Business problem:** Prevent duplicate order/payment records when network retries repeat the same request.
+
+**Implemented flow (one line):** Client request + idempotency key → FastAPI validation → PostgreSQL transactional state → Idempotent replay/conflict detection → Redis-assisted reads → API response.
+
+**Architecture decisions**
+- **Correctness boundary:** Treat PostgreSQL transaction state as the source of truth for order status and idempotency-key ownership; response replay is not a substitute for external payment-network settlement guarantees.
+- **API contract:** Idempotency conflicts are explicit when one key is reused for a different payload. Avoid interpreting a successful HTTP response as real funds transferred.
+- **Performance:** Redis can cache repeat reads while database constraints enforce correctness; monitor cache staleness, failed writes, p95 latency and concurrent requests.
+- **Security:** Demo configuration needs production authentication, key rotation, encryption, rate limiting, audit logs, payment processor verification and careful PII treatment.
+- **Production validation:** Run documented concurrency tests, failure injection, DB lock/rollback checks and signed PSP callback tests before claiming operational readiness.
+
+**RAG status:** None. This is a transactional API architecture, not an LLM pipeline.
+
+**Status:** Backend demonstration with deployment and test scripts; no real bank/PSP settlement is established by the repository.

@@ -127,3 +127,22 @@ Do not expose Airflow's web UI to the public internet. Protect the webhook with 
 3. User selects research skill/provider, evidence sources and decision thresholds.
 4. Implement risk rules and Telegram reporting.
 5. Paper-trade only after end-to-end testing; live execution requires separate explicit authorization.
+
+---
+
+## Solution Architecture Review (implementation-backed)
+
+**Business problem:** Correlate TradingView alerts, prevent unvalidated trading actions and lay out a reproducible research-and-risk workflow.
+
+**Current implemented flow (one line):** TradingView webhook → FastAPI shared-secret validation → SQLite alert log → Airflow scheduled DAG → Configurable two-alert match → Unimplemented research/risk/report stages (fail-closed).
+
+**Architecture decisions**
+- **Orchestration:** Airflow owns scheduled processing; matching criteria and the four-hour window are configuration, not hardcoded trade execution.
+- **Safety boundary:** Missing alert IDs, research provider or risk criteria cause downstream stages to skip. No exchange-order adapter exists.
+- **Security:** A production ingress would need HTTPS, secret rotation, replay protection, input bounds and authenticated observability; never publicly expose the Airflow console.
+- **Quality and cost:** Before enabling research, define evidence sources, contradictory-source checks, stale-data handling, risk limits, token budget and test cases for duplicate/replayed signals.
+- **Production path:** Replace SQLite polling with durable event ingestion/locking, define pairing/idempotency semantics, implement reviewable research reports and paper-test end to end.
+
+**RAG status:** **Not implemented.** A research box on a workflow diagram is not a working document retriever or RAG pipeline.
+
+**Status:** Fail-closed architecture scaffold; the AI research, risk evaluation and Telegram report adapters are still placeholders.

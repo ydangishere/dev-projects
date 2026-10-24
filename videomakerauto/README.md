@@ -128,3 +128,22 @@ videomakerauto/
 - **ElevenLabs:** Per character (free tier available)
 
 Cache reduces API calls when reusing similar topics.
+
+---
+
+## Solution Architecture Review (implementation-backed)
+
+**Business problem:** Turn a short content topic into a repeatable voiceover-video creation process with external model and speech APIs.
+
+**Implemented flow (one line):** Topic → OpenAI script generation → ElevenLabs text-to-speech → MoviePy/Python scene assembly → MP4 output.
+
+**Architecture decisions**
+- **Service boundaries:** Script generation, speech synthesis, media assembly and caching are separate tasks, allowing model or provider replacement.
+- **Latency/cost trade-off:** Reusing generated artifacts avoids unnecessary provider calls; monitor per-video tokens, synthesized characters, rendering time and failed generations.
+- **Quality & safety:** Review factual claims, content rights, audio fit, scene timing and output video quality before public release; a successful render does not establish factual accuracy.
+- **Reliability:** Network/API failures, expired keys, temporary render files and platform codec differences need recoverable errors and cleanup.
+- **Production path:** Add async job queue, object storage, retries, job IDs, quota enforcement, observability and content moderation appropriate to the publishing channel.
+
+**RAG status:** Prompting an LLM from a topic does **not** use RAG; no retrieval index or citation grounding is implemented.
+
+**Status:** Single-operator content pipeline; published throughput and service-level guarantees are not demonstrated.

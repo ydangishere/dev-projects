@@ -123,3 +123,22 @@ sso/
 ├── docker-compose.yml
 └── README.md
 ```
+
+---
+
+## Solution Architecture Review (implementation-backed)
+
+**Business problem:** Share a central login authority between multiple Java/Spring applications while keeping authentication logic out of each application.
+
+**Implemented flow (one line):** Browser → Spring Boot auth-service login → Signed JWT/session trust → App A or App B protected page → Logout/return to login.
+
+**Architecture decisions**
+- **Trust boundary:** The identity provider creates authentication state; relying applications validate tokens rather than collecting a separate password for each app.
+- **Trade-off:** JWT validation keeps app requests lightweight but complicates revocation, token lifetime and key rotation.
+- **Security:** Demo accounts and development secrets are not production policies; production needs real identity proofing, protected cookies, rotation, OAuth/OIDC-compliant flows where appropriate, monitoring and CSRF defenses.
+- **Scalability:** Separate services can scale individually, while production traffic needs persistent identity storage, secure ingress and resilience to central-auth downtime.
+- **Evaluation:** Test unauthorized access, expiry, tampering, logout behavior and authentication latency across applications.
+
+**RAG status:** No Generative AI or RAG is implemented.
+
+**Status:** Authentication demonstration, not certified enterprise identity infrastructure.

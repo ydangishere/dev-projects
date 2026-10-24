@@ -85,3 +85,22 @@ Sau khi chạy xong, mở Telegram → chat với bot của bạn. Sẽ thấy 8
 - **Session hết hạn:** Sau vài ngày/tuần có thể phải đăng nhập lại. Chạy lại app, làm lại Bước 4.
 - **File `tradingview_session.json`:** Chứa cookie đăng nhập. Không chia sẻ, không đẩy lên git.
 - **Chỉ gửi ảnh (không chạy lại):** Khi đã có ảnh trong `alert_screenshots/`, chạy `python send_alerts_telegram.py`.
+
+---
+
+## Solution Architecture Review (implementation-backed)
+
+**Business problem:** Collect screenshots of TradingView alerts and deliver them to a configured Telegram recipient.
+
+**Implemented flow (one line):** Stored browser session → Playwright opens TradingView alerts → Screenshot capture → Telegram Bot API → Recipient chat.
+
+**Architecture decisions**
+- **Integration choice:** Browser automation works without a TradingView webhook integration but depends on page structure, an authenticated browser session and local display/browser state.
+- **Credentials:** Session cookies and Telegram tokens are secrets; keep them in ignored local files and rotate compromised credentials.
+- **Reliability:** Add capture retries, per-alert deduplication, action logs, bot error handling and notifications when browser authentication expires.
+- **Scaling/cost:** Small local batches are suitable for operator use; high-volume monitoring should switch to supported event APIs/webhooks rather than parallelizing fragile browser sessions.
+- **Evaluation:** Check capture success, screenshot freshness, delivery error rate and number of duplicate messages.
+
+**RAG status:** No LLM, retrieved document context or RAG is implemented.
+
+**Status:** Local browser-automation utility; the presence of screenshots is not evidence of analytical AI or autonomous trading.
