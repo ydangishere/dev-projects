@@ -155,3 +155,14 @@ Auto-replies are restricted to **new public top-level comments**, matching exact
 5. To stop public posting, set `AUTO_REPLY_ENABLED=false` and recreate. The 12-hour Airflow schedule does not change.
 
 A network error after posting is treated as uncertain and is **never automatically retried**, preventing duplicate public responses. Attempts are stored in SQLite table `reply_attempts`. YouTube `comments.insert` costs 50 quota units per reply. OAuth Testing-mode refresh tokens may expire after seven days; reauthorize when needed. **Do not commit** `secrets/`, `.env`, or any token. See [YouTube comments.insert](https://developers.google.com/youtube/v3/docs/comments/insert).
+
+
+### Approved Zalo contact/question reply
+
+Owner-approved public reply (in `config/faq_rules.json`):
+
+> Bạn vui lòng add zalo 0908133919. Xin cảm ơn
+
+Rule `contact_or_question_zalo` targets **new top-level public comments** asking to contact the channel, requesting Zalo/phone details, seeking help/advice, or asking a genuine question. Ordinary compliments, thanks, and statements should not match. Vietnamese with/without accent marks and English question phrases are supported heuristically, but **false positives remain possible**. Review dry-run logs before enabling real posting.
+
+**The Zalo number is publicly visible in this FAQ file and will appear in posted YouTube replies.** The schedule remains every 12 hours. Previously processed comments are not reconsidered. Nothing has been enabled on the Windows host: OAuth consent and non-dry-run activation must still be completed locally.

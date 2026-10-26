@@ -35,6 +35,36 @@ def normalize(value: str) -> str:
     return " ".join(value.split())
 
 
+def _fold(value: str) -> str:
+    """Case/diacritic insensitive matching for Vietnamese written without accents."""
+    value = normalize(value).replace("đ", "d")
+    value = unicodedata.normalize("NFKD", value)
+    return " ".join("".join(ch for ch in value if not unicodedata.combining(ch)).split())
+
+
+def _looks_like_question(value: str) -> bool:
+    """Conservative fallback for questions not explicitly covered by contact phrases."""
+    clean = re.sub(r"https?://\\S+", "", value or "", flags=re.IGNORECASE).strip()
+    folded = _fold(clean)
+    tokens = folded.split()
+    if len(tokens) < 3 or len(clean) > 1500:
+        return False
+    # Do not post a contact solicitation in response to pure compliments or thanks.
+    if re.match(r"^(cam on|thank you|thanks|hay qua|tuyet voi|chuc mung)\\b", folded):
+        return False
+    if "?" in clean or "？" in clean:
+        return True
+    questions = (
+        r"\\b(cho (em|minh|toi|anh|chi) hoi|xin hoi|muon hoi|can hoi|"
+        r"hoi them|tu van giup|nho tu van|can tu van|xin tu van|"
+        r"lam sao|the nao|tai sao|vi sao|bao nhieu|o dau|"
+        r"huong dan (em|minh|toi)|giup em voi|giup minh voi|"
+        r"how to|how do|what is|where can|can you|could you|"
+        r"i have a question)\\b"
+    )
+    return re.search(questions, folded) is not None
+
+
 def load_rules(path: str | None = None) -> list[dict[str, Any]]:
     path = path or os.getenv("AUTO_REPLY_FAQ_PATH", "/opt/airflow/config/faq_rules.json")
     p = Path(path)
@@ -51,22 +81,30 @@ def load_rules(path: str | None = None) -> list[dict[str, Any]]:
         if not isinstance(entry, dict):
             raise ValueError("Each FAQ rule must be an object")
         rule_id, answer, triggers = entry.get("id"), entry.get("reply"), entry.get("triggers")
+        match_type = entry.get("match_type", "phrases")
         if (not isinstance(rule_id, str) or not re.fullmatch(r"[a-zA-Z0-9_-]{1,45}", rule_id)
             or rule_id in known_ids or not isinstance(answer, str) or not answer.strip()
-            or len(answer) > 600 or not isinstance(triggers, list) or not triggers):
+            or len(answer) > 600 or match_type not in ("phrases", "contact_or_question")
+            or not isinstance(triggers, list) or not triggers):
             raise ValueError("Invalid FAQ rule; supply a unique id, nonempty reply <=600 chars, and triggers")
         if not all(isinstance(t, str) and len(normalize(t)) >= 6 for t in triggers):
             raise ValueError("Each trigger must contain at least six normalized characters")
         known_ids.add(rule_id)
-        result.append({"id": rule_id, "reply": answer.strip(),
+        result.append({"id": rule_id, "reply": answer.strip(), "match_type": match_type,
                        "triggers": [normalize(t) for t in triggers]})
     return result
 
 
 def find_rule(text: str, rules: list[dict[str, Any]]) -> dict[str, Any] | None:
     """Conservative literal-phrase matching; ambiguous matches never auto-post."""
-    source = " " + normalize(text) + " "
-    matches = [r for r in rules if any((" " + phrase + " ") in source for phrase in r["triggers"])]
+    source = " " + _fold(text) + " "
+    question = _looks_like_question(text)
+    matches = []
+    for rule in rules:
+        phrase_match = any((" " + _fold(phrase) + " ") in source for phrase in rule["triggers"])
+        if phrase_match or (rule.get("match_type") == "contact_or_question" and question):
+            matches.append(rule)
+    # Never guess when two approved rules match the same comment.
     return matches[0] if len(matches) == 1 else None
 
 

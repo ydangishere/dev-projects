@@ -1,3 +1,55 @@
 {
-  "rules": []
+  "rules": [
+    {
+      "id": "contact_or_question_zalo",
+      "match_type": "contact_or_question",
+      "triggers": [
+        "liên hệ với bạn",
+        "liên hệ với anh",
+        "liên hệ với chị",
+        "liên lạc với bạn",
+        "liên lạc với anh",
+        "muốn liên hệ",
+        "muốn liên lạc",
+        "cách liên hệ",
+        "cách liên lạc",
+        "cho em xin liên hệ",
+        "cho mình xin liên hệ",
+        "cho xin zalo",
+        "xin zalo",
+        "xin số zalo",
+        "zalo của anh",
+        "zalo của bạn",
+        "zalo của chị",
+        "có zalo không",
+        "kết bạn zalo",
+        "add zalo",
+        "cho xin số điện thoại",
+        "xin số điện thoại",
+        "số điện thoại của anh",
+        "số điện thoại của bạn",
+        "số điện thoại của chị",
+        "xin sđt",
+        "nhắn tin riêng",
+        "inbox cho mình",
+        "inbox cho em",
+        "xin thông tin liên hệ",
+        "cho mình hỏi",
+        "cho em hỏi",
+        "cho anh hỏi",
+        "xin hỏi",
+        "muốn hỏi",
+        "cần tư vấn",
+        "xin tư vấn",
+        "nhờ tư vấn",
+        "tư vấn giúp",
+        "mình cần hỏi",
+        "em cần hỏi",
+        "hỏi thêm",
+        "nhờ hướng dẫn",
+        "cần hỗ trợ"
+      ],
+      "reply": "Bạn vui lòng add zalo 0908133919. Xin cảm ơn"
+    }
+  ]
 }

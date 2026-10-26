@@ -72,6 +72,40 @@ class AutoReplyTests(unittest.TestCase):
                     self.assertEqual(process_auto_reply(self.db, self.comment, "owner", self.rules, 0)["status"], "duplicate")
                     post.assert_called_once()
 
+    def test_contact_or_question_rule_matches_only_relevant_comments(self):
+        config_path = Path(__file__).resolve().parents[1] / "config" / "faq_rules.json"
+        rules = load_rules(str(config_path))
+        self.assertEqual(len(rules), 1)
+        expected = "Bạn vui lòng add zalo 0908133919. Xin cảm ơn"
+        self.assertEqual(rules[0]["reply"], expected)
+        eligible = [
+            "Mình muốn liên hệ với bạn", "Xin zalo của bạn nhé",
+            "Cho em xin SDT để hỏi thêm", "Anh cho em hỏi được không ạ",
+            "Cho minh hoi ve may han nhom", "Hàn nhôm 3mm thì chỉnh dòng bao nhiêu?",
+            "Tôi muốn nhờ bạn tư vấn thêm", "How do I contact you?",
+        ]
+        for message in eligible:
+            with self.subTest(message=message):
+                self.assertEqual(find_rule(message, rules)["id"], "contact_or_question_zalo")
+        ordinary = [
+            "Video rất hay", "Cảm ơn bạn đã chia sẻ",
+            "Chúc bạn thành công", "Like và subscribe nhé!",
+            "👍", "Great video!", "Cam on ad nhe?",
+        ]
+        for message in ordinary:
+            with self.subTest(message=message):
+                self.assertIsNone(find_rule(message, rules))
+
+    def test_contact_rule_dry_run_never_posts(self):
+        config_path = Path(__file__).resolve().parents[1] / "config" / "faq_rules.json"
+        rules = load_rules(str(config_path))
+        self.comment["text"] = "Bạn có số điện thoại không?"
+        with patch.dict(os.environ, {"AUTO_REPLY_ENABLED": "true", "AUTO_REPLY_DRY_RUN": "true"}):
+            with patch("agent.auto_reply.post_reply") as post:
+                outcome = process_auto_reply(self.db, self.comment, "owner", rules, 0)
+                self.assertEqual(outcome["status"], "dry_run")
+                post.assert_not_called()
+
 
 if __name__ == "__main__":
     unittest.main()

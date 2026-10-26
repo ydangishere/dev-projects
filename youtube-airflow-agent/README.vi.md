@@ -159,3 +159,14 @@ Chỉ cho phép trả lời **bình luận cấp cao nhất** có chứa đúng 
 5. Tắt tức thì việc đăng bằng `AUTO_REPLY_ENABLED=false` rồi `docker compose up -d --force-recreate`. Lịch Airflow vẫn **00:00 và 12:00**; không có đăng ngay khi người xem vừa bình luận.
 
 Lỗi bất định sau khi gửi sẽ đánh dấu `error_needs_review`, **không tự thử lại** để tránh đăng trùng. Trạng thái nằm trong SQLite `reply_attempts`. Một lần tạo câu trả lời qua `comments.insert` dùng **50 quota units**. Ứng dụng OAuth ở trạng thái Testing có thể gặp refresh token hết hạn sau 7 ngày và phải cấp quyền lại. Mọi thay đổi file FAQ/secret chỉ thực hiện trên máy bạn. **Không upload `secrets/` hay `.env` lên repo.** Xem thêm [YouTube comments.insert](https://developers.google.com/youtube/v3/docs/comments/insert).
+
+
+### Quy tắc trả lời liên hệ/Zalo đã duyệt
+
+Chủ kênh đã duyệt một mẫu trả lời công khai cố định:
+
+> Bạn vui lòng add zalo 0908133919. Xin cảm ơn
+
+`config/faq_rules.json` chứa quy tắc `contact_or_question_zalo`. Agent chỉ cân nhắc trả lời **bình luận mới cấp cao nhất** thể hiện ý muốn liên hệ, xin Zalo/số điện thoại, nhờ tư vấn hoặc đặt câu hỏi thực sự. Không tự trả lời lời khen, cảm ơn hay bình luận thông thường. Agent nhận diện một số biến thể có/không dấu tiếng Việt và câu hỏi có dấu `?`; đây là bộ lọc dựa trên từ/cụm từ nên **có thể nhận diện nhầm**. Trước khi bật đăng thật phải chạy thử và đọc log.
+
+**Thông tin Zalo 0908133919 sẽ xuất hiện công khai trong các phản hồi và trong tệp FAQ GitHub.** Lịch vẫn chạy mỗi 12 giờ; chỉ bình luận mới chưa được đánh dấu xử lý mới được xem xét. Chưa tự động kích hoạt trên máy Windows của bạn, chưa cấp OAuth, `AUTO_REPLY_ENABLED=false` và `AUTO_REPLY_DRY_RUN=true` là chế độ mặc định. 

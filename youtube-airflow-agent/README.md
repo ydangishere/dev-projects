@@ -53,3 +53,7 @@ Docs: [YouTube CommentThreads](https://developers.google.com/youtube/v3/docs/com
 ## Optional FAQ auto-reply / Tự trả lời FAQ
 
 Default OFF: approved phrase → fixed reply; Google OAuth 2.0 is required to post. Setup in [Tiếng Việt](README.vi.md#tự-trả-lời-faq-tùy-chọn-mặc-định-tắt) / [English](README.en.md#optional-faq-auto-replies-disabled-by-default). The Airflow schedule stays at 00:00/12:00 Vietnam time.
+
+### Approved contact/question response
+
+The opt-in `config/faq_rules.json` now contains the owner-approved response `Bạn vui lòng add zalo 0908133919. Xin cảm ơn`. It is limited to detected contact requests, requests for help, or questions; it is **not enabled on the running Windows agent** and still requires YouTube OAuth and dry-run verification. This number is public in the repository.
