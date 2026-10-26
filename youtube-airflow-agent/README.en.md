@@ -4,7 +4,7 @@
 
 ## 1. What it does (and does not do)
 
-Monitors **public** comments for [@ydang7076](https://www.youtube.com/@ydang7076) at **00:00 and 12:00 Vietnam time (UTC+7)**, delivering new comments to a Telegram chat. Optional OpenAI analysis classifies likely questions and drafts a proposed response for a human to review. The agent **does not post replies automatically**, access YouTube private messages, guarantee all replies in old threads, or see comments held for moderation using a public API key.
+Monitors **public** comments for [@ydang7076](https://www.youtube.com/@ydang7076) at **00:00 and 12:00 Vietnam time (UTC+7)**, delivering new comments to a Telegram chat. Optional OpenAI analysis classifies likely questions and drafts a proposed response for a human to review. By default the agent **does not post replies automatically**; an opt-in, approved-FAQ posting mode requires channel-owner OAuth. The agent does not access YouTube private messages, guarantee all replies in old threads, or see comments held for moderation using a public API key.
 
 **Architecture:** YouTube Data API v3 → Apache Airflow scheduler → SQLite deduplication → optional OpenAI analysis → Telegram Bot API.
 
@@ -135,7 +135,7 @@ The database lives at `/opt/airflow/state/comments.sqlite3` in the persistent `a
 - Uses `commentThreads.list`, limited to the newest `MAX_PAGES × 100` **comment threads** per run. Replies may be partial, and new replies in old, unreturned threads can be missed. Prolonged downtime or heavy comment traffic may also cause missed alerts.
 - `INITIAL_LOOKBACK_MINUTES=720` sets the **first-run** historical cutoff, which is persisted in SQLite. It is **not** a rolling 12-hour lookback for every later run.
 - IDs are stored to avoid repeat alerts; after a crash between Telegram delivery and SQLite insertion, rare duplicates remain possible.
-- Public API keys do **not** access YouTube private messages or moderation-held comments. The MVP does **not** auto-reply.
+- Public API keys do **not** access YouTube private messages or moderation-held comments. The MVP does **not** auto-reply by default; opt-in owner-approved FAQ posting requires OAuth.
 - When an OpenAI API Key is configured, comment text is sent to OpenAI for analysis. Review data/privacy policies for your deployment.
 - `airflow standalone` is appropriate for a personal demo/prototype, **not production-grade secured hosting**.
 
