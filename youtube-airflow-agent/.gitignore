@@ -5,3 +5,4 @@ __pycache__/
 .airflow/
 *.sqlite3
 *.db
+secrets/

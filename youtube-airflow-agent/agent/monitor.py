@@ -232,6 +232,12 @@ def monitor() -> dict[str, Any]:
     notify_all = os.getenv("NOTIFY_ALL_COMMENTS", "true").lower() == "true"
     conn = connect_db(os.getenv("COMMENT_DB_PATH", "/opt/airflow/state/comments.sqlite3"))
     count = 0
+    auto_replied = 0
+    auto_attempts = 0
+    rules = []
+    if os.getenv("AUTO_REPLY_ENABLED", "false").lower() == "true":
+        from agent.auto_reply import load_rules
+        rules = load_rules()
     try:
         cutoff = first_run_cutoff(conn)
         channel_id = resolve_channel_id(channel_url, youtube_key)
@@ -255,12 +261,20 @@ def monitor() -> dict[str, Any]:
             if notify_all or assessment["is_question"]:
                 notify_telegram(telegram_token, telegram_chat_id, message_text(item, assessment))
                 count += 1
+            if rules:
+                from agent.auto_reply import process_auto_reply
+                outcome = process_auto_reply(conn, item, channel_id, rules, auto_attempts)
+                if outcome["status"] == "sent":
+                    auto_replied += 1
+                    auto_attempts += 1
+                elif outcome["status"] == "error_needs_review":
+                    auto_attempts += 1
             # Mark even unnotified non-question comments, to prevent future reprocessing.
             conn.execute("INSERT OR IGNORE INTO notified (comment_id, notified_at) VALUES (?, ?)",
                          (item["comment_id"], now_utc().isoformat()))
             conn.commit()
         LOG.info("Checked %d recent public comments, sent %d Telegram alerts", len(items), count)
-        return {"fetched": len(items), "notified": count, "channel_id": channel_id}
+        return {"fetched": len(items), "notified": count, "auto_replied": auto_replied, "channel_id": channel_id}
     finally:
         conn.close()
 

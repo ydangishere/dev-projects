@@ -49,3 +49,7 @@ youtube-airflow-agent/
 ```
 
 Docs: [YouTube CommentThreads](https://developers.google.com/youtube/v3/docs/commentThreads/list) · [Telegram Bot API](https://core.telegram.org/bots/api) · [Airflow](https://airflow.apache.org/docs/)
+
+## Optional FAQ auto-reply / Tự trả lời FAQ
+
+Default OFF: approved phrase → fixed reply; Google OAuth 2.0 is required to post. Setup in [Tiếng Việt](README.vi.md#tự-trả-lời-faq-tùy-chọn-mặc-định-tắt) / [English](README.en.md#optional-faq-auto-replies-disabled-by-default). The Airflow schedule stays at 00:00/12:00 Vietnam time.

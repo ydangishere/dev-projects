@@ -16,6 +16,8 @@ services:
       - airflow_home:/opt/airflow
       - ./dags:/opt/airflow/dags:ro
       - ./agent:/opt/airflow/agent:ro
+      - ./config:/opt/airflow/config:ro
+      - ./secrets:/opt/airflow/secrets:ro
       - agent_state:/opt/airflow/state
 volumes:
   airflow_home:

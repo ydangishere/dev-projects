@@ -140,3 +140,18 @@ The database lives at `/opt/airflow/state/comments.sqlite3` in the persistent `a
 - `airflow standalone` is appropriate for a personal demo/prototype, **not production-grade secured hosting**.
 
 References: [YouTube CommentThreads API](https://developers.google.com/youtube/v3/docs/commentThreads/list) · [Telegram Bot API](https://core.telegram.org/bots/api) · [Apache Airflow](https://airflow.apache.org/docs/)
+
+
+## Optional FAQ auto-replies (DISABLED BY DEFAULT)
+
+Auto-replies are restricted to **new public top-level comments**, matching exactly one owner-approved phrase rule in `config/faq_rules.json`. The public reply is the predefined FAQ answer, **never unconstrained AI-generated text**. Non-matches continue to be notified on Telegram. By default, only comments younger than 24 hours qualify and at most three posts per polling run are attempted. Replies inside existing threads are not auto-answered.
+
+**Posting requires channel-owner OAuth 2.0; a read-only API key is insufficient.**
+
+1. In the same Google Cloud project, configure the Google Auth Platform/OAuth consent screen and add yourself under Test users if Testing; create an OAuth **Desktop application** client. Save the downloaded JSON only on your PC as `secrets/client_secret.json`.
+2. From the project directory on Windows (Python 3 required), run `python -m agent.oauth_setup`. Grant authorization using the Google account/channel that manages `@ydang7076`. The script writes a private `secrets/youtube_oauth.json` refresh-token file.
+3. Populate `config/faq_rules.json`, e.g. `{"rules":[{"id":"thanks","triggers":["cảm ơn ad","cảm ơn bạn đã chia sẻ"],"reply":"Cảm ơn bạn đã xem video và ủng hộ kênh!"}]}`. Initially `{"rules":[]}`, so nothing is eligible.
+4. Edit local `.env`: `AUTO_REPLY_ENABLED=true` and leave `AUTO_REPLY_DRY_RUN=true` for a **log-only dry run**. Reload: `docker compose up -d --force-recreate`. Once an eligible comment logs `DRY RUN` and you approve the wording, set `AUTO_REPLY_DRY_RUN=false`, then recreate containers again.
+5. To stop public posting, set `AUTO_REPLY_ENABLED=false` and recreate. The 12-hour Airflow schedule does not change.
+
+A network error after posting is treated as uncertain and is **never automatically retried**, preventing duplicate public responses. Attempts are stored in SQLite table `reply_attempts`. YouTube `comments.insert` costs 50 quota units per reply. OAuth Testing-mode refresh tokens may expire after seven days; reauthorize when needed. **Do not commit** `secrets/`, `.env`, or any token. See [YouTube comments.insert](https://developers.google.com/youtube/v3/docs/comments/insert).

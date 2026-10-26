@@ -144,3 +144,18 @@ Nếu dữ liệu đã được lưu trong volume, **đừng xóa volume** chỉ
 - Khi OpenAI được bật, nội dung bình luận sẽ được gửi đến dịch vụ OpenAI để phân tích; kiểm tra chính sách dữ liệu nếu cần.
 
 Tham khảo: [YouTube API](https://developers.google.com/youtube/v3/docs/commentThreads/list) · [Telegram Bot API](https://core.telegram.org/bots/api) · [Apache Airflow](https://airflow.apache.org/docs/)
+
+
+## Tự trả lời FAQ (tùy chọn; MẶC ĐỊNH TẮT)
+
+Chỉ cho phép trả lời **bình luận cấp cao nhất** có chứa đúng một cụm từ FAQ đã được chủ kênh duyệt. Phần AI có thể phân loại/gợi ý trả lời qua Telegram như trước; **nội dung đăng tự động luôn lấy từ câu trả lời cố định trong `config/faq_rules.json`**, không đăng nguyên văn câu AI tự sinh. Không tự trả lời bình luận cũ quá 24 giờ, không trả lời phản hồi trong chuỗi cũ, tối đa 3 lần đăng mỗi phiên theo mặc định. Bình luận không khớp được chuyển qua Telegram để bạn tự trả lời.
+
+**Cần OAuth 2.0 (cấp quyền tài khoản YouTube), không thể dùng API Key chỉ-đọc để đăng bình luận.** Dùng chính Google Cloud project đang bật YouTube Data API v3:
+
+1. Vào Google Cloud → Google Auth Platform/OAuth consent screen, cấu hình tên ứng dụng và thêm tài khoản Google của bạn vào **Test users** nếu ứng dụng ở chế độ Testing. Tiếp tục vào Clients/Credentials → **Create OAuth client ID → Desktop app**, tải JSON vào thư mục dự án `secrets/client_secret.json` trên Windows. Không đưa file này lên GitHub.
+2. Trên máy chạy dự án, trong PowerShell (cần Python 3 trên Windows), chạy `python -m agent.oauth_setup`. Trình duyệt mở trang Google, đăng nhập đúng tài khoản quản lý `@ydang7076`, cấp quyền và quay lại PowerShell. File `secrets/youtube_oauth.json` được tạo **chỉ trên máy của bạn**, có refresh token nhạy cảm.
+3. Sửa `config/faq_rules.json` bằng cặp câu hỏi/cụm từ và câu trả lời ĐÃ DUYỆT. Ví dụ: `{"rules":[{"id":"thanks","triggers":["cảm ơn ad","cảm ơn bạn đã chia sẻ"],"reply":"Cảm ơn bạn đã xem video và ủng hộ kênh!"}]}`. Ban đầu file mặc định `{"rules":[]}`, nên sẽ không trả lời ai cả.
+4. Trong `.env` đặt `AUTO_REPLY_ENABLED=true` và giữ `AUTO_REPLY_DRY_RUN=true` để **chạy thử mà không đăng**. Áp dụng cấu hình bằng `docker compose up -d --force-recreate`. Khi có bình luận mới khớp FAQ, log ghi `DRY RUN`. Chỉ sau khi kiểm tra nội dung, đổi `AUTO_REPLY_DRY_RUN=false` và chạy lại lệnh `--force-recreate` để cho phép đăng tự động.
+5. Tắt tức thì việc đăng bằng `AUTO_REPLY_ENABLED=false` rồi `docker compose up -d --force-recreate`. Lịch Airflow vẫn **00:00 và 12:00**; không có đăng ngay khi người xem vừa bình luận.
+
+Lỗi bất định sau khi gửi sẽ đánh dấu `error_needs_review`, **không tự thử lại** để tránh đăng trùng. Trạng thái nằm trong SQLite `reply_attempts`. Một lần tạo câu trả lời qua `comments.insert` dùng **50 quota units**. Ứng dụng OAuth ở trạng thái Testing có thể gặp refresh token hết hạn sau 7 ngày và phải cấp quyền lại. Mọi thay đổi file FAQ/secret chỉ thực hiện trên máy bạn. **Không upload `secrets/` hay `.env` lên repo.** Xem thêm [YouTube comments.insert](https://developers.google.com/youtube/v3/docs/comments/insert).
