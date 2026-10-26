@@ -2,7 +2,7 @@
 
 **[Tiếng Việt](README.vi.md) | [English](README.en.md)**
 
-Monitor new **public** YouTube comments on [@ydang7076](https://www.youtube.com/@ydang7076) every 12 hours and notify a Telegram chat. OpenAI-based question classification and draft replies are optional. This project is a local **MVP / proof of concept**, not a hosted service. It does not automatically reply to YouTube comments or read private YouTube messages.
+Monitor new **public** YouTube comments on [@ydang7076](https://www.youtube.com/@ydang7076) every 12 hours and notify a Telegram chat. OpenAI-based question classification and draft replies are optional. This project is a local **MVP / proof of concept**, not a hosted service. Automatic posting is disabled by default (optional approved-FAQ mode requires channel-owner OAuth); it cannot read private YouTube messages.
 
 **Architecture:** YouTube Data API v3 → Airflow DAG (00:00 / 12:00 ICT) → SQLite deduplication → optional OpenAI analysis → Telegram Bot API.
 
