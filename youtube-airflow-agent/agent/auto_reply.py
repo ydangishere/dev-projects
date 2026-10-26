@@ -31,7 +31,7 @@ def dry_run() -> bool:
 
 def normalize(value: str) -> str:
     value = unicodedata.normalize("NFKC", value or "").casefold()
-    value = re.sub(r"[^\\w\\s]", " ", value, flags=re.UNICODE)
+    value = re.sub(r"[^\w\s]", " ", value, flags=re.UNICODE)
     return " ".join(value.split())
 
 
@@ -84,13 +84,25 @@ def _oauth_access_token(credentials_path: str) -> str:
     if any(not credentials.get(k) for k in required):
         raise ValueError("YouTube OAuth credentials require client_id, client_secret, refresh_token")
     # Refresh in memory on every run; no secret tokens are written to logs.
-    response = request_json(TOKEN_URL, payload={
+    import urllib.parse
+    import urllib.request
+    import urllib.error
+    body = urllib.parse.urlencode({
         "client_id": credentials["client_id"],
         "client_secret": credentials["client_secret"],
         "refresh_token": credentials["refresh_token"],
         "grant_type": "refresh_token",
-    })
-    token = response.get("access_token")
+    }).encode("utf-8")
+    request = urllib.request.Request(
+        TOKEN_URL, data=body,
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=35) as response:
+            data = json.load(response)
+    except urllib.error.HTTPError as exc:
+        raise RuntimeError(f"YouTube OAuth token refresh failed: HTTP {exc.code}") from None
+    token = data.get("access_token")
     if not token:
         raise RuntimeError("YouTube OAuth refresh did not return an access token")
     return str(token)
