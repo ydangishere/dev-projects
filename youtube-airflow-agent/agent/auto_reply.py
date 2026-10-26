@@ -44,23 +44,23 @@ def _fold(value: str) -> str:
 
 def _looks_like_question(value: str) -> bool:
     """Conservative fallback for questions not explicitly covered by contact phrases."""
-    clean = re.sub(r"https?://\\S+", "", value or "", flags=re.IGNORECASE).strip()
+    clean = re.sub(r"https?://\S+", "", value or "", flags=re.IGNORECASE).strip()
     folded = _fold(clean)
     tokens = folded.split()
     if len(tokens) < 3 or len(clean) > 1500:
         return False
     # Do not post a contact solicitation in response to pure compliments or thanks.
-    if re.match(r"^(cam on|thank you|thanks|hay qua|tuyet voi|chuc mung)\\b", folded):
+    if re.match(r"^(cam on|thank you|thanks|hay qua|tuyet voi|chuc mung)\b", folded):
         return False
     if "?" in clean or "？" in clean:
         return True
     questions = (
-        r"\\b(cho (em|minh|toi|anh|chi) hoi|xin hoi|muon hoi|can hoi|"
+        r"\b(cho (em|minh|toi|anh|chi) hoi|xin hoi|muon hoi|can hoi|"
         r"hoi them|tu van giup|nho tu van|can tu van|xin tu van|"
         r"lam sao|the nao|tai sao|vi sao|bao nhieu|o dau|"
         r"huong dan (em|minh|toi)|giup em voi|giup minh voi|"
         r"how to|how do|what is|where can|can you|could you|"
-        r"i have a question)\\b"
+        r"i have a question)\b"
     )
     return re.search(questions, folded) is not None
 
