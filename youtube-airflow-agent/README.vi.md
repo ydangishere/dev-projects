@@ -4,7 +4,7 @@
 
 ## 1. Mục đích và giới hạn
 
-Theo dõi bình luận **công khai** trên kênh [@ydang7076](https://www.youtube.com/@ydang7076), chạy tự động lúc **00:00** và **12:00** hằng ngày (giờ Việt Nam, UTC+7), gửi bình luận mới tới Telegram Bot. Nếu điền OpenAI API Key, hệ thống phân loại câu hỏi và gợi ý trả lời; **không tự đăng trả lời** lên YouTube. Không đọc tin nhắn riêng/inbox YouTube; không bảo đảm bắt được mọi phản hồi trong luồng bình luận cũ hoặc bình luận chờ duyệt.
+Theo dõi bình luận **công khai** trên kênh [@ydang7076](https://www.youtube.com/@ydang7076), chạy tự động lúc **00:00** và **12:00** hằng ngày (giờ Việt Nam, UTC+7), gửi bình luận mới tới Telegram Bot. Nếu điền OpenAI API Key, hệ thống phân loại câu hỏi và gợi ý trả lời; **mặc định không tự đăng trả lời** lên YouTube (có thể bật FAQ đã duyệt qua OAuth; xem cuối tài liệu). Không đọc tin nhắn riêng/inbox YouTube; không bảo đảm bắt được mọi phản hồi trong luồng bình luận cũ hoặc bình luận chờ duyệt.
 
 **Luồng:** YouTube Data API v3 (đọc bình luận) → Apache Airflow (lên lịch) → SQLite (lưu ID chống trùng) → OpenAI *tùy chọn* (phân tích) → Telegram Bot API (thông báo).
 
@@ -138,7 +138,7 @@ Nếu dữ liệu đã được lưu trong volume, **đừng xóa volume** chỉ
 - Không bảo đảm bắt được tất cả reply trên thread cũ: `commentThreads.list` có thể trả một phần replies và chỉ quét tối đa `MAX_PAGES × 100` **threads** gần nhất/lần. Nếu kênh quá nhiều bình luận hoặc Docker ngừng lâu, có thể bỏ sót.
 - `INITIAL_LOOKBACK_MINUTES=720` dùng để thiết lập mốc thời gian **trong lần chạy đầu tiên**. Mốc này được lưu trong SQLite và không tự thay đổi mỗi lần chạy; không phải giới hạn cứng 12 giờ cho những lần chạy sau.
 - Mã lưu ID đã xử lý để hạn chế trùng. Nếu Telegram gửi thành công nhưng ứng dụng ngắt trước khi ghi SQLite, có thể gửi trùng sau đó.
-- Tin nhắn YouTube riêng tư và bình luận bị giữ duyệt **không** được xử lý bằng API Key công khai. Không tự đăng bình luận; AI chỉ soạn gợi ý.
+- Tin nhắn YouTube riêng tư và bình luận bị giữ duyệt **không** được xử lý bằng API Key công khai. Mặc định không tự đăng bình luận; tùy chọn FAQ cố định có thể được kích hoạt sau khi cấp OAuth và duyệt nội dung.
 - Không có OpenAI API Key: chương trình dùng bộ lọc câu hỏi đơn giản và vẫn gửi bình luận mới nếu `NOTIFY_ALL_COMMENTS=true`.
 - Airflow `standalone` dành cho **demo/máy cá nhân**, không phải triển khai production có bảo mật toàn diện.
 - Khi OpenAI được bật, nội dung bình luận sẽ được gửi đến dịch vụ OpenAI để phân tích; kiểm tra chính sách dữ liệu nếu cần.
