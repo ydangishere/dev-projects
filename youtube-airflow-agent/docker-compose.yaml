@@ -1,0 +1,22 @@
+services:
+  airflow:
+    image: apache/airflow:3.3.1
+    command: standalone
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:8080"
+    env_file:
+      - .env
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
+      PYTHONPATH: /opt/airflow
+      COMMENT_DB_PATH: /opt/airflow/state/comments.sqlite3
+    volumes:
+      - airflow_home:/opt/airflow
+      - ./dags:/opt/airflow/dags:ro
+      - ./agent:/opt/airflow/agent:ro
+      - agent_state:/opt/airflow/state
+volumes:
+  airflow_home:
+  agent_state:

@@ -99,3 +99,6 @@ This monorepo collects several backend and AI-related projects from the `ydangis
 
 Each subfolder in this repo corresponds to one of the original projects, contains its own `README.md`, and links back to the source repository.
 
+## YouTube AI Agent (Airflow + Telegram)
+
+- **[YouTube Comment AI Agent](youtube-airflow-agent/README.md)** — YouTube Data API v3 → Airflow (00:00 / 12:00, Asia/Ho_Chi_Minh) → SQLite deduplication → optional OpenAI comment analysis → Telegram. Local Docker MVP, no automatic YouTube replies. **[Hướng dẫn tiếng Việt](youtube-airflow-agent/README.vi.md)** | **[English documentation](youtube-airflow-agent/README.en.md)**.
