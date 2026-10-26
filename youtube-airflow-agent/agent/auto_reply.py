@@ -99,6 +99,14 @@ def find_rule(text: str, rules: list[dict[str, Any]]) -> dict[str, Any] | None:
     """Conservative literal-phrase matching; ambiguous matches never auto-post."""
     source = " " + _fold(text) + " "
     question = _looks_like_question(text)
+    # Negative requests must not receive unsolicited contact information.
+    declines = (
+        "khong can tu van", "khong can ho tro", "khong muon lien he",
+        "khong can lien he", "khong muon hoi", "khong can hoi",
+        "dung lien he", "khong can zalo", "khong can nhan tin",
+    )
+    if not question and any((" " + phrase + " ") in source for phrase in declines):
+        return None
     matches = []
     for rule in rules:
         phrase_match = any((" " + _fold(phrase) + " ") in source for phrase in rule["triggers"])
