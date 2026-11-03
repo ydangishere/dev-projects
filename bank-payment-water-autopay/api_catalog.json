@@ -1,0 +1,362 @@
+[
+  {
+    "id": 1,
+    "method": "POST",
+    "path": "/v1/auth/login",
+    "protocol": "rest",
+    "purpose": "Đăng nhập",
+    "group": "Xác thực / phiên đăng nhập"
+  },
+  {
+    "id": 2,
+    "method": "POST",
+    "path": "/v1/auth/refresh",
+    "protocol": "rest",
+    "purpose": "Làm mới access token",
+    "group": "Xác thực / phiên đăng nhập"
+  },
+  {
+    "id": 3,
+    "method": "POST",
+    "path": "/v1/auth/challenges",
+    "protocol": "rest",
+    "purpose": "Khởi tạo thử thách OTP/step-up",
+    "group": "Xác thực / phiên đăng nhập"
+  },
+  {
+    "id": 4,
+    "method": "POST",
+    "path": "/v1/auth/challenges/{id}/verify",
+    "protocol": "rest",
+    "purpose": "Xác minh thử thách để duyệt giao dịch/mandate",
+    "group": "Xác thực / phiên đăng nhập"
+  },
+  {
+    "id": 5,
+    "method": "POST",
+    "path": "/v1/auth/logout",
+    "protocol": "rest",
+    "purpose": "Đăng xuất",
+    "group": "Xác thực / phiên đăng nhập"
+  },
+  {
+    "id": 6,
+    "method": "GET",
+    "path": "/v1/accounts",
+    "protocol": "rest",
+    "purpose": "Danh sách tài khoản thanh toán",
+    "group": "Tài khoản / số dư"
+  },
+  {
+    "id": 7,
+    "method": "GET",
+    "path": "/v1/accounts/{id}",
+    "protocol": "rest",
+    "purpose": "Chi tiết tài khoản",
+    "group": "Tài khoản / số dư"
+  },
+  {
+    "id": 8,
+    "method": "GET",
+    "path": "/v1/accounts/{id}/balance",
+    "protocol": "rest",
+    "purpose": "Số dư khả dụng / số dư sổ",
+    "group": "Tài khoản / số dư"
+  },
+  {
+    "id": 9,
+    "method": "GET",
+    "path": "/v1/accounts/{id}/transactions",
+    "protocol": "rest",
+    "purpose": "Biến động / lịch sử giao dịch",
+    "group": "Tài khoản / số dư"
+  },
+  {
+    "id": 10,
+    "method": "GET",
+    "path": "/v1/accounts/{id}/limits",
+    "protocol": "rest",
+    "purpose": "Hạn mức còn lại",
+    "group": "Tài khoản / số dư"
+  },
+  {
+    "id": 11,
+    "method": "GET",
+    "path": "/v1/billers",
+    "protocol": "rest",
+    "purpose": "Danh sách đơn vị điện nước",
+    "group": "Nhà cung cấp và hóa đơn"
+  },
+  {
+    "id": 12,
+    "method": "GET",
+    "path": "/v1/billers/{id}/services",
+    "protocol": "rest",
+    "purpose": "Dịch vụ thuộc nhà cung cấp",
+    "group": "Nhà cung cấp và hóa đơn"
+  },
+  {
+    "id": 13,
+    "method": "POST",
+    "path": "/v1/bills/inquiries",
+    "protocol": "rest",
+    "purpose": "Tra cứu hóa đơn bằng mã khách hàng",
+    "group": "Nhà cung cấp và hóa đơn"
+  },
+  {
+    "id": 14,
+    "method": "POST",
+    "path": "/v1/bills/validate",
+    "protocol": "rest",
+    "purpose": "Xác minh hóa đơn chưa thanh toán / số tiền",
+    "group": "Nhà cung cấp và hóa đơn"
+  },
+  {
+    "id": 15,
+    "method": "POST",
+    "path": "/v1/bill-links",
+    "protocol": "rest",
+    "purpose": "Lưu mã khách hàng tiền nước",
+    "group": "Nhà cung cấp và hóa đơn"
+  },
+  {
+    "id": 16,
+    "method": "GET",
+    "path": "/v1/bill-links",
+    "protocol": "rest",
+    "purpose": "Mã khách hàng đã liên kết",
+    "group": "Nhà cung cấp và hóa đơn"
+  },
+  {
+    "id": 17,
+    "method": "DELETE",
+    "path": "/v1/bill-links/{id}",
+    "protocol": "rest",
+    "purpose": "Gỡ mã khách hàng",
+    "group": "Nhà cung cấp và hóa đơn"
+  },
+  {
+    "id": 18,
+    "method": "POST",
+    "path": "/v1/payments/quotes",
+    "protocol": "rest",
+    "purpose": "Ước tính phí và số tiền tổng",
+    "group": "Thanh toán thủ công"
+  },
+  {
+    "id": 19,
+    "method": "POST",
+    "path": "/v1/payments",
+    "protocol": "rest",
+    "purpose": "Khởi tạo giao dịch có idempotency key",
+    "group": "Thanh toán thủ công"
+  },
+  {
+    "id": 20,
+    "method": "POST",
+    "path": "/v1/payments/{id}/confirm",
+    "protocol": "rest",
+    "purpose": "Duyệt sau xác thực theo quy tắc",
+    "group": "Thanh toán thủ công"
+  },
+  {
+    "id": 21,
+    "method": "GET",
+    "path": "/v1/payments/{id}",
+    "protocol": "rest",
+    "purpose": "Trạng thái giao dịch",
+    "group": "Thanh toán thủ công"
+  },
+  {
+    "id": 22,
+    "method": "GET",
+    "path": "/v1/payments",
+    "protocol": "rest",
+    "purpose": "Danh sách giao dịch",
+    "group": "Thanh toán thủ công"
+  },
+  {
+    "id": 23,
+    "method": "GET",
+    "path": "/v1/payments/{id}/receipt",
+    "protocol": "rest",
+    "purpose": "Biên nhận xác nhận thành công",
+    "group": "Thanh toán thủ công"
+  },
+  {
+    "id": 24,
+    "method": "POST",
+    "path": "/v1/payments/{id}/cancel",
+    "protocol": "rest",
+    "purpose": "Hủy khi còn được phép",
+    "group": "Thanh toán thủ công"
+  },
+  {
+    "id": 25,
+    "method": "POST",
+    "path": "/v1/payments/{id}/disputes",
+    "protocol": "rest",
+    "purpose": "Yêu cầu tra soát / khiếu nại",
+    "group": "Thanh toán thủ công"
+  },
+  {
+    "id": 26,
+    "method": "POST",
+    "path": "/v1/autopay/mandates",
+    "protocol": "rest",
+    "purpose": "Tạo ủy quyền có giới hạn và bằng chứng xác thực",
+    "group": "AutoPay / ủy quyền định kỳ"
+  },
+  {
+    "id": 27,
+    "method": "GET",
+    "path": "/v1/autopay/mandates",
+    "protocol": "rest",
+    "purpose": "Liệt kê ủy quyền",
+    "group": "AutoPay / ủy quyền định kỳ"
+  },
+  {
+    "id": 28,
+    "method": "GET",
+    "path": "/v1/autopay/mandates/{id}",
+    "protocol": "rest",
+    "purpose": "Chi tiết ủy quyền",
+    "group": "AutoPay / ủy quyền định kỳ"
+  },
+  {
+    "id": 29,
+    "method": "PATCH",
+    "path": "/v1/autopay/mandates/{id}",
+    "protocol": "rest",
+    "purpose": "Đổi cấu hình; xác thực lại khi cần",
+    "group": "AutoPay / ủy quyền định kỳ"
+  },
+  {
+    "id": 30,
+    "method": "POST",
+    "path": "/v1/autopay/mandates/{id}/suspend",
+    "protocol": "rest",
+    "purpose": "Tạm dừng",
+    "group": "AutoPay / ủy quyền định kỳ"
+  },
+  {
+    "id": 31,
+    "method": "POST",
+    "path": "/v1/autopay/mandates/{id}/resume",
+    "protocol": "rest",
+    "purpose": "Mở lại theo chính sách",
+    "group": "AutoPay / ủy quyền định kỳ"
+  },
+  {
+    "id": 32,
+    "method": "DELETE",
+    "path": "/v1/autopay/mandates/{id}",
+    "protocol": "rest",
+    "purpose": "Thu hồi ủy quyền",
+    "group": "AutoPay / ủy quyền định kỳ"
+  },
+  {
+    "id": 33,
+    "method": "GET",
+    "path": "/v1/autopay/runs",
+    "protocol": "rest",
+    "purpose": "Lịch sử lần tự chạy",
+    "group": "AutoPay / ủy quyền định kỳ"
+  },
+  {
+    "id": 34,
+    "method": "GET",
+    "path": "/v1/autopay/runs/{id}",
+    "protocol": "rest",
+    "purpose": "Chi tiết lần chạy / lỗi / trạng thái",
+    "group": "AutoPay / ủy quyền định kỳ"
+  },
+  {
+    "id": 35,
+    "method": "GET",
+    "path": "/v1/notifications",
+    "protocol": "rest",
+    "purpose": "Danh sách tin nhắn trong app",
+    "group": "Bank App Message / Push"
+  },
+  {
+    "id": 36,
+    "method": "GET",
+    "path": "/v1/notifications/{id}",
+    "protocol": "rest",
+    "purpose": "Chi tiết tin nhắn",
+    "group": "Bank App Message / Push"
+  },
+  {
+    "id": 37,
+    "method": "PATCH",
+    "path": "/v1/notifications/{id}/read",
+    "protocol": "rest",
+    "purpose": "Đánh dấu đã đọc",
+    "group": "Bank App Message / Push"
+  },
+  {
+    "id": 38,
+    "method": "POST",
+    "path": "/v1/devices/push-tokens",
+    "protocol": "rest",
+    "purpose": "Đăng ký token của thiết bị",
+    "group": "Bank App Message / Push"
+  },
+  {
+    "id": 39,
+    "method": "PATCH",
+    "path": "/v1/notifications/preferences",
+    "protocol": "rest",
+    "purpose": "Bật/tắt kênh thông báo tùy chọn",
+    "group": "Bank App Message / Push"
+  },
+  {
+    "id": 40,
+    "method": "POST",
+    "path": "/internal/autopay/execute-due",
+    "protocol": "internal",
+    "purpose": "Job lịch chạy các mandate đến hạn",
+    "group": "Nội bộ / kết nối đối tác (không public)"
+  },
+  {
+    "id": 41,
+    "method": "POST",
+    "path": "/webhooks/billers/bill-issued",
+    "protocol": "webhook",
+    "purpose": "Nhận sự kiện hóa đơn mới (nếu có)",
+    "group": "Nội bộ / kết nối đối tác (không public)"
+  },
+  {
+    "id": 42,
+    "method": "POST",
+    "path": "/webhooks/billers/payment-status",
+    "protocol": "webhook",
+    "purpose": "Nhận xác nhận kết quả từ đối tác",
+    "group": "Nội bộ / kết nối đối tác (không public)"
+  },
+  {
+    "id": 43,
+    "method": "POST",
+    "path": "/internal/reconciliation/run",
+    "protocol": "internal",
+    "purpose": "Đối soát core ↔ nhà cung cấp",
+    "group": "Nội bộ / kết nối đối tác (không public)"
+  },
+  {
+    "id": 44,
+    "method": "POST",
+    "path": "/internal/notifications/dispatch",
+    "protocol": "internal",
+    "purpose": "Đẩy sự kiện vào inbox / APNs / FCM",
+    "group": "Nội bộ / kết nối đối tác (không public)"
+  },
+  {
+    "id": 45,
+    "method": "GET",
+    "path": "/internal/reconciliation/exceptions",
+    "protocol": "internal",
+    "purpose": "Liệt kê lệch, pending, tra soát",
+    "group": "Nội bộ / kết nối đối tác (không public)"
+  }
+]

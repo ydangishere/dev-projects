@@ -1,5 +1,10 @@
 ## Dev Projects
 
+## Featured architecture: Bank Payment + Water AutoPay
+
+[**Bank Payment + Water AutoPay — 45 API, Backend Flow, AI Agent Flow & API Protocol Diagram**](./bank-payment-water-autopay/README.md) — complete Payment → OTP → Debit → Balance → Notification → monthly water-bill AutoPay reference architecture. Includes `backend_flow.png`, `ai_agent_flow.png`, a REST/gRPC/WebSocket/Webhook/Kafka grouping diagram, a searchable 45-endpoint HTML guide, and an **offline simulation** (no actual bank payments).
+
+
 ### Featured automation: Jobs Multi-Agent
 
 [**Jobs Multi-Agent — AI Job Hunter → Codex CV Tailor → ChatGPT Reporter**](./jobs-multi-agent/README.md) combines ChatGPT scheduled job research, a Google Drive JD/CV bridge and Windows Codex CLI to tailor copies of existing HTML CVs. Includes an illustrated [agent flow diagram](./jobs-multi-agent/docs/agent-flow.svg), PowerShell scripts and setup instructions. **Integration configured; end-to-end validation pending. No automatic job applications.**
