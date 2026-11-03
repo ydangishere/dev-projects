@@ -1,5 +1,10 @@
 ## Dev Projects
 
+### Featured automation: Jobs Multi-Agent
+
+[**Jobs Multi-Agent — AI Job Hunter → Codex CV Tailor → ChatGPT Reporter**](./jobs-multi-agent/README.md) combines ChatGPT scheduled job research, a Google Drive JD/CV bridge and Windows Codex CLI to tailor copies of existing HTML CVs. Includes an illustrated [agent flow diagram](./jobs-multi-agent/docs/agent-flow.svg), PowerShell scripts and setup instructions. **Integration configured; end-to-end validation pending. No automatic job applications.**
+
+
 ## Standalone GitHub projects discovered in portfolio re-audit
 
 The projects below are in **separate GitHub repositories** (not copies of this monorepo). They should be evaluated on their actual implementation and authorship before being described as customer-delivered or production systems.
