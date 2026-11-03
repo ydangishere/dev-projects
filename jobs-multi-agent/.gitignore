@@ -1,0 +1,19 @@
+# Keep private CVs, identities, job manifests, output reports and credentials out of GitHub.
+.env
+.env.*
+!*.example
+**/inbox-jd/
+**/outbox-cv/
+**/reports/
+**/outbox/
+**/processed/
+**/drive-processed/
+**/work/
+**/*.done
+**/jobs-*.json
+**/report-*.json
+**/CV-*.zip
+**/index.html
+**/resume*.pdf
+**/cv*.pdf
+*.log
