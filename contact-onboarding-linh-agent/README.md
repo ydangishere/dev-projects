@@ -1,5 +1,10 @@
 # Linh — Contact Sync & Invite Onboarding AI Agent (MVP)
 
+**Referral website demo:** [View demo](https://ydangkuul.github.io/referral-site/)
+
+> The linked referral website illustrates the wider referral product. It is **not** connected to this prototype's contact-sync APIs or the simulated Linh AI agent.
+
+
 > **Status:** runnable **offline prototype** with synthetic data. **Linh is a simulated AI character**, NOT a real person or a VietPay employee. No real iOS/Android contacts, SMS/Zalo delivery, registration tracking, or production users are connected.
 
 This project implements a privacy-first FastAPI backend for a referral onboarding funnel with **two independent user journeys**. The mobile OS handles native permissions and picker UI; the backend validates consent and handles draft data; Linh AI explains the choice but **cannot** authorize access, sync on its own, or send invitations.
