@@ -1,0 +1,18 @@
+[
+  {"source":"jira","external_id":"DEMO-101","title":"Appointment API returns HTTP 500","description":"Patient calendar returns 500 during GET request","url":"https://example.invalid/browse/DEMO-101"},
+  {"source":"jira","external_id":"DEMO-102","title":"Double booking same slot","description":"Two patients booked the same slot 09:00 with the same doctor","url":"https://example.invalid/browse/DEMO-102"},
+  {"source":"email","external_id":"demo-mail-103","title":"Double charged for consultation","description":"Payment charged twice after repeated button clicks"},
+  {"source":"jira","external_id":"DEMO-104","title":"Slow API response","description":"Patient appointment listing takes 10 seconds for 1000 records"},
+  {"source":"jira","external_id":"DEMO-105","title":"Unauthorized medical record access","description":"Patient A can view another patient's record by changing ID"},
+  {"source":"email","external_id":"demo-mail-106","title":"Doctor login fails","description":"Login session expired repeatedly"},
+  {"source":"jira","external_id":"DEMO-107","title":"Database migration breaks patient table","description":"Required column NOT NULL added before old data was backfilled"},
+  {"source":"email","external_id":"demo-mail-108","title":"Pharmacy timeout","description":"Pharmacy unavailable after prescription submission"},
+  {"source":"jira","external_id":"DEMO-109","title":"Payment success but missing order","description":"Payment success webhook received, order not created"},
+  {"source":"email","external_id":"demo-mail-110","title":"Stale data in appointment UI","description":"Patient sees old appointment time after doctor edits schedule"},
+  {"source":"jira","external_id":"DEMO-111","title":"AI changed 15 files","description":"AI changed unrelated files for one button bug"},
+  {"source":"jira","external_id":"DEMO-112","title":"Works local, fails production","description":"Application works on local but error in production"},
+  {"source":"jira","external_id":"DEMO-113","title":"Regression after fix","description":"Fix for booking broke cancellation function"},
+  {"source":"email","external_id":"demo-mail-114","title":"Lost update in patient profile","description":"Two editors overwrite changes to the same profile"},
+  {"source":"jira","external_id":"DEMO-115","title":"Outage after deployment","description":"After deploy patients cannot open appointment page"},
+  {"source":"email","external_id":"demo-mail-116","title":"Question about office parking","description":"No technical incident details"}
+]

@@ -1,0 +1,29 @@
+name: Jira + Email Bug Triage (Demo default)
+on:
+  workflow_dispatch:
+  schedule:
+    # 09:00 Vietnam (02:00 UTC), Mon-Fri; mock-only unless deliberately configured
+    - cron: '0 2 * * 1-5'
+permissions:
+  contents: read
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: jira-email-bug-triage-agent
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Run DEMO classification
+        run: python -m triage_agent.cli --mode mock --output reports
+      - name: Upload advisory report
+        uses: actions/upload-artifact@v4
+        with:
+          name: bug-triage-demo-report
+          path: jira-email-bug-triage-agent/reports/
+          retention-days: 7
