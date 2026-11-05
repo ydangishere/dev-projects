@@ -1,5 +1,10 @@
 # VietPay MMS — AI Document Checker
 
+**MMS website demo:** [View demo](https://ydangkuul.github.io/mms130926/index.html)
+
+> The linked MMS website is a separate UI reference/demo. It is **not** connected to this AI Document Checker backend, and does not imply a production bank integration.
+
+
 [Tiếng Việt](README.vi.md) · [Security model](docs/SECURITY.md) · [Server deployment](docs/DEPLOYMENT.md) · [Test evidence](docs/VALIDATION.md)
 
 An end-to-end runnable **document-checking assistant for VietPay MMS**, a merchant management system in a payment-company context. Its intended primary users are **PVcomBank Card Center employees**, including the bank's maker and checker roles.
