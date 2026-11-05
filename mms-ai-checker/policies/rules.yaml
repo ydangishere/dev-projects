@@ -1,0 +1,21 @@
+# SYNTHETIC training policy; not PVcomBank/VietPay policy or legal advice.
+policy_id: DEMO-POLICY-01
+version: '0.1'
+tenant: pvcb
+effective_from: '2026-01-01'
+effective_to: '2027-12-31'
+required_documents:
+  - business_license
+  - representative_id
+  - bank_confirmation
+expiry_required:
+  - representative_id
+minimum_confidence: 0.9
+rules:
+  required: R1
+  expiry: R2
+  matching: R3
+  verification: R4
+  uncertainty: R5
+  security: R6
+  human_review: R7

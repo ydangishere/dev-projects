@@ -1,0 +1,40 @@
+name: MMS AI Checker
+on:
+  push:
+    paths: ['mms-ai-checker/**', '.github/workflows/mms-ai-checker.yml']
+  pull_request:
+    paths: ['mms-ai-checker/**', '.github/workflows/mms-ai-checker.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mms-ai-checker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: mms-ai-checker/requirements*.txt
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check app tests scripts
+      - run: node --check static/app.js
+      - run: pytest -q
+      - run: python scripts/evaluate.py
+      - run: pip-audit -r requirements.txt
+      - run: docker build -t mms-ai-checker:${{ github.sha }} .
+      - name: Container smoke test
+        run: |
+          docker run -d --name checker -p 127.0.0.1:8000:8000 mms-ai-checker:${{ github.sha }}
+          python scripts/smoke.py
+          docker logs checker
+          docker stop checker
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mms-evaluation
+          path: mms-ai-checker/docs/evaluation.json
+# CD is deliberately an operator runbook, not automatic SSH to an unknown bank server.

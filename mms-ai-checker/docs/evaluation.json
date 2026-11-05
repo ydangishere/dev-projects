@@ -1,0 +1,40 @@
+{
+  "scope": "synthetic deterministic rules only; no real documents or live Gemini",
+  "review_date": "2026-11-05",
+  "policy_sha256": "555a6fffc21a460a5340e0c73241363656689b065919a4221940437f1b631b82",
+  "cases": [
+    {
+      "application_id": "APP-DEMO-001",
+      "expected": [
+        "missing_document",
+        "unverified_version",
+        "expired"
+      ],
+      "actual": [
+        "missing_document",
+        "unverified_version",
+        "expired"
+      ],
+      "exact_match": true
+    },
+    {
+      "application_id": "APP-DEMO-002",
+      "expected": [
+        "mismatch"
+      ],
+      "actual": [
+        "mismatch"
+      ],
+      "exact_match": true
+    },
+    {
+      "application_id": "APP-DEMO-003",
+      "expected": [],
+      "actual": [],
+      "exact_match": true
+    }
+  ],
+  "exact_match_cases": 3,
+  "total_cases": 3,
+  "production_accuracy": "not measured"
+}

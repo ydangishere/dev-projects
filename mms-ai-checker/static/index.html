@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="vi">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MMS • Trợ lý kiểm tra hồ sơ</title><link rel="stylesheet" href="/assets/style.css"><script src="/assets/app.js" defer></script></head>
+<body>
+<header><div><span class="brand">VIETPAY <b>MMS</b></span><span class="context">Trung tâm thẻ · PVcomBank</span></div><span id="mode" class="pill">Đang kết nối</span></header>
+<main>
+<section class="intro"><p class="eyebrow">TRỢ LÝ NGHIỆP VỤ / 01</p><h1>Kiểm tra hồ sơ, có căn cứ.</h1><p>Tìm giấy tờ thiếu, hết hạn và thông tin không khớp. Mở bằng chứng trước khi quyết định.</p><div class="notice">Bản thử nghiệm độc lập · dữ liệu và quy định giả lập · chưa kết nối MMS/ngân hàng thật.</div></section>
+<section class="session"><label for="token">Mã truy cập thử nghiệm</label><div class="row"><input id="token" type="password" autocomplete="off" placeholder="Nhập token từ README"><button id="connect">Kết nối</button><button id="disconnect" class="secondary">Đăng xuất</button></div><small>Demo: <code>demo-checker-token</code> · token chỉ giữ trong bộ nhớ trang.</small></section>
+<p id="status" role="status" aria-live="polite">Kết nối để chọn hồ sơ.</p>
+<div class="workspace">
+<aside class="panel"><p class="eyebrow">HỒ SƠ DOANH NGHIỆP</p><label for="application">Hồ sơ được phép xem</label><select id="application" disabled><option>Chưa kết nối</option></select><h2 id="merchant">Chọn hồ sơ</h2><p id="description" class="muted"></p><div id="documents"></div>
+<details><summary>Bổ sung / thay giấy tờ</summary><p class="muted">Tệp mới luôn chờ xác minh. Kết quả cũ sẽ mất hiệu lực.</p><label for="kind">Loại giấy tờ</label><select id="kind"><option value="business_license">Đăng ký kinh doanh</option><option value="representative_id">Giấy tờ người đại diện</option><option value="bank_confirmation">Xác nhận tài khoản</option></select><label for="file">PDF, JPEG, PNG · tối đa 5 MiB / 20 trang</label><input id="file" type="file" accept=".pdf,.png,.jpg,.jpeg,.txt"><small>Chế độ demo chỉ đọc TXT giả lập. PDF/ảnh cần Gemini.</small><button id="upload" class="secondary">Tải lên và thay phiên bản</button></details></aside>
+<section class="panel conversation"><div class="row spread"><div><p class="eyebrow">AI KIỂM TRA HỒ SƠ</p><h2>Hỏi trợ lý</h2></div><span class="pill">Nhân viên quyết định duyệt</span></div>
+<div class="bubble employee">Hồ sơ này còn thiếu gì để được duyệt?</div><p class="muted">Trợ lý kiểm tra cùng bộ quy tắc cho mọi câu hỏi; nội dung nhập không thay đổi điều kiện duyệt.</p>
+<label for="question">Câu hỏi của bạn</label><textarea id="question" maxlength="500" rows="2">Hồ sơ này còn thiếu gì để được duyệt?</textarea><button id="check" disabled>Kiểm tra hồ sơ</button>
+<div id="answer" aria-live="polite"><div class="empty">Chọn hồ sơ và bắt đầu kiểm tra.<br><small>Kết quả sẽ có quy định, phiên bản và nguồn đối chiếu.</small></div></div></section>
+</div>
+<section class="panel evidence"><div class="row spread"><h2>Bằng chứng &amp; quy định</h2><span class="muted">Chọn “Xem căn cứ” ở từng phát hiện</span></div><div id="evidence"><p class="muted">Giấy tờ thiếu được đối chiếu từ danh sách hồ sơ; AI không tạo trang nguồn giả.</p></div></section>
+<footer>Phạm vi bản này: Kiểm tra hồ sơ. Giải thích giao dịch/chi trả và Hướng dẫn xử lý nằm ngoài phạm vi.</footer>
+</main></body></html>

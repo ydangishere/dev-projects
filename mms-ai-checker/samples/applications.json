@@ -1,0 +1,33 @@
+[
+  {
+    "id": "APP-DEMO-001", "tenant": "pvcb",
+    "application": {"legal_name": "Công ty Mẫu Sao Mai", "registration_number": "DEMO-001", "description": "Thiếu xác nhận tài khoản, giấy tờ hết hạn và phiên bản chưa xác minh"},
+    "documents": [
+      {"id": "DOC-001-LIC", "kind": "business_license", "version": 2, "verified_version": 1, "verification": "pending", "text": "SYNTHETIC DOCUMENT — NOT VALID\nlegal_name: Công ty Mẫu Sao Mai\nregistration_number: DEMO-001\n"},
+      {"id": "DOC-001-ID", "kind": "representative_id", "version": 1, "verified_version": 1, "verification": "verified", "text": "SYNTHETIC DOCUMENT — NOT VALID\nexpires_on: 2025-01-01\n"}
+    ]
+  },
+  {
+    "id": "APP-DEMO-002", "tenant": "pvcb",
+    "application": {"legal_name": "Công ty Mẫu An Nhiên", "registration_number": "DEMO-002", "description": "Tên chủ tài khoản không khớp"},
+    "documents": [
+      {"id": "DOC-002-LIC", "kind": "business_license", "version": 1, "verified_version": 1, "verification": "verified", "text": "SYNTHETIC DOCUMENT — NOT VALID\nlegal_name: Công ty Mẫu An Nhiên\nregistration_number: DEMO-002\n"},
+      {"id": "DOC-002-ID", "kind": "representative_id", "version": 1, "verified_version": 1, "verification": "verified", "text": "SYNTHETIC DOCUMENT — NOT VALID\nexpires_on: 2030-12-31\n"},
+      {"id": "DOC-002-BANK", "kind": "bank_confirmation", "version": 1, "verified_version": 1, "verification": "verified", "text": "SYNTHETIC DOCUMENT — NOT VALID\nlegal_name: Công ty Mẫu Khác\n"}
+    ]
+  },
+  {
+    "id": "APP-DEMO-003", "tenant": "pvcb",
+    "application": {"legal_name": "Công ty Mẫu Bình Minh", "registration_number": "DEMO-003", "description": "Không phát hiện lỗi trong phạm vi quy tắc demo"},
+    "documents": [
+      {"id": "DOC-003-LIC", "kind": "business_license", "version": 1, "verified_version": 1, "verification": "verified", "text": "SYNTHETIC DOCUMENT — NOT VALID\nlegal_name: Công ty Mẫu Bình Minh\nregistration_number: DEMO-003\n"},
+      {"id": "DOC-003-ID", "kind": "representative_id", "version": 1, "verified_version": 1, "verification": "verified", "text": "SYNTHETIC DOCUMENT — NOT VALID\nexpires_on: 2030-12-31\n"},
+      {"id": "DOC-003-BANK", "kind": "bank_confirmation", "version": 1, "verified_version": 1, "verification": "verified", "text": "SYNTHETIC DOCUMENT — NOT VALID\nlegal_name: Công ty Mẫu Bình Minh\n"}
+    ]
+  },
+  {
+    "id": "APP-OTHER-001", "tenant": "other-bank",
+    "application": {"legal_name": "Hidden tenant fixture", "registration_number": "OTHER-001", "description": "Authorization test fixture"},
+    "documents": []
+  }
+]
