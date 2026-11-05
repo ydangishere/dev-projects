@@ -1,5 +1,9 @@
 ## Dev Projects
 
+## Featured onboarding AI Agent: Linh — Contact Sync & Select to Invite
+
+[**Linh Contact Onboarding AI Agent (MVP)**](./contact-onboarding-linh-agent/README.md) — runnable FastAPI backend and **simulated Linh AI persona** for two independent mobile referral onboarding paths: permission-gated in-app contact reading with separate backend sync consent, or native OS picker to select an invitee without broad address-book permission. Includes an illustrated [two-flow diagram](./contact-onboarding-linh-agent/diagrams/onboarding-flow.svg), optional **OpenAI gpt-4.1-mini**, offline rules, privacy-conscious demo storage, tests and a manual sharing gate. **Synthetic prototype only; no live phone contacts, real sending, or registration tracking.**
+
 ## Featured automation: Jira + Email Bug Triage AI Agent
 
 [**Jira + Email Bug Triage AI Agent (Healthcare MVP)**](./jira-email-bug-triage-agent/README.md) — Python incident-report classification prototype for 15 healthcare bug scenarios, with the requested **Situation → Problem → Fix → Tools** checklist, two PNG diagrams, mocked Jira and Gmail inputs, optional AI classification, Markdown/JSON reports, tests, and a weekday GitHub Actions demo. **Not connected to live Jira/Gmail accounts; read-only integrations are opt-in for future users; no automated code fixes.**
