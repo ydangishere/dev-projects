@@ -1,5 +1,9 @@
 ## Dev Projects
 
+## Featured automation: Jira + Email Bug Triage AI Agent
+
+[**Jira + Email Bug Triage AI Agent (Healthcare MVP)**](./jira-email-bug-triage-agent/README.md) — Python incident-report classification prototype for 15 healthcare bug scenarios, with the requested **Situation → Problem → Fix → Tools** checklist, two PNG diagrams, mocked Jira and Gmail inputs, optional AI classification, Markdown/JSON reports, tests, and a weekday GitHub Actions demo. **Not connected to live Jira/Gmail accounts; read-only integrations are opt-in for future users; no automated code fixes.**
+
 ## Featured AI feature: VietPay MMS Document Checker
 
 [**MMS AI Checker — English**](./mms-ai-checker/README.md) · [**Tiếng Việt**](./mms-ai-checker/README.vi.md) — runnable Python/FastAPI document-checking prototype for the intended PVcomBank Card Center employee workflow in VietPay MMS: OCR/document extraction → local Markdown RAG → YAML-driven rules → Gemini explanation, with source/version evidence, a review UI, tenant/role checks, Docker, CI and tests. Includes PNG backend and employee UX flow diagrams. **Synthetic demo by default; optional Gemini integration requires a key; no live bank/MMS integration or production-delivery claim.** Transaction/payout explanation and general handling guidance are outside this build.
