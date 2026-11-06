@@ -21,6 +21,40 @@ This is an independent portfolio prototype. It is **not an official VietPay/PVco
 
 The checking UI can identify an issue and its rule. This does not implement the separate general procedural-guidance assistant. It does not approve, reject, change KYC/KYB status, request documents externally or move money.
 
+## Planned module: Transaction failure investigation (architecture only)
+
+**Status: design proposal, NOT implemented in this repository.** This extends the three-feature MMS assistant with transaction investigation. The existing runnable demo remains **document checking only**; there are no live transaction, core-banking, switch, fraud or reconciliation connections, and LangGraph is not part of the current executable checker.
+
+```mermaid
+flowchart TD
+    A[Employee enters Transaction ID] --> B[FastAPI authentication and role / tenant authorization]
+    B --> C[LangGraph Agent: Transaction Investigation - planned]
+    C --> D[Read-only banking data adapters - planned]
+    D --> E1[Authentication API - historical auth evidence]
+    D --> E2[Transaction API - status and error codes]
+    D --> E3[Core Banking API - debit and ledger entries]
+    D --> E4[Payment Switch API - routing and bank response]
+    D --> E5[Fraud / Risk API - holds and risk decisions]
+    D --> E6[Transaction Logs - timestamps and correlation IDs]
+    D --> E7[Reconciliation API - settlement and matching status]
+    E1 --> F[Aggregate evidence and identify unknowns]
+    E2 --> F
+    E3 --> F
+    E4 --> F
+    E5 --> F
+    E6 --> F
+    E7 --> F
+    F --> G[RAG - approved error-code catalog, policies and handling procedures]
+    G --> H[LLM - grounded explanation and recommended next steps]
+    H --> I[Employee reviews result; no autonomous fund movement]
+```
+
+**Data versus knowledge:** Transaction, core-banking, switch, fraud, log and reconciliation APIs provide **transaction-specific evidence**; RAG retrieves **approved documentation** to interpret error codes, policies and remediation procedures. RAG is **not** the source of transaction status, debit/credit confirmation, or reconciliation truth. Retrieval could be lexical or vector-based; no vector database or transaction RAG pipeline is implemented here.
+
+**Investigation rules:** Enforce authorization before any lookup; use read-only, least-privilege adapters and redact sensitive data; correlate timestamps and IDs across services. Keep `FAILED`, `PENDING` and confirmed `SUCCESS` distinct. A debit followed by a payment-switch timeout does **not** prove that the recipient was not credited: treat it as unresolved until receiving-bank confirmation/reconciliation, and never automatically retry or reverse money movement. Surface verified facts separately from unresolved questions, record audit traces and route financial actions to existing controlled bank workflows.
+
+**Interfaces above are illustrative integration points, not a claim that seven named APIs already exist.** Their actual availability and semantics depend on the bank and payment rail.
+
 ## Quick start
 
 Python **3.12** and a modern browser are sufficient. Start from the monorepo root:
