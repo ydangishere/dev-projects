@@ -16,6 +16,40 @@
 
 Bản này nêu vấn đề và quy định liên quan, chưa phải trợ lý hướng dẫn nghiệp vụ tổng quát. AI không duyệt/từ chối hồ sơ, không sửa trạng thái KYC/KYB (xác minh cá nhân/doanh nghiệp), không gửi yêu cầu ra ngoài và không chuyển tiền.
 
+## Module dự kiến: Điều tra giao dịch thất bại (chỉ thiết kế kiến trúc)
+
+**Trạng thái: kiến trúc đề xuất, CHƯA được triển khai trong repository.** Bản demo đang chạy chỉ có **AI kiểm tra hồ sơ**. Chưa tích hợp dữ liệu giao dịch, Core Banking, Payment Switch, Fraud, đối soát của ngân hàng thật; chưa dùng LangGraph để điều tra giao dịch trong code hiện tại.
+
+```mermaid
+flowchart TD
+    A[Nhân viên nhập Transaction ID] --> B[FastAPI xác thực và phân quyền vai trò / đơn vị]
+    B --> C[LangGraph Agent: Điều tra giao dịch - dự kiến]
+    C --> D[Các bộ kết nối ngân hàng chỉ đọc - dự kiến]
+    D --> E1[Authentication API - lịch sử xác thực]
+    D --> E2[Transaction API - trạng thái và mã lỗi]
+    D --> E3[Core Banking API - bút toán trừ tiền và sổ cái]
+    D --> E4[Payment Switch API - điều hướng và phản hồi ngân hàng]
+    D --> E5[Fraud / Risk API - chặn và đánh giá rủi ro]
+    D --> E6[Transaction Logs - thời gian và mã liên kết]
+    D --> E7[Reconciliation API - trạng thái đối soát]
+    E1 --> F[Tổng hợp bằng chứng và điểm chưa xác định]
+    E2 --> F
+    E3 --> F
+    E4 --> F
+    E5 --> F
+    E6 --> F
+    E7 --> F
+    F --> G[RAG - tra mã lỗi, quy định và hướng dẫn xử lý đã phê duyệt]
+    G --> H[LLM - giải thích có căn cứ và đề xuất bước tiếp theo]
+    H --> I[Nhân viên kiểm tra; AI không tự chuyển tiền]
+```
+
+**Phân biệt dữ liệu và kiến thức:** Transaction API, Core Banking, Payment Switch, Fraud, Logs và Reconciliation cung cấp **bằng chứng của giao dịch cụ thể**. RAG (truy xuất tài liệu hỗ trợ AI trả lời) dùng để tìm **mã lỗi, quy định nội bộ và hướng dẫn xử lý**. RAG **không** thay thế API trong việc xác nhận giao dịch đã trừ/ghi có hay đối soát. Có thể tra theo từ khóa hoặc vector; dự án hiện **chưa** triển khai RAG tra lỗi giao dịch hay Vector DB.
+
+**Nguyên tắc xử lý:** Xác thực và phân quyền trước khi truy vấn; dùng kết nối chỉ đọc, tối thiểu quyền, che dữ liệu nhạy cảm; đối chiếu Transaction ID, timestamp và correlation ID giữa các hệ thống. Phân biệt rõ `FAILED` (thất bại), `PENDING` (chờ kết quả) và `SUCCESS` (đã xác nhận thành công). Nếu đã trừ tiền nhưng Payment Switch bị timeout, chưa thể kết luận người nhận không được ghi có; phải chờ xác nhận/đối soát, **không tự động chuyển lại hay hoàn tiền**. AI cần tách bằng chứng đã xác minh khỏi điều chưa rõ và chuyển thao tác tài chính sang quy trình ngân hàng được kiểm soát.
+
+**Các API trong sơ đồ là điểm tích hợp minh họa, không khẳng định ngân hàng đã có đúng bảy API này.**
+
 ## Cài nhanh và dùng ngay
 
 Cần **Python 3.12** và trình duyệt. Từ thư mục gốc `dev-projects`:
