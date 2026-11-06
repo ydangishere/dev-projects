@@ -1,4 +1,4 @@
-# Jobs Multi-Agent — AI Job Hunter → CV Tailor → ChatGPT Report
+# Jobs Multi-Agent — AI + UI/UX Job Hunter → CV Tailor → ChatGPT Report
 
 > **Status: integrated components, end-to-end validation pending.** This is an automation project, **not** an auto-apply bot. No applications are submitted.
 
@@ -8,9 +8,9 @@
 
 | Agent | Runtime | Việc thực hiện | Output |
 |---|---|---|---|
-| **1. Job Hunter** | ChatGPT Scheduled Task, 04:00 Monday (Asia/Ho_Chi_Minh) | Research Skill → external web research → deep research **if available**; tìm AI Engineer/AI Solution Architect tại TP.HCM, chỉ giữ tin trong 7 ngày và link còn truy cập được | `inbox-jd/jobs-YYYY-MM-DD.json` |
+| **1. Job Hunter** | ChatGPT Scheduled Task, 04:00 Monday (Asia/Ho_Chi_Minh) | Research Skill → external web research → deep research **if available**; tìm **hai nhóm AI Engineer / AI Solution Architect và UI/UX Designer / Product Designer** tại TP.HCM, tin mới trong 7 ngày và link được kiểm tra | `inbox-jd/jobs-YYYY-MM-DD.json` |
 | **2. CV Tailor** | Codex CLI on Windows, Windows Task Scheduler at 04:20 / 04:50 / 05:20 / 05:50 Monday | Đọc JD từ Drive; chọn CV phù hợp trong local CV directory; sao chép thư mục; chỉnh **index.html của bản sao** | `outbox-cv/CV-*.zip`, `reports/report-*.json` |
-| **3. Reporter** | ChatGPT Scheduled Task, 06:30 Monday | Tra kết quả trên Drive; đối chiếu link JD + link CV ZIP; gửi báo cáo vào ChatGPT | Báo cáo + link thật |
+| **3. Reporter** | ChatGPT Scheduled Task, 06:30 Monday | Tra kết quả trên Drive; đối chiếu link JD + link CV ZIP; gửi **một báo cáo chung**, chia 2 mục AI và UI/UX | Báo cáo + link thật |
 
 **Google Drive bridge:** One private folder `ChatGPT-Jobs-Bridge` with three subfolders `inbox-jd`, `outbox-cv`, `reports`. Google Drive for desktop mounts it on Windows.
 
@@ -61,6 +61,7 @@ The cloud agent is instructed to produce this JSON **only for verified, newly po
   "window_end_local": "YYYY-MM-DD",
   "jobs": [
     {
+      "category": "AI",
       "company": "Employer name",
       "position": "Role title",
       "jd_url": "https://employer.example/jobs/role",
@@ -77,7 +78,7 @@ The cloud agent is instructed to produce this JSON **only for verified, newly po
 }
 ```
 
-The Windows processor accepts files named `jobs-*.json`; the queue is content-hash deduplicated. For zero verified jobs, the cloud agent may upload `jobs: []` (no CV editing).
+Field `category` is `AI` or `UIUX`. Agent 1 sends one combined manifest for both job groups, and both scheduled reports are grouped by these two categories. For UI/UX jobs, CV selection must use genuine design/product-design evidence; no made-up or mismatched AI CV claims. LinkedIn URLs are allowed if they genuinely match the posting, formatted `https://www.linkedin.com/jobs/view/JOB_ID/` using a real, verified job ID. The Windows processor accepts files named `jobs-*.json`; the queue is content-hash deduplicated. For zero verified jobs, the cloud agent may upload `jobs: []` (no CV editing).
 
 ## CV Tailor editing policy
 
@@ -127,4 +128,4 @@ jobs-multi-agent/
 └── .gitignore                 # Prevent sensitive output from entering Git
 ```
 
-**English short summary:** Cloud ChatGPT discovers and validates job descriptions; Google Drive exchanges manifests and result files; Codex CLI on the user's Windows workstation copies and tailors the best matching existing HTML resume; ChatGPT reports links to the user. Human review is required; no applications are submitted.
+**English short summary:** Cloud ChatGPT discovers and validates both AI and UI/UX/Product Design job descriptions; Google Drive exchanges manifests and result files; Codex CLI on the user's Windows workstation copies and tailors the best matching existing HTML resume; ChatGPT reports links to the user. Human review is required; no applications are submitted.
