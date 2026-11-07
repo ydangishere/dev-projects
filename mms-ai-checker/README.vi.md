@@ -125,7 +125,15 @@ Chúng ta chọn phương án dưới đây để xây RAG (tìm tài liệu là
 
 Trạng thái: kiến trúc đã chọn cho bước phát triển tiếp theo. Code chạy được hiện tại trong `app/rag.py` mới tìm theo từ khóa tại chỗ; cập nhật tài liệu này chưa triển khai tách câu hỏi, viết lại câu hỏi, tìm vector, gộp tìm kiếm kết hợp hay xếp hạng lại bằng model.
 
-### Luồng tìm kiếm và tạo câu trả lời đã chọn
+### 1. Chuẩn bị tài liệu khi thêm hoặc cập nhật
+
+```text
+Upload (tải tài liệu) --> Đọc nội dung và cấu trúc --> Chia chunk (đoạn tài liệu) --> Gắn nguồn và metadata (thông tin đi kèm) --> Tạo embedding (vector biểu diễn nội dung) --> Lập chỉ mục vector và từ khóa
+```
+
+Đây là luồng chuẩn bị tài liệu, không cần chạy lại mỗi khi nhập câu hỏi. Mỗi chunk giữ nguồn tài liệu/trang/mục, phiên bản quy định và ngày hiệu lực. Khi quy định thay đổi, cập nhật các chunk và chỉ mục bị ảnh hưởng; giữ căn cứ lịch sử và loại phiên bản đã thay thế khỏi phạm vi tìm quy định hiện hành. Chunk size (kích thước đoạn) và overlap (phần chồng lặp) là tham số thử nghiệm, chưa phải cấu hình tối ưu đã đo.
+
+### 2. Tìm kiếm và trả lời mỗi khi nhập câu hỏi
 
 ```text
 Query (câu hỏi) --> Decomposition (tách câu hỏi nếu cần) --> Rewriting (viết rõ từng câu) --> Metadata Filtering (lọc tài liệu) --> Hybrid Search [Vector Search (tìm theo ý nghĩa) + Keyword Search (tìm theo từ khóa) --> Gộp kết quả, bỏ trùng] --> Reranking (xếp hạng lại) --> Chọn chunk (đoạn tài liệu) --> Generation (tạo câu trả lời)
@@ -139,7 +147,13 @@ Query (câu hỏi) --> Decomposition (tách câu hỏi nếu cần) --> Rewritin
 6. Reranking: chấm lại các đoạn ứng viên theo từng câu đã làm rõ rồi chọn đoạn hữu ích nhất. Top-K (số đoạn ứng viên lấy về) và số đoạn cuối cùng đưa cho AI là hai tham số riêng; tổng hợp căn cứ từ các câu nhỏ khi cần.
 7. Generation: dùng câu hỏi gốc, các đoạn quy định đã chọn và phát hiện cố định của Rule Engine (bộ máy chạy luật) để giải thích kèm nguồn. Căn cứ của mọi luật bắt buộc vẫn phải có, kể cả nằm ngoài danh sách xếp hạng đã chọn. Model không được xóa phát hiện hay duyệt hồ sơ; thiếu căn cứ thì báo chưa đủ thông tin.
 
-Chuẩn bị kho tài liệu trước khi tìm kiếm: đọc tài liệu --> chia chunk --> gắn metadata (thông tin đi kèm) và nguồn --> tạo embedding --> lập chỉ mục tìm vector và từ khóa. Chunk size (kích thước đoạn) và overlap (phần chồng lặp) là tham số cần thử nghiệm, chưa phải cấu hình tối ưu đã đo.
+### Chunking Lab và lịch sử thử nghiệm dự kiến
+
+Chunking Lab là GUI (giao diện đồ họa) kết nối luồng chuẩn bị tài liệu với việc thử tìm kiếm bằng câu hỏi. Đây là công cụ dự kiến xây, chưa phải màn hình hay dịch vụ lưu thử nghiệm đã triển khai trong checker hiện tại.
+
+Mỗi lần thử cần lưu: cấu hình, phiên bản tài liệu/bộ dữ liệu, cách chia chunk và tham số, mô hình embedding và phiên bản chỉ mục, cấu hình tìm kiếm/xếp hạng lại, bộ câu hỏi có nhãn chuẩn, các chunk tìm được cùng thứ tự, câu trả lời AI, điểm đánh giá, thời gian xử lý và ngày chạy.
+
+Đổi một tham số hoặc một cách chia mỗi lần, chạy lại cùng bộ câu hỏi rồi so sánh kết quả đã lưu. Khi so sánh các cách chia chunk, giữ nguyên tài liệu, bộ câu hỏi chuẩn, mô hình embedding và cấu hình tìm kiếm để biết khác biệt đến từ cách chia. Lịch sử cần giữ cấu hình và căn cứ của từng lần chạy để có thể tái lập kết quả.
 
 Khi đánh giá luồng dự kiến này, dùng cùng bộ câu hỏi có nhãn chuẩn và phiên bản quy định áp dụng để so sánh cấu hình. Recall@K (tỷ lệ tìm đủ), Precision@K (tỷ lệ tìm đúng), MRR — Mean Reciprocal Rank (trung bình nghịch đảo thứ hạng) và NDCG — Normalized Discounted Cumulative Gain (điểm hữu ích tích lũy giảm theo thứ hạng, đã chuẩn hóa) chấm tìm kiếm/xếp hạng. Chấm riêng faithfulness (bám nguồn) và answer correctness (độ đúng câu trả lời). Đây là điểm đo, không phải nút chỉnh xếp hạng; chưa được đo bởi bộ đánh giá ba hồ sơ giả lập hiện tại.
 
