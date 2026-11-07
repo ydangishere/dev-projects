@@ -120,6 +120,30 @@ The implementation uses the Google GenAI SDK `models.generate_content`, multimod
 
 Hard findings and AI explanation are displayed separately. Gemini quotes are **model-proposed evidence**, not guaranteed ground truth: page bounds and value/quote consistency are checked, but employees must inspect the actual source. All Gemini-read documents receive an explicit human-review finding.
 
+## AI Check RAG design
+
+We have selected the following approach to build RAG (retrieval-augmented generation) for the AI Check / document-checking module. It retrieves applicable policy evidence to explain document-checking findings; it is separate from the planned transaction-investigation module.
+
+Status: selected architecture for the next iteration. The runnable checker currently uses local lexical retrieval in `app/rag.py`; decomposition, rewriting, embedding-based vector search, hybrid fusion and model-based reranking are not implemented by this documentation update.
+
+### Selected retrieval and generation flow
+
+```text
+Query --> Query Decomposition (if needed) --> Query Rewriting --> Metadata Filtering --> Hybrid Search [Vector Search + Keyword Search --> Merge results and remove duplicates] --> Reranking --> Select chunks --> Generation
+```
+
+1. Query: receive the employee's question with the selected application's authorized context. Authentication and application access checks remain a prerequisite, before this flow.
+2. Query Decomposition: split a multi-part question into smaller questions when necessary. Simple questions pass through unchanged.
+3. Query Rewriting: clarify each question using available conversation/application context. Preserve intent, identifiers and conditions; ask for clarification when context is insufficient.
+4. Metadata Filtering: after rewriting, restrict retrieval to the server-authorized tenant, applicable document type, approved policy version and effective date. Rewriting cannot change or relax permissions.
+5. Hybrid Search: run vector search over chunk embeddings for meaning and keyword search for exact terms/codes within the filtered scope; merge results and remove duplicates. Query and document embeddings must use compatible models; cosine similarity is one possible vector-scoring method.
+6. Reranking: score the retrieved candidates against each clarified question, then select the most useful chunks. Candidate count (Top-K) and final context count are separate settings; combine evidence from the subquestions when needed.
+7. Generation: use the original question, selected policy chunks and immutable Rule Engine findings to produce an explanation with source references. Required rule evidence must remain included even if it falls outside the ranked shortlist. The model cannot remove findings or approve a dossier; insufficient evidence must be reported as uncertainty.
+
+Policy preparation happens before query-time retrieval: parse documents --> chunk them --> attach metadata/source references --> generate embeddings --> index for vector and keyword search. Chunk size and overlap are experiment settings, not proven optimal values.
+
+For evaluation of this planned pipeline, use the same labeled questions and applicable policy versions when comparing configurations. Recall@K and Precision@K measure retrieval coverage and relevance; MRR (Mean Reciprocal Rank) and NDCG (Normalized Discounted Cumulative Gain) measure ranking quality. Evaluate answer faithfulness and answer correctness separately. These are evaluation results, not ranking knobs, and are not claimed as measured by the current three-case synthetic checker evaluation.
+
 ### What MD, YAML and JSON do
 
 | Format | Used for |
