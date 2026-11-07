@@ -157,6 +157,26 @@ Mỗi lần thử cần lưu: cấu hình, phiên bản tài liệu/bộ dữ li
 
 Khi đánh giá luồng dự kiến này, dùng cùng bộ câu hỏi có nhãn chuẩn và phiên bản quy định áp dụng để so sánh cấu hình. Recall@K (tỷ lệ tìm đủ), Precision@K (tỷ lệ tìm đúng), MRR — Mean Reciprocal Rank (trung bình nghịch đảo thứ hạng) và NDCG — Normalized Discounted Cumulative Gain (điểm hữu ích tích lũy giảm theo thứ hạng, đã chuẩn hóa) chấm tìm kiếm/xếp hạng. Chấm riêng faithfulness (bám nguồn) và answer correctness (độ đúng câu trả lời). Đây là điểm đo, không phải nút chỉnh xếp hạng; chưa được đo bởi bộ đánh giá ba hồ sơ giả lập hiện tại.
 
+### Công cụ đánh giá và theo dõi (dự kiến tích hợp)
+
+Ba công cụ có vai trò khác nhau. Việc bổ sung tài liệu này chưa cài đặt hay kết nối chúng vào code checker; không bắt buộc dùng cả ba.
+
+| Công cụ | Vai trò trong thiết kế RAG cho AI Check / Chunking Lab |
+|---|---|
+| [LangSmith](https://docs.langchain.com/langsmith/evaluation-types) | Theo dõi từng bước chạy, quản lý bộ câu hỏi đánh giá và so sánh các lần thử qua giao diện. Ghi các đoạn tìm được, câu trả lời, thời gian xử lý và kết quả chấm để tìm nguyên nhân khi chất lượng giảm. |
+| [Ragas](https://docs.ragas.io/en/latest/concepts/metrics/available_metrics/) | Chấm câu trả lời: faithfulness (bám bằng chứng tìm được) và factual correctness (đúng thông tin so với đáp án chuẩn). Cung cấp câu hỏi, các đoạn tài liệu, câu trả lời AI và dữ liệu chuẩn mà từng chỉ số yêu cầu; một số cách chấm cần model AI làm giám khảo. |
+| [ranx](https://amenra.github.io/ranx/metrics/) | Tính điểm tìm kiếm/xếp hạng: Recall@K (tỷ lệ tìm đủ), Precision@K (tỷ lệ tìm đúng), MRR — Mean Reciprocal Rank (trung bình nghịch đảo thứ hạng) và NDCG — Normalized Discounted Cumulative Gain (điểm hữu ích tích lũy giảm theo thứ hạng, đã chuẩn hóa), từ mã chunk/điểm xếp hạng và nhãn liên quan chuẩn. |
+
+Luồng đánh giá dự kiến:
+
+```text
+Chạy bộ câu hỏi có nhãn chuẩn --> Thu các chunk tìm được và câu trả lời --> ranx chấm tìm kiếm/xếp hạng + Ragas chấm câu trả lời --> Lưu điểm cùng cấu hình lần thử --> So sánh trong Chunking Lab và có thể thêm LangSmith
+```
+
+Chunking Lab là giao diện riêng để chọn cách chia, chỉnh tham số và xem trước chunk. Lab có thể hiển thị điểm do các công cụ trên tính; không phải tên khác của LangSmith, Ragas hay ranx. LangSmith có thêm giao diện theo dõi/so sánh; ranx và Ragas có thể chạy trong backend Python (phần xử lý phía máy chủ).
+
+Cần ghi rõ tên và định nghĩa chỉ số: điểm context của Ragas (đánh giá các đoạn ngữ cảnh) không mặc nhiên giống Recall@K/Precision@K chuẩn tính theo mã chunk. Điểm AI chấm câu trả lời cần được đối chiếu bằng đánh giá của con người. Bộ kiểm thử checker hiện tại vẫn là ba hồ sơ giả lập so mã phát hiện, chưa phải bộ đo đã tích hợp ranx/Ragas/LangSmith.
+
 ### MD, YAML, JSON lưu gì?
 
 | Dạng file | Vai trò |
