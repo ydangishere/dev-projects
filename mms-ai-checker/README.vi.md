@@ -119,6 +119,30 @@ Mã dùng Google GenAI SDK (thư viện kết nối Google), hàm `models.genera
 
 Phát hiện bằng luật và phần AI diễn giải hiển thị riêng. Số trang/câu trích do Gemini đề xuất **chưa bảo đảm là sự thật**: backend kiểm tra giới hạn trang và việc giá trị xuất hiện trong câu trích, còn nhân viên phải mở bản gốc để xác nhận. Mọi giấy tờ do Gemini đọc đều có yêu cầu nhân viên đối chiếu.
 
+## Thiết kế RAG cho AI Check
+
+Chúng ta chọn phương án dưới đây để xây RAG (tìm tài liệu làm căn cứ cho AI trả lời) cho module AI Check / kiểm tra hồ sơ. Luồng này tìm quy định áp dụng để giải thích phát hiện khi kiểm tra hồ sơ, tách biệt với module điều tra giao dịch dự kiến.
+
+Trạng thái: kiến trúc đã chọn cho bước phát triển tiếp theo. Code chạy được hiện tại trong `app/rag.py` mới tìm theo từ khóa tại chỗ; cập nhật tài liệu này chưa triển khai tách câu hỏi, viết lại câu hỏi, tìm vector, gộp tìm kiếm kết hợp hay xếp hạng lại bằng model.
+
+### Luồng tìm kiếm và tạo câu trả lời đã chọn
+
+```text
+Query (câu hỏi) --> Decomposition (tách câu hỏi nếu cần) --> Rewriting (viết rõ từng câu) --> Metadata Filtering (lọc tài liệu) --> Hybrid Search [Vector Search (tìm theo ý nghĩa) + Keyword Search (tìm theo từ khóa) --> Gộp kết quả, bỏ trùng] --> Reranking (xếp hạng lại) --> Chọn chunk (đoạn tài liệu) --> Generation (tạo câu trả lời)
+```
+
+1. Query: nhận câu hỏi nhân viên cùng ngữ cảnh hồ sơ được phép truy cập. Xác thực và kiểm tra quyền trên hồ sơ là điều kiện bắt buộc trước luồng này.
+2. Decomposition: tách câu hỏi có nhiều ý thành các câu nhỏ; câu đơn giản đi tiếp nguyên câu.
+3. Rewriting: viết rõ từng câu dựa trên ngữ cảnh đã có, giữ nguyên ý, mã và điều kiện; thiếu ngữ cảnh thì hỏi lại.
+4. Metadata Filtering: đặt sau Rewriting, giới hạn tìm kiếm theo đơn vị/ngân hàng được server cấp quyền, loại tài liệu áp dụng, phiên bản quy định đã phê duyệt và ngày hiệu lực. Viết lại câu hỏi không được thay đổi hay nới quyền.
+5. Hybrid Search: kết hợp Vector Search trên embedding (dãy số biểu diễn nội dung) để tìm gần nghĩa và Keyword Search để tìm từ/mã chính xác trong phạm vi đã lọc; gộp kết quả và bỏ trùng. Embedding của câu hỏi và tài liệu phải dùng mô hình tương thích; Cosine Similarity (độ tương đồng theo hướng vector) là một cách tính điểm.
+6. Reranking: chấm lại các đoạn ứng viên theo từng câu đã làm rõ rồi chọn đoạn hữu ích nhất. Top-K (số đoạn ứng viên lấy về) và số đoạn cuối cùng đưa cho AI là hai tham số riêng; tổng hợp căn cứ từ các câu nhỏ khi cần.
+7. Generation: dùng câu hỏi gốc, các đoạn quy định đã chọn và phát hiện cố định của Rule Engine (bộ máy chạy luật) để giải thích kèm nguồn. Căn cứ của mọi luật bắt buộc vẫn phải có, kể cả nằm ngoài danh sách xếp hạng đã chọn. Model không được xóa phát hiện hay duyệt hồ sơ; thiếu căn cứ thì báo chưa đủ thông tin.
+
+Chuẩn bị kho tài liệu trước khi tìm kiếm: đọc tài liệu --> chia chunk --> gắn metadata (thông tin đi kèm) và nguồn --> tạo embedding --> lập chỉ mục tìm vector và từ khóa. Chunk size (kích thước đoạn) và overlap (phần chồng lặp) là tham số cần thử nghiệm, chưa phải cấu hình tối ưu đã đo.
+
+Khi đánh giá luồng dự kiến này, dùng cùng bộ câu hỏi có nhãn chuẩn và phiên bản quy định áp dụng để so sánh cấu hình. Recall@K (tỷ lệ tìm đủ), Precision@K (tỷ lệ tìm đúng), MRR — Mean Reciprocal Rank (trung bình nghịch đảo thứ hạng) và NDCG — Normalized Discounted Cumulative Gain (điểm hữu ích tích lũy giảm theo thứ hạng, đã chuẩn hóa) chấm tìm kiếm/xếp hạng. Chấm riêng faithfulness (bám nguồn) và answer correctness (độ đúng câu trả lời). Đây là điểm đo, không phải nút chỉnh xếp hạng; chưa được đo bởi bộ đánh giá ba hồ sơ giả lập hiện tại.
+
 ### MD, YAML, JSON lưu gì?
 
 | Dạng file | Vai trò |
