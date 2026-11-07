@@ -158,6 +158,26 @@ Change one parameter or strategy at a time, rerun the same test questions and co
 
 For evaluation of this planned pipeline, use the same labeled questions and applicable policy versions when comparing configurations. Recall@K and Precision@K measure retrieval coverage and relevance; MRR (Mean Reciprocal Rank) and NDCG (Normalized Discounted Cumulative Gain) measure ranking quality. Evaluate answer faithfulness and answer correctness separately. These are evaluation results, not ranking knobs, and are not claimed as measured by the current three-case synthetic checker evaluation.
 
+### Evaluation and observability tools (planned integration)
+
+These tools have different roles; adding this documentation does not install or connect them to the executable checker. Using all three is optional.
+
+| Tool | Role in the AI Check RAG / Chunking Lab design |
+|---|---|
+| [LangSmith](https://docs.langchain.com/langsmith/evaluation-types) | Trace pipeline steps, manage evaluation datasets and compare experiments through its interface. Record retrieved context, answers, timing and evaluator feedback to investigate regressions. |
+| [Ragas](https://docs.ragas.io/en/latest/concepts/metrics/available_metrics/) | Evaluate generated answers, including faithfulness to retrieved evidence and factual correctness against reference answers. Supply the question, retrieved context, generated answer and reference data required by each chosen metric; some evaluators use a separate judge model. |
+| [ranx](https://amenra.github.io/ranx/metrics/) | Compute retrieval/ranking metrics: Recall@K, Precision@K, MRR (Mean Reciprocal Rank) and NDCG (Normalized Discounted Cumulative Gain), from ranked chunk IDs/scores and labeled relevance judgments. |
+
+Planned evaluation flow:
+
+```text
+Run a labeled question set --> Collect retrieved chunks and generated answers --> ranx scores retrieval/ranking + Ragas evaluates answers --> Store scores with experiment configuration --> Compare in Chunking Lab and optionally LangSmith
+```
+
+Chunking Lab is the custom workspace for selecting chunking strategies, changing parameters and previewing chunks. It can display results produced by these tools; it is not a replacement name for any of them. LangSmith provides an additional experiment/tracing interface, while ranx and Ragas can run in the Python backend.
+
+Keep the metric names and definitions explicit: Ragas context metrics are not automatically identical to standard ID-based Recall@K or Precision@K. Validate answer-judge scores with human review. The current checker evaluation remains the three synthetic finding-code cases documented below, not an implemented ranx/Ragas/LangSmith benchmark.
+
 ### What MD, YAML and JSON do
 
 | Format | Used for |
