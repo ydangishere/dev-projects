@@ -126,7 +126,15 @@ We have selected the following approach to build RAG (retrieval-augmented genera
 
 Status: selected architecture for the next iteration. The runnable checker currently uses local lexical retrieval in `app/rag.py`; decomposition, rewriting, embedding-based vector search, hybrid fusion and model-based reranking are not implemented by this documentation update.
 
-### Selected retrieval and generation flow
+### 1. Prepare documents when they are added or updated
+
+```text
+Upload --> Parse content and structure --> Split into chunks --> Attach source references and metadata --> Generate embeddings --> Build vector and keyword indexes
+```
+
+This is the document-preparation flow, not work to repeat for every question. Preserve document/page/section references, policy version and effective dates for each chunk. When policy content changes, refresh affected chunks and indexes; retain historical evidence and exclude superseded versions from current-policy retrieval. Chunk size and overlap are configurable experiment settings, not proven optimal values.
+
+### 2. Retrieve and answer each question
 
 ```text
 Query --> Query Decomposition (if needed) --> Query Rewriting --> Metadata Filtering --> Hybrid Search [Vector Search + Keyword Search --> Merge results and remove duplicates] --> Reranking --> Select chunks --> Generation
@@ -140,7 +148,13 @@ Query --> Query Decomposition (if needed) --> Query Rewriting --> Metadata Filte
 6. Reranking: score the retrieved candidates against each clarified question, then select the most useful chunks. Candidate count (Top-K) and final context count are separate settings; combine evidence from the subquestions when needed.
 7. Generation: use the original question, selected policy chunks and immutable Rule Engine findings to produce an explanation with source references. Required rule evidence must remain included even if it falls outside the ranked shortlist. The model cannot remove findings or approve a dossier; insufficient evidence must be reported as uncertainty.
 
-Policy preparation happens before query-time retrieval: parse documents --> chunk them --> attach metadata/source references --> generate embeddings --> index for vector and keyword search. Chunk size and overlap are experiment settings, not proven optimal values.
+### Planned Chunking Lab and experiment history
+
+The Chunking Lab GUI (graphical user interface) will connect the document-preparation flow with query-time testing. It is planned tooling, not an implemented screen or experiment service in the current checker.
+
+For each experiment, record the configuration, document/dataset versions, chunking strategy and parameters, embedding model and index version, retrieval/reranking settings, labeled question set, retrieved chunks and their ranking, generated answers, evaluation scores, processing time and run date.
+
+Change one parameter or strategy at a time, rerun the same test questions and compare the saved results. When comparing chunking strategies, keep the documents, labeled questions, embedding model and retrieval configuration fixed so that the effect of chunking can be assessed. Historical experiments must retain their configuration and evidence for reproducible comparisons.
 
 For evaluation of this planned pipeline, use the same labeled questions and applicable policy versions when comparing configurations. Recall@K and Precision@K measure retrieval coverage and relevance; MRR (Mean Reciprocal Rank) and NDCG (Normalized Discounted Cumulative Gain) measure ranking quality. Evaluate answer faithfulness and answer correctness separately. These are evaluation results, not ranking knobs, and are not claimed as measured by the current three-case synthetic checker evaluation.
 
