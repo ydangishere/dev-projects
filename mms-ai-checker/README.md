@@ -120,24 +120,39 @@ The implementation uses the Google GenAI SDK `models.generate_content`, multimod
 
 Hard findings and AI explanation are displayed separately. Gemini quotes are **model-proposed evidence**, not guaranteed ground truth: page bounds and value/quote consistency are checked, but employees must inspect the actual source. All Gemini-read documents receive an explicit human-review finding.
 
-### Proposed hybrid Vector + Graph retrieval architecture
+### Module 1 graph retrieval — implemented locally, optional Neo4j
 
-The following diagram extends the AI Check retrieval design with an optional **GraphRAG** branch. **Architecture proposal only: Supabase pgvector, Neo4j, graph traversal, result fusion and reranking are not implemented in the runnable MMS checker.** The current `app/rag.py` remains local lexical retrieval.
+This diagram shows the target hybrid architecture. **Implemented now for Module 1:** application → required document / uploaded document → Rule Engine finding → policy rule relationships, graph traversal with a local deterministic backend, optional persisted Neo4j graph retrieval, graph-assisted deterministic rule prioritization, and graph evidence included with check results and Gemini explanations. **Not implemented:** Supabase pgvector/embedding retrieval or a model-based reranker. The existing `app/rag.py` still performs lexical policy retrieval.
 
 ```mermaid
 flowchart TB
     Q["User Query<br/>Bank employee asks a question"] --> P["Query Processing"]
-    P --> V["Vector Retrieval<br/>Supabase pgvector<br/>Find policy and document chunks"]
-    P --> G["Graph Retrieval<br/>Neo4j<br/>Find application, account and transaction relationships"]
+    P --> V["Vector Retrieval (planned)<br/>Supabase pgvector<br/>Find policy and document chunks"]
+    P --> G["Graph Retrieval (Module 1 live)<br/>Local / optional Neo4j<br/>Application, document, finding, policy relationships"]
     V --> M["Merge + Reranking"]
     G --> M
     M --> L["LLM (OpenAI / Gemini)"]
     L --> A["Answer + Evidence + Citations"]
 ```
 
-**How the branches differ:** The vector index stores embeddings of approved document chunks and finds semantically relevant policies. The graph stores authorized entities (nodes) and their relationships (edges); graph traversal follows verified links among applications, parties, accounts, transactions and rules. Creating graph nodes is **not** the same thing as converting embeddings into nodes, and a graph can optionally retain embeddings too. Ingestion/chunking and extraction of approved entities and relations happen before query-time retrieval.
+**How the branches differ:** The vector index stores embeddings of approved document chunks and finds semantically relevant policies. The Module 1 graph stores server-authorized application, document, finding and rule relationships. Customer-account and transaction graphs belong to a future module and are not implemented. Creating graph nodes is **not** the same thing as converting embeddings into nodes, and a graph can optionally retain embeddings too. Ingestion/chunking and extraction of approved entities and relations happen before query-time retrieval.
 
-**Banking safety:** Authenticate and enforce tenant/role/object permissions before either retrieval path. Graph records must come from approved policy data or authorized, read-only business systems; graph links by themselves do not prove why an application was rejected or whether a payment settled. Merge only traceable evidence, preserve mandatory Rule Engine findings, identify missing evidence, and require employee review. The graph branch is optional: use it when multi-hop relationship queries justify the extra data governance and operational complexity.
+**Banking safety:** Authenticate and enforce tenant/role/object permissions before either retrieval path. Graph records must come from approved policy data or authorized, read-only business systems; graph links by themselves do not prove why an application was rejected or whether a payment settled. Merge only traceable evidence, preserve mandatory Rule Engine findings, identify missing evidence, and require employee review. Neo4j persistence is optional. The local graph branch is on by default. The graph links already-computed findings and does not independently validate KYC, accounts, or banking transactions.
+
+### Run and inspect Module 1 Graph Retrieval
+
+The default `GRAPH_BACKEND=local` requires no external database. Start the existing FastAPI app, run a document check, and inspect `graph_retrieval.backend` and `graph_retrieval.evidence` in the `POST /api/applications/{id}/checks` response. Each `GET /api/checks/{id}/evidence/{finding_id}` also includes a `graph` field. Graph reranking never removes the policy sections required by the Rule Engine.
+
+To persist and query graph edges in **Neo4j**, run:
+
+```bash
+pip install -r requirements-graph.txt
+# Set GRAPH_BACKEND=neo4j, NEO4J_URI, NEO4J_USERNAME,
+# NEO4J_PASSWORD, GRAPH_HMAC_KEY (32+ secret characters) in .env
+python -m uvicorn app.main:app --env-file .env --host 127.0.0.1 --port 8000
+```
+
+Alternatively, configure the Neo4j password and HMAC key in `.env` then use `docker compose -f compose.yaml -f compose.graph.yaml up --build` to run the optional Neo4j stack. The normal `docker compose up` still starts only the checker with its local graph. Neo4j nodes use HMAC-pseudonymized keys; no raw names, registration numbers, document bytes, or prompts are sent to the graph database. On Neo4j query failure, the graph falls back to local evidence, logs `neo4j_unavailable_local_fallback`, and leaves deterministic findings unchanged. **No Neo4j end-to-end deployment is claimed without a configured, live database and test run.**
 
 ## AI Check RAG design
 
