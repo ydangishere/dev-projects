@@ -119,6 +119,25 @@ Mã dùng Google GenAI SDK (thư viện kết nối Google), hàm `models.genera
 
 Phát hiện bằng luật và phần AI diễn giải hiển thị riêng. Số trang/câu trích do Gemini đề xuất **chưa bảo đảm là sự thật**: backend kiểm tra giới hạn trang và việc giá trị xuất hiện trong câu trích, còn nhân viên phải mở bản gốc để xác nhận. Mọi giấy tờ do Gemini đọc đều có yêu cầu nhân viên đối chiếu.
 
+### Kiến trúc đề xuất: kết hợp Vector Retrieval + Graph Retrieval
+
+Sơ đồ dưới đây mở rộng luồng tìm kiếm tài liệu bằng một nhánh **GraphRAG (RAG dùng đồ thị quan hệ)**. **Đây là thiết kế dự kiến, chưa triển khai:** MMS Checker hiện tại chưa chạy Supabase pgvector, Neo4j, truy vấn đồ thị, gộp kết quả hoặc reranking; `app/rag.py` vẫn tìm tài liệu theo từ khóa cục bộ.
+
+```mermaid
+flowchart TB
+    Q["User Query<br/>Nhân viên ngân hàng đặt câu hỏi"] --> P["Query Processing<br/>Xử lý câu hỏi"]
+    P --> V["Vector Retrieval<br/>Supabase pgvector<br/>Tìm tài liệu, quy định"]
+    P --> G["Graph Retrieval<br/>Neo4j<br/>Tìm quan hệ hồ sơ, tài khoản, giao dịch"]
+    V --> M["Merge + Reranking<br/>Gộp và xếp hạng lại"]
+    G --> M
+    M --> L["LLM (OpenAI / Gemini)"]
+    L --> A["Answer + Evidence + Citations<br/>Câu trả lời, bằng chứng, nguồn"]
+```
+
+**Khác nhau giữa hai nhánh:** Vector DB lưu embedding (vector biểu diễn nội dung) của các chunk tài liệu để tìm quy định gần nghĩa với câu hỏi. Graph DB lưu thực thể dưới dạng node (nút) và quan hệ dưới dạng edge (cạnh), rồi truy vấn các quan hệ đã được xác minh giữa hồ sơ, khách hàng, tài khoản, giao dịch và quy định. **Graph không phải là bước chuyển embedding thành node**; graph cũng có thể lưu embedding nếu cần. Việc chia chunk, trích xuất node và edge phải được thực hiện trước ở giai đoạn chuẩn bị dữ liệu.
+
+**Điều kiện sử dụng trong ngân hàng:** Xác thực và giới hạn quyền theo vai trò, đơn vị, hồ sơ trước khi truy vấn cả hai nhánh. Dữ liệu graph phải đến từ quy định được duyệt hoặc hệ thống nghiệp vụ chỉ đọc và có thẩm quyền; quan hệ graph tự nó không chứng minh lý do từ chối hồ sơ hay kết quả thanh toán. Khi tổng hợp kết quả, phải giữ bằng chứng và nguồn, không bỏ phát hiện bắt buộc của Rule Engine (bộ máy chạy luật), thông báo khi thiếu dữ liệu và để nhân viên kiểm tra. Nhánh GraphRAG là tùy chọn, chỉ thêm khi thực sự cần tìm quan hệ nhiều bước.
+
 ## Thiết kế RAG cho AI Check
 
 Chúng ta chọn phương án dưới đây để xây RAG (tìm tài liệu làm căn cứ cho AI trả lời) cho module AI Check / kiểm tra hồ sơ. Luồng này tìm quy định áp dụng để giải thích phát hiện khi kiểm tra hồ sơ, tách biệt với module điều tra giao dịch dự kiến.
