@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="750" height="1170" viewBox="0 0 750 1170" role="img" aria-label="Sơ đồ lộ trình mô hình MMS, dùng Qwen và Gemini so sánh, thu thập feedback, fine-tuning Qwen, đánh giá độc lập, pilot có giám sát rồi production">
+<rect width="750" height="1170" fill="#070b12"/>
+<defs><marker id="tip" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#839bb8"/></marker></defs>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#f1f7ff;font-size:19px;text-anchor:middle;font-weight:600} .sub{font-size:16px;font-weight:400;fill:#bdcce2} .edge{fill:none;stroke:#8095ae;stroke-width:2;marker-end:url(#tip)} .node{fill:#06365d;stroke:#134c7a;stroke-width:1.4} .decision{fill:#06365d;stroke:#476780;stroke-width:2;stroke-dasharray:5 4} .tag{font-size:15px;fill:#dceaff}</style>
+<rect x="250" y="24" rx="13" width="250" height="60" class="node"/><text x="375" y="60">Hồ sơ + Quy định MMS</text>
+<path d="M375 84V120" class="edge"/>
+<rect x="250" y="126" rx="12" width="250" height="60" class="node"/><text x="375" y="162">RAG + Graph Retrieval</text>
+<path d="M375 186V219H207V241" class="edge"/><path d="M375 219H548V241" class="edge"/>
+<rect x="75" y="247" rx="12" width="264" height="64" class="node"/><text x="207" y="273">Qwen3.5-9B</text><text x="207" y="298" class="sub">Chưa Fine-tune</text>
+<rect x="411" y="247" rx="12" width="264" height="64" class="node"/><text x="543" y="287">Gemini đối chứng</text>
+<path d="M207 311V345H375V365" class="edge"/><path d="M543 311V345H375" fill="none" stroke="#8095ae" stroke-width="2"/>
+<rect x="203" y="371" rx="12" width="344" height="68" class="node"/><text x="375" y="399">So sánh với kết quả</text><text x="375" y="424">chuyên viên</text>
+<path d="M375 439V475" class="edge"/>
+<rect x="208" y="481" rx="12" width="334" height="68" class="node"/><text x="375" y="508">Thu thập lỗi + Feedback</text><text x="375" y="533">có kiểm duyệt</text>
+<path d="M375 549V584" class="edge"/>
+<rect x="233" y="590" rx="12" width="284" height="60" class="node"/><text x="375" y="626">Tạo Training Dataset</text>
+<path d="M375 650V684" class="edge"/>
+<rect x="246" y="690" rx="12" width="258" height="60" class="node"/><text x="375" y="726">Fine-tuning Qwen</text>
+<path d="M375 750V784" class="edge"/>
+<rect x="221" y="790" rx="12" width="308" height="78" class="node"/><text x="375" y="822">Evaluation trên tập</text><text x="375" y="848">dữ liệu độc lập</text>
+<path d="M375 868V911" class="edge"/>
+<path d="M375 911L474 958L375 1005L276 958Z" class="decision"/><text x="375" y="954">Đạt yêu cầu?</text>
+<path d="M375 1005V1041" class="edge"/><text x="401" y="1029" class="tag">Có</text>
+<rect x="208" y="1047" rx="12" width="334" height="72" class="node"/><text x="375" y="1075">Pilot có giám sát</text><text x="375" y="1101">→ Production</text>
+<path d="M474 958H686V220H557V244" class="edge"/><text x="615" y="944" class="tag">Không</text>
+</svg>
