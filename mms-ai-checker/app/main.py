@@ -19,6 +19,7 @@ from pypdf import PdfReader
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .engine import evaluate
+from .graph import Neo4jGraph, retrieve_module1
 from .models import CheckInput, Feedback
 from .providers import Gemini, Source, extract_demo
 from .rag import policy_bundle, retrieve
@@ -138,6 +139,18 @@ def create_app(data_dir=None, mode=None):
         raise ValueError(
             "Production requires explicit strong tokens; configure SSO upstream"
         )
+    graph_mode = os.getenv("GRAPH_BACKEND", "local").casefold()
+    if graph_mode not in {"local", "neo4j"}:
+        raise ValueError("GRAPH_BACKEND must be local or neo4j")
+    graph_backend = None
+    if graph_mode == "neo4j":
+        graph_backend = Neo4jGraph(
+            os.getenv("NEO4J_URI", ""),
+            os.getenv("NEO4J_USERNAME", ""),
+            os.getenv("NEO4J_PASSWORD", ""),
+            os.getenv("GRAPH_HMAC_KEY", ""),
+            os.getenv("NEO4J_DATABASE", "neo4j"),
+        )
     store = Store(data_dir or os.getenv("DATA_DIR", str(ROOT / "runtime")))
     store.seed(ROOT / "samples/applications.json")
     app = FastAPI(
@@ -154,6 +167,9 @@ def create_app(data_dir=None, mode=None):
     )
     app.add_middleware(Boundary)
     app.state.store, app.state.mode = store, mode
+    app.state.graph_backend = graph_backend
+    if graph_backend:
+        app.add_event_handler("shutdown", graph_backend.close)
     app.state.provider_factory = lambda: Gemini(
         os.getenv("GEMINI_API_KEY", ""), os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
     )
@@ -337,11 +353,23 @@ def create_app(data_dir=None, mode=None):
                 "required expiry matching verification uncertainty security human review",
                 set(rules["rules"].values()),
             )
+            graph_result, sections, graph_warning = retrieve_module1(
+                record,
+                [m for m, _ in documents],
+                findings,
+                rules,
+                sections,
+                app.state.graph_backend,
+            )
+            if graph_warning:
+                events.append({"stage": "graph", "status": graph_warning})
             notes = [{"finding_id": f.id, "text": f.message} for f in findings]
             explanation_mode = "deterministic"
             if provider and findings:
                 try:
-                    notes = provider.explain(findings, sections)
+                    notes = provider.explain(
+                        findings, sections, graph_result["evidence"]
+                    )
                     explanation_mode = "gemini"
                 except Exception:
                     events.append({"stage": "explanation", "status": "fallback"})
@@ -367,6 +395,7 @@ def create_app(data_dir=None, mode=None):
                 "policy_version": rules["version"],
                 "policy_sha256": digest,
                 "policy_sections": sections,
+                "graph_retrieval": graph_result,
                 "findings": [f.model_dump() for f in findings],
                 "notes": notes,
                 "events": events,
@@ -413,6 +442,14 @@ def create_app(data_dir=None, mode=None):
             "application_snapshot": result["application_snapshot"],
             "policy": next(
                 s for s in result["policy_sections"] if s["rule"] == finding["rule"]
+            ),
+            "graph": next(
+                (
+                    row
+                    for row in result.get("graph_retrieval", {}).get("evidence", [])
+                    if row["finding_id"] == finding_id
+                ),
+                None,
             ),
             "original_url": f"/api/checks/{check_id}/documents/{meta['id']}"
             if meta
