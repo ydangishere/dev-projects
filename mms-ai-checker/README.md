@@ -11,6 +11,30 @@ An end-to-end runnable **document-checking assistant for VietPay MMS**, a mercha
 
 This is an independent portfolio prototype. It is **not an official VietPay/PVcomBank deployment**, has no access to bank systems, and includes only synthetic applications and a synthetic policy. It supports real Gemini calls when configured; default demo mode is deterministic and does not call an AI model.
 
+## Model roadmap: Gemini baseline → Qwen pilot → Fine-tuning
+
+**Selected direction:** compare **Qwen3.5-9B** against **Gemini** during development; evaluate **Qwen + RAG + Graph** in a supervised pilot; fine-tune only after obtaining specialist-reviewed examples and labels. Choose the final production model by validated quality, cost, latency, privacy, and governance requirements — Qwen is not an automatic production commitment.
+
+![Five-stage MMS AI Checker model roadmap](docs/model-roadmap-table.svg)
+
+| Stage | Model | Goal |
+| --- | --- | --- |
+| **1. Development** | Gemini + Qwen 9B | Compare document extraction and explanations |
+| **2. Pilot** | Qwen + RAG + Graph | Collect results, errors and employee feedback |
+| **3. Evaluation** | Base Qwen vs Gemini | Measure quality, cost and latency using the same dataset |
+| **4. Fine-tuning** | Qwen 9B | Train on reviewed, labeled data |
+| **5. Production** | Model meeting acceptance criteria | Deploy only after independent validation and approval |
+
+![Model evolution flow from Qwen and Gemini comparison to supervised production](docs/model-roadmap-flow.svg)
+
+**Target flow:** MMS applications + policies → RAG + Graph Retrieval → compare untuned Qwen3.5-9B with Gemini → review against specialist findings → curate errors and feedback → build training dataset → fine-tune Qwen → evaluate on an independent holdout → supervised pilot and production only after acceptance; otherwise improve retrieval, labels, prompts or the model.
+
+**Stage ordering:** the initial pilot collects data with the base model; a fine-tuned model requires its own independent evaluation and another supervised validation before production. Evaluation is continuous throughout development and pilot, not a one-off step. Keep training and final evaluation datasets separate.
+
+**Technology boundaries:** RAG supplies retrieved context; it **does not train model weights**. Graph Retrieval supports provenance paths between applications, documents, findings and policy rules, while the deterministic Rule Engine retains authority over required checks. Fine-tuning changes model weights only using authorized, privacy-reviewed, specialist-labeled data. Compare finding-level Precision/Recall/F1, extraction accuracy, citation correctness and faithfulness, cost and latency.
+
+**Actual implementation vs roadmap:** The default executable demo parses synthetic TXT and runs the Rule Engine; `AI_MODE=gemini` enables real Gemini PDF/image extraction and explanation. Module 1 includes local graph evidence retrieval with an optional Neo4j adapter, not yet validated against a live Neo4j service. **Qwen inference, Supabase pgvector, fine-tuning and a real-data pilot are not implemented.** These images describe the planned model strategy, not measured results or completed training.
+
 ## One feature within a three-feature assistant
 
 | Assistant capability | Employee asks | Scope of this repository |
@@ -103,7 +127,7 @@ Restart the server, open an application and upload synthetic PDF/JPEG/PNG docume
 
 The implementation uses the Google GenAI SDK `models.generate_content`, multimodal document input and JSON Schema output. Gemini supplies field values, page, quote and confidence; it does not set verification or approval. OCR here means the document-reading stage using Gemini's native vision; a separate OCR vendor is not required. Failed or unknown extraction becomes a review finding. No API key is shipped; live Gemini validation requires your key and account access.
 
-**Model starting point:** `gemini-3.8-flash`, chosen for documented PDF/image inputs and structured outputs. This is an architectural choice, not a measured quality/cost claim for Vietnamese bank documents. Evaluate scan quality, field accuracy, fabricated sources, latency, token cost and data handling before choosing a production model. Model ID is configurable. [Official model documentation](https://aistudio.google.com/docs/models/gemini-3.8-flash), [document input](https://aistudio.google.com/docs/document-processing), [structured output](https://aistudio.google.com/docs/structured-output), checked 2026-11-05.
+**Current runnable model baseline:** `gemini-3.8-flash` for the implemented PDF/image and structured-output path. **Qwen3.5-9B is a planned development/pilot comparison and fine-tuning candidate, not yet wired into the repository.** No quality or cost advantage over Vietnamese bank documents is claimed without testing. Evaluate scan quality, field accuracy, fabricated sources, latency, token cost and data handling before choosing a production model. Model ID is configurable. [Official model documentation](https://aistudio.google.com/docs/models/gemini-3.8-flash), [document input](https://aistudio.google.com/docs/document-processing), [structured output](https://aistudio.google.com/docs/structured-output), checked 2026-11-05.
 
 ## Backend flow
 
