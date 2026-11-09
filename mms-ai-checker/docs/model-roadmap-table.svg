@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="355" viewBox="0 0 1080 355" role="img" aria-label="Bảng năm giai đoạn Development, Pilot, Evaluation, Fine-tuning, Production; Qwen, Gemini, RAG và Graph">
+<rect width="1080" height="355" fill="#070b12"/>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#edf4ff;font-size:21px} .h{font-weight:bold;font-size:19px;fill:#d9e4f8}.small{font-size:18px;fill:#e4ecf9}.line{stroke:#233448;stroke-width:1}</style>
+<text class="h" x="32" y="36">Giai đoạn</text><text class="h" x="260" y="36">Model</text><text class="h" x="530" y="36">Mục tiêu</text>
+<path class="line" d="M20 54H1060 M20 110H1060 M20 166H1060 M20 222H1060 M20 278H1060 M20 334H1060"/>
+<text class="small" x="32" y="90">1. Development</text><text class="small" x="260" y="90">Gemini + Qwen 9B</text><text class="small" x="530" y="90">So sánh khả năng đọc và giải thích hồ sơ</text>
+<text class="small" x="32" y="146">2. Pilot</text><text class="small" x="260" y="146">Qwen + RAG + Graph</text><text class="small" x="530" y="146">Thu thập kết quả, lỗi và đánh giá của nhân viên</text>
+<text class="small" x="32" y="202">3. Evaluation</text><text class="small" x="260" y="202">Qwen gốc vs Gemini</text><text class="small" x="530" y="202">Đo độ chính xác, chi phí và tốc độ</text>
+<text class="small" x="32" y="258">4. Fine-tuning</text><text class="small" x="260" y="258">Qwen 9B</text><text class="small" x="530" y="258">Huấn luyện bằng dữ liệu đã được kiểm duyệt, gắn nhãn</text>
+<text class="small" x="32" y="314">5. Production</text><text class="small" x="260" y="314">Model đạt tiêu chuẩn</text><text class="small" x="530" y="314">Triển khai sau khi vượt kiểm thử và được phê duyệt</text>
+</svg>
