@@ -85,7 +85,7 @@ class Gemini:
         ]
         return self._generate(EXTRACT_SYSTEM, content, Extraction)
 
-    def explain(self, findings, sections):
+    def explain(self, findings, sections, graph_evidence=None):
         # Do not send names, registration IDs, raw quotes, credentials or original question.
         payload = {
             "findings": [
@@ -98,6 +98,8 @@ class Gemini:
                 for f in findings
             ],
             "policy_sections": sections,
+            # Derived server-side relationship paths, not a new policy authority.
+            "graph_evidence": graph_evidence or [],
         }
         output = self._generate(
             EXPLAIN_SYSTEM, json.dumps(payload, ensure_ascii=False), Explanation
