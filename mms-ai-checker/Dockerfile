@@ -1,8 +1,11 @@
 FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 DATA_DIR=/data
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt && useradd --uid 10001 --create-home checker && mkdir /data && chown checker:checker /data
+COPY requirements.txt requirements-graph.txt ./
+ARG INSTALL_NEO4J=false
+RUN pip install --no-cache-dir -r requirements.txt && \
+    if [ "$INSTALL_NEO4J" = "true" ]; then pip install --no-cache-dir -r requirements-graph.txt; fi && \
+    useradd --uid 10001 --create-home checker && mkdir /data && chown checker:checker /data
 COPY --chown=checker:checker app app
 COPY --chown=checker:checker static static
 COPY --chown=checker:checker samples samples
