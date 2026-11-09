@@ -15,6 +15,7 @@ function invalidate() {
   epoch++;currentCheck=null;
   $("answer").replaceChildren(el("p","Chạy kiểm tra để xem kết quả của hồ sơ hiện tại.","muted"));
   $("evidence").replaceChildren(el("p","Chưa chọn bằng chứng.","muted"));
+  $("graph").replaceChildren(el("p","Chạy kiểm tra để xem quan hệ được truy xuất.","muted"));
   if(sourceUrl){URL.revokeObjectURL(sourceUrl);sourceUrl=null;}
 }
 async function loadApplication() {
@@ -60,6 +61,7 @@ $("check").onclick=async()=>{
   finally{if(requestEpoch===epoch)$("check").disabled=false;}
 };
 function render(result){
+  renderGraph(result.graph_retrieval);
   const container=$("answer");container.replaceChildren(el("h2",result.summary));
   if(result.stale)container.append(el("p","Hồ sơ đã thay đổi. Kết quả này chỉ là lịch sử; cần kiểm tra lại.","warning"));
   container.append(el("p",`${result.mode} · giải thích ${result.explanation_mode} · ${result.policy_id} v${result.policy_version} · ${result.review_date}`,"check-meta"));
@@ -80,6 +82,21 @@ function render(result){
   }
   container.append(el("p",`Mã lần kiểm tra: ${result.id} · Nguồn và quy định được lưu theo thời điểm kiểm tra.`,"check-meta"));
 }
+function renderGraph(graph){
+  const container=$("graph");container.replaceChildren();
+  if(!graph){container.append(el("p","Chưa có dữ liệu Graph Retrieval.","muted"));return;}
+  container.append(el("p",graph.backend==="neo4j"?"Nguồn: Neo4j (truy vấn graph đã xác minh)":"Nguồn: Graph cục bộ từ hồ sơ và Rule Engine","check-meta"));
+  if(!graph.evidence.length){container.append(el("p","Không có phát hiện cần liên kết. AI không tự tạo lỗi.","muted"));return;}
+  const rows=el("div",undefined,"graph-rows");
+  for(const item of graph.evidence){
+    const line=el("div",undefined,"graph-path");
+    const kind=item.missing_required_kind||item.document_kind;
+    const labels=["Hồ sơ",kind?(item.missing_required_kind?"Thiếu: ":"Giấy tờ: ")+(names[kind]||kind):"Danh sách hồ sơ",item.finding_id+" · "+item.finding_code,"Quy định "+item.rule];
+    labels.forEach((label,index)=>{if(index)line.append(el("span","→","graph-link"));line.append(el("span",label,"graph-node"));});
+    rows.append(line);
+  }
+  container.append(rows);
+}
 async function showEvidence(checkId,findingId){
   const requestEpoch=epoch;
   const evidence=await(await api(`/api/checks/${checkId}/evidence/${findingId}`)).json();if(requestEpoch!==epoch)return;
@@ -89,6 +106,7 @@ async function showEvidence(checkId,findingId){
   else box.append(el("p","Nguồn: danh sách giấy tờ tại thời điểm kiểm tra. Giấy tờ này chưa có trong hồ sơ.","muted"));
   if(evidence.finding.quote)box.append(el("pre",evidence.finding.quote));
   box.append(el("pre",evidence.policy.text));
+  if(evidence.graph)box.append(el("p","Graph: "+evidence.graph.path.join(" → "),"check-meta"));
   if(evidence.original_url){
     const source=await(await api(evidence.original_url)).blob();if(requestEpoch!==epoch)return;
     if(sourceUrl)URL.revokeObjectURL(sourceUrl);sourceUrl=URL.createObjectURL(source);
