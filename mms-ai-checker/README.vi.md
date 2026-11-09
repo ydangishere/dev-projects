@@ -119,24 +119,39 @@ Mã dùng Google GenAI SDK (thư viện kết nối Google), hàm `models.genera
 
 Phát hiện bằng luật và phần AI diễn giải hiển thị riêng. Số trang/câu trích do Gemini đề xuất **chưa bảo đảm là sự thật**: backend kiểm tra giới hạn trang và việc giá trị xuất hiện trong câu trích, còn nhân viên phải mở bản gốc để xác nhận. Mọi giấy tờ do Gemini đọc đều có yêu cầu nhân viên đối chiếu.
 
-### Kiến trúc đề xuất: kết hợp Vector Retrieval + Graph Retrieval
+### Module 1 — Graph Retrieval đã có code, Neo4j là tùy chọn
 
-Sơ đồ dưới đây mở rộng luồng tìm kiếm tài liệu bằng một nhánh **GraphRAG (RAG dùng đồ thị quan hệ)**. **Đây là thiết kế dự kiến, chưa triển khai:** MMS Checker hiện tại chưa chạy Supabase pgvector, Neo4j, truy vấn đồ thị, gộp kết quả hoặc reranking; `app/rag.py` vẫn tìm tài liệu theo từ khóa cục bộ.
+Sơ đồ dưới đây mô tả kiến trúc Hybrid RAG mục tiêu. **Đã triển khai cho Module 1:** graph nối hồ sơ → loại giấy tờ bắt buộc / giấy tờ đã tải → phát hiện của Rule Engine → quy định, truy vấn graph cục bộ (mặc định) hoặc Neo4j (khi cấu hình), ưu tiên quy định dựa trên bằng chứng graph, đưa bằng chứng vào kết quả và Gemini. **Chưa triển khai:** Supabase pgvector/embedding search, reranking bằng model. `app/rag.py` vẫn tìm quy định theo từ khóa.
 
 ```mermaid
 flowchart TB
     Q["User Query<br/>Nhân viên ngân hàng đặt câu hỏi"] --> P["Query Processing<br/>Xử lý câu hỏi"]
-    P --> V["Vector Retrieval<br/>Supabase pgvector<br/>Tìm tài liệu, quy định"]
-    P --> G["Graph Retrieval<br/>Neo4j<br/>Tìm quan hệ hồ sơ, tài khoản, giao dịch"]
+    P --> V["Vector Retrieval (dự kiến)<br/>Supabase pgvector<br/>Tìm tài liệu, quy định"]
+    P --> G["Graph Retrieval (đã có cho Module 1)<br/>Graph cục bộ / Neo4j tùy chọn<br/>Hồ sơ, giấy tờ, phát hiện, quy định"]
     V --> M["Merge + Reranking<br/>Gộp và xếp hạng lại"]
     G --> M
     M --> L["LLM (OpenAI / Gemini)"]
     L --> A["Answer + Evidence + Citations<br/>Câu trả lời, bằng chứng, nguồn"]
 ```
 
-**Khác nhau giữa hai nhánh:** Vector DB lưu embedding (vector biểu diễn nội dung) của các chunk tài liệu để tìm quy định gần nghĩa với câu hỏi. Graph DB lưu thực thể dưới dạng node (nút) và quan hệ dưới dạng edge (cạnh), rồi truy vấn các quan hệ đã được xác minh giữa hồ sơ, khách hàng, tài khoản, giao dịch và quy định. **Graph không phải là bước chuyển embedding thành node**; graph cũng có thể lưu embedding nếu cần. Việc chia chunk, trích xuất node và edge phải được thực hiện trước ở giai đoạn chuẩn bị dữ liệu.
+**Khác nhau giữa hai nhánh:** Vector DB lưu embedding (vector biểu diễn nội dung) của các chunk tài liệu để tìm quy định gần nghĩa với câu hỏi. Graph DB lưu thực thể dưới dạng node (nút) và quan hệ dưới dạng edge (cạnh). Trong Module 1, graph truy tìm mối quan hệ giữa hồ sơ, giấy tờ, phát hiện của Rule Engine và quy định; graph tài khoản/giao dịch là hướng mở rộng về sau, chưa có code. **Graph không phải là bước chuyển embedding thành node**; graph cũng có thể lưu embedding nếu cần. Việc chia chunk, trích xuất node và edge phải được thực hiện trước ở giai đoạn chuẩn bị dữ liệu.
 
-**Điều kiện sử dụng trong ngân hàng:** Xác thực và giới hạn quyền theo vai trò, đơn vị, hồ sơ trước khi truy vấn cả hai nhánh. Dữ liệu graph phải đến từ quy định được duyệt hoặc hệ thống nghiệp vụ chỉ đọc và có thẩm quyền; quan hệ graph tự nó không chứng minh lý do từ chối hồ sơ hay kết quả thanh toán. Khi tổng hợp kết quả, phải giữ bằng chứng và nguồn, không bỏ phát hiện bắt buộc của Rule Engine (bộ máy chạy luật), thông báo khi thiếu dữ liệu và để nhân viên kiểm tra. Nhánh GraphRAG là tùy chọn, chỉ thêm khi thực sự cần tìm quan hệ nhiều bước.
+**Điều kiện sử dụng trong ngân hàng:** Xác thực và giới hạn quyền theo vai trò, đơn vị, hồ sơ trước khi truy vấn cả hai nhánh. Dữ liệu graph phải đến từ quy định được duyệt hoặc hệ thống nghiệp vụ chỉ đọc và có thẩm quyền; quan hệ graph tự nó không chứng minh lý do từ chối hồ sơ hay kết quả thanh toán. Khi tổng hợp kết quả, phải giữ bằng chứng và nguồn, không bỏ phát hiện bắt buộc của Rule Engine (bộ máy chạy luật), thông báo khi thiếu dữ liệu và để nhân viên kiểm tra. Graph cục bộ hiện chạy mặc định; Neo4j là tùy chọn khi cần lưu/truy vấn đồ thị. Graph không tự kết luận hoặc phát hiện lỗi mới ngoài Rule Engine.
+
+### Chạy thử Graph Retrieval trong Module 1
+
+Mặc định `GRAPH_BACKEND=local` nên **không cần cài Neo4j**. Chạy FastAPI như cũ → kiểm tra một hồ sơ → đọc `graph_retrieval.backend` và `graph_retrieval.evidence` trong JSON trả về của `POST /api/applications/{id}/checks`. API `GET /api/checks/{id}/evidence/{finding_id}` cũng có trường `graph` với đường quan hệ tương ứng. Bước xếp hạng dựa trên graph không loại bỏ quy định bắt buộc.
+
+Nếu muốn lưu và truy vấn graph trên **Neo4j**:
+
+```bash
+pip install -r requirements-graph.txt
+# Trong .env, đặt GRAPH_BACKEND=neo4j và cấu hình NEO4J_URI,
+# NEO4J_USERNAME, NEO4J_PASSWORD, GRAPH_HMAC_KEY (bí mật >=32 ký tự).
+python -m uvicorn app.main:app --env-file .env --host 127.0.0.1 --port 8000
+```
+
+Hoặc đặt mật khẩu Neo4j và khóa HMAC trong `.env`, sau đó chạy `docker compose -f compose.yaml -f compose.graph.yaml up --build`. Docker Compose thông thường vẫn chạy checker và graph cục bộ, không yêu cầu Neo4j. Định danh lưu trong Neo4j được giả danh bằng HMAC; không ghi tên doanh nghiệp, mã đăng ký, nội dung giấy tờ hay câu hỏi vào graph. Nếu Neo4j lỗi, hệ thống chuyển về graph cục bộ, ghi sự kiện `neo4j_unavailable_local_fallback`, giữ nguyên phát hiện của bộ luật. **Chưa xác nhận chạy đầu-cuối với Neo4j thật khi chưa có cấu hình và kiểm thử dịch vụ đó.**
 
 ## Thiết kế RAG cho AI Check
 
