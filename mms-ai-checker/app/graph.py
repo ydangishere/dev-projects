@@ -51,11 +51,13 @@ def build_snapshot(application, documents, findings, rules):
         link(fkey, "RULE", f"rule:{finding.rule}")
         if finding.document_id and finding.document_id in by_id:
             link(fkey, "DOCUMENT_EVIDENCE", f"document:{finding.document_id}")
+            link(f"document:{finding.document_id}", "HAS_FINDING", fkey)
         elif finding.code == "missing_document":
             # Rule Engine emits missing-document findings in required-document order.
             missing_kind = next(missing_kinds, None)
             if missing_kind:
                 link(fkey, "MISSING_TYPE", f"kind:{missing_kind}")
+                link(f"kind:{missing_kind}", "MISSING_FINDING", fkey)
 
     return {"nodes": nodes, "edges": edges}
 
@@ -90,21 +92,24 @@ def graph_evidence(snapshot, documents, findings):
         document = by_id.get(finding.document_id)
         if document and (
             "DOCUMENT_EVIDENCE", f"document:{finding.document_id}"
-        ) in neighbors:
+        ) in neighbors and (
+            "HAS_FINDING", fkey
+        ) in relations[f"document:{finding.document_id}"]:
             row["document_kind"] = document["kind"]
             row["document_id"] = document["id"]
             row["document_verification"] = document["verification"]
-            row["path"].insert(2, f"document:{document['kind']}")
+            row["path"].insert(1, f"document:{document['id']}")
         else:
             missing = sorted(
                 target.removeprefix("kind:")
                 for relation, target in neighbors
                 if relation == "MISSING_TYPE"
                 and ("REQUIRES", target) in relations["application"]
+                and ("MISSING_FINDING", fkey) in relations[target]
             )
             if missing:
                 row["missing_required_kind"] = missing[0]
-                row["path"].insert(2, f"required:{missing[0]}")
+                row["path"].insert(1, f"kind:{missing[0]}")
         evidence.append(row)
     return evidence
 
