@@ -6,6 +6,30 @@
 
 Đây là **bản thử nghiệm portfolio độc lập**, không phải hệ thống chính thức đã triển khai cho VietPay/PVcomBank. Hồ sơ và quy định đều giả lập, chưa kết nối ngân hàng thật. Có mã kết nối Gemini thật khi cung cấp API key; chế độ demo mặc định dùng luật và bộ đọc TXT, không gọi AI.
 
+## Lộ trình model: Gemini đối chứng → Qwen Pilot → Fine-tuning
+
+**Định hướng được chọn:** thử **Qwen3.5-9B** cùng **Gemini** ngay từ Development; sử dụng **Qwen + RAG + Graph** trong Pilot có giám sát; chỉ Fine-tuning khi đã có dữ liệu lỗi và nhãn do chuyên viên kiểm duyệt. Cuối cùng, chọn model đạt tiêu chuẩn chất lượng, tốc độ, chi phí và bảo mật — không mặc định đưa Qwen vào Production.
+
+![Bảng lộ trình năm giai đoạn cho model MMS AI Checker](docs/model-roadmap-table.svg)
+
+| Giai đoạn | Model | Mục tiêu |
+| --- | --- | --- |
+| **1. Development** | Gemini + Qwen 9B | So sánh khả năng đọc và giải thích hồ sơ |
+| **2. Pilot** | Qwen + RAG + Graph | Thu thập kết quả, lỗi và đánh giá của nhân viên |
+| **3. Evaluation** | Qwen gốc vs Gemini | Đo độ chính xác, chi phí và tốc độ trên cùng bộ dữ liệu |
+| **4. Fine-tuning** | Qwen 9B | Huấn luyện bằng dữ liệu đã được kiểm duyệt, gắn nhãn |
+| **5. Production** | Model đạt tiêu chuẩn | Chỉ triển khai sau khi vượt kiểm thử và được phê duyệt |
+
+![Sơ đồ luồng phát triển Qwen và Gemini từ RAG Graph đến Fine-tuning và Production](docs/model-roadmap-flow.svg)
+
+**Flow kỹ thuật mục tiêu:** Hồ sơ + Quy định MMS → RAG + Graph Retrieval → chạy song song Qwen3.5-9B chưa Fine-tune và Gemini đối chứng → so sánh với kết quả chuyên viên → thu thập lỗi/feedback được kiểm duyệt → tạo Training Dataset → Fine-tuning Qwen → Evaluation trên tập dữ liệu độc lập → đạt yêu cầu mới chuyển sang Pilot có giám sát / Production; nếu chưa đạt, quay lại cải thiện dữ liệu, retrieval, prompt hoặc model.
+
+**Lưu ý về thứ tự:** Pilot ban đầu tạo dữ liệu và đánh giá với Qwen chưa Fine-tune; sau Fine-tuning phải đánh giá riêng và thử nghiệm lại có giám sát trước Production. Đánh giá cũng cần diễn ra xuyên suốt Development/Pilot, không chỉ một lần tại giai đoạn 3. Không dùng chính bộ training để đánh giá cuối cùng.
+
+**Ranh giới công nghệ:** RAG (truy xuất tài liệu để bổ sung ngữ cảnh) **không huấn luyện model**. Graph Retrieval (tìm kiếm theo quan hệ) bổ sung đường dẫn hồ sơ → giấy tờ → phát hiện → quy định; Rule Engine vẫn kiểm tra lỗi bắt buộc. Fine-tuning (huấn luyện bổ sung trọng số) chỉ được thực hiện sau khi có dữ liệu gắn nhãn đáng tin cậy; dữ liệu pilot phải được phép dùng, xử lý thông tin nhạy cảm, tách bộ train/validation/test và có chuyên viên kiểm chứng. Đo Precision/Recall/F1 của phát hiện lỗi, độ đúng trích xuất và nguồn trích dẫn, tỷ lệ thiếu căn cứ, chi phí, độ trễ.
+
+**Trạng thái code hiện tại (không nhầm với roadmap):** Demo mặc định chạy bộ đọc TXT + Rule Engine; bật `AI_MODE=gemini` mới gọi Gemini thực để đọc PDF/ảnh và giải thích. Module 1 có Graph Retrieval cục bộ, có adapter Neo4j tùy chọn nhưng chưa xác minh chạy Neo4j thật. **Chưa tích hợp Qwen, Supabase pgvector, pipeline Fine-tuning hoặc Pilot dữ liệu thật.** Hình bên trên thể hiện kế hoạch, không phải kết quả triển khai hay benchmark đã đo.
+
 ## Một tính năng trong nhóm ba tính năng
 
 | Tính năng của trợ lý | Nhân viên hỏi | Có trong dự án này? |
@@ -100,7 +124,7 @@ GEMINI_API_KEY=KHOA_CUA_BAN
 
 Khởi động lại server. Vào hồ sơ, tải PDF/JPEG/PNG giả lập vào đúng loại giấy tờ rồi chạy kiểm tra. Giới hạn mỗi file **5 MiB, 20 trang PDF hoặc 20 triệu điểm ảnh**. Muốn thử toàn bộ bằng PDF/ảnh, thay tất cả giấy tờ TXT có sẵn trong hồ sơ. Bản mới vẫn chờ xác minh theo quy trình phía ngân hàng.
 
-Model khởi đầu là **Gemini 3.8 Flash** (`gemini-3.8-flash`) vì tài liệu chính thức hỗ trợ PDF/ảnh và đầu ra có cấu trúc JSON. Đây là lựa chọn kỹ thuật để bắt đầu, chưa phải kết luận đã đo độ chính xác/chi phí trên hồ sơ ngân hàng Việt Nam. Có thể đổi model qua biến môi trường. [Tài liệu model](https://aistudio.google.com/docs/models/gemini-3.8-flash), [đọc tài liệu](https://aistudio.google.com/docs/document-processing), [JSON có cấu trúc](https://aistudio.google.com/docs/structured-output), kiểm tra ngày 05/11/2026.
+**Model hiện đang chạy khi bật AI:** Gemini 3.8 Flash (`gemini-3.8-flash`) là baseline cho pipeline đọc PDF/ảnh hiện có; **Qwen3.5-9B là model mục tiêu để tích hợp và so sánh trong Development/Pilot, chưa chạy trong repository**. Đây chưa phải kết luận về độ chính xác/chi phí trên hồ sơ ngân hàng Việt Nam. Có thể đổi model Gemini qua biến môi trường. [Tài liệu model](https://aistudio.google.com/docs/models/gemini-3.8-flash), [đọc tài liệu](https://aistudio.google.com/docs/document-processing), [JSON có cấu trúc](https://aistudio.google.com/docs/structured-output), kiểm tra ngày 05/11/2026.
 
 Mã dùng Google GenAI SDK (thư viện kết nối Google), hàm `models.generate_content`, đầu vào PDF/ảnh và JSON Schema (khuôn dữ liệu cố định). Chưa có API key đi kèm; gọi Gemini thật cần khóa và quyền sử dụng model từ tài khoản của bạn.
 
