@@ -211,3 +211,45 @@ def test_graph_rerank_never_eliminates_policy_sections():
     assert len(merged) == len(sections)
     assert {section["rule"] for section in merged} == set(rules["rules"].values())
     assert merged[0]["rule"] == "R3"
+
+
+def test_gemini_explanation_receives_graph_paths_not_document_contents():
+    from app.models import Explanation, Finding
+    from app.providers import Gemini
+
+    provider = object.__new__(Gemini)
+    captured = {}
+
+    def fake_generate(system, content, schema):
+        captured["content"] = json.loads(content)
+        return Explanation.model_validate({
+            "notes": [{"finding_id": "F1", "text": "Thiếu tài liệu theo quy định R1."}]
+        })
+
+    provider._generate = fake_generate
+    finding = Finding(
+        id="F1",
+        rule="R1",
+        code="missing_document",
+        severity="blocker",
+        message="Thiếu giấy tờ.",
+        source="manifest",
+    )
+    graph_rows = [
+        {
+            "finding_id": "F1",
+            "finding_code": "missing_document",
+            "rule": "R1",
+            "path": ["application", "finding:F1", "required:bank_confirmation", "rule:R1", "policy"],
+            "document_kind": None,
+            "document_id": None,
+            "document_verification": None,
+            "missing_required_kind": "bank_confirmation",
+        }
+    ]
+    notes = provider.explain(
+        [finding], [{"rule": "R1", "text": "Synthetic policy", "score": 1}], graph_rows
+    )
+    assert len(notes) == 1
+    assert captured["content"]["graph_evidence"] == graph_rows
+    assert "registration_number" not in str(captured["content"])
