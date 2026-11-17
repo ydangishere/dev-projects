@@ -68,7 +68,7 @@ jobs:
           for i in $(seq 1 60); do curl -sf localhost:8100/ && break; sleep 2; done
           echo
           curl -sf -X POST localhost:8100/solve -H 'Content-Type: application/json' \
-            -d '{"query":"Bình xăng con chảy xăng khi dựng xe"}' > solve.json || { tail -40 deploy.log; exit 1; }
+            -d '{"query":"Bình xăng con chảy xăng khi dựng xe"}' > solve.json || { curl -s -X POST localhost:8100/solve -H 'Content-Type: application/json' -d '{"query":"xe chay xang"}'; tail -40 deploy.log; exit 1; }
           python -c "import json;r=json.load(open('solve.json'));print(r['result']);assert '[C02]' in r['result'], r"
           tail -5 deploy.log
 

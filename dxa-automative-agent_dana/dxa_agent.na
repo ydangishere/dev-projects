@@ -100,7 +100,7 @@ def ask(question: str) -> dict:
     return out
 
 
-def (mechanic: DXAMechanic) solve(problem: str) -> str:
+def (mechanic: DXAMechanic) solve(problem: str, context: dict = None, resources: list = None, workflows: list = None) -> str:
     r = ask(problem)
     text = r["answer"]
     if not r["refused"]:
