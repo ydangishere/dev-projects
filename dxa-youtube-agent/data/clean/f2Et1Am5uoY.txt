@@ -1,0 +1,6 @@
+[0] Kiểm tra côn (nồi) khi ráp: để xe vào số, đạp cần khởi động, thấy ăn nồi là OK; bóp côn lại thì đạp tuột xuống hết là OK. Nếu chưa bóp côn mà đạp đã tuột là côn bị trượt, không được.
+[21] Dây côn tùy xe, có xe dây rất ngắn, có xe dây rất dài. Dùng dây côn 67, phải căng thêm một chút. Không cần lò xo hồi ngoài vì trong nồi và cần đã có lò xo.
+[41] Cách chỉnh côn: mở nắp chỉnh ra, bên trong có con ốc, vặn ốc vào vừa chạm thì siết tán lại, giống cách làm với xe lỏ. Nồi 67.
+[83] Đi cốt đạp lỏ vì pô xe lỏ nằm ra ngoài nhiều. Cấu hình xe: vỏ đầu Wave Thái 110, cam cò lò xo BRT, lòng Alpha, lửa Alpha zin, mâm lửa mới cắt mát sẵn để đấu đèn LED hoặc đèn trợ sáng, cốt số zin.
+[146] Cốt số CD hay 67 đi không được vì ngắn, bị đụng. Đi LCK (lốc) đề Alpha thì cần số phải để ý một chút. Nồi Takegawa 3 lá zin, bóp rất nhẹ, không cần lò xo ngoài. Xe đi bình 125, IC 999.
+[189] Nổ máy: chưa vô số mà đã nẹt ga mạnh là không được. Vô số một chạy thử. Lên xe nhớ canh xăng lại.

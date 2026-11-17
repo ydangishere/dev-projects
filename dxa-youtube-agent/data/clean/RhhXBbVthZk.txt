@@ -1,0 +1,12 @@
+[1] Nhiều anh em canh xăng hoài mà đầu bugi không được: lửa không đều, đầu bugi cháy không có màu nâu đẹp, cứ đen hoặc trắng. Sau khi canh xăng, chỉnh gíc lơ, ralenti ngọt rồi tháo bugi ra thì thấy nguyên nhân là gắn bugi vào ổ sai hướng.
+[42] Bugi có cái móc (cực âm, điện cực bên) với mặt và lưng. Đánh dấu cái lưng của móc ở bên ngoài thân bugi bằng bút để biết hướng sau khi vặn vào.
+[116] Vặn bugi vào ổ, cầm nhẹ tay, lắc lắc cho vào ren rồi quay. Nên kiếm đồ mở bugi tốt.
+[169] Vặn vào xong nhìn dấu chấm: nếu lưng của móc quay vào trung tâm buồng đốt là sai. Mặt của móc phải quay vào trung tâm buồng đốt mới đúng. Tiệm tiện đã canh độ sâu để bugi không bị đá vào piston.
+[222] Thử quay thêm nửa vòng thì mặt móc quay vào trung tâm buồng đốt nhưng đầu bugi hơi cao, quay thêm nửa vòng nữa thì hơi thấp, thêm một vòng thì thấp quá. Vị trí đẹp là trả về hơn nửa vòng một chút.
+[267] Quy đổi: một vòng ren bugi là khoảng 1 ly (1 mm), nửa vòng là 5 dem (0.5 mm). Muốn trả về khoảng nửa vòng thì lấy lông đền (vòng đệm) bằng nhôm hoặc sắt dày tương ứng để kê thêm dưới bugi. Đo lông đền bằng thước.
+[383] Kê lông đền 0.7 mm thì móc bị quay ngang, chưa vào đúng tâm vì lông đền 0.7 hơi dư. Cần khoảng 0.5 đến 0.6 mm. Kê lông đền 0.6 mm thì mặt móc quay vào giữa trung tâm buồng đốt, góc 90 độ, đúng chuẩn.
+[445] Siết bugi vừa tay, dùng đòn ngắn, không dùng cần dài vì dễ làm đứt bugi, gãy bugi kẹt trong đầu, hoặc tuôn ren. Thấy hết đường ren là ngưng, siết hết đường chứ không phải siết hết lực.
+[507] Đánh dấu bên ngoài để khi bugi nằm trong đầu culass vẫn biết hướng móc. Khi móc nằm ngay giữa thì canh xăng lại sẽ thấy đầu bugi đốt màu nâu đẹp, độ sâu vừa phải, không quá sâu không quá cạn. Đây là lý do nhiều xe canh xăng mà bugi không nâu được.
+[604] Tuyệt đối không mở bugi bằng máy bắn ốc. Mở thì ngược lại, dễ hơn.
+[645] Mua lông đền nhôm rồi mài cho đúng độ dày cần thiết.
+[676] Cực dương là điện cực ở giữa, móc câu là cực âm, hai cực cách nhau chút xíu để tạo tia lửa khi có dòng điện lớn chạy qua. Mặt của móc phải hướng vào tâm buồng đốt. Đó là cách gắn bugi đúng cách.

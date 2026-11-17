@@ -1,0 +1,8 @@
+[3] Cắt sắt bằng máy mài rất cực, cắt bằng đèn oxy gas đỡ hơn nhưng văng lửa nên làm ở chỗ rộng. Cách canh lửa: gắn tay cắt vào, mở hết van gió ở thân khoảng hai vòng, rồi khóa van đó lại để điều khiển gió bằng van trên tay cắt. Ga mở khoảng 1/4 thôi, 1/4 là nhiều rồi.
+[65] Canh lửa đèn General Kiriko: tim lửa ở giữa rút lên là vừa. Muốn mạnh hơn thì thêm ga rồi thêm gió, nghe hơi lửa mạnh thì cắt mạnh. Bấm cò thì luồng oxy vào tâm cắt mạnh.
+[232] Đèn này được dùng nhiều nhất vì vừa hàn vừa cắt được, cắt khá OK.
+[252] Đồng hồ áp suất: chỉnh khoảng vạch thứ tư (đếm 1 2 3 4 theo nấc ngoài) là mức xài gia đình, có thể tăng gió thêm chút. Đơn vị kg/cm2, có thể dùng Google để đổi. Với béc số 1: gió (oxy) khoảng 4 kg/cm2, ga khoảng 0.4 kg/cm2, ga có thể tăng chút khi cắt.
+[338] Mồi lửa cho ngọn dài ra. Thêm gió thì tim ở giữa rút ngắn lại và lửa mạnh hơn. Van gió ở thân luôn mở sẵn hai vòng, chỉ canh bằng van gió trên tay và van ga. Lửa nhỏ chỉ cắt được khoảng 3 đến 4 ly.
+[401] Thêm ga thì thêm gió để tim rút lại, lửa mạnh hơn, có thể cắt được 1 cm sắt. Kê đèn vào hơ nóng chỗ cắt, nóng lên rồi mới bấm cò oxy. Trả gió và ga về thì lửa nhỏ, cắt miếng nhỏ.
+[483] Lúc cắt chỉ điều khiển van ga và van gió trên tay, không đụng van thân nữa. Tắt xong thì xả lại một lần cho hết khí còn trong ống, rồi siết lại.
+[527] Bảo hộ khi cắt: hàn thì đỡ hơn, nhưng cắt thì lửa bay bắn. Mặc áo tay dài dày, quần dài, giày che kín, tấm che mặt để tia lửa không bắn vào mặt, và kính đen (không cần đen như kính hàn điện).

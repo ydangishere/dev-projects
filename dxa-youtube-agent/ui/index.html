@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DXA – Hỏi thợ sửa xe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --concrete: #E6E7E2;   /* nền: sàn xi măng tiệm */
+    --panel:    #F7F7F4;
+    --ink:      #1F2A2E;   /* chữ: màu thép */
+    --muted:    #5B666B;
+    --tape:     #F2C230;   /* vàng băng keo an toàn: chỉ dùng cho phiếu hỏi */
+    --steel:    #33566B;   /* mã case, link */
+    --ok:       #3E7C59;
+    --stop:     #A93A2A;
+    --line:     #C9CCC4;
+    --radius-s: 6px;
+    --radius-l: 14px;
+    font-family: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--concrete); color: var(--ink); font-size: 16px; line-height: 1.55; }
+  a { color: var(--steel); }
+  button, textarea, input { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--steel); outline-offset: 2px; }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 20px 20px 48px; }
+
+  header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+  .brand { display: flex; align-items: baseline; gap: 12px; }
+  .brand b { font-weight: 800; font-size: 1.5rem; letter-spacing: -0.02em; }
+  .brand span { color: var(--muted); }
+  .status { display: flex; align-items: center; gap: 14px; color: var(--muted); font-size: .9rem; }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--muted); margin-right: 6px; }
+  .dot.gemini { background: var(--ok); }
+  .dot.offline { background: var(--tape); }
+  .linkbtn { background: none; border: 0; padding: 0; color: var(--steel); text-decoration: underline; cursor: pointer; }
+
+  /* Phiếu hỏi: điểm nhấn duy nhất của trang */
+  .ticket {
+    background: var(--tape); border-radius: var(--radius-l); padding: 22px 22px 18px;
+    position: relative; overflow: hidden;
+  }
+  .ticket::before { /* lỗ đục của phiếu sửa xe */
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 10px;
+    background: radial-gradient(circle at 0 50%, var(--concrete) 5px, transparent 6px) 0 0 / 10px 22px repeat-y;
+  }
+  .ticket .q-label { display: block; font-weight: 800; font-size: clamp(1.4rem, 3vw, 2rem); letter-spacing: -0.02em; margin: 0 0 12px 8px; }
+  .askrow { display: flex; gap: 10px; margin-left: 8px; }
+  .askrow textarea {
+    flex: 1; min-height: 56px; resize: vertical; border: 2px solid var(--ink); border-radius: var(--radius-s);
+    padding: 12px 14px; background: #FFFDF4;
+  }
+  .askrow button {
+    border: 0; border-radius: var(--radius-s); background: var(--ink); color: #fff; font-weight: 600;
+    padding: 0 22px; cursor: pointer; white-space: nowrap;
+  }
+  .askrow button:disabled { opacity: .6; cursor: progress; }
+  .ticket-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin: 12px 0 0 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border: 1.5px solid var(--ink); background: transparent; border-radius: 999px; padding: 3px 12px; cursor: pointer; font-size: .9rem; }
+  .chip:hover { background: rgba(31,42,46,.08); }
+  .toggle { display: flex; align-items: center; gap: 8px; font-size: .9rem; font-weight: 500; cursor: pointer; }
+  .toggle input { width: 18px; height: 18px; accent-color: var(--ink); }
+
+  main { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 20px; margin-top: 20px; align-items: start; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+
+  .answer { background: var(--panel); border-radius: var(--radius-l); padding: 22px 24px; min-height: 240px; }
+  .answer h2 { margin: 0 0 4px; font-size: 1.15rem; }
+  .understood { color: var(--muted); font-size: .92rem; margin: 0 0 14px; }
+  .body { max-width: 68ch; }
+  .body p { margin: 0 0 10px; }
+  .body ol, .body ul { margin: 0 0 12px; padding-left: 1.4em; }
+  .body li { margin-bottom: 6px; }
+  .tag {
+    display: inline-block; border: 0; border-radius: 4px; background: var(--steel); color: #fff;
+    font-size: .78rem; font-weight: 600; padding: 0 6px; margin: 0 2px; cursor: pointer; vertical-align: 1px;
+  }
+  .refused { border-left: 5px solid var(--stop); padding-left: 14px; }
+  .warn { margin-top: 14px; font-size: .88rem; color: var(--stop); }
+  .meta { margin-top: 16px; font-size: .82rem; color: var(--muted); }
+  .empty { color: var(--muted); }
+  .empty strong { color: var(--ink); }
+  .loading { color: var(--muted); }
+  .loading::after { content: ""; display: inline-block; width: 1.2em; text-align: left; animation: dots 1.2s steps(4) infinite; }
+  @keyframes dots { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
+
+  aside { position: sticky; top: 16px; display: grid; gap: 12px; }
+  .player { background: var(--ink); border-radius: var(--radius-l); overflow: hidden; color: #fff; }
+  .player .screen { aspect-ratio: 16/9; background: #2A363B; display: grid; place-items: center; color: #9AA6AB; font-size: .9rem; text-align: center; padding: 12px; }
+  .player .screen.has-video { display: block; padding: 0; }
+  .player iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .player a { color: var(--tape); }
+  .player .cap { padding: 10px 14px; font-size: .9rem; }
+  .sources { display: grid; gap: 8px; }
+  .src {
+    display: grid; grid-template-columns: 96px 1fr; gap: 10px; align-items: start; text-align: left;
+    background: var(--panel); border: 2px solid transparent; border-radius: var(--radius-s); padding: 8px; cursor: pointer; width: 100%;
+  }
+  .src[aria-pressed="true"] { border-color: var(--steel); }
+  .src img { width: 96px; aspect-ratio: 16/9; object-fit: cover; border-radius: 4px; background: #CFD3CC; }
+  .src .t { font-weight: 600; font-size: .92rem; line-height: 1.35; }
+  .src .s { font-size: .82rem; color: var(--muted); margin-top: 2px; }
+  .badge { display: inline-block; font-size: .74rem; border-radius: 4px; padding: 0 6px; margin-left: 4px; }
+  .badge.ok { background: #DCEBE1; color: var(--ok); }
+  .badge.wait { background: #F6E7B5; color: #6B5300; }
+  .time { font-variant-numeric: tabular-nums; }
+
+  dialog { border: 0; border-radius: var(--radius-l); padding: 0; width: min(760px, 94vw); background: var(--panel); color: var(--ink); }
+  dialog::backdrop { background: rgba(31,42,46,.45); }
+  .dlg-head { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+  .dlg-head h3 { margin: 0; font-size: 1.1rem; }
+  .dlg-body { padding: 8px 20px 20px; max-height: 70vh; overflow: auto; }
+  .uq { padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .uq small { color: var(--muted); }
+
+  @media (max-width: 600px) {
+    .wrap { padding: 14px 12px 36px; }
+    .ticket { padding: 18px 14px 14px; }
+    .askrow { flex-direction: column; }
+    .askrow button { padding: 12px; }
+    .answer { padding: 18px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .loading::after { animation: none; content: "..."; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand"><b>DXA</b><span>Hỏi thợ sửa xe máy, trả lời từ video kênh y dang</span></div>
+    <div class="status">
+      <span id="status"><span class="dot"></span>Đang kết nối…</span>
+      <button class="linkbtn" id="openUnanswered" type="button">Câu chưa trả lời</button>
+    </div>
+  </header>
+
+  <form class="ticket" id="askForm">
+    <label class="q-label" for="q">Xe bạn đang bị gì?</label>
+    <div class="askrow">
+      <textarea id="q" name="q" rows="2" maxlength="500" placeholder="Ví dụ: buông ga mà ga không về, gõ không dấu cũng được" required></textarea>
+      <button id="askBtn" type="submit">Hỏi thợ</button>
+    </div>
+    <div class="ticket-foot">
+      <div class="chips" id="chips"></div>
+      <label class="toggle"><input type="checkbox" id="useLlm" checked> Để Gemini viết câu trả lời</label>
+    </div>
+  </form>
+
+  <main>
+    <section class="answer" id="answer" aria-live="polite">
+      <p class="empty"><strong>Mô tả triệu chứng của xe</strong>, thợ sẽ trả lời bằng kiến thức trong 30 video của kênh, kèm link mở đúng giây trong video. Câu nào video chưa nói tới, hệ thống sẽ báo chưa có chứ không đoán.</p>
+    </section>
+
+    <aside>
+      <div class="player">
+        <div class="screen" id="screen">Chọn một nguồn để xem đoạn video</div>
+        <div class="cap" id="cap" hidden></div>
+      </div>
+      <div class="sources" id="sources"></div>
+    </aside>
+  </main>
+</div>
+
+<dialog id="dlg">
+  <div class="dlg-head"><h3>Câu chưa trả lời được</h3><button class="linkbtn" id="closeDlg" type="button">Đóng</button></div>
+  <div class="dlg-body" id="dlgBody"></div>
+</dialog>
+
+<script>
+const API = "";  // cùng địa chỉ với FastAPI
+const EXAMPLES = [
+  "binh xang con buong ga ma ga khong ve",
+  "Bình xăng con chảy xăng khi dựng xe",
+  "Cò mổ bị bó, không có độ rơ",
+  "Côn bị trượt, chưa bóp côn mà đạp đã tuột",
+];
+const $ = (id) => document.getElementById(id);
+let current = null;
+
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function videoId(link) {
+  try { return new URL(link).searchParams.get("v"); } catch { return null; }
+}
+function seconds(link) {
+  try { return parseInt(new URL(link).searchParams.get("t"), 10) || 0; } catch { return 0; }
+}
+
+// Câu trả lời là chữ thường từ Gemini hoặc từ khuôn: đổi xuống dòng, danh sách, **đậm** và [C12] thành nút.
+function renderText(text) {
+  const lines = esc(text).split(/\n/);
+  let html = "", list = null;
+  const close = () => { if (list) { html += `</${list}>`; list = null; } };
+  for (let raw of lines) {
+    let line = raw.trim();
+    if (!line) { close(); continue; }
+    line = line.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+               .replace(/\[(C\d+)\]/g, '<button type="button" class="tag" data-case="$1" aria-label="Xem case $1 trong video">$1</button>');
+    const ol = line.match(/^\d+[.)]\s+(.*)/), ul = line.match(/^[-*•]\s+(.*)/);
+    if (ol || ul) {
+      const kind = ol ? "ol" : "ul";
+      if (list !== kind) { close(); html += `<${kind}>`; list = kind; }
+      html += `<li>${(ol || ul)[1]}</li>`;
+    } else { close(); html += `<p>${line}</p>`; }
+  }
+  close();
+  return html;
+}
+
+function play(src) {
+  const id = videoId(src.link);
+  document.querySelectorAll(".src").forEach((b) => b.setAttribute("aria-pressed", b.dataset.key === src.key ? "true" : "false"));
+  $("screen").classList.toggle("has-video", !!id);
+  $("screen").innerHTML = id
+    ? `<iframe src="https://www.youtube-nocookie.com/embed/${id}?start=${seconds(src.link)}&autoplay=1" title="${esc(src.video_title)}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`
+    : "Không mở được video này";
+  $("cap").hidden = false;
+  $("cap").innerHTML = `${esc(src.video_title)}, phút <span class="time">${esc(src.time)}</span>. <a href="${esc(src.link)}" target="_blank" rel="noopener">Mở trên YouTube</a>`;
+}
+
+function renderSources(sources) {
+  const box = $("sources");
+  box.innerHTML = "";
+  sources.forEach((s, i) => {
+    s.key = `${s.type}-${i}`;
+    const id = videoId(s.link);
+    const isCase = s.type === "case";
+    const snippet = (s.text || "").length > 70 ? s.text.slice(0, 70).replace(/\s+\S*$/, "") + "…" : (s.text || "");
+    const title = isCase ? `${s.id}: ${s.symptom}` : `Thợ nói: “${snippet}”`;
+    const badge = isCase ? (s.reviewed && !(s.review_note || "").toLowerCase().includes("tạm")
+      ? '<span class="badge ok">Thợ đã duyệt</span>' : '<span class="badge wait">Duyệt tạm</span>') : "";
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "src"; b.dataset.key = s.key; if (isCase) b.dataset.case = s.id;
+    b.setAttribute("aria-pressed", "false");
+    b.innerHTML = `<img alt="" loading="lazy" onerror="this.style.visibility='hidden'" src="${id ? `https://i.ytimg.com/vi/${id}/mqdefault.jpg` : ""}">
+      <span><span class="t">${esc(title)}</span>${badge}
+      <span class="s" style="display:block">${esc(s.video_title)}, phút <span class="time">${esc(s.time)}</span></span></span>`;
+    b.addEventListener("click", () => play(s));
+    box.appendChild(b);
+  });
+}
+
+function renderAnswer(r) {
+  const a = $("answer");
+  const understood = r.query_used && r.query_used !== r.question
+    ? `<p class="understood">Hiểu câu hỏi là: “${esc(r.query_used)}”</p>` : "";
+  const by = { llm: "Gemini viết từ các case bên phải", template: "ghép từ case gần nhất", gate: "hệ thống từ chối", }[r.answered_by] || r.answered_by;
+  a.innerHTML = `
+    <h2>${r.refused ? "Chưa có trong video" : "Thợ trả lời"}</h2>
+    ${understood}
+    <div class="body ${r.refused ? "refused" : ""}">${renderText(r.answer)}</div>
+    ${r.refused ? '<p class="meta">Câu này đã được lưu để thợ trả lời sau.</p>' : ""}
+    ${(r.warnings || []).map((w) => `<p class="warn">${esc(w)}</p>`).join("")}
+    <p class="meta">Chế độ ${esc(r.mode)}, ${esc(by)}.</p>`;
+  a.querySelectorAll(".tag").forEach((t) => t.addEventListener("click", () => {
+    const src = (current?.sources || []).find((s) => s.type === "case" && s.id === t.dataset.case);
+    if (src) play(src);
+  }));
+}
+
+async function ask(question) {
+  const btn = $("askBtn");
+  btn.disabled = true; btn.textContent = "Đang hỏi";
+  $("answer").innerHTML = '<p class="loading">Thợ đang lục lại video</p>';
+  try {
+    const res = await fetch(`${API}/ask`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question, use_llm: $("useLlm").checked }),
+    });
+    if (!res.ok) throw new Error(`Máy chủ trả lỗi ${res.status}`);
+    current = await res.json();
+    renderAnswer(current);
+    renderSources(current.sources || []);
+    const first = (current.sources || [])[0];
+    if (first) play(first); else { $("screen").textContent = "Không có đoạn video phù hợp"; $("cap").hidden = true; }
+  } catch (e) {
+    $("answer").innerHTML = `<h2>Không hỏi được</h2><p class="warn">${esc(e.message)}. Kiểm tra máy chủ đang chạy: <code>uvicorn api:app --port 8000</code></p>`;
+  } finally {
+    btn.disabled = false; btn.textContent = "Hỏi thợ";
+  }
+}
+
+async function loadStatus() {
+  try {
+    const h = await (await fetch(`${API}/health`)).json();
+    const label = h.mode === "gemini" ? `Gemini (${h.llm_model})` : "Chế độ offline (chưa có key Gemini)";
+    $("status").innerHTML = `<span class="dot ${h.mode}"></span>${esc(label)}, ${h.cases} case, ${h.videos} video`;
+  } catch { $("status").innerHTML = '<span class="dot"></span>Chưa kết nối được máy chủ'; }
+}
+
+async function openUnanswered() {
+  $("dlgBody").innerHTML = '<p class="loading">Đang tải</p>';
+  $("dlg").showModal();
+  try {
+    const rows = await (await fetch(`${API}/unanswered`)).json();
+    $("dlgBody").innerHTML = rows.length
+      ? rows.map((r) => `<div class="uq">${esc(r.question)}<br><small>${esc(r.ts)}, ${esc(r.reason)}</small></div>`).join("")
+      : "<p>Chưa có câu nào. Khi khách hỏi điều video chưa nói tới, câu đó sẽ hiện ở đây để thợ trả lời hoặc quay video mới.</p>";
+  } catch (e) { $("dlgBody").innerHTML = `<p class="warn">${esc(e.message)}</p>`; }
+}
+
+EXAMPLES.forEach((q) => {
+  const c = document.createElement("button");
+  c.type = "button"; c.className = "chip"; c.textContent = q;
+  c.addEventListener("click", () => { $("q").value = q; ask(q); });
+  $("chips").appendChild(c);
+});
+$("askForm").addEventListener("submit", (e) => { e.preventDefault(); const q = $("q").value.trim(); if (q.length >= 2) ask(q); });
+$("q").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("askForm").requestSubmit(); } });
+$("openUnanswered").addEventListener("click", openUnanswered);
+$("closeDlg").addEventListener("click", () => $("dlg").close());
+loadStatus();
+</script>
+</body>
+</html>

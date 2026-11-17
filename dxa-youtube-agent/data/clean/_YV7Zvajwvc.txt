@@ -1,0 +1,34 @@
+[1] Bộ hàn gió đá: ngày nay thay vì hàn khí đá (axetylen) thì hay hàn oxy gas. Bộ oxy gas gồm bình oxy và bình gas. Gas vào dây đỏ, oxy vào dây xanh. Nên có đồng hồ giảm áp.
+[44] Đồng hồ giảm áp: mở khóa bình thì đồng hồ áp trong bình tăng lên. Vặn núm theo chiều kim đồng hồ thì xả gas ra đồng hồ áp ra. Vặn ngược lại thì tắt. Bình gas cũng tương tự. Một đồng hồ đo áp trong bình, một đồng hồ đo áp xả ra.
+[108] Tỉ lệ: gas một nấc thì oxy hai nấc (theo vạch ngoài). Ví dụ oxy 4 nấc thì gas 2 nấc; oxy 4 nấc cắt được sắt khoảng 3 cm tùy mỏ hàn.
+[171] Mỏ hàn (đèn) có hai loại: loại chuyên hàn và loại vừa hàn vừa cắt. Mỏ dùng cho oxy gas có lỗ giữa và các lỗ xung quanh giống béc phun xăng xe FI. Khí đá (axetylen) dùng mỏ một lỗ.
+[233] Với oxy gas chỉ cần hai béc: số 1 để hàn, số 3 để cắt. Hàn khí hàn được nhiều loại từ đồng thau (hàn the) đến sắt, từ 1 ly đến vài cm. Hàn sắt có thể dùng que kẽm hoặc căm xe.
+[275] Hàn điện như máy 200 A Hồng Ký thì hàn sắt 2 ly rất khó, phải chỉnh xuống khoảng mười mấy, hai mươi ampe và phải rất kỹ. Hàn khí đốt thì sướng hơn, hàn từ thau đến sắt đều OK, chỉ có điều nguy hiểm hơn.
+[338] Cầm tay hàn, van gas và van gió (oxy) trên tay. Nên lắp van chống cháy ngược ngay đầu bình, chú ý chiều mũi tên đi ra. Phải có lông đền cao su (phốt) để kín.
+[400] Quấn băng tan (chỉ ống nước): không cần banh ra từng bản, cắt một đoạn ngắn, vặn ốc chiều nào thì quấn theo chiều đó, quấn ít thôi. Chỉ quấn khi bị xì, không lạm dụng.
+[441] Ren oxy là ren thuận, vặn theo chiều kim đồng hồ. Ren gas là ren ngược, ngược chiều kim đồng hồ.
+[485] Đuôi chuột (khâu nối ống) có phốt bên trong. Thay bình thì tháo ở chỗ này. Cần mỏ lết nhỏ, vặn vừa tay vừa tới là không xì.
+[529] Gắn ống với cổ dê nhỏ. Tán ngoài chợ có 10, 14 và 17 ly, nên mua đồng bộ ren 17 (mua 14 thì mua 14 hết). Đuôi chuột có loại 6 ly và 8 ly. Dây có lỗ trong 6 ly rưỡi đến 7 ly thì mua đuôi chuột 8 ly cho bó chặt, giữ hơi. Đuôi chuột 6 ly thì lỏng, bị xì.
+[656] Hàng có nhiều tiêu chuẩn ren khác nhau (14, 13...), mua lệch ren thì gắn không vào. Khi mua đồng hồ nói với người bán là ren 17, mua nguyên bộ ren 17.
+[698] Gắn cổ dê một cái là đủ, không xì. Kiểm tra xì: mở rồi lấy tay nghe, không cần nhúng nước. Xì chỗ nào xử lý chỗ đó. Thiếu phốt là xì, gắn phốt vào là hết. Vặn không đủ lực cũng xì.
+[803] Bình oxy và gas lúc nào cũng phải dựng đứng, không bao giờ để nằm ngang. Test: mở ra, nghe hết kêu và kim đồng hồ giữ yên một chỗ, không tụt kim là kín. Khóa lại, xả hơi cho kim tụt xuống.
+[874] Bên gas thêm một van chống cháy ngược nữa ở giữa dây hoặc khoảng 1/3 dây để đảm bảo không cháy nổ. Chọn ống luồn vừa cỡ.
+[1028] Chỉ quấn băng tan khi bị xì. Cắt dây cho khéo, miết đuôi chuột vào từ từ hai bên. Hỏi ChatGPT thì nói dây 6 ly rưỡi gắn đuôi chuột 6 ly, thực tế 6 ly lỏng và xì; ChatGPT có cái đúng có cái không.
+[1358] Test bình gas: mở gas, nghe bằng tay không có tiếng xì là được. Oxy áp suất mạnh hơn nên khó làm kín hơn. Van chống cháy ngược phải đúng chiều mũi tên, lắp ngược là nổ.
+[1570] Dây hàn dài khoảng 5 đến 6 m. Không gắn van chống cháy ngược ở tay hàn vì khó xài, gắn một cặp van chống cháy ngược ở phía dây, mũi tên chĩa về phía tay hàn. Mua đồ ở đường Lý Nam Đế gần chợ Tân Thành, ren 17 hết.
+[1655] Bình luôn dựng đứng và khóa khi không dùng. Thường một mức gas là hai mức gió (oxy). Gas đặt quá cao thì hạ xuống. Ngọn lửa có cái tim màu xanh ở giữa, để tim dài vừa phải; tim càng rút ngắn thì áp oxy càng cao. Cẩn thận.
+[1759] Tập mở đóng van cho quen. Mồi lửa: mở gas, cầm hột quẹt đúng cách (không cầm chắn trước mỏ) hoặc dùng đánh lửa, bụp một cái là ăn. Cầm tay hàn hơi nghiêng cho thoải mái, không để dây bị gồng. Trước khi xài phải nghe các mối nối có xì không, xì thì dễ cháy nổ.
+[1843] Đầu mỏ hàn nóng nhưng không nóng lắm vì lửa đi ra chứ không đi vào.
+[1913] Cắt: để lửa nghiêng, cắm mỏ vào một góc rồi kéo. Làm riết thì quen. Cắt bằng oxy gas rất mạnh. Đèn hàn nhỏ xịn của Mỹ giá vài triệu, hợp hàn đồ nhỏ; hàn sắt 1 ly phải canh lửa rất kỹ.
+[2000] Set hàn: theo đồng hồ, gió (oxy) 2, gas 1 đến 1.5. Mở gió từ từ, không mở ào. Mở gas nhẹ cho lửa dài vừa.
+[2063] Hàn thau (hàn the): chuẩn bị đế gác tay hàn, tay hàn để dưới đất dễ vô bụi và hỏng. Cách tắt: tắt gió trước nhưng đừng siết gió quá, thắt nhẹ để lần sau mở không bị bất ngờ, rồi siết gas.
+[2127] Sắt mỏng 1 ly mà hàn bằng máy hàn điện thì rất dễ lủng, nên phải hàn bằng khí. Mồi gas cho lửa dài, rồi cho gió vào từ từ, lửa xanh lên và có mũi tim rút lên là được.
+[2189] Rà nhiệt cho chỗ hàn nóng đều xung quanh rồi mới chấm que, chưa đủ nóng thì không ăn hàn the. Tay hàn để nghiêng, đẩy tới. Hàn nhôm cũng vậy, đừng vội. Hàn sắt có thể dùng que đồng hoặc kẽm, khi đó không cần hàn the.
+[2254] Đặt que đồng vào nhẹ, thêm một ít hàn the (đừng nhiều). Nung nóng cho chảy từ bên này qua, gạt qua và quay. Thau chảy ra giống vàng chảy, thợ bạc cũng khò bằng tay hàn kiểu này nhưng tay nhỏ.
+[2363] Gió nhiều quá thì giảm bớt, thêm chút gas. Que thau 2 ly cũng cháy nhuyễn. Coi chừng xỉ văng, mặc áo tay dài. Dùng que đẩy cho đều.
+[2427] Tắt: mở gió xì ra là lửa tắt, rồi khóa lại. Nhúng nước cây vừa hàn cho nguội.
+[2471] Dùng cọng kẽm dày hàn thì hay hơn, kiếm que thép cứng để đẩy cho đều, hàn xong nhúng nước. Mối hàn thau rất cứng, lấy tay bẻ không gãy. Xe đẩy bán cà phê, giàn giáo hay hàn thau hoặc hàn kẽm.
+[2536] Sắt mỏng ít thép, dùng máy hàn điện que 2 ly để trên 20 A là lủng liền. Muốn hàn điện phải dí vào nháp, quậy cho que đều, canh ampe rất kỹ, chích vào rồi dở ra nhanh; chậm một chút hoặc dư ampe một chút là lủng. Vì vậy phải dùng hàn khí.
+[2598] Béc số 1 để hàn mấy loại này, có thể dùng béc số 3 cho lửa mạnh hơn. Ga hơi yếu thì tăng. Với đồng hồ này canh gió 2, gas 1.5 là ngon; lên tới 4 là rất mạnh. Mồi gas thấy lửa dài rồi mới xả oxy vào.
+[2683] Tắt xong phải tắt bình oxy, bình gas, để đồng hồ tụt từ từ, rồi xả hết khí còn trong ống và tay hàn ra. Đừng để hơi còn sót lại, trẻ nhỏ lấy hột quẹt quẹt vào là nguy hiểm.
+[2753] Hàn xong để cây vừa hàn nguội, gác ngửa lên một cây sắt V hoặc sắt vuông.
