@@ -15,7 +15,7 @@ jobs:
         working-directory: dana_probe
         env: { DANA_MOCK_LLM: 'true', PYTHONUTF8: '1' }
         run: |
-          for f in p1_import p2_from p3_struct_reason p4_workflow p5_agent; do echo "===== $f"; timeout 120 dana run $f.na 2>&1 | tail -15 || echo "EXIT $?"; done
+          for f in p1_import p2_from p3_struct_reason p4_workflow p5_agent; do echo "===== $f"; timeout 120 dana $f.na 2>&1 | tail -15 || echo "EXIT $?"; done
           echo "===== bridge"; timeout 120 python bridge.py 2>&1 | tail -30
       - name: package layout
         run: |
