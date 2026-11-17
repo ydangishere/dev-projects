@@ -1,19 +1,38 @@
-# DXA – Tài liệu kỹ thuật
+# DXA (bản Dana) – Tài liệu kỹ thuật
 
 Tài liệu này dành cho người cài đặt, sửa code hoặc nạp thêm video.
 Người dùng bình thường chỉ cần đọc [README](../README.md).
 
-Gói `DXA.exe` được GitHub Actions tự đóng gói và chạy thử trên máy Windows mỗi khi code thay đổi (xem `.github/workflows/dxa-windows.yml` ở gốc repo).
+## Phần viết bằng Dana
+
+| File | Vai trò |
+|---|---|
+| `dxa_agent.na` | Agent `DXAMechanic`, workflow `wf_answer = find_cases \| gate \| write_answer \| check`, `reason()` trả về `RepairAnswer` dạng JSON |
+| `dxa_tools.py` | Hàm Python mà agent gọi: tìm kiếm (dùng lại `rag.py`), prompt, đọc JSON, kiểm chống bịa |
+| `dxa_dana.py` | Cầu nối Python → Dana cho `api.py`; cấu hình `reason()` dùng Gemini qua cổng tương thích OpenAI (model `local` của Dana) |
+| `test_dana.py` | Kiểm agent trên dữ liệu thật |
+
+Chạy thử bằng lệnh Dana:
+
+```bash
+python -c "import dxa_dana; dxa_dana.configure()"
+DANA_CONFIG=index/dana_config.json dana dxa_agent.na question="binh xang con chay xang"
+```
+
+Ghi chú về Dana 0.6.0.3.post3 (bản đang dùng):
+- Gói thiếu thư viện `pypdf`, nên `requirements.txt` cài thêm.
+- `dana deploy dxa_agent.na` dựng được máy chủ, nhưng `POST /solve` lỗi `got multiple values for argument 'context'`: Dana tự gọi `solve()` của agent sai tham số. Vì vậy DXA chạy qua `api.py` (FastAPI gọi agent Dana) thay vì `dana deploy`.
+- `test_dana.py` chạy trên GitHub Actions (Linux và Windows) với LLM giả (`DANA_MOCK_LLM=true`) và khi không có key. Muốn kiểm với Gemini thật thì thêm secret `GEMINI_API_KEY` cho repo.
 
 ## Chạy từ mã nguồn
 
-Clone repo, mở thư mục `dxa-automative-agent`, rồi bấm đúp `run.bat` (Windows) hoặc `run.command` (macOS).
+Clone repo, mở thư mục `dxa-automative-agent_dana`, rồi bấm đúp `run.bat` (Windows) hoặc `run.command` (macOS).
 File này tự tạo môi trường Python riêng, cài thư viện ở lần đầu, hỏi key, rồi mở trình duyệt.
-Cần có Python 3.10 trở lên; nếu máy chưa có, `run.bat` sẽ hỏi trước khi tự cài.
+Cần có Python 3.12 trở lên (Dana yêu cầu); nếu máy chưa có, `run.bat` sẽ hỏi trước khi tự cài.
 
 ## Chạy bằng tay
 
-Cần Python 3.10 trở lên.
+Cần Python 3.12 trở lên (Dana yêu cầu).
 
 ```bash
 pip install -r requirements.txt

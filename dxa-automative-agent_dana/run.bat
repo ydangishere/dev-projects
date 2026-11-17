@@ -1,6 +1,6 @@
 @echo off
 rem ==========================================================
-rem  DXA - Tro ly sua xe may. Bam dup vao file nay de chay.
+rem  DXA (ban Dana) - Tro ly sua xe may. Bam dup vao file nay de chay.
 rem  Lan dau: tu cai thu vien (vai phut), hoi Gemini API key.
 rem  Nhung lan sau: mo trinh duyet sau vai giay.
 rem ==========================================================
@@ -17,8 +17,10 @@ if exist ".venv\Scripts\python.exe" goto :co_venv
 where py >nul 2>nul && py -3 -c "import sys" >nul 2>nul && set "PY=py -3"
 if not defined PY for /f "delims=" %%P in ('where python 2^>nul ^| findstr /v /i "WindowsApps"') do if not defined PY set "PY="%%P""
 if not defined PY for /d %%D in ("%LOCALAPPDATA%\Programs\Python\Python3*" "%ProgramFiles%\Python3*" "%USERPROFILE%\anaconda3" "%USERPROFILE%\miniconda3") do if not defined PY if exist "%%~D\python.exe" set "PY="%%~D\python.exe""
+rem  Ban Dana can Python 3.12 tro len
+if defined PY %PY% -c "import sys; sys.exit(0 if sys.version_info >= (3, 12) else 1)" >nul 2>nul || set "PY="
 if not defined PY (
-    echo [DXA] Khong tim thay Python tren may.
+    echo [DXA] Khong tim thay Python 3.12 tro len tren may.
     choice /c YN /m "[DXA] Cai Python 3.12 tu dong"
     if errorlevel 2 (
         echo [DXA] Cai Python tai https://www.python.org/downloads/ roi bam lai run.bat.
@@ -42,7 +44,7 @@ echo [DXA] Tao moi truong Python rieng cho DXA...
 :co_venv
 set "VPY=.venv\Scripts\python.exe"
 if not exist ".venv\da_cai.txt" (
-    echo [DXA] Dang cai thu vien, lan dau mat vai phut...
+    echo [DXA] Dang cai thu vien (gom Dana), lan dau mat 5-10 phut...
     "%VPY%" -m pip install --upgrade pip -q
     "%VPY%" -m pip install -r requirements.txt -q || goto :loi
     echo ok> ".venv\da_cai.txt"
