@@ -1,0 +1,3 @@
+import probe_tools.py as tools
+def solve(q: str) -> dict:
+    return {"q": q, "sum": tools.add(1, 2)}

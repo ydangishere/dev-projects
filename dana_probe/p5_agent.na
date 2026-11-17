@@ -1,0 +1,8 @@
+agent_blueprint DXAProbe:
+    name: str = "DXA"
+
+def (a: DXAProbe) hello(q: str) -> str:
+    return f"{a.name} nhan cau hoi: {q}"
+
+x = DXAProbe()
+print(f"P5 agent method: {x.hello('xe chay xang')}")

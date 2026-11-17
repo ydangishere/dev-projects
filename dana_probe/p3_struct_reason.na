@@ -1,0 +1,12 @@
+struct RepairAnswer:
+    tom_tat: str
+    cac_buoc: list
+    ma_case: list
+
+def ask(q: str) -> str:
+    text = reason(f"Tra loi ngan: {q}", temperature=0.0)
+    return text
+
+print(f"P3 reason str: {ask('xe chay xang')}")
+a: RepairAnswer = reason("Tra ve tom_tat, cac_buoc, ma_case cho benh chay xang C01")
+print(f"P3 typed: {type(a)} {a}")

@@ -1,0 +1,25 @@
+name: Dana probe
+on:
+  push:
+    branches: [dana-probe]
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install "dana==0.6.0.3.post3" 2>&1 | tail -3
+      - run: pip show dana; which dana; dana --help 2>&1 | head -40
+      - name: probes (mock LLM)
+        working-directory: dana_probe
+        env: { DANA_MOCK_LLM: 'true', PYTHONUTF8: '1' }
+        run: |
+          for f in p1_import p2_from p3_struct_reason p4_workflow p5_agent; do echo "===== $f"; timeout 120 dana run $f.na 2>&1 | tail -15 || echo "EXIT $?"; done
+          echo "===== bridge"; timeout 120 python bridge.py 2>&1 | tail -30
+      - name: package layout
+        run: |
+          D=$(python -c "import dana,os;print(os.path.dirname(dana.__file__))"); echo $D
+          ls $D $D/lang 2>/dev/null | head -40
+          grep -rn "def py_set_model\|\"local\"\|LOCAL_BASE_URL" $D --include=*.py | head -15
+          grep -rln "deploy" $D/lang/apps/cli 2>/dev/null | head; dana deploy --help 2>&1 | head -30

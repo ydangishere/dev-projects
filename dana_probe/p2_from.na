@@ -1,0 +1,2 @@
+from probe_tools.py import add
+print(f"P2 from-import: {add(4, 5)}")

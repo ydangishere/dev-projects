@@ -1,0 +1,4 @@
+import probe_tools.py as tools
+print(f"P1 import-as: {tools.add(2, 3)}")
+d = tools.info()
+print(f"P1 dict: {d['name']} {len(d['cases'])} {d['cases'][0]['id']}")

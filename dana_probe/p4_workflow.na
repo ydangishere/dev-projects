@@ -1,0 +1,8 @@
+def step1(x: dict) -> dict:
+    x["a"] = 1
+    return x
+def step2(x: dict) -> dict:
+    x["b"] = x["a"] + 1
+    return x
+def wf(x) = step1 | step2
+print(f"P4 workflow: {wf({})}")
