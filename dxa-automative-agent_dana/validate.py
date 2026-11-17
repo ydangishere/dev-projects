@@ -123,7 +123,7 @@ for c in cases:
 
 # ------------------------------------------------------------------ Bước 4
 import pickle, networkx as nx
-state = pickle.load(open(OUT / "state.pkl", "rb"))
+state = pickle.load(open(OUT / "state.pkl", "rb"))  # noqa: S301 - file do DXA tự tạo
 G = state["graph"]
 for n, d in G.nodes(data=True):
     if d["kind"] == "TrieuChung" and not any(e[2]["rel"] == "DO" for e in G.out_edges(n, data=True)):
@@ -136,7 +136,7 @@ for u, v, d in G.edges(data=True):
 db = sqlite3.connect(OUT / "dxa.sqlite")
 for table, expect in [("cases", len(cases)), ("chunks", len(chunks)),
                       ("parts", sum(len(c["parts"]) for c in cases)), ("specs", sum(len(c["specs"]) for c in cases))]:
-    got = db.execute(f"select count(*) from {table}").fetchone()[0]
+    got = db.execute(f"select count(*) from {table}").fetchone()[0]  # noqa: S608 - tên bảng lấy từ danh sách cố định
     if got != expect:
         report(4, "FAIL", f"bảng {table}: SQL có {got} dòng, JSON có {expect}")
 orphan = db.execute("select count(*) from cases where video_id not in (select video_id from videos)").fetchone()[0]

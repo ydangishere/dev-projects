@@ -214,7 +214,7 @@ def build():
 # ---------------------------------------------------------------- truy vấn
 def _load():
     with open(OUT / "state.pkl", "rb") as f:
-        return pickle.load(f)
+        return pickle.load(f)  # noqa: S301 - state.pkl do chính DXA tạo khi build, không nhận từ người dùng
 
 def rrf(rank_lists, k=60):
     """Reciprocal Rank Fusion: gộp thứ hạng từ nhiều tầng."""

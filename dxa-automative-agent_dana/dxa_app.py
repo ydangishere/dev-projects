@@ -25,8 +25,9 @@ ENV = BASE / ".env"
 
 def setup_console():
     if os.name == "nt":
-        os.system("chcp 65001 >nul")
-        os.system("title DXA - Tro ly sua xe may")
+        # Lệnh cố định của Windows, không có dữ liệu người dùng
+        os.system("chcp 65001 >nul")  # noqa: S605, S607
+        os.system("title DXA - Tro ly sua xe may")  # noqa: S605, S607
     for stream in (sys.stdout, sys.stderr):
         try:
             stream.reconfigure(encoding="utf-8", errors="replace")

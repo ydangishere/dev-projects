@@ -74,7 +74,7 @@ class _Cache:
 
     @staticmethod
     def key(text, task):
-        return hashlib.sha1(f"{EMBED_MODEL}|{EMBED_DIM}|{task}|{text}".encode("utf-8")).hexdigest()
+        return hashlib.sha1(f"{EMBED_MODEL}|{EMBED_DIM}|{task}|{text}".encode("utf-8"), usedforsecurity=False).hexdigest()
 
     def save(self):
         if self.dirty:

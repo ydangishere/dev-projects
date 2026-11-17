@@ -1,0 +1,52 @@
+name: DXA security scan
+on:
+  push:
+    paths:
+      - 'dxa-automative-agent/**'
+      - 'dxa-automative-agent_dana/**'
+      - '.github/workflows/dxa-security.yml'
+  pull_request:
+    paths:
+      - 'dxa-automative-agent/**'
+      - 'dxa-automative-agent_dana/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  code-and-libraries:
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [dxa-automative-agent, dxa-automative-agent_dana]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ matrix.app }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install ruff==0.16.9 pip-audit
+      - name: Ruff - code DXA có dòng nào dễ bị lợi dụng
+        run: ruff check --select S --ignore S110 .
+      - name: pip-audit - thư viện có lỗ hổng đã công bố
+        run: pip-audit -r requirements.txt
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Cài gitleaks
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download -R gitleaks/gitleaks -p '*_linux_x64.tar.gz' -O gitleaks.tar.gz
+          tar -xzf gitleaks.tar.gz gitleaks
+          ./gitleaks version
+      - name: gitleaks - key có bị lọt vào git không
+        run: >
+          ./gitleaks git . --redact --verbose
+          --log-opts="--all -- dxa-automative-agent dxa-automative-agent_dana"
