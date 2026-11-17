@@ -1,0 +1,5 @@
+[1] Xe Satria nhập Indo để lâu lôi ra chùi rửa, nước sơn zin, chùi xong sáng bóng. Chỉ điểm xuyết ốc titan, giữ zin những chỗ cần zin.
+[71] Phiên bản nhập Indo có pô Yoshimura, gấp RCB, tay thắng Brembo, phuộc Öhlins. Kinh nghiệm chơi đồ: chọn đồ chơi zin của hãng, không chơi đồ chơi tàu lao.
+[254] Xe có bộ ECU Racer Mini 5 chính hãng với cảm biến oxy, tự autotune xăng gió. Kết nối qua Bluetooth khi mở chìa khóa, tắt chìa khóa là ngắt kết nối. Có sẵn các map, chọn map 4.
+[401] Đề máy lên, ralenti tỷ lệ xăng gió (AFR) khoảng 14 là chuẩn. Khi nhiệt độ máy đủ (khoảng 30 độ trở lên) thì bật autotune: chạy ở tốc độ nào cũng tự điều chỉnh lượng xăng gió tối ưu. Target AFR khi tăng ga khoảng 13 đến 15.
+[466] Máy zin mà vẫn ngon vì chỉ tối ưu kiểu pô, xăng, lửa: thay kim phun, thay pô và thay ECU Racer Mini 5. Ralenti để mặc định như máy zin. Máy chỉ vệ sinh buồng đốt, tiếng máy êm, không có tiếng lạ. Đi đường trường với cấu hình zin xăng lửa này là OK.

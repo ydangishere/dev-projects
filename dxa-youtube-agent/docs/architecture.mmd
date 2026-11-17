@@ -1,0 +1,32 @@
+%%{init: {"theme":"base","fontFamily":"Inter, DejaVu Sans, sans-serif","themeVariables":{"fontFamily":"Inter, DejaVu Sans, sans-serif","fontSize":"15px","primaryColor":"#F7F7F4","primaryBorderColor":"#1F2A2E","primaryTextColor":"#1F2A2E","lineColor":"#33566B","clusterBkg":"#ECEDE8","clusterBorder":"#C9CCC4","edgeLabelBackground":"#FFFFFF"},"flowchart":{"curve":"basis","nodeSpacing":40,"rankSpacing":46}}}%%
+flowchart TB
+    U(["Khách hoặc thợ"]) --> UI["<b>Giao diện web</b><br/>ui/index.html"]
+    UI <-- "POST /ask" --> API["<b>FastAPI</b><br/>api.py"]
+    API <--> RAG
+
+    subgraph RAG["rag.py: xử lý một câu hỏi"]
+        direction LR
+        A1["Thêm dấu<br/>cho câu gõ không dấu"] --> A2["Tìm kiếm lai<br/>BM25 + vector<br/>gộp bằng RRF"]
+        A2 --> A3{"Cổng từ chối<br/>in_scope()"}
+        A3 -- "có trong video" --> A4["Gemini viết<br/>câu trả lời<br/>ghi mã [Cxx]"]
+        A4 --> A5{"Kiểm<br/>chống bịa"}
+        A5 -- "qua" --> OK["Câu trả lời<br/>+ link video<br/>đúng giây"]
+        A5 -- "trượt" --> TPL["Câu ghép khuôn<br/>+ cảnh báo"]
+        A3 -- "không có" --> NO["Từ chối,<br/>không đoán"]
+    end
+
+    RAG -. "đọc" .-> KHO
+    RAG -. "gọi API" .-> G
+
+    KHO[("<b>Kho tri thức</b> (index/, data/)<br/>state.pkl: BM25, graph, 259 đoạn, 53 case<br/>Qdrant: vector Gemini<br/>dxa.sqlite: thông số, phụ tùng<br/>unanswered.jsonl: câu chưa trả lời")]
+
+    G["<b>Gemini API</b><br/>gemini-3.6-flash: thêm dấu, viết câu trả lời<br/>gemini-embedding-001: vector"]
+
+    classDef gate fill:#F2C230,stroke:#1F2A2E,color:#1F2A2E
+    classDef stop fill:#F3DAD5,stroke:#A93A2A,color:#1F2A2E
+    classDef good fill:#DCEBE1,stroke:#3E7C59,color:#1F2A2E
+    classDef ext fill:#1F2A2E,stroke:#1F2A2E,color:#FFFFFF
+    class A3,A5 gate
+    class NO,TPL stop
+    class OK good
+    class G ext

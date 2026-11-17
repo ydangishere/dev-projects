@@ -1,5 +1,9 @@
 ## Dev Projects
 
+## Featured RAG agent: DXA — Motorbike Repair Assistant from YouTube
+
+[**DXA Motorbike Repair Assistant (Tiếng Việt)**](./dxa-youtube-agent/README.md) — answers Vietnamese motorbike-repair questions from 30 videos of the [@ydang7076](https://www.youtube.com/@ydang7076) channel: subtitles → cleaned segments → 53 symptom/cause/fix cases → hybrid BM25 + Gemini-embedding retrieval (Qdrant) → refusal gate → Gemini answer with an anti-fabrication number check → YouTube links that jump to the exact second. Includes a FastAPI backend, a web UI, and PNG [build-flow](./dxa-youtube-agent/docs/flow.png) and [architecture](./dxa-youtube-agent/docs/architecture.png) diagrams. **The offline path (TF-IDF + templates) is evaluated on author-written questions; the Gemini/Qdrant/FastAPI path has so far been tested only with mocked Gemini and synthetic data. Cases are provisionally reviewed, not yet checked by a mechanic.**
+
 ## Featured onboarding AI Agent: Linh — Contact Sync & Select to Invite
 
 [**Linh Contact Onboarding AI Agent (MVP)**](./contact-onboarding-linh-agent/README.md) — runnable FastAPI backend and **simulated Linh AI persona** for two independent mobile referral onboarding paths: permission-gated in-app contact reading with separate backend sync consent, or native OS picker to select an invitee without broad address-book permission. Includes an illustrated [two-flow diagram](./contact-onboarding-linh-agent/diagrams/onboarding-flow.svg), optional **OpenAI gpt-4.1-mini**, offline rules, privacy-conscious demo storage, tests and a manual sharing gate. **Synthetic prototype only; no live phone contacts, real sending, or registration tracking.**

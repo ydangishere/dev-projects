@@ -1,0 +1,106 @@
+# Đóng gói DXA thành DXA.exe cho Windows (có sẵn Python + thư viện), chạy thử, rồi đăng lên Releases.
+name: DXA Windows app
+
+on:
+  push:
+    branches: [main, dxa-youtube-agent]
+    paths: ['dxa-youtube-agent/**', '.github/workflows/dxa-windows.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: dxa-youtube-agent
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Cài thư viện
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy networkx scikit-learn openpyxl google-genai fastapi "uvicorn[standard]" pyinstaller
+
+      - name: Kiểm dữ liệu và chấm điểm (bản offline)
+        env:
+          PYTHONUTF8: '1'
+        run: |
+          python dxa.py build
+          python validate.py
+          python eval.py
+
+      - name: Đóng gói DXA.exe
+        run: >
+          pyinstaller dxa_app.py --name DXA --onedir --console --noconfirm --clean
+          --add-data "data;data" --add-data "ui;ui"
+          --hidden-import dxa --hidden-import api --hidden-import rag
+          --hidden-import gemini_client --hidden-import build_gemini --hidden-import vector_store
+          --collect-submodules uvicorn --collect-submodules google.genai
+          --exclude-module qdrant_client --exclude-module matplotlib --exclude-module tkinter
+
+      - name: Chạy thử DXA.exe như người dùng (không key, chế độ offline)
+        shell: pwsh
+        run: |
+          $env:DXA_NO_BROWSER = "1"
+          New-Item -ItemType File -Path in.txt -Force | Out-Null
+          $p = Start-Process -FilePath "dist\DXA\DXA.exe" -WorkingDirectory "dist\DXA" -PassThru `
+               -RedirectStandardInput in.txt -RedirectStandardOutput out.txt -RedirectStandardError err.txt
+          $ok = $false
+          for ($i = 0; $i -lt 90; $i++) {
+            Start-Sleep -Seconds 2
+            try { $h = Invoke-RestMethod http://127.0.0.1:8000/health; $ok = $true; break } catch {}
+          }
+          Write-Host "---- out.txt"; Get-Content out.txt -Encoding utf8
+          Write-Host "---- err.txt"; Get-Content err.txt -Encoding utf8
+          if (-not $ok) { Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue; throw "DXA.exe không bật được máy chủ" }
+          Write-Host "health:" ($h | ConvertTo-Json -Compress)
+          $page = Invoke-WebRequest http://127.0.0.1:8000/ -UseBasicParsing
+          if ($page.Content -notmatch "Xe bạn đang bị gì") { throw "Giao diện web không mở được" }
+          $body = @{ question = "Bình xăng con chảy xăng khi dựng xe"; use_llm = $false } | ConvertTo-Json
+          $r = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8000/ask -ContentType "application/json; charset=utf-8" -Body ([System.Text.Encoding]::UTF8.GetBytes($body))
+          Write-Host "answer:" $r.answer
+          Stop-Process -Id $p.Id -Force
+          if ($h.cases -ne 53) { throw "Sai số case: $($h.cases)" }
+          if ($r.answer -notmatch "C02") { throw "Câu trả lời không đúng case C02" }
+          Write-Host "DXA.exe chạy đúng: 53 case, giao diện web mở được, trả lời đúng C02."
+
+      - name: Nén thành DXA-Windows.zip
+        shell: pwsh
+        run: |
+          Remove-Item -Recurse -Force dist\DXA\index -ErrorAction SilentlyContinue
+          Remove-Item -Force dist\DXA\_internal\index -Recurse -ErrorAction SilentlyContinue
+          Remove-Item -Force dist\DXA\.env -ErrorAction SilentlyContinue
+          Set-Content -Path "dist\DXA\HUONG DAN.txt" -Encoding utf8 -Value @"
+          DXA - Tro ly sua xe may
+
+          1. Bam dup DXA.exe
+          2. Dan Gemini API key (lay mien phi tai https://aistudio.google.com/apikey),
+             hoac bo trong roi bam Enter de chay ban offline.
+          3. Trinh duyet tu mo DXA. Dong cua so den la tat DXA.
+
+          Windows co the hien "Windows protected your PC": bam "More info" roi "Run anyway".
+          "@
+          Compress-Archive -Path dist\DXA -DestinationPath DXA-Windows.zip -Force
+          "{0:N0} MB" -f ((Get-Item DXA-Windows.zip).Length / 1MB)
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DXA-Windows
+          path: dxa-youtube-agent/DXA-Windows.zip
+
+      - name: Đăng lên Releases
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete dxa-windows --yes --cleanup-tag || true
+          gh release create dxa-windows DXA-Windows.zip --target "${{ github.sha }}" \
+            --title "DXA cho Windows" \
+            --notes "Tải DXA-Windows.zip, giải nén, bấm đúp DXA.exe. Không cần cài Python. Bản dựng từ ${{ github.ref_name }} @ ${GITHUB_SHA::7}."

@@ -1,0 +1,5 @@
+[1] Chế lông đền báo số zin cho bộ số độ: con heo số (trống số) độ không có rãnh số N như heo khác (heo Win), nên không biết số N nằm ở đâu.
+[22] Lấy công tắc báo số: chấu có dấu nhỏ nhất là N, dây xanh sọc đỏ. Gá vào, bắt ốc, chỗ chấu chạm là số N. Đánh dấu ngay chỗ đó trên con heo, sau này cắt rãnh đúng chỗ đó.
+[64] Kiểm tra: vô số 1, 2, 3, 4 rồi trả về N, xem chấu có về đúng chỗ đánh dấu không. Đồng đền (lông đền) báo số có cái chấu, chấu nằm đâu thì số nằm đó. Quay đi đâu rồi trả về N vẫn đúng chỗ đó là đúng.
+[184] Cắt rãnh ngay chỗ đánh dấu để gắn lông đền báo số zin vào, mài sơ chỗ đó. Chấu lông đền nằm trong rãnh.
+[226] Mài một con ốc lục giác 5 ly (sắt hay inox đều được) cho đầu nhỏ lại, mỏng và lùn hơn để lọt thỏm vào trong, nếu không sẽ bị cạ. Ốc zin thì càng không vào được. Nhấn lông đền báo số zin vào, gắn vào chạy là báo đúng số.

@@ -1,0 +1,737 @@
+{
+ "_note": "Tri thức rút từ 10 video kênh y dang. Mỗi case = 1 chuỗi Triệu chứng -> Nguyên nhân -> Cách sửa, gắn video + giây. reviewed=false nghĩa là chưa được thợ duyệt.",
+ "cases": [
+  {
+   "id": "C01",
+   "video_id": "VDaR6Uv2EFI",
+   "t": 547,
+   "system": "nhiên liệu",
+   "symptom": "Bình xăng con chảy xăng, xăng rỉ ra khi dựng xe hoặc để lâu",
+   "cause": "Kim ngắt xăng bị rỉ sét, hoen ố do xăng ethanol để lâu (kể cả khi đã khóa xăng), kim không nhún được nên không ngắt xăng",
+   "fix": "Tháo chén xăng, tháo chốt phao lấy kim ra, chà kim bằng bàn chải mềm với nhớt sạch cho hết rỉ, xịt gió vào ổ kim, ráp lại",
+   "parts": [
+    "kim ngắt xăng",
+    "chén xăng",
+    "phao xăng",
+    "chốt phao"
+   ],
+   "tools": [
+    "vít nhỏ",
+    "kìm mỏ nhọn",
+    "bàn chải mềm",
+    "nhớt sạch",
+    "súng xịt gió"
+   ],
+   "vehicles": [
+    "67",
+    "Wave",
+    "Dream",
+    "bình Takegawa",
+    "bình Mikuni",
+    "bình Daytona",
+    "bình Keihin"
+   ],
+   "specs": [],
+   "warnings": [
+    "Chuyện nhỏ, tự xử lý được, đem ra thợ dễ bị vẽ bệnh"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C02",
+   "video_id": "VDaR6Uv2EFI",
+   "t": 329,
+   "system": "nhiên liệu",
+   "symptom": "Bình xăng con chảy xăng khi dựng xe",
+   "cause": "Mức phao xăng sai, phao không nằm góc 90 độ hoặc không bật lên khi nhấn",
+   "fix": "Nhìn thẳng kiểm tra phao phải nằm góc 90 độ, nhấn nhẹ phao xem có bật lên; chỉnh cái cần (lưỡi gà) của phao cho đúng 90 độ",
+   "parts": [
+    "phao xăng",
+    "cần phao",
+    "kim ngắt xăng"
+   ],
+   "tools": [
+    "kìm mỏ nhọn"
+   ],
+   "vehicles": [
+    "bình Takegawa",
+    "bình Mikuni",
+    "bình Daytona",
+    "bình Keihin"
+   ],
+   "specs": [
+    {
+     "name": "góc phao xăng",
+     "value": "90",
+     "unit": "độ"
+    }
+   ],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C03",
+   "video_id": "VDaR6Uv2EFI",
+   "t": 456,
+   "system": "nhiên liệu",
+   "symptom": "Chạy bị hụt xăng, mất ga hoài",
+   "cause": "Cần phao bị đạp xuống quá, phao ngỏng lên làm kim ngắt xăng quá sớm",
+   "fix": "Khép cần phao lại một chút để hạ phao, chỉnh về góc 90 độ; chỉnh tới lui giữa hai bệnh chảy xăng và hụt xăng",
+   "parts": [
+    "phao xăng",
+    "cần phao"
+   ],
+   "tools": [
+    "kìm mỏ nhọn"
+   ],
+   "vehicles": [
+    "bình Takegawa",
+    "bình Mikuni",
+    "bình Daytona"
+   ],
+   "specs": [
+    {
+     "name": "góc phao xăng",
+     "value": "90",
+     "unit": "độ"
+    }
+   ],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C04",
+   "video_id": "VDaR6Uv2EFI",
+   "t": 770,
+   "system": "nhiên liệu",
+   "symptom": "Xe dựng lâu không chạy, sợ kim xăng bị rỉ",
+   "cause": "Xăng ethanol đọng trong chén xăng làm rỉ kim; bình Takegawa, Mikuni, Daytona không có van xả xăng",
+   "fix": "Xả hết xăng trong chén trước khi cất xe bằng cách tháo chén ra (kiểu classic); vệ sinh ống thông hơi thường xuyên; đồ Nhật bãi chỉ thoa nhớt rồi lau khăn khô",
+   "parts": [
+    "chén xăng",
+    "ống thông hơi bình xăng con"
+   ],
+   "tools": [
+    "vít dẹp"
+   ],
+   "vehicles": [
+    "bình Takegawa",
+    "bình Mikuni",
+    "bình Daytona"
+   ],
+   "specs": [],
+   "warnings": [
+    "Siết ốc chén và cổ dê vừa tới, không siết cứng"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C05",
+   "video_id": "Ho93bz7Usgc",
+   "t": 159,
+   "system": "nhiên liệu",
+   "symptom": "Ga không đều, ga cuối không đều khi đi bình xăng độ 24 với pô e bao tử zin",
+   "cause": "Co gió zin và bao tử zin nhỏ hơn họng gió 45 mm của bình 24 (PE24, TM24, Yoshimura), bình bị thiếu gió",
+   "fix": "Thay co gió Vario 45 đúng size họng bình, khoét lỗ bao tử cho co vừa vào, đục 2 lỗ thoát nước dưới đáy, để kim xăng nấc giữa, không cần hạ kim",
+   "parts": [
+    "co gió Vario 45",
+    "bao tử (pô e)",
+    "bình PE24",
+    "kim xăng"
+   ],
+   "tools": [
+    "máy cắt",
+    "vít dẹp",
+    "vít nhỏ"
+   ],
+   "vehicles": [
+    "Cub",
+    "Wave",
+    "Dream",
+    "67",
+    "máy 54"
+   ],
+   "specs": [
+    {
+     "name": "đường kính họng gió bình 24",
+     "value": "45",
+     "unit": "mm"
+    }
+   ],
+   "warnings": [
+    "Nếu giữ bao tử, co, lọc gió zin thì phải hạ kim và chỉnh gíc lơ; khi đó nên đi bình 125 thường cho đỡ uổng"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C06",
+   "video_id": "Ho93bz7Usgc",
+   "t": 615,
+   "system": "nhiên liệu",
+   "symptom": "Lắp co gió mới, sợ cặn cao su bị hút vào bình xăng con",
+   "cause": "Co gió cao su mới còn bavia, bụi cao su",
+   "fix": "Vệ sinh cao su co gió sạch trước khi gắn; nguyên tắc họng gió của bình bao nhiêu thì đi co gió bấy nhiêu",
+   "parts": [
+    "co gió"
+   ],
+   "tools": [
+    "vít dẹp"
+   ],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C07",
+   "video_id": "RhhXBbVthZk",
+   "t": 169,
+   "system": "đánh lửa",
+   "symptom": "Canh xăng hoài mà đầu bugi không ra màu nâu, cháy đen hoặc trắng, lửa không đều",
+   "cause": "Gắn bugi sai hướng: lưng của móc (cực âm) quay vào tâm buồng đốt thay vì mặt móc",
+   "fix": "Đánh dấu lưng móc ở bên ngoài thân bugi, vặn vào xem hướng; kê thêm lông đền nhôm khoảng 0.5 đến 0.6 mm để mặt móc quay vào tâm buồng đốt",
+   "parts": [
+    "bugi",
+    "lông đền bugi"
+   ],
+   "tools": [
+    "tuýp mở bugi",
+    "đòn ngắn",
+    "bút đánh dấu",
+    "thước đo"
+   ],
+   "vehicles": [],
+   "specs": [
+    {
+     "name": "một vòng ren bugi",
+     "value": "1",
+     "unit": "mm"
+    },
+    {
+     "name": "nửa vòng ren bugi",
+     "value": "0.5",
+     "unit": "mm"
+    },
+    {
+     "name": "lông đền kê bugi (ví dụ trong video)",
+     "value": "0.6",
+     "unit": "mm"
+    }
+   ],
+   "warnings": [
+    "Không mở bugi bằng máy bắn ốc",
+    "Siết hết đường ren chứ không siết hết lực, dùng đòn ngắn, cần dài dễ gãy bugi hoặc tuôn ren"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C08",
+   "video_id": "wXHEh1OHErQ",
+   "t": 1,
+   "system": "nhiên liệu",
+   "symptom": "Bình xăng con nóng, máy đờn, lăn tăn, giật khi chạy xa hoặc máy nóng",
+   "cause": "Co xăng truyền nhiệt và rung từ đầu culass lên bình: co dài, co nhôm, thiếu phíp cách nhiệt",
+   "fix": "Đi co càng ngắn càng tốt, có phíp nhựa ở chân co và phíp trên, dùng vai cao su xịn (Kijima)",
+   "parts": [
+    "co xăng",
+    "phíp nhựa chân co",
+    "vai cao su Kijima"
+   ],
+   "tools": [],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [
+    "Đường kính trong co theo cấu hình máy 24, 26, 28"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C09",
+   "video_id": "wXHEh1OHErQ",
+   "t": 121,
+   "system": "nhiên liệu",
+   "symptom": "Xì gió ở co, canh xăng không chuẩn",
+   "cause": "Dùng loại co có ống buộc cổ dê hai đầu, ống dễ rách và xì",
+   "fix": "Đi vai bắt ốc (Kijima của Nhật hoặc vai Việt Nam loại bắt ốc), không đi loại bắt cổ dê",
+   "parts": [
+    "co xăng",
+    "vai cao su Kijima"
+   ],
+   "tools": [],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C10",
+   "video_id": "5f-RHjR1OhI",
+   "t": 202,
+   "system": "động cơ",
+   "symptom": "Lủng mắt piston sau khi móc mắt",
+   "cause": "Móc mắt piston quá sâu, mặt trái còn mỏng",
+   "fix": "Móc mắt theo cỡ xupap (xupap 21/24 thì móc 22/25), móc vừa thôi; đo độ dày mắt trái bằng banme phải trên 3 ly",
+   "parts": [
+    "piston",
+    "xupap"
+   ],
+   "tools": [
+    "thước banme"
+   ],
+   "vehicles": [
+    "bộ BRT",
+    "cam Magic"
+   ],
+   "specs": [
+    {
+     "name": "độ dày mắt piston tối thiểu",
+     "value": "3",
+     "unit": "mm"
+    },
+    {
+     "name": "mắt piston cho xupap 21/24",
+     "value": "22/25",
+     "unit": "mm"
+    }
+   ],
+   "warnings": [
+    "Cam có độ nâng không cao thì xupap không qua khỏi mặt chảo nhiều, không cần móc sâu"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C11",
+   "video_id": "5f-RHjR1OhI",
+   "t": 263,
+   "system": "động cơ",
+   "symptom": "Không biết mắt nào trên piston là nạp, mắt nào là xả",
+   "cause": "Trái piston không ghi số, thợ tiện không đo giùm",
+   "fix": "Gắn xupap vào rồi đo: mắt lớn hơn là nạp, nằm ở trên khi nhìn máy từ bên trái; ghi bằng bút xóa lên mặt trên piston trước khi đem ra tiệm tiện",
+   "parts": [
+    "piston",
+    "xupap"
+   ],
+   "tools": [
+    "bút xóa",
+    "thước đo"
+   ],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [
+    "Kẻ ở mặt trên, đừng kẻ mặt dưới để thợ tiện không nhầm"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C12",
+   "video_id": "5f-RHjR1OhI",
+   "t": 425,
+   "system": "động cơ",
+   "symptom": "Sên cam căng khi ráp đầu",
+   "cause": "Ráp sai hoặc chi tiết lệch",
+   "fix": "Lấy cây lục giác kéo sên cam lên nhẹ; vào nhẹ là OK, căng là mở ra làm lại; khi sạc máy nghiêng máy cho nhớt vào ống sáo tăng cam",
+   "parts": [
+    "sên cam",
+    "tăng cam"
+   ],
+   "tools": [
+    "cây lục giác"
+   ],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C13",
+   "video_id": "5f-RHjR1OhI",
+   "t": 516,
+   "system": "động cơ",
+   "symptom": "Xupap đụng piston sau khi vớt piston",
+   "cause": "Mắt piston chưa đủ hoặc đầu trái quá cao",
+   "fix": "Tạm gá đầu culass bằng hai con ốc, quay máy cho xupap mở hết, kiểm tra có lấn cấn không; đụng là quay không được",
+   "parts": [
+    "piston",
+    "xupap",
+    "đầu culass"
+   ],
+   "tools": [
+    "cây lục giác"
+   ],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C14",
+   "video_id": "PM-LbM-w-Kk",
+   "t": 51,
+   "system": "động cơ",
+   "symptom": "Cò mổ bị bó, cấn, không có độ rơ khi ướm",
+   "cause": "Cò và ốc cò chưa được mài khớp",
+   "fix": "Dùng móng zin và lò xo mềm để ướm, ốc cò nhô khoảng 2 ly, để cam ở vị trí thấp nhất; mài cò từng chút đến khi vào ngọt, hơi rơ",
+   "parts": [
+    "cò mổ",
+    "ốc cò",
+    "lò xo xupap"
+   ],
+   "tools": [
+    "máy mài",
+    "lò xo mềm"
+   ],
+   "vehicles": [
+    "bộ BRT"
+   ],
+   "specs": [
+    {
+     "name": "ốc cò nhô ra khi ướm",
+     "value": "2",
+     "unit": "mm"
+    }
+   ],
+   "warnings": [
+    "Đừng ướm bằng lò xo thật vì quá cứng"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C15",
+   "video_id": "PM-LbM-w-Kk",
+   "t": 197,
+   "system": "động cơ",
+   "symptom": "Quay máy bằng tay thấy khựng, lấn cấn",
+   "cause": "Chân cò đụng vào phốt cao su xupap",
+   "fix": "Quay tay kiểm tra, khựng chỗ nào thì mài chỗ đó; chỉ khi quay mượt mới gắn vào chạy",
+   "parts": [
+    "cò mổ",
+    "phốt xupap"
+   ],
+   "tools": [
+    "máy mài"
+   ],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C16",
+   "video_id": "PM-LbM-w-Kk",
+   "t": 254,
+   "system": "động cơ",
+   "symptom": "Ốc cò cao quá, không đậy được nắp xupap zin",
+   "cause": "Đi cò lăng với ốc cò dài",
+   "fix": "Mài theo bốn mặt vuông có sẵn rồi cắt ngắn ốc cò; dùng ốc cò BRT vì cứng",
+   "parts": [
+    "ốc cò",
+    "nắp xupap"
+   ],
+   "tools": [
+    "máy mài"
+   ],
+   "vehicles": [
+    "bộ BRT"
+   ],
+   "specs": [],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C17",
+   "video_id": "PM-LbM-w-Kk",
+   "t": 548,
+   "system": "động cơ",
+   "symptom": "Cò mổ căng hơn khi máy nóng",
+   "cause": "Máy nóng giãn nở làm rút con cò căng hơn lúc nguội",
+   "fix": "Khi chỉnh lúc nguội để độ rơ cò dư thêm một chút",
+   "parts": [
+    "cò mổ"
+   ],
+   "tools": [],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [
+    "Kiểm tra lại nhiều lần"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C18",
+   "video_id": "PM-LbM-w-Kk",
+   "t": 800,
+   "system": "động cơ",
+   "symptom": "Chén lò xo xupap không ngồi lọt rãnh",
+   "cause": "Chén gá lên thành thay vì ngồi vào rãnh (seat)",
+   "fix": "Chén dưới mài cả trong lẫn ngoài, mặt trên chỉ mài ngoài để chén ngồi lọt thỏm vào rãnh",
+   "parts": [
+    "chén lò xo xupap",
+    "lò xo xupap"
+   ],
+   "tools": [
+    "máy mài"
+   ],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C19",
+   "video_id": "QarHYUcQEUM",
+   "t": 310,
+   "system": "động cơ",
+   "symptom": "Xe độ chạy 6 tháng đến 1 năm bị trễ cam, yếu đi",
+   "cause": "Nhông cam và sên cam mòn giãn làm cam bị trễ",
+   "fix": "Dùng bánh cam tăng chỉnh: lúc mới ráp canh trễ một chút, chạy một thời gian mở ra chỉnh sớm lại 1 đến 2 độ",
+   "parts": [
+    "bánh cam tăng chỉnh",
+    "nhông cam",
+    "sên cam"
+   ],
+   "tools": [
+    "đồng hồ độ cam"
+   ],
+   "vehicles": [],
+   "specs": [
+    {
+     "name": "chỉnh sớm lại sau khi chạy",
+     "value": "1-2",
+     "unit": "độ"
+    }
+   ],
+   "warnings": [
+    "Không muốn mua bánh cam tăng chỉnh thì đem bánh cam zin ra tiệm tiện khoét lấy sớm muộn mỗi bên 3 ly"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C20",
+   "video_id": "QarHYUcQEUM",
+   "t": 113,
+   "system": "động cơ",
+   "symptom": "Lá khóa ốc bánh cam bị gãy sau một thời gian chạy",
+   "cause": "Lấy kìm bẻ uốn lá khóa làm lá bị giòn",
+   "fix": "Chỉ mài sơ lá khóa, không bẻ uốn bằng kìm",
+   "parts": [
+    "lá khóa bánh cam"
+   ],
+   "tools": [
+    "máy mài"
+   ],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C21",
+   "video_id": "QarHYUcQEUM",
+   "t": 174,
+   "system": "động cơ",
+   "symptom": "Cây cam bị sàng tới sàng lui",
+   "cause": "Bạc đạn cam không được giữ cố định",
+   "fix": "Đi bass chặn cam, hoặc tiện ổ bạc đạn hạ sâu vào và cài phe giữ bạc đạn; nắp tròn giữ bạc đạn",
+   "parts": [
+    "cây cam",
+    "bạc đạn cam",
+    "bass chặn cam",
+    "phe cài"
+   ],
+   "tools": [],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C22",
+   "video_id": "QarHYUcQEUM",
+   "t": 972,
+   "system": "động cơ",
+   "symptom": "Sên cam căng sau khi ráp đầu",
+   "cause": "Ron đầu zin 0.5 mm bị siết ép xuống còn 0.3 mm",
+   "fix": "Dùng ron độ lõi thép FCCI Thái Lan, siết kiểu gì cũng giữ 0.5 mm, sên cam đều",
+   "parts": [
+    "ron đầu culass",
+    "sên cam"
+   ],
+   "tools": [],
+   "vehicles": [],
+   "specs": [
+    {
+     "name": "độ dày ron đầu",
+     "value": "0.5",
+     "unit": "mm"
+    },
+    {
+     "name": "ron zin sau khi siết",
+     "value": "0.3",
+     "unit": "mm"
+    }
+   ],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C23",
+   "video_id": "QarHYUcQEUM",
+   "t": 219,
+   "system": "động cơ",
+   "symptom": "Tuôn ren ốc bánh cam",
+   "cause": "Siết quá lực, ốc chỉ còn ăn khoảng 2.5 ly ren sau khi mài mặt",
+   "fix": "Dùng ốc cứng, cắt rãnh dùng vít dẹp, siết vừa tay hết đường ren",
+   "parts": [
+    "ốc bánh cam"
+   ],
+   "tools": [
+    "vít dẹp"
+   ],
+   "vehicles": [],
+   "specs": [
+    {
+     "name": "chiều cao nâng cam tối đa",
+     "value": "10.5",
+     "unit": "mm"
+    }
+   ],
+   "warnings": [
+    "Lực lớn nhất lúc đề máy và tắt máy"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C24",
+   "video_id": "sNXkl3lyxVI",
+   "t": 0,
+   "system": "điện",
+   "symptom": "Đèn trợ sáng sáng mờ khi chưa bật công tắc, mở lên thì sáng lu lu, chập chờn",
+   "cause": "Rơ le và dây đèn trợ sáng bị vô nước; bộ dây mua trôi nổi chưa đổ keo",
+   "fix": "Mở nắp hộp rơ le, xịt hơi, sấy hoặc phơi khô; chích keo 705 vào chân điện, đổ keo A300; cắt bao dây cao lên và quấn băng keo từ trên xuống; đặt rơ le đứng sau hộc bên hông",
+   "parts": [
+    "rơ le đèn trợ sáng",
+    "dây đèn trợ sáng",
+    "cầu chì"
+   ],
+   "tools": [
+    "máy sấy",
+    "keo 705",
+    "keo A300",
+    "băng keo",
+    "dây rút"
+   ],
+   "vehicles": [
+    "67",
+    "xe hở sườn"
+   ],
+   "specs": [],
+   "warnings": [
+    "Để keo khô một hai tiếng"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C25",
+   "video_id": "0WtGl14a0XE",
+   "t": 37,
+   "system": "điện",
+   "symptom": "Gắn đèn LED báo xi nhan thì hai xi nhan trái phải cùng sáng",
+   "cause": "Nối chung dây cam (trái) và dây xanh (phải) vào đèn báo tạo điểm nối điện giữa hai bên",
+   "fix": "Dùng hai rơ le 4 chân: dây cam và dây xanh vào mạch kích (chân nhỏ, một đầu mát), mạch thông (chân lớn) cấp điện cho đèn LED báo",
+   "parts": [
+    "rơ le 4 chân",
+    "đèn LED báo xi nhan",
+    "cục chớp xi nhan",
+    "công tắc xi nhan"
+   ],
+   "tools": [],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [
+    "Hai chân lớn phải cùng là dương hoặc cùng là mát; đấu một lửa một mát vào hai chân lớn là đoản mạch"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C26",
+   "video_id": "GH_DXF5_vNQ",
+   "t": 229,
+   "system": "khung sườn",
+   "symptom": "Bánh trước sau không ngay hàng, xe chạy lệch",
+   "cause": "Đuôi sườn bị lệch (sườn Cub 10 chiếc lỗi 10), hoặc gấp bị méo, hoặc đùm thiếu phụ kiện",
+   "fix": "Kiểm tra theo thứ tự: đùm đủ phụ kiện; thước thủy kiểm tra gấp; luồn dây căng từ lỗ cốt phuộc trước về hai lỗ cốt gấp để kiểm tra sườn; đuôi lệch nhẹ thì gõ lại, nặng thì thay đuôi",
+   "parts": [
+    "sườn",
+    "đuôi sườn",
+    "gấp",
+    "đùm",
+    "cốt gấp"
+   ],
+   "tools": [
+    "thước thủy",
+    "dây dù",
+    "bút đánh dấu"
+   ],
+   "vehicles": [
+    "Cub"
+   ],
+   "specs": [],
+   "warnings": [
+    "Đùm thiếu phụ kiện thì canh gấp cỡ nào bánh cũng không ngay, đừng đổ thừa sườn"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  }
+ ]
+}

@@ -1,0 +1,6 @@
+.env
+index/
+__pycache__/
+*.pyc
+data/unanswered.jsonl
+.venv/
