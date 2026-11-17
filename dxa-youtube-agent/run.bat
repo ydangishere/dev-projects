@@ -18,7 +18,7 @@ if not defined PY (
     echo [DXA] May chua co Python. Dang cai Python 3.12...
     winget install -e --id Python.Python.3.12 --accept-package-agreements --accept-source-agreements
     echo.
-    echo [DXA] Cai Python xong. Dong cua so nay, roi bam dup lai chay.bat.
+    echo [DXA] Cai Python xong. Dong cua so nay, roi bam dup lai run.bat.
     pause
     exit /b 1
 )

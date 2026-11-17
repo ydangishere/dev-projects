@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# DXA - Trợ lý sửa xe máy. macOS: bấm đúp file này. Linux: chạy ./chay.command
+# DXA - Trợ lý sửa xe máy. macOS: bấm đúp file này. Linux: chạy ./run.command
 # Lần đầu: tự cài thư viện (vài phút), hỏi Gemini API key. Những lần sau: mở trình duyệt sau vài giây.
 set -e
 cd "$(dirname "$0")"

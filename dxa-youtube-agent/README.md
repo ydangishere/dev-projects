@@ -14,7 +14,7 @@ Câu nào video chưa nói tới, DXA báo là chưa có chứ không đoán.
    git clone https://github.com/ydangishere/dev-projects.git
    ```
 2. Mở thư mục `dev-projects/dxa-youtube-agent`.
-3. **Windows:** bấm đúp `chay.bat`. **macOS:** bấm đúp `chay.command`.
+3. **Windows:** bấm đúp `run.bat`. **macOS:** bấm đúp `run.command`.
 
 Lần đầu, file này tự cài Python (nếu máy chưa có) và thư viện, mất vài phút.
 Sau đó nó hỏi Gemini API key: dán key vào (lấy miễn phí tại https://aistudio.google.com/apikey), hoặc bỏ trống để chạy bản offline.
@@ -104,7 +104,7 @@ Việc tiếp theo là lấy 30–50 câu hỏi thật từ bình luận YouTube
 |---|---|
 | `dxa.py` | Dựng kho tri thức, hỏi đáp bản offline |
 | `rag.py` | Hỏi đáp bản Gemini |
-| `chay.bat`, `chay.command` | Bấm đúp để cài và chạy (Windows, macOS) |
+| `run.bat`, `run.command` | Bấm đúp để cài và chạy (Windows, macOS) |
 | `api.py` | Máy chủ FastAPI |
 | `ui/index.html` | Giao diện web |
 | `gemini_client.py`, `vector_store.py`, `build_gemini.py` | Gemini embedding, LLM, Qdrant |
