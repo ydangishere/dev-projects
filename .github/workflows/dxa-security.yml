@@ -31,7 +31,25 @@ jobs:
       - name: Ruff - code DXA có dòng nào dễ bị lợi dụng
         run: ruff check --select S --ignore S110 .
       - name: pip-audit - thư viện có lỗ hổng đã công bố
+        if: matrix.app == 'dxa-automative-agent'
         run: pip-audit -r requirements.txt
+      # Bản Dana: Pillow bị Dana (qua aicapture) khoá ở bản <12 nên chưa nâng được.
+      # DXA không mở file ảnh nên lỗi Pillow không bị chạm tới. Vẫn in ra để theo dõi,
+      # chỉ báo đỏ khi có thư viện KHÁC Pillow bị lỗi.
+      - name: pip-audit - thư viện có lỗ hổng đã công bố (bỏ qua Pillow)
+        if: matrix.app == 'dxa-automative-agent_dana'
+        run: |
+          pip-audit -r requirements.txt -f json -o audit.json || true
+          python - <<'PY'
+          import json, sys
+          deps = json.load(open("audit.json"))["dependencies"]
+          bad = [(d["name"], d["version"], v["id"]) for d in deps for v in d.get("vulns", [])]
+          for b in bad:
+              print(*b)
+          other = [b for b in bad if b[0].lower() != "pillow"]
+          print(f"Pillow: {len(bad) - len(other)} lỗi (chờ Dana nâng). Thư viện khác: {len(other)} lỗi.")
+          sys.exit(1 if other else 0)
+          PY
 
   secrets:
     runs-on: ubuntu-latest
