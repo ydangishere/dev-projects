@@ -69,7 +69,15 @@ def _load_agent():
 
 
 def _plain(v):
-    """Đổi giá trị Dana trả về sang kiểu Python thường để FastAPI trả JSON được."""
+    """Đổi giá trị Dana trả về sang kiểu Python thường để FastAPI trả JSON được.
+
+    Hàm Dana có thể trả về "promise" (giá trị tính trễ): chờ lấy giá trị thật trước.
+    """
+    for _ in range(5):
+        if hasattr(v, "_wait_for_delivery"):
+            v = v._wait_for_delivery()
+        else:
+            break
     if isinstance(v, dict):
         return {str(k): _plain(x) for k, x in v.items()}
     if isinstance(v, (list, tuple)):
