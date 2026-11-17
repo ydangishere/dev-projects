@@ -3,8 +3,8 @@ name: DXA Windows app
 
 on:
   push:
-    branches: [main, dxa-youtube-agent]
-    paths: ['dxa-youtube-agent/**', '.github/workflows/dxa-windows.yml']
+    branches: [main]
+    paths: ['dxa-automative-agent/**', '.github/workflows/dxa-windows.yml']
   workflow_dispatch:
 
 permissions:
@@ -15,7 +15,7 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        working-directory: dxa-youtube-agent
+        working-directory: dxa-automative-agent
     steps:
       - uses: actions/checkout@v4
 
@@ -93,7 +93,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: DXA-Windows
-          path: dxa-youtube-agent/DXA-Windows.zip
+          path: dxa-automative-agent/DXA-Windows.zip
 
       - name: Đăng lên Releases
         shell: bash

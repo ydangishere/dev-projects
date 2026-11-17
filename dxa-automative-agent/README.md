@@ -23,7 +23,7 @@ Gói `DXA.exe` được GitHub Actions tự đóng gói và chạy thử trên m
 
 ## Cho người làm IT: chạy từ mã nguồn
 
-Clone repo, mở thư mục `dxa-youtube-agent`, rồi bấm đúp `run.bat` (Windows) hoặc `run.command` (macOS).
+Clone repo, mở thư mục `dxa-automative-agent`, rồi bấm đúp `run.bat` (Windows) hoặc `run.command` (macOS).
 File này tự tạo môi trường Python riêng, cài thư viện ở lần đầu, hỏi key, rồi mở trình duyệt.
 Cần có Python 3.10 trở lên; nếu máy chưa có, `run.bat` sẽ hỏi trước khi tự cài.
 
