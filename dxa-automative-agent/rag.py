@@ -126,8 +126,11 @@ def _bm25_rank(bm, queries, n=20):
 def _vec_rank(kind, query, n=20):
     st = state()
     if _gemini_ok:
-        qv = G.embed([query], task="RETRIEVAL_QUERY")[0]
-        return [i for i, _ in _store.search(kind, qv, n)]
+        try:
+            qv = G.embed([query], task="RETRIEVAL_QUERY")[0]
+            return [i for i, _ in _store.search(kind, qv, n)]
+        except Exception as e:  # mất mạng hoặc hết lượt Gemini: tạm dùng vector offline
+            print(f"[rag] Gemini embedding lỗi, dùng vector offline: {e.__class__.__name__}", file=sys.stderr)
     E = st["E_cases"] if kind == "cases" else st["E_chunks"]
     s = E @ st["vec"].encode([query])[0]
     return [int(i) for i in np.argsort(-s)[:n]]
