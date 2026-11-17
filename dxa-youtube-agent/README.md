@@ -22,6 +22,10 @@ Trình duyệt tự mở http://localhost:8000. Đóng cửa sổ đen là tắt
 
 Những lần sau, bấm lại file đó là chạy. Nếu lần trước bỏ trống key thì nó hỏi lại, đã có key thì không hỏi nữa. Muốn đổi key thì sửa file `.env`.
 
+Bấm `run.bat` thì các bước diễn ra như sau:
+
+![Luồng chạy khi bấm run.bat](docs/run-flow.png)
+
 ## Chạy bằng tay
 
 Cần Python 3.10 trở lên.

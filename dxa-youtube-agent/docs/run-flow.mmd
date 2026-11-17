@@ -1,0 +1,42 @@
+%%{init: {"theme":"base","fontFamily":"Inter, DejaVu Sans, sans-serif","themeVariables":{"fontFamily":"Inter, DejaVu Sans, sans-serif","fontSize":"15px","primaryColor":"#F7F7F4","primaryBorderColor":"#1F2A2E","primaryTextColor":"#1F2A2E","lineColor":"#33566B","edgeLabelBackground":"#FFFFFF"},"flowchart":{"curve":"basis","nodeSpacing":36,"rankSpacing":40}}}%%
+flowchart TB
+    START(["Bấm đúp <b>run.bat</b><br/>(macOS: run.command)"])
+    P{"Máy có<br/>Python chưa?"}
+    PI["Tự cài Python 3.12"]
+    AGAIN(["Đóng cửa sổ,<br/>bấm lại run.bat"])
+    V{"Đã cài<br/>thư viện chưa?"}
+    VI["Tạo môi trường riêng .venv<br/>và cài thư viện<br/><small>chỉ lần đầu, vài phút</small>"]
+    K{"Đã có Gemini<br/>API key chưa?"}
+    ASK["Hỏi key"]
+    SAVE["Lưu key vào .env<br/><small>lần sau không hỏi nữa</small>"]
+    OFF["Chạy bản offline<br/><small>lần sau hỏi lại</small>"]
+    B["Dựng kho tri thức<br/>dxa.py build"]
+    G{"Có key?"}
+    GB["Dựng vector Gemini<br/>build_gemini.py"]
+    WEB["Bật máy chủ, tự mở trình duyệt<br/><b>http://localhost:8000</b>"]
+    USE(["Hỏi DXA trên giao diện web.<br/>Đóng cửa sổ đen là tắt."])
+    ERR["Lỗi ở bất kỳ bước nào:<br/>cửa sổ dừng lại để chụp màn hình"]
+
+    START --> P
+    P -- "chưa" --> PI --> AGAIN
+    P -- "có" --> V
+    V -- "chưa" --> VI --> K
+    V -- "rồi" --> K
+    K -- "rồi" --> B
+    K -- "chưa" --> ASK
+    ASK -- "dán key" --> SAVE --> B
+    ASK -- "bỏ trống" --> OFF --> B
+    B --> G
+    G -- "có" --> GB --> WEB
+    G -- "không" --> WEB
+    WEB --> USE
+    B -.-> ERR
+
+    classDef gate fill:#F2C230,stroke:#1F2A2E,color:#1F2A2E
+    classDef go fill:#1F2A2E,stroke:#1F2A2E,color:#FFFFFF
+    classDef good fill:#DCEBE1,stroke:#3E7C59,color:#1F2A2E
+    classDef warn fill:#F3DAD5,stroke:#A93A2A,color:#1F2A2E
+    class P,V,K,G gate
+    class START,USE go
+    class SAVE good
+    class OFF,ERR warn
