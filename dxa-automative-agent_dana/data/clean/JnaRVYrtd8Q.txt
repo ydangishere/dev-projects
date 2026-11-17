@@ -1,0 +1,9 @@
+[1] Làm xe xong hay bị nói bánh trước bánh sau lệch. Xe gấp 86, đùm 88, sườn MD, đầu CD. Gấp, đùm và sườn phải gắn sao cho đi theo tâm của bánh trước, không phải theo điểm giữa hai mép (kẻ) sườn hay theo dè.
+[46] Nhiều người nhìn khe hai bên thấy bên hẹp bên rộng, dè lệch một bên rồi nói bánh không đúng trung lộ. Thực tế xe Cub và các sườn có dè liền thì không chiếc nào không lệch đuôi, bẻ miệt mài cũng lệch, phải chấp nhận.
+[68] Cách giải quyết: dùng đèn laser (khoảng một triệu mấy) để đo. Gá xe lên, chỉ nhìn bánh xe, không nhìn gì khác.
+[110] Chiếu laser vào bánh sau, thấy lệch trái chút thì lấy búa cao su gõ chân chống cho xe dịch qua. Chêm cho xe vì nền không vuông góc. Không dùng búa sắt, chỉ dùng búa cao su. Dời xe sao cho tia laser nằm giữa bánh sau và chạy thẳng lên vẫn giữa bánh sau.
+[173] Hệ tham chiếu: lấy đường ngang của laser trùng với đường ngang trên tường (lằn gạch) làm chuẩn, khi đó đường thẳng là chuẩn, chỉ còn xe có ngay hay không.
+[194] Bánh sau đã ngay thì lên bánh trước, canh ghi đông ngay giữa, gõ bên này bên kia cho bánh trước vào giữa, rồi xem tia laser có nằm giữa bánh trước không. Nằm giữa là bánh trước và bánh sau thẳng hàng.
+[237] Không canh theo tăng sên, không canh theo gấp. Gấp khi lên xe phải ngay, gấp không ngay thì không canh được gì. Sườn, gấp, đùm khác loại nhau thì phải canh theo bánh trước, không theo mép sườn.
+[257] Gấp 86 với đùm 88: cục canh bên phải là cục canh chuẩn, giống nhau giữa 86 và 88, chỉ khác cục canh bên trái. Đặt đùm 88 vào gấp 86 thì bên trái sẽ thiếu.
+[298] Cách xử lý: nới hai con ốc trục cho lỏng, xả tăng sên, lấy búa cao su gõ đùm vào. Hở bao nhiêu thì làm lông đền bấy nhiêu chêm vào trong cùi đùm, đảm bảo bánh ngay với gấp. Bánh ngay với gấp thì nằm giữa trung lộ, khớp với bánh trước nếu bánh trước canh ngay. Không đo theo đèn hay dè, phải lấy một hệ tham chiếu chung cho bánh trước và bánh sau.

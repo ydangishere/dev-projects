@@ -1,0 +1,113 @@
+# DXA viết bằng Dana: agent thợ sửa xe máy.
+#
+# Luồng một câu hỏi (workflow wf_answer):
+#   find_cases   tìm case + đoạn video (Python: BM25 + vector, dùng lại rag.py)
+#   gate         ngoài phạm vi thì từ chối, không gọi LLM, không đoán
+#   write_answer reason() viết câu trả lời theo cấu trúc RepairAnswer
+#   check        kiểm chống bịa: số lạ, mã case lạ -> bỏ câu của LLM, dùng câu ghép khuôn
+#
+# Chạy thử:      dana dxa_agent.na question="binh xang con chay xang"
+# Đưa lên API:   dana deploy dxa_agent.na
+
+import dxa_tools.py as tools
+
+struct RepairAnswer:
+    benh: str
+    nguyen_nhan: str
+    cac_buoc: list
+    thong_so: list
+    luu_y: str
+    ma_case: list
+
+agent_blueprint DXAMechanic:
+    name: str = "DXA"
+    domain: str = "Sửa xe máy"
+
+
+def find_cases(job: dict) -> dict:
+    r = tools.retrieve(job["question"])
+    job["query_used"] = r["query_used"]
+    job["in_scope"] = r["in_scope"]
+    job["case_ids"] = r["case_ids"]
+    job["case_idx"] = r["case_idx"]
+    job["context"] = r["context"]
+    job["sources"] = r["sources"]
+    return job
+
+
+def gate(job: dict) -> dict:
+    job["refused"] = False
+    if not job["in_scope"]:
+        job["refused"] = True
+        job["answer"] = tools.refuse_text()
+        job["answered_by"] = "gate"
+        tools.log_unanswered(job["question"], job["query_used"], "ngoài phạm vi")
+    return job
+
+
+def write_answer(job: dict) -> dict:
+    if job["refused"]:
+        return job
+    if not tools.llm_ready():
+        job["answer"] = tools.template_answer(job["case_idx"])
+        job["answered_by"] = "template"
+        return job
+    raw = reason(tools.answer_prompt(job["query_used"], job["context"]), temperature=0.2)
+    d = tools.parse_answer(raw)
+    if len(d) == 0:
+        job["warnings"] = job["warnings"] + ["Câu của LLM không đúng dạng JSON, dùng câu ghép khuôn"]
+        job["answer"] = tools.template_answer(job["case_idx"])
+        job["answered_by"] = "template"
+        return job
+    if "khong_du_thong_tin" in d:
+        job["refused"] = True
+        job["answer"] = tools.refuse_text()
+        job["answered_by"] = "llm"
+        tools.log_unanswered(job["question"], job["query_used"], "LLM: ngữ cảnh không đủ")
+        return job
+    ans = RepairAnswer(benh=d["benh"], nguyen_nhan=d["nguyen_nhan"], cac_buoc=d["cac_buoc"], thong_so=d["thong_so"], luu_y=d["luu_y"], ma_case=d["ma_case"])
+    job["structured"] = d
+    job["answer"] = tools.render_answer(d)
+    job["answered_by"] = "llm"
+    job["n_steps"] = len(ans.cac_buoc)
+    return job
+
+
+def check(job: dict) -> dict:
+    if job["answered_by"] != "llm" or job["refused"]:
+        return job
+    problems = tools.check_answer(job["answer"], job["context"], job["question"], job["case_ids"])
+    if len(problems) > 0:
+        for p in problems:
+            job["warnings"] = job["warnings"] + [f"Câu của LLM bị loại: {p}"]
+        job["answer"] = tools.template_answer(job["case_idx"])
+        job["answered_by"] = "template"
+    return job
+
+
+def wf_answer(job) = find_cases | gate | write_answer | check
+
+
+def ask(question: str) -> dict:
+    job = wf_answer({"question": question, "warnings": [], "answered_by": "", "mode": tools.mode()})
+    out = {"question": question, "query_used": job["query_used"], "answer": job["answer"]}
+    out["refused"] = job["refused"]
+    out["answered_by"] = job["answered_by"]
+    out["mode"] = job["mode"]
+    out["warnings"] = job["warnings"]
+    out["sources"] = job["sources"]
+    return out
+
+
+def (agent: DXAMechanic) solve(question: str) -> dict:
+    return ask(question)
+
+
+def __main__(question: str = "Bình xăng con chảy xăng khi dựng xe"):
+    dxa = DXAMechanic()
+    r = dxa.solve(question)
+    print(f"Hỏi: {r['question']}")
+    print(r["answer"])
+    print(f"[chế độ: {r['mode']}, trả lời bởi: {r['answered_by']}]")
+    for w in r["warnings"]:
+        print(f"! {w}")

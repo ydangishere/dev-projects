@@ -1,0 +1,777 @@
+{
+ "_note": "Đợt 2: 20 video còn lại của kênh. 3 video bỏ qua vì không có kiến thức sửa (OKNcmF2ZcLc, 9sGGYYyU5t0, cuy8PWrfYdY).",
+ "cases": [
+  {
+   "id": "C27",
+   "video_id": "3FBSlD0zJN4",
+   "t": 21,
+   "system": "nhiên liệu",
+   "symptom": "Kéo ga nhanh thì không có ga, tắt máy; kéo từ từ mới có ga (bình Yoshimura)",
+   "cause": "Gíc lơ phụ chưa đúng; bình xài lâu 6 tháng đến 1 năm bình nào cũng bị",
+   "fix": "Canh lại gíc lơ phụ cho đúng",
+   "parts": [
+    "gíc lơ phụ",
+    "bình Yoshimura"
+   ],
+   "tools": [
+    "vít dẹp"
+   ],
+   "vehicles": [
+    "bình Yoshimura"
+   ],
+   "specs": [],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C28",
+   "video_id": "3FBSlD0zJN4",
+   "t": 241,
+   "system": "nhiên liệu",
+   "symptom": "Ngâm ga, ga treo, buông ga mà ga không về (bình Yoshimura)",
+   "cause": "Ốc ralenti thiếu phốt và lông đền; phao ngẩng quá cao do cần phao xiêu vẹo hoặc kim phao dơ; dây ga chỉnh cứng quá",
+   "fix": "Bổ sung lông đền rồi tới phốt cho ốc ralenti; chỉnh cần phao về 90 độ; vệ sinh kim phao và đế kim; chỉnh dây ga khúc đầu lỏng một chút; kiểm tra lò xo bình",
+   "parts": [
+    "ốc ralenti",
+    "phốt",
+    "lông đền",
+    "phao xăng",
+    "kim phao",
+    "dây ga"
+   ],
+   "tools": [
+    "chai vệ sinh bình xăng con"
+   ],
+   "vehicles": [
+    "bình Yoshimura"
+   ],
+   "specs": [
+    {
+     "name": "góc phao xăng",
+     "value": "90",
+     "unit": "độ"
+    }
+   ],
+   "warnings": [
+    "Cẩn thận cái phe giữ phao, cực kỳ quan trọng"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C29",
+   "video_id": "3FBSlD0zJN4",
+   "t": 134,
+   "system": "nhiên liệu",
+   "symptom": "Bình xăng con dơ, con trượt (xi lanh piston ga) hay bị kẹt cấn",
+   "cause": "Cặn dơ trong các lỗ và quanh con trượt",
+   "fix": "Xịt chai vệ sinh bình xăng con vào tất cả các lỗ, đặc biệt quanh con trượt; xịt gió thật nhẹ",
+   "parts": [
+    "con trượt bình xăng con",
+    "kim sáo"
+   ],
+   "tools": [
+    "chai vệ sinh bình xăng con",
+    "khăn lau"
+   ],
+   "vehicles": [
+    "bình Yoshimura"
+   ],
+   "specs": [],
+   "warnings": [
+    "Xịt gió mạnh sẽ làm cong kim sáo; kim sáo Yoshimura nhập khoảng 2 triệu"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C30",
+   "video_id": "wu9NFVma4Lo",
+   "t": 382,
+   "system": "điện",
+   "symptom": "Đồng hồ Takegawa gắn ngoài gáo đèn bị sút, bung ra khi chạy tốc độ cao",
+   "cause": "Chỉ dùng lông đền dưới, thiếu tán ren nhuyễn và lông đền nón",
+   "fix": "Dùng tán 15 ly bước ren 1 ly (tán ren nhuyễn), thêm lông đền nón của nồi và hai lông đền thường để kẹp bát; còn rơ ngang thì nhỏ ít keo dán sắt, chừa đường thoát nước",
+   "parts": [
+    "đồng hồ Takegawa",
+    "tán 15 ly ren nhuyễn",
+    "lông đền nón"
+   ],
+   "tools": [
+    "keo dán sắt"
+   ],
+   "vehicles": [],
+   "specs": [
+    {
+     "name": "tán giữ đồng hồ Takegawa",
+     "value": "15",
+     "unit": "mm"
+    },
+    {
+     "name": "bước ren tán đồng hồ",
+     "value": "1",
+     "unit": "mm"
+    }
+   ],
+   "warnings": [
+    "Đừng hàn bát dính vào vỏ đèn, mất zin"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C31",
+   "video_id": "wu9NFVma4Lo",
+   "t": 188,
+   "system": "thân vỏ",
+   "symptom": "Bao tay (tay nắm ga) bị rơ, xoay",
+   "cause": "Chạy lâu năm keo cũ bong",
+   "fix": "Xịt hơi để rút bao tay cũ ra, vuốt bốn đường keo AB trên cùm và trong bao tay, đẩy vào từ từ, phơi nắng cho keo chạy",
+   "parts": [
+    "bao tay"
+   ],
+   "tools": [
+    "keo AB Anteco",
+    "súng xịt gió"
+   ],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [
+    "Keo AB dỏm dán không được"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C32",
+   "video_id": "wu9NFVma4Lo",
+   "t": 105,
+   "system": "điện",
+   "symptom": "Muốn gắn đèn báo xi nhan dạng bóng tóc trên đồng hồ",
+   "cause": "Bóng tóc tự lấy mát qua bên xi nhan không bật",
+   "fix": "Bắt hai dây của đèn báo vào dây cam và dây xanh (hai dây nóng), không cần rơ le",
+   "parts": [
+    "đèn báo xi nhan bóng tóc",
+    "công tắc xi nhan"
+   ],
+   "tools": [],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [
+    "Đèn báo LED thì khác, xem bài rơ le 4 chân"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C33",
+   "video_id": "wu9NFVma4Lo",
+   "t": 278,
+   "system": "điện",
+   "symptom": "Đèn trợ sáng làm chói mắt người đi đường",
+   "cause": "Đèn chiếu cao, người phía trước bị chói nên dễ tông",
+   "fix": "Chúi đèn trợ sáng xuống; dùng công tắc passing (X Pass) đổi chế độ",
+   "parts": [
+    "đèn trợ sáng",
+    "công tắc X Pass"
+   ],
+   "tools": [],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C34",
+   "video_id": "_O4Av-X4gNY",
+   "t": 29,
+   "system": "khung sườn",
+   "symptom": "Bao tử (hộp lọc gió) cạ dè trước khi chạy, sườn MD xuống dàn đầu CD với dè CT",
+   "cause": "Đi bao tử 81 dài xuống thấp, dè CT lại cao",
+   "fix": "Đi bao tử 82 cho ngắn lên; làm bass sắt hạ dè xuống",
+   "parts": [
+    "bao tử 82",
+    "dè CT",
+    "bass hạ dè"
+   ],
+   "tools": [],
+   "vehicles": [
+    "sườn MD",
+    "dàn đầu CD"
+   ],
+   "specs": [],
+   "warnings": [
+    "Bao tử 81 đi đường trường gặp ổ gà sẽ bị cạ"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C35",
+   "video_id": "_O4Av-X4gNY",
+   "t": 137,
+   "system": "nhiên liệu",
+   "symptom": "Co cao su bị giãn khi đi đường dài, cổ xăng nóng",
+   "cause": "Thiếu miếng phíp cách nhiệt giữa đầu máy và co",
+   "fix": "Gắn miếng phíp, bắt ốc lục giác vừa tay, vừa tới là ngưng",
+   "parts": [
+    "miếng phíp",
+    "co cao su Kijima"
+   ],
+   "tools": [
+    "cây lục giác"
+   ],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [
+    "Siết quá sẽ gãy miếng phíp"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C36",
+   "video_id": "_O4Av-X4gNY",
+   "t": 178,
+   "system": "nhiên liệu",
+   "symptom": "Nước tạt vào họng gió khi đi mưa",
+   "cause": "Họng gió hở",
+   "fix": "Bọc họng gió bằng ống cao su đường kính trong 54 mm (ống xe Click hoặc Vision), cắt ngắn và chừa hai quai để nước chảy ra ngoài",
+   "parts": [
+    "ống cao su 54",
+    "họng gió"
+   ],
+   "tools": [],
+   "vehicles": [],
+   "specs": [
+    {
+     "name": "đường kính trong ống bọc họng gió",
+     "value": "54",
+     "unit": "mm"
+    }
+   ],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C37",
+   "video_id": "rrgdLZLLgyQ",
+   "t": 1,
+   "system": "truyền động",
+   "symptom": "Bộ số độ không báo số N, heo số không có rãnh số N",
+   "cause": "Heo số độ không có rãnh N như heo zin",
+   "fix": "Gá công tắc báo số (chấu nhỏ nhất là N, dây xanh sọc đỏ), đánh dấu vị trí N, vô số 1-4 rồi về N kiểm tra; cắt rãnh, gắn lông đền báo số zin, mài ốc lục giác 5 ly cho lọt",
+   "parts": [
+    "heo số",
+    "lông đền báo số",
+    "công tắc báo số",
+    "ốc lục giác 5 ly"
+   ],
+   "tools": [
+    "máy mài",
+    "bút đánh dấu"
+   ],
+   "vehicles": [],
+   "specs": [
+    {
+     "name": "ốc lục giác giữ lông đền báo số",
+     "value": "5",
+     "unit": "mm"
+    }
+   ],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C38",
+   "video_id": "JnaRVYrtd8Q",
+   "t": 68,
+   "system": "khung sườn",
+   "symptom": "Bánh trước bánh sau không ngay một hàng sau khi ráp xe",
+   "cause": "Canh theo mép sườn hoặc dè thay vì theo bánh; đùm 88 trên gấp 86 bị thiếu bên trái",
+   "fix": "Dùng đèn laser lấy lằn tường làm chuẩn, búa cao su gõ cho laser nằm giữa bánh sau rồi bánh trước; nới trục, xả tăng sên, gõ đùm vào, hở bao nhiêu chêm lông đền bấy nhiêu vào cùi đùm",
+   "parts": [
+    "gấp 86",
+    "đùm 88",
+    "lông đền chêm"
+   ],
+   "tools": [
+    "đèn laser",
+    "búa cao su"
+   ],
+   "vehicles": [
+    "Cub",
+    "MD",
+    "CD"
+   ],
+   "specs": [],
+   "warnings": [
+    "Không dùng búa sắt",
+    "Sườn dè liền lệch đuôi là bình thường, phải chấp nhận"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C39",
+   "video_id": "lEf_2lRjhm4",
+   "t": 66,
+   "system": "khung sườn",
+   "symptom": "Chén cổ lỏng, tay lái rơ (CD, 67)",
+   "cause": "Chén bị rỗ, lưng chén mòn",
+   "fix": "Chỉ thay khi rỗ hoặc lỏng; ưu tiên chén zin dày nặng, hàng gia công dùng được nhưng mỏng; dùng bạc đạn Suzuki",
+   "parts": [
+    "chén cổ",
+    "bạc đạn cổ"
+   ],
+   "tools": [],
+   "vehicles": [
+    "CD",
+    "67"
+   ],
+   "specs": [],
+   "warnings": [
+    "Đồ cũ đường kính ngoài thường không đúng vì bị bóp"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C40",
+   "video_id": "f2Et1Am5uoY",
+   "t": 0,
+   "system": "truyền động",
+   "symptom": "Côn bị trượt: chưa bóp côn mà đạp đã tuột",
+   "cause": "Côn chỉnh sai",
+   "fix": "Mở nắp chỉnh côn, vặn ốc vào vừa chạm rồi siết tán lại; kiểm tra: vào số đạp thấy ăn nồi, bóp côn đạp tuột hết là đúng",
+   "parts": [
+    "nồi",
+    "ốc chỉnh côn",
+    "dây côn"
+   ],
+   "tools": [
+    "cờ lê"
+   ],
+   "vehicles": [
+    "67",
+    "lỏ",
+    "cốt một nồi"
+   ],
+   "specs": [],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C41",
+   "video_id": "YLkbaSOi4_g",
+   "t": 434,
+   "system": "truyền động",
+   "symptom": "Cần số bị quơ, rơ khi ráp máy lỏ cốt một nồi trên nền Alpha",
+   "cause": "Đồ CD, 67 không dùng được; cần số Alpha là loại rời",
+   "fix": "Cắt cần, đo 6 ly (6 đến 6.2), đem đắp dài thêm 1 ly rồi tiện; kiểm tra rơ rút ra vào khoảng 3 đến 5 dem là OK",
+   "parts": [
+    "cần móc số Alpha"
+   ],
+   "tools": [
+    "thước đo"
+   ],
+   "vehicles": [
+    "Alpha",
+    "lỏ",
+    "cốt một nồi"
+   ],
+   "specs": [
+    {
+     "name": "đo cắt cần số",
+     "value": "6",
+     "unit": "mm"
+    },
+    {
+     "name": "độ rơ cần số cho phép",
+     "value": "0.3-0.5",
+     "unit": "mm"
+    }
+   ],
+   "warnings": [
+    "Cứng ngắc là bó, không vô số được"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C42",
+   "video_id": "YLkbaSOi4_g",
+   "t": 602,
+   "system": "động cơ",
+   "symptom": "Ráp máy xong quay máy rất cứng",
+   "cause": "Sên cam căng quá",
+   "fix": "Chỉnh lại sên cam cho kéo lên nhẹ; khi vô nhớt nổ máy nghiêng xe sang trái nẹt hai ba cái cho nhớt vào ống sáo tăng cam",
+   "parts": [
+    "sên cam",
+    "tăng cam"
+   ],
+   "tools": [],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [
+    "Sên cam căng quá thì không chạy được"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C43",
+   "video_id": "Aw2TFOZw9ac",
+   "t": 173,
+   "system": "thân vỏ",
+   "symptom": "Đèn cóc gắn vào dè CM bị ngửa lên trời",
+   "cause": "Thiếu miếng bass nâng",
+   "fix": "Chế thêm miếng bass để nâng đèn; chụp Rawa thì cắt hai con ốc",
+   "parts": [
+    "đèn cóc",
+    "bass đèn",
+    "dè CM"
+   ],
+   "tools": [],
+   "vehicles": [
+    "Chaly",
+    "CD",
+    "CL"
+   ],
+   "specs": [],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C44",
+   "video_id": "MAu2UAV8xhU",
+   "t": 0,
+   "system": "thân vỏ",
+   "symptom": "Lốc máy, đồ sắt bị rỉ sét hoặc đen lâu ngày chà không ra; sơn không bám",
+   "cause": "Cặn bẩn và oxy hóa bề mặt",
+   "fix": "Pha 200 ml nước rửa chén, 2 muỗng muối, 1 muỗng baking soda, nửa ly nước nguội; quét nhẹ lên, đồng thời dùng làm lớp xử lý trước khi sơn",
+   "parts": [
+    "lốc máy"
+   ],
+   "tools": [
+    "nước rửa chén",
+    "muối",
+    "baking soda"
+   ],
+   "vehicles": [],
+   "specs": [
+    {
+     "name": "nước rửa chén",
+     "value": "200",
+     "unit": "ml"
+    }
+   ],
+   "warnings": [
+    "Dùng nước nguội, không dùng nước nóng"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C45",
+   "video_id": "1N3w5oLdJkE",
+   "t": 43,
+   "system": "thân vỏ",
+   "symptom": "Dè (chắn bùn) cũ bị rỉ mặt trong",
+   "cause": "Không có lớp bảo vệ mặt trong",
+   "fix": "Chà nhớt, tẩy R7, rửa Omo, bắn keo K1K mặt trong; không sơn lại để giữ chỉ rêu zin",
+   "parts": [
+    "dè CD"
+   ],
+   "tools": [
+    "R7",
+    "keo K1K"
+   ],
+   "vehicles": [
+    "CD",
+    "67"
+   ],
+   "specs": [],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C46",
+   "video_id": "a_uf8vtKz1w",
+   "t": 131,
+   "system": "khung sườn",
+   "symptom": "Gắn dàn chân CD lên sườn MD thì tay thỏ (càng phuộc) ngắn hơn cổ sườn",
+   "cause": "Cổ sườn MD cao",
+   "fix": "Làm hai cái nhẫn (ống nối) để bù chiều dài",
+   "parts": [
+    "tay thỏ CD",
+    "cổ sườn MD",
+    "nhẫn nối"
+   ],
+   "tools": [],
+   "vehicles": [
+    "MD",
+    "CD"
+   ],
+   "specs": [],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C47",
+   "video_id": "_YV7Zvajwvc",
+   "t": 529,
+   "system": "dụng cụ",
+   "symptom": "Mối nối dây hàn gió đá (oxy gas) bị xì",
+   "cause": "Đuôi chuột 6 ly lỏng với dây lỗ 6.5 đến 7 ly; thiếu phốt; ren không đồng bộ",
+   "fix": "Dùng đuôi chuột 8 ly, gắn phốt, mua đồng bộ ren 17; kiểm tra bằng tay nghe và xem kim đồng hồ không tụt",
+   "parts": [
+    "đuôi chuột 8 ly",
+    "phốt",
+    "cổ dê"
+   ],
+   "tools": [
+    "mỏ lết nhỏ",
+    "băng tan"
+   ],
+   "vehicles": [],
+   "specs": [
+    {
+     "name": "đuôi chuột cho dây 6.5-7 ly",
+     "value": "8",
+     "unit": "mm"
+    },
+    {
+     "name": "ren đồng bộ bộ hàn",
+     "value": "17",
+     "unit": "mm"
+    }
+   ],
+   "warnings": [
+    "Chỉ quấn băng tan khi bị xì",
+    "Oxy ren thuận, gas ren ngược"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C48",
+   "video_id": "_YV7Zvajwvc",
+   "t": 338,
+   "system": "dụng cụ",
+   "symptom": "Nguy cơ cháy ngược, cháy nổ khi hàn oxy gas",
+   "cause": "Thiếu van chống cháy ngược, xì mối nối, còn khí sót trong ống",
+   "fix": "Lắp van chống cháy ngược đúng chiều mũi tên ở đầu bình và giữa dây; bình luôn dựng đứng; nghe mối nối trước khi xài; tắt xong xả hết khí trong ống",
+   "parts": [
+    "van chống cháy ngược",
+    "đồng hồ giảm áp"
+   ],
+   "tools": [],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [
+    "Lắp van chống cháy ngược ngược chiều là nổ",
+    "Không để bình nằm ngang"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C49",
+   "video_id": "_YV7Zvajwvc",
+   "t": 2536,
+   "system": "dụng cụ",
+   "symptom": "Hàn sắt mỏng 1 đến 2 ly bằng máy hàn điện bị lủng",
+   "cause": "Sắt mỏng ít thép, que 2 ly để trên 20 A là lủng",
+   "fix": "Chuyển sang hàn khí oxy gas béc số 1 (gió 2, gas 1.5), hàn thau hoặc hàn kẽm",
+   "parts": [
+    "que thau",
+    "que kẽm"
+   ],
+   "tools": [
+    "bộ hàn oxy gas",
+    "béc số 1"
+   ],
+   "vehicles": [],
+   "specs": [
+    {
+     "name": "dòng hàn điện gây lủng sắt mỏng",
+     "value": "20",
+     "unit": "A"
+    }
+   ],
+   "warnings": [
+    "Mặc áo tay dài, coi chừng xỉ văng"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C50",
+   "video_id": "oIV9iKx0xP0",
+   "t": 3,
+   "system": "dụng cụ",
+   "symptom": "Không biết canh lửa đèn cắt oxy gas",
+   "cause": "Chỉnh van sai thứ tự",
+   "fix": "Mở van gió thân 2 vòng rồi để yên, gas 1/4; béc 1 thì oxy 4 kg/cm2, gas 0.4 kg/cm2; thêm gas thì thêm gió cho tim lửa rút lại; hơ nóng rồi bấm cò oxy; tắt xong xả khí trong ống",
+   "parts": [
+    "đèn cắt General Kiriko",
+    "béc số 1"
+   ],
+   "tools": [
+    "đồng hồ áp suất"
+   ],
+   "vehicles": [],
+   "specs": [
+    {
+     "name": "áp oxy khi cắt béc 1",
+     "value": "4",
+     "unit": "kg/cm2"
+    },
+    {
+     "name": "áp gas khi cắt béc 1",
+     "value": "0.4",
+     "unit": "kg/cm2"
+    }
+   ],
+   "warnings": [
+    "Mặc áo tay dài, quần dài, giày kín, che mặt, kính đen"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C51",
+   "video_id": "QIHgDPNwyw8",
+   "t": 401,
+   "system": "nhiên liệu",
+   "symptom": "Xe phun xăng FI muốn tỉ lệ xăng gió tối ưu ở mọi tốc độ",
+   "cause": "ECU zin không tự chỉnh theo cấu hình pô, kim phun mới",
+   "fix": "Gắn ECU Racer Mini 5 với cảm biến oxy, bật autotune khi máy đủ nóng; ralenti AFR khoảng 14, target khi tăng ga 13 đến 15",
+   "parts": [
+    "ECU Racer Mini 5",
+    "cảm biến oxy",
+    "kim phun"
+   ],
+   "tools": [
+    "điện thoại Bluetooth"
+   ],
+   "vehicles": [
+    "Satria"
+   ],
+   "specs": [
+    {
+     "name": "AFR ralenti",
+     "value": "14",
+     "unit": ""
+    },
+    {
+     "name": "AFR target khi tăng ga",
+     "value": "13-15",
+     "unit": ""
+    }
+   ],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C52",
+   "video_id": "SO69YddMGHU",
+   "t": 152,
+   "system": "truyền động",
+   "symptom": "Muốn thay lò xo nồi Takegawa 3 lá",
+   "cause": "Lò xo các bộ nồi khác quá cứng",
+   "fix": "Dùng đúng lò xo zin Takegawa; ép bằng ê tô để gài phe rồi gài bốn lò xo chống giật; không đi bơm nhớt rời thì dùng khâu zin",
+   "parts": [
+    "nồi Takegawa 3 lá",
+    "lò xo nồi",
+    "lò xo chống giật",
+    "khâu"
+   ],
+   "tools": [
+    "ê tô"
+   ],
+   "vehicles": [
+    "Wave",
+    "Dream",
+    "67",
+    "CD",
+    "CL",
+    "MD"
+   ],
+   "specs": [],
+   "warnings": [
+    "Khe hở khâu khoảng 1 đến 2, phụ đề nghe chưa rõ đơn vị (dem hay ly), cần thợ xác nhận"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  },
+  {
+   "id": "C53",
+   "video_id": "ZDFsG7cauZc",
+   "t": 86,
+   "system": "thân vỏ",
+   "symptom": "Gắn baga mũi Dream lên đầu đèn 67",
+   "cause": "Baga không vào trong được, dài không hợp dáng xe",
+   "fix": "Mài mỏng một bên, kéo ra ngoài đều hai bên; cắt ngắn và thêm tay đỡ; bắt bằng ốc cổ pô zin và ốc lục giác 6 ly có lông đền mỏng, siết vừa tay",
+   "parts": [
+    "baga mũi Dream",
+    "ốc cổ pô"
+   ],
+   "tools": [
+    "máy mài",
+    "cây lục giác"
+   ],
+   "vehicles": [
+    "67",
+    "CD"
+   ],
+   "specs": [
+    {
+     "name": "ốc lục giác bắt baga mũi",
+     "value": "6",
+     "unit": "mm"
+    }
+   ],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Duyệt tạm, chưa xem kỹ"
+  }
+ ]
+}

@@ -1,0 +1,27 @@
+%%{init: {"theme":"base","fontFamily":"Inter, DejaVu Sans, sans-serif","themeVariables":{"fontFamily":"Inter, DejaVu Sans, sans-serif","fontSize":"15px","primaryColor":"#F7F7F4","primaryBorderColor":"#1F2A2E","primaryTextColor":"#1F2A2E","lineColor":"#33566B","edgeLabelBackground":"#FFFFFF"},"flowchart":{"curve":"basis","nodeSpacing":36,"rankSpacing":40}}}%%
+flowchart TB
+    DL(["Tải <b>DXA-Windows.zip</b>, giải nén"])
+    START(["Bấm đúp <b>DXA.exe</b>"])
+    K{"Đã có Gemini<br/>API key chưa?"}
+    ASK["Cửa sổ đen hỏi key"]
+    SAVE["Lưu key<br/><small>lần sau không hỏi nữa</small>"]
+    OFF["Chạy bản offline<br/><small>lần sau hỏi lại</small>"]
+    B["Tự dựng kho tri thức<br/><small>vài giây</small>"]
+    WEB["Tự mở trình duyệt<br/><b>http://localhost:8000</b>"]
+    USE(["Hỏi DXA trên giao diện web.<br/>Đóng cửa sổ đen là tắt."])
+
+    DL --> START --> K
+    K -- "rồi" --> B
+    K -- "chưa" --> ASK
+    ASK -- "dán key" --> SAVE --> B
+    ASK -- "bỏ trống" --> OFF --> B
+    B --> WEB --> USE
+
+    classDef gate fill:#F2C230,stroke:#1F2A2E,color:#1F2A2E
+    classDef go fill:#1F2A2E,stroke:#1F2A2E,color:#FFFFFF
+    classDef good fill:#DCEBE1,stroke:#3E7C59,color:#1F2A2E
+    classDef warn fill:#F3DAD5,stroke:#A93A2A,color:#1F2A2E
+    class K gate
+    class DL,START,USE go
+    class SAVE good
+    class OFF warn

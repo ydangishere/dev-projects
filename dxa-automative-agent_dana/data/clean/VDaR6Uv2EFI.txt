@@ -1,0 +1,16 @@
+[0] Hướng dẫn chỉnh bình xăng con bị chảy xăng do để lâu ngày và dùng xăng ethanol. Bình xăng cơ thì phải biết cách chỉnh, chỉnh chứ không phải sửa. Không biết mà đem ra thợ thì gặp thợ xấu là mệt, chuyện nhỏ nhặt mình tự xử lý được.
+[76] Dụng cụ: một cây vít nhỏ, tốt nhất là có kìm mỏ nhọn.
+[139] Xe bị chảy xăng. Nguyên nhân: kim ngắt xăng bị hoen ố do không xài một thời gian. Bị với tất cả các loại bình Takegawa, Mikuni, Daytona, cỡ 22, 24, 26, 28, khi xài xăng ethanol. Dù không chạy mà khóa xăng thì vẫn có chuyện.
+[232] Tháo chén xăng ra, chén xăng nằm ở dưới đáy bình. Làm trên xe cũng được. Xe nào cũng vậy: 67, Wave, Dream, bất cứ dòng xe nào xài bình xăng cơ mà đi xăng ethanol. Ở Thái Lan chạy xăng ethanol tới 15% mấy chục năm nay.
+[329] Kiểm tra phao xăng: nhìn thẳng, phao phải nằm góc 90 độ. Nếu lệch thì phao hơi cao hoặc hơi thấp. Lấy tay búng hoặc nhấn nhẹ phao xem có bật lên không. Phao bật lên là được, không bật là có chuyện. Khi xăng trong chén đầy, phao nổi lên nhấn kim ngắt xăng vào để ngắt xăng.
+[409] Tháo chốt phao ra bằng kìm hoặc cái chấu, tháo đầu nào cũng được. Cấu tạo gồm: kim ngắt xăng, chốt giữ phao, và cái cần (lưỡi gà) trên phao là chỗ phải điều chỉnh.
+[456] Chỉnh mức phao: nếu phao không đủ góc 90 độ mà thấp xuống thì đạp cái cần xuống để nâng phao lên. Ngược lại thì khép cái cần lại một chút để hạ phao xuống. Nếu đạp cần xuống quá thì phao ngỏng lên, ngắt xăng rất sớm, chạy bị hụt xăng, mất ga hoài, lúc đó phải chỉnh lại. Còn dựng xe mà thấy chảy xăng thì chỉnh ngược lại. Phải chỉnh tới lui cho đúng.
+[547] Kim ngắt xăng làm bằng sắt, có đầu cao su và lò xo. Xăng ethanol để lâu không chạy, dù có khóa xăng, kim cũng bị rỉ sét. Kim rỉ sét thì không nhún được vì bị vướng, nên không ngắt xăng, gây chảy xăng. Kim tốt thì nhấn xuống thấy có nhún.
+[604] Cách xử lý kim rỉ: lấy bàn chải mềm với nhớt sạch chà nguyên cây kim cho hết rỉ, hết hoen ố. Lấy gió xịt vào ổ kim (chỗ kim ngồi). Chỉ chà bằng bàn chải mềm thôi.
+[647] Ráp lại kim và phao, xỏ chốt phao từ dưới lên cho dễ. Kiểm tra lại phao nghiêng đúng góc 90 độ là ngon. Từ khi xài xăng ethanol thì phao rất kỵ.
+[712] Đổ xăng dư đi, úp chén lại. Cái đuôi (ống thông hơi) của bình cũng nên vệ sinh thường xuyên. Xe để bình xăng ở ngoài thì ăn mưa, gió, bụi, sình nhiều. Chơi đồ xăng cơ với xe cổ phải chịu khó, nhưng chạy sướng hơn xe FI.
+[770] Xe dựng lâu không xài thì nhớ xả xăng ra khỏi chén. Bình Takegawa, Mikuni, Daytona không có van xả xăng nên xả kiểu classic là tháo chén ra. Bình này dễ chơi hơn bình TM24 và Yoshimura. Bình Yoshimura khó chơi nhưng chạy tốc độ cao rất sướng.
+[811] Úp chén lên, chỉ có hai con ốc, Yoshimura thì có bốn con ốc. Bình kiểu bông mai này dễ chơi, dùng cho xe số và xe cào cào. Siết ốc vừa tới thôi, không cần cứng lắm.
+[862] Lắp ống xăng vào bình, lúc lắp đừng để ống bị gập. Bình này là bình Keihin, dòng Daytona và Takegawa giống nhau y chang, chỉ khác phần cổ kéo ga.
+[957] Siết cổ dê vừa tới, đừng siết nhiều quá, dùng vít dẹp. Nếu ốc cổ dê không có rãnh thì cắt rãnh cho nó.
+[1007] Đồ Nhật bãi mua về đừng làm gì hết, chỉ lấy nhớt thoa lên rồi lấy khăn khô chùi là được.

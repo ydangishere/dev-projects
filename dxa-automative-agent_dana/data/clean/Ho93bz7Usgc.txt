@@ -1,0 +1,11 @@
+[4] Bình xăng con có họng xăng và họng gió. Tất cả các bình 24 (PE24) đều có đầu họng gió 45 mm. Họng gió 45 thì co gió cũng phải là 45. Co gió 45 trên thị trường đi được với tất cả các bình 24 là co gió Vario.
+[74] Pô e (bao tử, hộp lọc gió) zin của xe Cub. Áp dụng luôn cho Wave, Dream, 67. Xe 67 thường rút họng gió vào sườn phía sau nên lấy gió ngon hơn, còn Cub thì lấy gió từ đằng trước ra sau. Với bình xăng zin thì đi bao tử zin, co zin, lọc gió zin là được, không có gì không được.
+[159] Nhưng nếu đi bình 24 đồ chơi (bình độ, bình nạp) như PE24, TM24, Yoshimura mà đi với bao tử zin, co gió zin, lọc gió zin thì bị ga không đều, phải hạ kim trong bình xăng xuống, rồi mới tính tới gíc lơ chính, gíc lơ phụ. Như vậy thì nên đi bình 125 bình thường cho đỡ uổng. Đi bình độ thì phải mở hết công suất của nó.
+[217] Đặc biệt là máy 54: đã đầu tư bình 24 thì mua co gió Vario 45 để đi cho đúng.
+[241] Bao tử zin có lỗ nhỏ, co gió 45 không vô được. Ướm bình và bao tử lên xe (Cub, Wave, Dream đều vậy) để xác định chỗ cần cắt, đánh dấu đằng trước và đằng sau rồi cắt khoét bao tử.
+[314] Có người gắn hai cái mũi heo hai bên, được nhưng không cần thiết. Cái co gió đúng size giải quyết hết mọi vấn đề, không cần đi trống bao tử.
+[341] Đục hai lỗ thoát nước dưới đáy bao tử phòng khi bị dính nước. Phía trên đục một hai lỗ để nạp thêm gió rồi thôi, không đục tùm lum. Mở họng gió lớn 45 là đã giải quyết được vấn đề.
+[432] Cắt bằng máy để khoét. Giữ lại quai phía trên, đục hai lỗ nhỏ trên. Ướm bình vào bao tử trên xe rồi khoét lỗ vừa đủ, co gió lú lên một chút là được, để nước không tạt lên. Gắn vào là đi đúng bình, không cần hạ kim, để kim ở nấc giữa. Bao tử che chắn nước và kim loại nặng. Kỹ hơn thì dán thêm miếng mút. Không cần gắn mắt mèo.
+[540] Chủ cũ gắn hai mắt mèo nhưng đi co zin. Thay co gió Vario vào, nẹt ga từ đầu tới cuối, đậy nắp đầy đủ. Sạch sẽ gọn gàng, không hàn chế, vẫn phát huy hết tiềm năng của xe. Xe cấu hình máy 54.
+[615] Trước khi gắn thì vệ sinh cao su co gió sạch sẽ để cặn cao su không bị hút vào bình xăng. Nguyên tắc: họng gió của bình bao nhiêu thì đi co gió bấy nhiêu. Luôn có sẵn vít nhỏ và vít dẹp để siết cổ dê.
+[700] Co gió Vario 45 theo size họng bình 45. Test chạy số 1: nẹt ga lên và giữ, ga đều tới ga cuối là đã fix được bệnh ga không đều. Chỉ cần thay co gió đúng size họng bình và mở lỗ bao tử.

@@ -1,0 +1,77 @@
+# Kiểm DXA bản Dana: agent dxa_agent.na chạy thật bằng Dana runtime.
+name: DXA Dana agent
+
+on:
+  push:
+    branches: [main]
+    paths: ['dxa-automative-agent_dana/**', '.github/workflows/dxa-dana.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: dxa-automative-agent_dana
+    env:
+      PYTHONUTF8: '1'
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Cài thư viện (gồm Dana 0.6.0.3.post3)
+        run: pip install -r requirements.txt
+
+      - name: Dựng kho tri thức, kiểm dữ liệu, chấm bản offline
+        run: |
+          python dxa.py build
+          python validate.py
+          python eval.py
+
+      - name: Agent Dana với LLM giả (DANA_MOCK_LLM)
+        env: { DANA_MOCK_LLM: 'true', GEMINI_API_KEY: '' }
+        run: python test_dana.py
+
+      - name: Agent Dana không có key (câu ghép khuôn)
+        env: { GEMINI_API_KEY: '' }
+        run: python test_dana.py
+
+      - name: Chạy bằng lệnh dana
+        env: { DANA_MOCK_LLM: 'true', GEMINI_API_KEY: '' }
+        run: |
+          python -c "import dxa_dana; dxa_dana.configure()"
+          export DANA_CONFIG=$PWD/index/dana_config.json
+          dana dxa_agent.na question="Bình xăng con chảy xăng khi dựng xe" 2>&1 | grep -vE "^\{'local'|Final Context|^-{5,}" | tail -25
+
+      - name: Giao diện web + API gọi agent Dana
+        env: { DANA_MOCK_LLM: 'true', GEMINI_API_KEY: '' }
+        run: |
+          uvicorn api:app --port 8000 > api.log 2>&1 &
+          for i in $(seq 1 60); do curl -sf localhost:8000/health && break; sleep 2; done
+          echo
+          curl -sf localhost:8000/ | grep -q "Xe bạn đang bị gì"
+          curl -sf -X POST localhost:8000/ask -H 'Content-Type: application/json' \
+            -d '{"question":"Bình xăng con chảy xăng khi dựng xe"}' > ask.json
+          python -c "import json;r=json.load(open('ask.json'));print(r['answered_by'],r['mode']);assert not r['answered_by'].startswith('python'), r['warnings']"
+          tail -5 api.log
+
+      - name: dana deploy (thử)
+        continue-on-error: true
+        env: { DANA_MOCK_LLM: 'true', GEMINI_API_KEY: '' }
+        run: |
+          export DANA_CONFIG=$PWD/index/dana_config.json
+          timeout 60 dana deploy dxa_agent.na --port 8100 > deploy.log 2>&1 &
+          sleep 25
+          curl -s localhost:8100/ | head -c 600; echo
+          curl -s localhost:8100/docs | head -c 200; echo
+          curl -s localhost:8100/openapi.json | head -c 1500; echo
+          tail -20 deploy.log
+
+      - name: Agent Dana với Gemini thật (khi repo có secret GEMINI_API_KEY)
+        if: env.GEMINI_API_KEY != ''
+        run: python test_dana.py
