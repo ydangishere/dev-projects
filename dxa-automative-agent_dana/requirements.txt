@@ -8,6 +8,3 @@ uvicorn[standard]>=0.29
 qdrant-client>=1.10
 dana==0.6.0.3.post3
 pypdf
-# Nâng thư viện con của Dana đã bị báo lỗ hổng.
-# Pillow chưa nâng được: Dana -> aicapture khoá pillow<12.
-google-cloud-aiplatform>=1.133.0

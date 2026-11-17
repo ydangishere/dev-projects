@@ -33,21 +33,22 @@ jobs:
       - name: pip-audit - thư viện có lỗ hổng đã công bố
         if: matrix.app == 'dxa-automative-agent'
         run: pip-audit -r requirements.txt
-      # Bản Dana: Pillow bị Dana (qua aicapture) khoá ở bản <12 nên chưa nâng được.
-      # DXA không mở file ảnh nên lỗi Pillow không bị chạm tới. Vẫn in ra để theo dõi,
-      # chỉ báo đỏ khi có thư viện KHÁC Pillow bị lỗi.
-      - name: pip-audit - thư viện có lỗ hổng đã công bố (bỏ qua Pillow)
+      # Bản Dana: Dana 0.6.0.3.post3 khoá Pillow (<12, qua aicapture) và google-cloud-aiplatform,
+      # nên chưa nâng 2 thư viện này được. DXA không mở ảnh và không gọi Vertex AI.
+      # Vẫn in lỗi của 2 thư viện này ra để theo dõi; chỉ báo đỏ khi thư viện KHÁC bị lỗi.
+      - name: pip-audit - thư viện có lỗ hổng đã công bố (trừ 2 thư viện Dana khoá)
         if: matrix.app == 'dxa-automative-agent_dana'
         run: |
-          pip-audit -r requirements.txt -f json -o audit.json || true
+          pip-audit -r requirements.txt -f json -o audit.json || test -s audit.json
           python - <<'PY'
           import json, sys
           deps = json.load(open("audit.json"))["dependencies"]
           bad = [(d["name"], d["version"], v["id"]) for d in deps for v in d.get("vulns", [])]
           for b in bad:
               print(*b)
-          other = [b for b in bad if b[0].lower() != "pillow"]
-          print(f"Pillow: {len(bad) - len(other)} lỗi (chờ Dana nâng). Thư viện khác: {len(other)} lỗi.")
+          locked = {"pillow", "google-cloud-aiplatform"}
+          other = [b for b in bad if b[0].lower() not in locked]
+          print(f"Do Dana khoá: {len(bad) - len(other)} lỗi (chờ Dana nâng). Thư viện khác: {len(other)} lỗi.")
           sys.exit(1 if other else 0)
           PY
 
