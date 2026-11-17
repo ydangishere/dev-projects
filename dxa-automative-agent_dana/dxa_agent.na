@@ -99,7 +99,7 @@ def ask(question: str) -> dict:
     return out
 
 
-def (agent: DXAMechanic) solve(question: str) -> dict:
+def (mechanic: DXAMechanic) solve(question: str) -> dict:
     return ask(question)
 
 
