@@ -27,13 +27,13 @@ if [ ! -f .venv/da_cai.txt ]; then
   echo ok > .venv/da_cai.txt
 fi
 
-# 3. Gemini API key (chỉ hỏi lần đầu, lưu vào .env)
-if [ ! -f .env ]; then
+# 3. Gemini API key: còn thiếu key thì lần nào cũng hỏi
+if ! grep -qE '^GEMINI_API_KEY=.+' .env 2>/dev/null; then
   echo
-  echo "[DXA] Dán Gemini API key rồi bấm Enter (lấy miễn phí tại https://aistudio.google.com/apikey)."
-  echo "      Bỏ trống rồi bấm Enter nếu muốn chạy bản offline."
+  echo "[DXA] Chưa có Gemini API key. Dán key rồi bấm Enter (lấy miễn phí tại https://aistudio.google.com/apikey)."
+  echo "      Bỏ trống rồi bấm Enter để chạy bản offline, lần sau sẽ hỏi lại."
   read -r -p "Gemini API key: " KEY
-  echo "GEMINI_API_KEY=$KEY" > .env
+  if [ -n "$KEY" ]; then echo "GEMINI_API_KEY=$KEY" > .env; fi
 fi
 
 # 4. Dựng kho tri thức

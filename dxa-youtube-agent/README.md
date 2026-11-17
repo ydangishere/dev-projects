@@ -20,7 +20,7 @@ Lần đầu, file này tự cài Python (nếu máy chưa có) và thư viện,
 Sau đó nó hỏi Gemini API key: dán key vào (lấy miễn phí tại https://aistudio.google.com/apikey), hoặc bỏ trống để chạy bản offline.
 Trình duyệt tự mở http://localhost:8000. Đóng cửa sổ đen là tắt DXA.
 
-Những lần sau, bấm lại file đó là chạy, không hỏi gì nữa. Muốn đổi key thì sửa file `.env`.
+Những lần sau, bấm lại file đó là chạy. Nếu lần trước bỏ trống key thì nó hỏi lại, đã có key thì không hỏi nữa. Muốn đổi key thì sửa file `.env`.
 
 ## Chạy bằng tay
 

@@ -36,12 +36,14 @@ if not exist ".venv\da_cai.txt" (
     echo ok> ".venv\da_cai.txt"
 )
 
-rem ---- 3. Gemini API key (chi hoi lan dau, luu vao file .env) ----
-if not exist ".env" (
+rem ---- 3. Gemini API key: con thieu key thi lan nao cung hoi ----
+set "HASKEY="
+if exist ".env" findstr /r /c:"^GEMINI_API_KEY=..*" ".env" >nul 2>nul && set "HASKEY=1"
+if not defined HASKEY (
     echo.
-    echo [DXA] Dan Gemini API key roi bam Enter.
+    echo [DXA] Chua co Gemini API key. Dan key roi bam Enter.
     echo       Lay key mien phi tai https://aistudio.google.com/apikey
-    echo       Bo trong roi bam Enter neu muon chay ban offline.
+    echo       Bo trong roi bam Enter de chay ban offline, lan sau se hoi lai.
     set "KEY="
     set /p "KEY=Gemini API key: "
     call :ghi_env
@@ -61,11 +63,8 @@ start "" cmd /c "timeout /t 5 >nul & start http://localhost:8000"
 goto :eof
 
 :ghi_env
-if defined KEY (
-    > ".env" echo GEMINI_API_KEY=%KEY%
-) else (
-    > ".env" echo GEMINI_API_KEY=
-)
+if not defined KEY goto :eof
+> ".env" echo GEMINI_API_KEY=%KEY%
 goto :eof
 
 :loi
