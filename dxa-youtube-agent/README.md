@@ -7,34 +7,35 @@ Câu nào video chưa nói tới, DXA báo là chưa có chứ không đoán.
 ![Giao diện DXA](docs/ui.png)
 <sub>Ảnh chụp ở chế độ offline, dữ liệu thật. Video và ảnh nhỏ không hiện vì máy chụp không có mạng.</sub>
 
-## Cài đặt
+## Chạy nhanh: bấm một file
 
-Cần Python 3.10 trở lên và một Gemini API key (lấy miễn phí tại https://aistudio.google.com/apikey).
+1. Cài [Git](https://git-scm.com/download/win), rồi clone repo:
+   ```bash
+   git clone https://github.com/ydangishere/dev-projects.git
+   ```
+2. Mở thư mục `dev-projects/dxa-youtube-agent`.
+3. **Windows:** bấm đúp `chay.bat`. **macOS:** bấm đúp `chay.command`.
+
+Lần đầu, file này tự cài Python (nếu máy chưa có) và thư viện, mất vài phút.
+Sau đó nó hỏi Gemini API key: dán key vào (lấy miễn phí tại https://aistudio.google.com/apikey), hoặc bỏ trống để chạy bản offline.
+Trình duyệt tự mở http://localhost:8000. Đóng cửa sổ đen là tắt DXA.
+
+Những lần sau, bấm lại file đó là chạy, không hỏi gì nữa. Muốn đổi key thì sửa file `.env`.
+
+## Chạy bằng tay
+
+Cần Python 3.10 trở lên.
 
 ```bash
-git clone https://github.com/ydangishere/dev-projects.git
-cd dev-projects/dxa-youtube-agent
 pip install -r requirements.txt
+echo GEMINI_API_KEY=AIza... > .env   # bỏ qua dòng này nếu chạy offline
+python dxa.py build                  # dựng kho tri thức: BM25, graph, SQLite
+python build_gemini.py               # dựng tầng vector bằng Gemini, lưu vào Qdrant
+uvicorn api:app --port 8000          # chạy máy chủ
 ```
 
-Tạo file `.env` trong thư mục này, có một dòng:
-
-```
-GEMINI_API_KEY=AIza...
-```
-
+Mở http://localhost:8000 để dùng giao diện web, hoặc http://localhost:8000/docs để thử API.
 Không có key thì DXA vẫn chạy, nhưng dùng bản offline: tìm kiếm TF-IDF và câu trả lời ghép theo khuôn.
-
-## Chạy
-
-```bash
-python dxa.py build          # dựng kho tri thức: BM25, graph, SQLite
-python build_gemini.py       # dựng tầng vector bằng Gemini, lưu vào Qdrant
-uvicorn api:app --port 8000  # chạy máy chủ
-```
-
-Mở http://localhost:8000 để dùng giao diện web.
-Mở http://localhost:8000/docs để thử API.
 
 Hỏi nhanh trên dòng lệnh:
 
@@ -103,6 +104,7 @@ Việc tiếp theo là lấy 30–50 câu hỏi thật từ bình luận YouTube
 |---|---|
 | `dxa.py` | Dựng kho tri thức, hỏi đáp bản offline |
 | `rag.py` | Hỏi đáp bản Gemini |
+| `chay.bat`, `chay.command` | Bấm đúp để cài và chạy (Windows, macOS) |
 | `api.py` | Máy chủ FastAPI |
 | `ui/index.html` | Giao diện web |
 | `gemini_client.py`, `vector_store.py`, `build_gemini.py` | Gemini embedding, LLM, Qdrant |
