@@ -10,24 +10,36 @@ set PYTHONUTF8=1
 cd /d "%~dp0"
 title DXA - Tro ly sua xe may
 
-rem ---- 1. Tim Python (bo qua ban gia cua Microsoft Store) ----
+rem ---- 1. Tim Python co san tren may ----
+rem  Khong goi lenh "python" tran: tren Windows lenh do co the mo Microsoft Store.
 set "PY="
-py -3 -c "import sys" >nul 2>nul && set "PY=py -3"
-if not defined PY python -c "import sys" >nul 2>nul && set "PY=python"
+if exist ".venv\Scripts\python.exe" goto :co_venv
+where py >nul 2>nul && py -3 -c "import sys" >nul 2>nul && set "PY=py -3"
+if not defined PY for /f "delims=" %%P in ('where python 2^>nul ^| findstr /v /i "WindowsApps"') do if not defined PY set "PY="%%P""
+if not defined PY for /d %%D in ("%LOCALAPPDATA%\Programs\Python\Python3*" "%ProgramFiles%\Python3*" "%USERPROFILE%\anaconda3" "%USERPROFILE%\miniconda3") do if not defined PY if exist "%%~D\python.exe" set "PY="%%~D\python.exe""
 if not defined PY (
-    echo [DXA] May chua co Python. Dang cai Python 3.12...
-    winget install -e --id Python.Python.3.12 --accept-package-agreements --accept-source-agreements
-    echo.
-    echo [DXA] Cai Python xong. Dong cua so nay, roi bam dup lai run.bat.
+    echo [DXA] Khong tim thay Python tren may.
+    choice /c YN /m "[DXA] Cai Python 3.12 tu dong"
+    if errorlevel 2 (
+        echo [DXA] Cai Python tai https://www.python.org/downloads/ roi bam lai run.bat.
+        pause
+        exit /b 1
+    )
+    winget install -e --id Python.Python.3.12 --scope user --silent --accept-package-agreements --accept-source-agreements
+    if exist "%LOCALAPPDATA%\Programs\Python\Python312\python.exe" set "PY="%LOCALAPPDATA%\Programs\Python\Python312\python.exe""
+)
+if not defined PY (
+    echo [DXA] Cai Python xong nhung chua dung duoc ngay. Dong cua so nay, roi bam lai run.bat.
     pause
     exit /b 1
 )
 
 rem ---- 2. Moi truong rieng + thu vien (chi lam lan dau) ----
-if not exist ".venv\Scripts\python.exe" (
-    echo [DXA] Tao moi truong Python rieng cho DXA...
-    %PY% -m venv .venv || goto :loi
-)
+echo [DXA] Dung Python: %PY%
+echo [DXA] Tao moi truong Python rieng cho DXA...
+%PY% -m venv .venv || goto :loi
+
+:co_venv
 set "VPY=.venv\Scripts\python.exe"
 if not exist ".venv\da_cai.txt" (
     echo [DXA] Dang cai thu vien, lan dau mat vai phut...
