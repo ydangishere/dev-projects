@@ -60,17 +60,17 @@ jobs:
           python -c "import json;r=json.load(open('ask.json'));print(r['answered_by'],r['mode']);assert not r['answered_by'].startswith('python'), r['warnings']"
           tail -5 api.log
 
-      - name: dana deploy (thử)
-        continue-on-error: true
+      - name: dana deploy (REST /solve)
         env: { DANA_MOCK_LLM: 'true', GEMINI_API_KEY: '' }
         run: |
           export DANA_CONFIG=$PWD/index/dana_config.json
-          timeout 60 dana deploy dxa_agent.na --port 8100 > deploy.log 2>&1 &
-          sleep 25
-          curl -s localhost:8100/ | head -c 600; echo
-          curl -s localhost:8100/docs | head -c 200; echo
-          curl -s localhost:8100/openapi.json | head -c 1500; echo
-          tail -20 deploy.log
+          dana deploy dxa_agent.na --port 8100 > deploy.log 2>&1 &
+          for i in $(seq 1 60); do curl -sf localhost:8100/ && break; sleep 2; done
+          echo
+          curl -sf -X POST localhost:8100/solve -H 'Content-Type: application/json' \
+            -d '{"query":"Bình xăng con chảy xăng khi dựng xe"}' > solve.json || { tail -40 deploy.log; exit 1; }
+          python -c "import json;r=json.load(open('solve.json'));print(r['result']);assert '[C02]' in r['result'], r"
+          tail -5 deploy.log
 
       - name: Agent Dana với Gemini thật (khi repo có secret GEMINI_API_KEY)
         if: env.GEMINI_API_KEY != ''

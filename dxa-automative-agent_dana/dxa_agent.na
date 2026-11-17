@@ -21,6 +21,7 @@ struct RepairAnswer:
 
 agent_blueprint DXAMechanic:
     name: str = "DXA"
+    description: str = "Trợ lý sửa xe máy, trả lời từ 30 video kênh y dang"
     domain: str = "Sửa xe máy"
 
 
@@ -99,15 +100,21 @@ def ask(question: str) -> dict:
     return out
 
 
-def (mechanic: DXAMechanic) solve(question: str) -> dict:
-    return ask(question)
+def (mechanic: DXAMechanic) solve(problem: str) -> str:
+    r = ask(problem)
+    text = r["answer"]
+    if not r["refused"]:
+        text = text + "\n\nXem video:"
+        for src in r["sources"]:
+            if src["type"] == "case":
+                text = text + f"\n  [{src['id']}] {src['video_title']} ({src['time']}): {src['link']}"
+    return text
+
+
+# Agent dùng cho `dana deploy dxa_agent.na` (REST: POST /solve {"query": "..."})
+dxa = DXAMechanic()
 
 
 def __main__(question: str = "Bình xăng con chảy xăng khi dựng xe"):
-    dxa = DXAMechanic()
-    r = dxa.solve(question)
-    print(f"Hỏi: {r['question']}")
-    print(r["answer"])
-    print(f"[chế độ: {r['mode']}, trả lời bởi: {r['answered_by']}]")
-    for w in r["warnings"]:
-        print(f"! {w}")
+    print(f"Hỏi: {question}")
+    print(dxa.solve(question))
