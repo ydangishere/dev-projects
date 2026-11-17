@@ -7,24 +7,25 @@ Câu nào video chưa nói tới, DXA báo là chưa có chứ không đoán.
 ![Giao diện DXA](docs/ui.png)
 <sub>Ảnh chụp ở chế độ offline, dữ liệu thật. Video và ảnh nhỏ không hiện vì máy chụp không có mạng.</sub>
 
-## Chạy nhanh: bấm một file
+## Dùng DXA trên Windows (không cần cài gì)
 
-1. Cài [Git](https://git-scm.com/download/win), rồi clone repo:
-   ```bash
-   git clone https://github.com/ydangishere/dev-projects.git
-   ```
-2. Mở thư mục `dev-projects/dxa-youtube-agent`.
-3. **Windows:** bấm đúp `run.bat`. **macOS:** bấm đúp `run.command`.
+1. Tải **[DXA-Windows.zip](https://github.com/ydangishere/dev-projects/releases/download/dxa-windows/DXA-Windows.zip)** (73 MB), rồi giải nén.
+2. Mở thư mục `DXA`, bấm đúp **`DXA.exe`**.
+3. Cửa sổ đen hỏi Gemini API key: dán key rồi bấm Enter (lấy miễn phí tại https://aistudio.google.com/apikey), hoặc bỏ trống rồi bấm Enter để chạy bản offline.
+4. Trình duyệt tự mở DXA. Đóng cửa sổ đen là tắt.
 
-Lần đầu, file này tự cài Python (nếu máy chưa có) và thư viện, mất vài phút.
-Sau đó nó hỏi Gemini API key: dán key vào (lấy miễn phí tại https://aistudio.google.com/apikey), hoặc bỏ trống để chạy bản offline.
-Trình duyệt tự mở http://localhost:8000. Đóng cửa sổ đen là tắt DXA.
+Gói này có sẵn Python và mọi thư viện bên trong, nên máy không cần cài thêm gì.
+Lần đầu bấm, Windows có thể hiện "Windows protected your PC": bấm **More info**, rồi **Run anyway**.
 
-Những lần sau, bấm lại file đó là chạy. Nếu lần trước bỏ trống key thì nó hỏi lại, đã có key thì không hỏi nữa. Muốn đổi key thì sửa file `.env`.
+![Luồng chạy khi bấm DXA.exe](docs/run-flow.png)
 
-Bấm `run.bat` thì các bước diễn ra như sau:
+Gói `DXA.exe` được GitHub Actions tự đóng gói và chạy thử trên máy Windows mỗi khi code thay đổi (xem `.github/workflows/dxa-windows.yml`).
 
-![Luồng chạy khi bấm run.bat](docs/run-flow.png)
+## Cho người làm IT: chạy từ mã nguồn
+
+Clone repo, mở thư mục `dxa-youtube-agent`, rồi bấm đúp `run.bat` (Windows) hoặc `run.command` (macOS).
+File này tự tạo môi trường Python riêng, cài thư viện ở lần đầu, hỏi key, rồi mở trình duyệt.
+Cần có Python 3.10 trở lên; nếu máy chưa có, `run.bat` sẽ hỏi trước khi tự cài.
 
 ## Chạy bằng tay
 
@@ -108,7 +109,8 @@ Việc tiếp theo là lấy 30–50 câu hỏi thật từ bình luận YouTube
 |---|---|
 | `dxa.py` | Dựng kho tri thức, hỏi đáp bản offline |
 | `rag.py` | Hỏi đáp bản Gemini |
-| `run.bat`, `run.command` | Bấm đúp để cài và chạy (Windows, macOS) |
+| `dxa_app.py` | Chương trình chạy bên trong `DXA.exe` |
+| `run.bat`, `run.command` | Bấm đúp để chạy từ mã nguồn (Windows, macOS) |
 | `api.py` | Máy chủ FastAPI |
 | `ui/index.html` | Giao diện web |
 | `gemini_client.py`, `vector_store.py`, `build_gemini.py` | Gemini embedding, LLM, Qdrant |
