@@ -1,5 +1,21 @@
 # VietPay MMS — AI kiểm tra hồ sơ
 
+## Hai sơ đồ hoạt động của MMS AI Checker
+
+Hai sơ đồ dưới đây mô tả cùng một quy trình kiểm tra hồ sơ gồm sáu bước, phiên bản tiếng Việt và tiếng Anh. Đây là luồng đơn giản cho người đọc; kiến trúc và giới hạn triển khai chi tiết nằm phía dưới.
+
+### Tiếng Việt
+
+![MMS AI Checker: Cơ chế hoạt động (Tiếng Việt)](docs/module_workflow_vi.svg)
+
+### English
+
+![MMS AI Checker: How it works (English)](docs/module_workflow_en.svg)
+
+**Lưu ý triển khai:** Chế độ demo đọc TXT bằng Python, không gọi AI. Khi bật `AI_MODE=gemini`, Gemini hỗ trợ đọc PDF/ảnh và giải thích phát hiện. Nhân viên ngân hàng vẫn kiểm tra và quyết định cuối cùng.
+
+---
+
 [English](README.md) · [Cơ chế bảo vệ](docs/SECURITY.md) · [Triển khai server](docs/DEPLOYMENT.md) · [Kết quả kiểm thử](docs/VALIDATION.md)
 
 Đây là tính năng **AI kiểm tra hồ sơ của VietPay MMS**, trong bối cảnh VietPay là công ty thanh toán. **Người dùng chính được thiết kế hướng tới là nhân viên Trung tâm thẻ PVcomBank**, gồm người lập hồ sơ (maker) và người kiểm tra/duyệt (checker).
