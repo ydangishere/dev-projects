@@ -12,7 +12,12 @@ Bản này giống DXA thường, nhưng phần trả lời câu hỏi do agent 
 
 ## DXA làm gì, nhìn một lần
 
-Video → phụ đề → LLM rút ra case → bộ kiểm chống bịa → thợ duyệt → kho tri thức → agent → câu chưa trả lời được thì quay lại cho thợ.
+Video → phụ đề → LLM rút ra case → bộ kiểm chống bịa → thợ duyệt → kho tri thức → agent → câu chưa trả lời được → thợ bổ sung kiến thức → kho tri thức.
+
+DXA có 2 giao diện:
+
+- **UI người dùng** (`localhost:8000`): khách hỏi bệnh xe, xem câu trả lời kèm nguồn video.
+- **UI thợ** (`localhost:8000/tho`, *sắp làm*): trong lúc chạy thử, thợ xem câu chưa trả lời được, nhập kiến thức, bấm Lưu, rồi chạy thử lại câu hỏi.
 
 ![Pipeline DXA: từ video đến agent, câu chưa trả lời được quay lại cho thợ](docs/pipeline.png)
 
