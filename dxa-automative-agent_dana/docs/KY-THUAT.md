@@ -83,8 +83,27 @@ Link video do code tự gắn, không nhờ LLM viết, nên luôn đúng.
 | `GET /` | Giao diện web |
 | `POST /ask` | Hỏi: `{"question": "...", "use_llm": true}` |
 | `GET /cases/{id}` | Xem một case, ví dụ `C28` |
-| `GET /unanswered` | Các câu chưa trả lời được, cho thợ xem |
 | `GET /health` | Chế độ đang chạy (gemini hoặc offline), số case, số video |
+| `POST /tho/login` | `{"code": "..."}` → token thợ. Sai 5 lần liên tiếp thì khóa 60 giây |
+| `POST /tho/logout`, `GET /tho/me` | Đăng xuất, kiểm token còn dùng được không |
+| `GET /unanswered` | Câu chưa trả lời được (gộp câu trùng, bỏ câu đã bổ sung). **Cần token thợ** |
+| `GET /tho/cases`, `POST /tho/cases`, `DELETE /tho/cases/{id}` | Xem, lưu (dựng lại kho ngay), gỡ case thợ nhập. **Cần token thợ** |
+
+Các API có ghi chữ "Cần token thợ" đòi header `Authorization: Bearer <token>`, thiếu hoặc sai thì trả 401.
+
+## Tab Bổ sung kiến thức
+
+| File | Vai trò |
+|---|---|
+| `expert.py` | Đăng nhập thợ, lưu case, dựng lại kho, lọc câu chưa trả lời được |
+| `data/knowledge_expert.json` | Case thợ nhập, mã `T01`, `T02`… (`dxa.load_cases()` tự đọc vì tên khớp `knowledge*.json`) |
+| `data/knowledge_expert_history.jsonl` | Lịch sử thêm / gỡ, để truy vết và khôi phục |
+| `test_expert.py` | Kiểm phân quyền, lưu, trả lời lại, gỡ case qua API thật |
+
+- Case thợ nhập không có video: nguồn hiện "Thợ nhập ngày …", không có link.
+- Bước kiểm chống bịa vẫn chạy: con số trong câu trả lời phải có trong case thợ đã nhập.
+- Gỡ case không xóa hẳn: case được đánh `status: rejected`, giống thợ đánh "Sai" trên bảng duyệt.
+- Thêm kiến thức có thể làm một câu trong `eval.py` đang được xếp "ngoài phạm vi" trở thành trả lời được (vd "lốp xe bị xì"). Đó là kết quả mong muốn, khi đó cập nhật lại bộ câu hỏi chấm điểm.
 
 ## Kiểm thử
 

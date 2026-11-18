@@ -1,5 +1,5 @@
 // Pipeline DXA: video → tri thức → agent → câu chưa trả lời được → thợ bổ sung → kho tri thức.
-// Hai giao diện: UI người dùng (localhost:8000) và UI thợ (localhost:8000/tho, sắp làm).
+// Một trang (localhost:8000), hai tab: "Hỏi" cho mọi người, "Bổ sung kiến thức" chỉ thợ đăng nhập mới thấy.
 // Dựng ảnh: dot -Tpng -Gdpi=150 pipeline.dot -o pipeline.png
 digraph DXA {
   graph [rankdir=TB, bgcolor="white", fontname="Inter", fontsize=16, nodesep=0.45, ranksep=0.7, pad=0.3, newrank=true];
@@ -16,17 +16,17 @@ digraph DXA {
   }
 
   subgraph cluster_run {
-    label=<<b>2. UI người dùng</b>  —  localhost:8000>; style="rounded,filled"; fillcolor="#ECEDE8"; color="#C9CCC4";
+    label=<<b>2. Tab "Hỏi"</b>  —  mọi người dùng được>; style="rounded,filled"; fillcolor="#ECEDE8"; color="#C9CCC4";
     K [label=<<b>Kho tri thức</b><br/><font point-size="11">53 case, 259 đoạn</font>>, shape=cylinder, style="filled"];
     A [label=<<b>Agent Dana</b><br/><font point-size="11">trả lời kèm mã case và link video</font>>, fillcolor="#1F2A2E", fontcolor="white"];
     U [label=<<b>Câu chưa trả lời được</b><br/><font point-size="11">lưu lại cho thợ</font>>, fillcolor="#F3DAD5", color="#A93A2A"];
   }
 
   subgraph cluster_expert {
-    label=<<b>3. UI thợ</b>  —  localhost:8000/tho  ·  <i>sắp làm</i>>; style="rounded,filled,dashed"; fillcolor="#F4F8F5"; color="#3E7C59";
-    E1 [label=<<b>Xem câu chưa trả lời được</b><br/><font point-size="11">trong lúc chạy thử</font>>, style="rounded,filled,dashed", fillcolor="#DCEBE1", color="#3E7C59"];
-    E2 [label=<<b>Nhập kiến thức, bấm Lưu</b><br/><font point-size="11">triệu chứng, nguyên nhân, cách sửa, thông số</font>>, style="rounded,filled,dashed", fillcolor="#DCEBE1", color="#3E7C59"];
-    E3 [label=<<b>Chạy thử lại câu hỏi</b><br/><font point-size="11">xem DXA đã trả lời đúng chưa</font>>, style="rounded,filled,dashed", fillcolor="#DCEBE1", color="#3E7C59"];
+    label=<<b>3. Tab "Bổ sung kiến thức"</b>  —  chỉ thợ đăng nhập, máy chủ kiểm quyền>; labelloc="b"; style="rounded,filled"; fillcolor="#F4F8F5"; color="#3E7C59";
+    E1 [label=<<b>Xem câu chưa trả lời được</b><br/><font point-size="11">trong lúc chạy thử</font>>, fillcolor="#DCEBE1", color="#3E7C59"];
+    E2 [label=<<b>Nhập kiến thức, bấm Lưu</b><br/><font point-size="11">case mới mã T01, T02…</font>>, fillcolor="#DCEBE1", color="#3E7C59"];
+    E3 [label=<<b>Chạy thử lại câu hỏi</b><br/><font point-size="11">xem DXA đã trả lời đúng chưa</font>>, fillcolor="#DCEBE1", color="#3E7C59"];
   }
 
   { rank=same; V; P; L; C; T; }
@@ -38,7 +38,7 @@ digraph DXA {
   C -> L [label="trượt: rút lại", constraint=false];
   T -> K;
   A -> K [dir=back];
-  U -> A [dir=back, label="  không có trong video  "];
+  U -> A [dir=back, label="  chưa có trong kho  "];
   U -> E1;
   E1 -> E2 -> E3;
   E2 -> K [style=dashed, color="#3E7C59", fontcolor="#3E7C59", label="  lưu, dựng lại kho  ", constraint=false];

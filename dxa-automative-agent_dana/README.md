@@ -12,12 +12,15 @@ Bản này giống DXA thường, nhưng phần trả lời câu hỏi do agent 
 
 ## DXA làm gì, nhìn một lần
 
-Video → phụ đề → LLM rút ra case → bộ kiểm chống bịa → thợ duyệt → kho tri thức → agent → câu chưa trả lời được → thợ bổ sung kiến thức → kho tri thức.
+Video → phụ đề → LLM rút ra case → bộ kiểm chống bịa → thợ duyệt → kho tri thức → agent → câu chưa trả lời được → thợ bổ sung kiến thức trên tab riêng → kho tri thức.
 
-DXA có 2 giao diện:
+DXA là **một trang, hai tab** (`localhost:8000`):
 
-- **UI người dùng** (`localhost:8000`): khách hỏi bệnh xe, xem câu trả lời kèm nguồn video.
-- **UI thợ** (`localhost:8000/tho`, *sắp làm*): trong lúc chạy thử, thợ xem câu chưa trả lời được, nhập kiến thức, bấm Lưu, rồi chạy thử lại câu hỏi.
+- **Tab "Hỏi"** (mọi người): khách hỏi bệnh xe, xem câu trả lời kèm nguồn video.
+- **Tab "Bổ sung kiến thức"** (chỉ thợ): bấm **Đăng nhập thợ**, nhập mã thợ, tab này mới hiện ra. Thợ xem câu chưa trả lời được, nhập kiến thức (triệu chứng, nguyên nhân, cách sửa, thông số), bấm **Lưu** thì kho dựng lại ngay, rồi bấm **Chạy thử lại câu hỏi**.
+
+Mã thợ được in ở cửa sổ đen mỗi lần bật DXA. Muốn dùng mã cố định thì thêm dòng `DXA_THO_CODE=...` vào file `.env`.
+Quyền được **máy chủ** kiểm: không đăng nhập thợ thì gọi thẳng API lưu kiến thức cũng bị chặn (lỗi 401).
 
 ![Pipeline DXA: từ video đến agent, câu chưa trả lời được quay lại cho thợ](docs/pipeline.png)
 
