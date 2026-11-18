@@ -10,6 +10,12 @@ Bản này giống DXA thường, nhưng phần trả lời câu hỏi do agent 
 4. Dán Gemini API key rồi bấm Enter (hoặc bấm Enter để bỏ qua).
 5. Trình duyệt tự mở DXA. Gõ câu hỏi, bấm **Hỏi thợ**.
 
+## DXA làm gì, nhìn một lần
+
+Video → phụ đề → LLM rút ra case → bộ kiểm chống bịa → thợ duyệt → kho tri thức → agent → câu chưa trả lời được thì quay lại cho thợ.
+
+![Pipeline DXA: từ video đến agent, câu chưa trả lời được quay lại cho thợ](docs/pipeline.png)
+
 ## Luồng chạy khi bấm run.bat
 
 ![Luồng chạy khi bấm run.bat](docs/run-flow.png)
