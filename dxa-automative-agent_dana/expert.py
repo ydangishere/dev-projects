@@ -1,7 +1,7 @@
 """Tab "Bổ sung kiến thức": thợ đăng nhập, nhập case mới, lưu, kho tri thức dựng lại ngay.
 
-- Đăng nhập: so mã thợ (biến DXA_THO_CODE trong .env). Chưa đặt mã thì mỗi lần bật máy chủ
-  tự tạo một mã 6 số và in ra cửa sổ đen.
+- Đăng nhập: so mã thợ (biến DXA_THO_CODE trong .env). Chưa đặt thì dùng mã mặc định của bản
+  chạy thử là 1234 và in ra cửa sổ đen. Dùng thật thì đặt DXA_THO_CODE riêng.
 - Quyền được kiểm ở MÁY CHỦ: mọi thao tác ghi đều cần token thợ, không chỉ ẩn tab trên giao diện.
 - Case thợ nhập lưu ở data/knowledge_expert.json (mã T01, T02...). dxa.load_cases() tự đọc file này
   vì tên khớp knowledge*.json.
@@ -33,17 +33,18 @@ _lock = threading.Lock()      # chỉ một lần lưu + dựng lại kho tại 
 _tokens = {}                  # token -> hạn dùng (giữ trong bộ nhớ, tắt máy chủ là hết)
 _fails = {"n": 0, "until": 0.0}
 _code = None
+DEMO_CODE = "1234"            # mã mặc định cho bản chạy thử (máy chủ chỉ nghe trên máy này: 127.0.0.1)
 
 
 # ---------------------------------------------------------------- đăng nhập
 def tho_code():
-    """Mã thợ: lấy từ DXA_THO_CODE, chưa có thì tạo mã 6 số cho lần chạy này."""
+    """Mã thợ: lấy từ DXA_THO_CODE, chưa có thì dùng mã mặc định của bản chạy thử."""
     global _code
     if _code is None:
         _code = os.getenv("DXA_THO_CODE", "").strip()
         if not _code:
-            _code = f"{secrets.randbelow(1_000_000):06d}"
-            print(f"[DXA] Mã đăng nhập thợ cho lần chạy này: {_code}  (muốn cố định thì thêm DXA_THO_CODE=... vào file .env)",
+            _code = DEMO_CODE
+            print(f"[DXA] Mã đăng nhập thợ: {_code} (mặc định bản chạy thử, đổi bằng DXA_THO_CODE=... trong file .env)",
                   file=sys.stderr, flush=True)
     return _code
 
