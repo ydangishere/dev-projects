@@ -1,5 +1,21 @@
 ## Dev Projects
 
+## MMS AI Checker — Hai sơ đồ chính
+
+### 1. Flow cài đặt và chạy AI Checker
+
+![MMS AI Checker - Installation and Run Flow](./mms-ai-checker/docs/install_flow.png)
+
+### 2. Flow hoạt động của module AI Checker
+
+![MMS AI Checker - AI Module Backend Processing Flow](./mms-ai-checker/docs/backend_flow.png)
+
+**Phạm vi bản demo đang có code:** FastAPI, đọc TXT hoặc PDF/ảnh qua Gemini tùy chọn, tra quy định bằng RAG từ khóa, Rule Engine (YAML), Graph Retrieval cục bộ và đối chiếu bằng chứng bởi nhân viên. Qwen/vector search và kết nối ngân hàng thật chưa triển khai.
+
+[README chi tiết](./mms-ai-checker/README.vi.md) · [English](./mms-ai-checker/README.md)
+
+---
+
 ## Featured RAG agent: DXA — Motorbike Repair Assistant from YouTube
 
 [**DXA Motorbike Repair Assistant (Tiếng Việt)**](./dxa-automative-agent/README.md) — answers Vietnamese motorbike-repair questions from 30 videos of the [@ydang7076](https://www.youtube.com/@ydang7076) channel: subtitles → cleaned segments → 53 symptom/cause/fix cases → hybrid BM25 + Gemini-embedding retrieval (Qdrant) → refusal gate → Gemini answer with an anti-fabrication number check → YouTube links that jump to the exact second. Includes a FastAPI backend, a web UI, and PNG [build-flow](./dxa-automative-agent/docs/flow.png) and [architecture](./dxa-automative-agent/docs/architecture.png) diagrams. **The offline path (TF-IDF + templates) is evaluated on author-written questions; a one-click Windows package (`DXA.exe`, no Python install) is built and smoke-tested in CI in offline mode; the Gemini path has so far been tested only with a mocked Gemini. Cases are provisionally reviewed, not yet checked by a mechanic.**
@@ -15,31 +31,6 @@
 ## Featured AI feature: VietPay MMS Document Checker
 
 [**MMS AI Checker — English**](./mms-ai-checker/README.md) · [**Tiếng Việt**](./mms-ai-checker/README.vi.md) — runnable Python/FastAPI document-checking prototype for the intended PVcomBank Card Center employee workflow in VietPay MMS: OCR/document extraction → local Markdown RAG → YAML-driven rules → Gemini explanation, with source/version evidence, a review UI, tenant/role checks, Docker, CI and tests. Includes PNG backend and employee UX flow diagrams. **Synthetic demo by default; optional Gemini integration requires a key; no live bank/MMS integration or production-delivery claim.** Module 1 now also includes deterministic local graph retrieval, optional Neo4j persistence, graph-assisted rule prioritization and per-finding provenance paths in the UI/API (see the [Graph Retrieval architecture](./mms-ai-checker/README.md#module-1-graph-retrieval--implemented-locally-optional-neo4j)). Vector embeddings/pgvector and transaction relationship lookup remain unimplemented. Transaction/payout explanation and general handling guidance are outside this build.
-
-### MMS AI Checker — Diagrams
-
-These diagrams are stored in [`mms-ai-checker/docs`](./mms-ai-checker/docs) and shown here directly from the subproject.
-
-#### End-to-end document-checking flow
-
-![MMS AI Checker end-to-end flow](./mms-ai-checker/docs/end_to_end_flow.svg)
-
-#### Backend architecture and processing flow
-
-![MMS AI Checker backend flow](./mms-ai-checker/docs/backend_flow.png)
-
-#### Employee UX flow
-
-![MMS AI Checker employee UX flow](./mms-ai-checker/docs/ux_flow.png)
-
-#### AI model evolution roadmap
-
-![MMS AI Checker model evolution roadmap](./mms-ai-checker/docs/model-roadmap-flow.svg)
-
-#### Five-stage model roadmap
-
-![MMS AI Checker five-stage model roadmap](./mms-ai-checker/docs/model-roadmap-table.svg)
-
 
 ## Featured architecture: Bank Payment + Water AutoPay
 
