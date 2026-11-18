@@ -16,6 +16,15 @@ Video → phụ đề → LLM rút ra case → bộ kiểm chống bịa → th�
 
 ![Pipeline DXA: từ video đến agent, câu chưa trả lời được quay lại cho thợ](docs/pipeline.png)
 
+## DXA so với một "Digital Engineer"
+
+|  | DXA hiện tại | Digital Engineer |
+|---|:---:|:---:|
+| Kiến thức chuyên gia | ✅ | ✅ |
+| Kiểm soát, có người duyệt | ✅ | ✅ |
+| Suy luận nhiều bước để chẩn đoán | ❌ | ✅ |
+| Dùng dữ liệu thật (cảm biến, ảnh) | ❌ | ✅ |
+
 ## Luồng chạy khi bấm run.bat
 
 ![Luồng chạy khi bấm run.bat](docs/run-flow.png)
