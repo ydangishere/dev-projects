@@ -1,0 +1,34 @@
+// Pipeline DXA: video → tri thức → agent → câu chưa trả lời được quay lại cho thợ.
+// Dựng ảnh: dot -Tpng -Gdpi=150 pipeline.dot -o pipeline.png
+digraph DXA {
+  graph [rankdir=TB, bgcolor="white", fontname="Inter", fontsize=16, nodesep=0.45, ranksep=0.7, pad=0.3, newrank=true];
+  node  [fontname="Inter", fontsize=13, shape=box, style="rounded,filled", fillcolor="#F7F7F4", color="#1F2A2E", fontcolor="#1F2A2E", margin="0.18,0.10"];
+  edge  [fontname="Inter", fontsize=12, color="#33566B", fontcolor="#1F2A2E"];
+
+  subgraph cluster_build {
+    label=<<b>1. Dựng tri thức</b>  —  biến kinh nghiệm thợ thành dữ liệu>; style="rounded,filled"; fillcolor="#ECEDE8"; color="#C9CCC4";
+    V [label=<<b>Video</b><br/><font point-size="11">30 video kênh @ydang7076</font>>];
+    P [label=<<b>Phụ đề</b><br/><font point-size="11">giữ mốc giây</font>>];
+    L [label=<<b>LLM rút ra case</b><br/><font point-size="11">Triệu chứng → Nguyên nhân → Cách sửa</font>>];
+    C [label=<<b>Kiểm chống bịa</b><br/><font point-size="11">số, chữ phải có<br/>trong phụ đề</font>>, shape=diamond, margin="0.02,0.02", style="filled", fillcolor="#F2C230"];
+    T [label=<<b>Thợ duyệt</b><br/><font point-size="11">Đúng / Cần sửa / Sai</font>>, fillcolor="#DCEBE1", color="#3E7C59"];
+  }
+
+  subgraph cluster_run {
+    label=<<b>2. Chạy cho người dùng</b>>; style="rounded,filled"; fillcolor="#ECEDE8"; color="#C9CCC4";
+    K [label=<<b>Kho tri thức</b><br/><font point-size="11">53 case, 259 đoạn</font>>, shape=cylinder, style="filled"];
+    A [label=<<b>Agent Dana</b><br/><font point-size="11">trả lời kèm mã case và link video</font>>, fillcolor="#1F2A2E", fontcolor="white"];
+    U [label=<<b>Câu chưa trả lời được</b><br/><font point-size="11">lưu lại cho thợ</font>>, fillcolor="#F3DAD5", color="#A93A2A"];
+  }
+
+  { rank=same; V; P; L; C; T; }
+  { rank=same; K; A; U; }
+
+  V -> P -> L -> C;
+  C -> T [label="  qua  "];
+  C -> L [label="trượt: rút lại", constraint=false];
+  T -> K;
+  A -> K [dir=back];
+  U -> A [dir=back, label="  không có trong video  "];
+  U -> T [style=dashed, label="  thợ trả lời hoặc\n  quay video mới  ", constraint=false];
+}
