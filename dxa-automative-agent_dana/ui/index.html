@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DXA – Hỏi thợ sửa xe</title>
+<title>DXA – Hỏi kỹ thuật viên sửa xe cơ giới</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;800&display=swap" rel="stylesheet">
 <style>
@@ -118,6 +118,44 @@
   .uq { padding: 10px 0; border-bottom: 1px solid var(--line); }
   .uq small { color: var(--muted); }
 
+  /* Tab: Hỏi | Bổ sung kiến thức (chỉ thợ) */
+  .tabs { display: flex; gap: 6px; margin: 0 0 16px; border-bottom: 2px solid var(--line); }
+  .tab { border: 0; background: none; padding: 8px 14px; font-weight: 600; color: var(--muted); cursor: pointer;
+         border-bottom: 3px solid transparent; margin-bottom: -2px; }
+  .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+  .tab .lock { font-size: .78rem; font-weight: 500; color: var(--ok); margin-left: 4px; }
+  .who { font-size: .85rem; color: var(--ok); font-weight: 600; }
+
+  .expert { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; align-items: start; }
+  @media (max-width: 900px) { .expert { grid-template-columns: 1fr; } }
+  .card { background: var(--panel); border-radius: var(--radius-l); padding: 18px 20px; }
+  .card + .card { margin-top: 16px; }
+  .card h2 { margin: 0 0 4px; font-size: 1.1rem; }
+  .card .hint { color: var(--muted); font-size: .88rem; margin: 0 0 12px; }
+  .row { display: flex; justify-content: space-between; align-items: start; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); }
+  .row small { color: var(--muted); display: block; }
+  .row .acts { display: flex; gap: 6px; flex-shrink: 0; }
+  .btn { border: 0; border-radius: var(--radius-s); background: var(--ink); color: #fff; font-weight: 600; padding: 8px 16px; cursor: pointer; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--ink); padding: 4px 10px; font-size: .85rem; }
+  .btn.danger { background: transparent; color: var(--stop); border: 1.5px solid var(--stop); padding: 4px 10px; font-size: .85rem; }
+  .btn:disabled { opacity: .6; cursor: progress; }
+  .field { display: grid; gap: 4px; margin-bottom: 12px; }
+  .field label { font-weight: 600; font-size: .9rem; }
+  .field label i { font-weight: 400; font-style: normal; color: var(--muted); }
+  .field input, .field textarea, .field select {
+    border: 1.5px solid var(--line); border-radius: var(--radius-s); padding: 8px 10px; background: #fff; width: 100%;
+  }
+  .field textarea { min-height: 64px; resize: vertical; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 600px) { .two { grid-template-columns: 1fr; } }
+  .result { margin-top: 14px; border-left: 5px solid var(--ok); padding: 8px 0 8px 14px; }
+  .result.bad { border-left-color: var(--stop); }
+  .result .body { margin-top: 8px; }
+  .src .noimg { width: 96px; aspect-ratio: 16/9; border-radius: 4px; background: #DCEBE1; color: var(--ok);
+                display: grid; place-items: center; font-weight: 800; font-size: .8rem; }
+  .login-form { padding: 16px 20px 20px; display: grid; gap: 10px; }
+  .login-form input { border: 1.5px solid var(--line); border-radius: var(--radius-s); padding: 10px 12px; font-size: 1.1rem; letter-spacing: .15em; }
+
   @media (max-width: 600px) {
     .wrap { padding: 14px 12px 36px; }
     .ticket { padding: 18px 14px 14px; }
@@ -131,18 +169,25 @@
 <body>
 <div class="wrap">
   <header>
-    <div class="brand"><b>DXA</b><span>Hỏi thợ sửa xe máy, trả lời từ video kênh y dang</span></div>
+    <div class="brand"><b>DXA</b><span>Hỏi kỹ thuật viên sửa xe cơ giới, trả lời từ video kênh y dang</span></div>
     <div class="status">
       <span id="status"><span class="dot"></span>Đang kết nối…</span>
-      <button class="linkbtn" id="openUnanswered" type="button">Câu chưa trả lời</button>
+      <span class="who" id="who" hidden>Thợ đã đăng nhập</span>
+      <button class="linkbtn" id="loginBtn" type="button">Đăng nhập thợ</button>
     </div>
   </header>
 
+  <nav class="tabs" role="tablist" aria-label="Chức năng">
+    <button class="tab" role="tab" id="tab-ask" aria-controls="panel-ask" aria-selected="true" type="button">Hỏi</button>
+    <button class="tab" role="tab" id="tab-tho" aria-controls="panel-tho" aria-selected="false" type="button" hidden>Bổ sung kiến thức<span class="lock">· chỉ thợ</span></button>
+  </nav>
+
+  <div role="tabpanel" id="panel-ask" aria-labelledby="tab-ask">
   <form class="ticket" id="askForm">
     <label class="q-label" for="q">Xe bạn đang bị gì?</label>
     <div class="askrow">
       <textarea id="q" name="q" rows="2" maxlength="500" placeholder="Ví dụ: buông ga mà ga không về, gõ không dấu cũng được" required></textarea>
-      <button id="askBtn" type="submit">Hỏi thợ</button>
+      <button id="askBtn" type="submit">Hỏi kỹ thuật viên</button>
     </div>
     <div class="ticket-foot">
       <div class="chips" id="chips"></div>
@@ -163,12 +208,65 @@
       <div class="sources" id="sources"></div>
     </aside>
   </main>
+  </div>
+
+  <div role="tabpanel" id="panel-tho" aria-labelledby="tab-tho" hidden>
+    <div class="expert">
+      <div>
+        <section class="card">
+          <h2>Câu chưa trả lời được</h2>
+          <p class="hint">Câu khách hỏi mà DXA chưa có kiến thức. Bấm "Bổ sung" để nhập kiến thức cho câu đó.</p>
+          <div id="uqList"><p class="loading">Đang tải</p></div>
+        </section>
+        <section class="card">
+          <h2>Kiến thức thợ đã nhập</h2>
+          <p class="hint">Gỡ case thì case vẫn được giữ trong file để truy vết, chỉ không dùng để trả lời nữa.</p>
+          <div id="myCases"></div>
+        </section>
+      </div>
+
+      <section class="card">
+        <h2>Nhập kiến thức mới</h2>
+        <p class="hint">Bấm Lưu thì kho tri thức dựng lại ngay, rồi chạy thử lại câu hỏi để xem DXA trả lời đúng chưa.</p>
+        <form id="caseForm">
+          <div class="field"><label for="f-q">Câu hỏi của khách <i>(không bắt buộc)</i></label>
+            <input id="f-q" maxlength="500" placeholder="vd: lốp xe bị xì"></div>
+          <div class="field"><label for="f-symptom">Triệu chứng</label>
+            <textarea id="f-symptom" maxlength="600" required placeholder="vd: Lốp xe bị xì hơi, xẹp dần sau một đêm"></textarea></div>
+          <div class="field"><label for="f-cause">Nguyên nhân</label>
+            <textarea id="f-cause" maxlength="600" required></textarea></div>
+          <div class="field"><label for="f-fix">Cách sửa</label>
+            <textarea id="f-fix" maxlength="600" required></textarea></div>
+          <div class="two">
+            <div class="field"><label for="f-system">Hệ thống</label><select id="f-system"></select></div>
+            <div class="field"><label for="f-author">Người nhập</label><input id="f-author" maxlength="60" placeholder="tên thợ"></div>
+          </div>
+          <div class="two">
+            <div class="field"><label for="f-parts">Phụ tùng <i>(cách nhau bằng dấu phẩy)</i></label><input id="f-parts"></div>
+            <div class="field"><label for="f-tools">Dụng cụ <i>(cách nhau bằng dấu phẩy)</i></label><input id="f-tools"></div>
+          </div>
+          <div class="field"><label for="f-specs">Thông số <i>(mỗi dòng: tên = giá trị đơn vị)</i></label>
+            <textarea id="f-specs" placeholder="vd: áp suất lốp sau = 33 psi"></textarea></div>
+          <div class="field"><label for="f-warnings">Lưu ý <i>(mỗi dòng một lưu ý)</i></label>
+            <textarea id="f-warnings"></textarea></div>
+          <button class="btn" id="saveBtn" type="submit">Lưu</button>
+        </form>
+        <div id="saveResult"></div>
+      </section>
+    </div>
+  </div>
 </div>
 
-<dialog id="dlg">
-  <div class="dlg-head"><h3>Câu chưa trả lời được</h3><button class="linkbtn" id="closeDlg" type="button">Đóng</button></div>
-  <div class="dlg-body" id="dlgBody"></div>
+<dialog id="loginDlg">
+  <div class="dlg-head"><h3>Đăng nhập thợ</h3><button class="linkbtn" id="closeLogin" type="button">Đóng</button></div>
+  <form class="login-form" id="loginForm">
+    <label for="code">Mã thợ <small style="color:var(--muted)">(in ở cửa sổ đen khi bật DXA, hoặc DXA_THO_CODE trong .env)</small></label>
+    <input id="code" type="password" inputmode="numeric" autocomplete="off" maxlength="64" required>
+    <button class="btn" type="submit">Đăng nhập</button>
+    <p class="warn" id="loginErr" hidden></p>
+  </form>
 </dialog>
+
 
 <script>
 const API = "";  // cùng địa chỉ với FastAPI
@@ -192,7 +290,7 @@ function seconds(link) {
   try { return parseInt(new URL(link).searchParams.get("t"), 10) || 0; } catch { return 0; }
 }
 
-// Câu trả lời là chữ thường từ Gemini hoặc từ khuôn: đổi xuống dòng, danh sách, **đậm** và [C12] thành nút.
+// Câu trả lời là chữ thường từ Gemini hoặc từ khuôn: đổi xuống dòng, danh sách, **đậm** và [C12]/[T01] thành nút.
 function renderText(text) {
   const lines = esc(text).split(/\n/);
   let html = "", list = null;
@@ -201,7 +299,7 @@ function renderText(text) {
     let line = raw.trim();
     if (!line) { close(); continue; }
     line = line.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-               .replace(/\[(C\d+)\]/g, '<button type="button" class="tag" data-case="$1" aria-label="Xem case $1 trong video">$1</button>');
+               .replace(/\[([CT]\d+)\]/g, '<button type="button" class="tag" data-case="$1" aria-label="Xem case $1 trong video">$1</button>');
     const ol = line.match(/^\d+[.)]\s+(.*)/), ul = line.match(/^[-*•]\s+(.*)/);
     if (ol || ul) {
       const kind = ol ? "ol" : "ul";
@@ -215,6 +313,13 @@ function renderText(text) {
 
 function play(src) {
   const id = videoId(src.link);
+  if (src.source === "tho") {
+    document.querySelectorAll(".src").forEach((b) => b.setAttribute("aria-pressed", b.dataset.key === src.key ? "true" : "false"));
+    $("screen").classList.remove("has-video");
+    $("screen").textContent = `Kiến thức do thợ nhập, không có video. ${src.video_title}${src.author ? `, người nhập: ${src.author}` : ""}.`;
+    $("cap").hidden = true;
+    return;
+  }
   document.querySelectorAll(".src").forEach((b) => b.setAttribute("aria-pressed", b.dataset.key === src.key ? "true" : "false"));
   $("screen").classList.toggle("has-video", !!id);
   $("screen").innerHTML = id
@@ -233,14 +338,20 @@ function renderSources(sources) {
     const isCase = s.type === "case";
     const snippet = (s.text || "").length > 70 ? s.text.slice(0, 70).replace(/\s+\S*$/, "") + "…" : (s.text || "");
     const title = isCase ? `${s.id}: ${s.symptom}` : `Thợ nói: “${snippet}”`;
-    const badge = isCase ? (s.reviewed && !(s.review_note || "").toLowerCase().includes("tạm")
-      ? '<span class="badge ok">Thợ đã duyệt</span>' : '<span class="badge wait">Duyệt tạm</span>') : "";
+    const fromTho = s.source === "tho";
+    const badge = !isCase ? "" : fromTho ? '<span class="badge ok">Thợ nhập</span>'
+      : (s.reviewed && !(s.review_note || "").toLowerCase().includes("tạm")
+      ? '<span class="badge ok">Thợ đã duyệt</span>' : '<span class="badge wait">Duyệt tạm</span>');
+    const sub = fromTho ? `${esc(s.video_title)}${s.author ? `, ${esc(s.author)}` : ""}`
+      : `${esc(s.video_title)}, phút <span class="time">${esc(s.time)}</span>`;
     const b = document.createElement("button");
     b.type = "button"; b.className = "src"; b.dataset.key = s.key; if (isCase) b.dataset.case = s.id;
     b.setAttribute("aria-pressed", "false");
-    b.innerHTML = `<img alt="" loading="lazy" onerror="this.style.visibility='hidden'" src="${id ? `https://i.ytimg.com/vi/${id}/mqdefault.jpg` : ""}">
+    const thumb = id ? `<img alt="" loading="lazy" onerror="this.style.visibility='hidden'" src="https://i.ytimg.com/vi/${id}/mqdefault.jpg">`
+      : '<span class="noimg" aria-hidden="true">THỢ</span>';
+    b.innerHTML = `${thumb}
       <span><span class="t">${esc(title)}</span>${badge}
-      <span class="s" style="display:block">${esc(s.video_title)}, phút <span class="time">${esc(s.time)}</span></span></span>`;
+      <span class="s" style="display:block">${sub}</span></span>`;
     b.addEventListener("click", () => play(s));
     box.appendChild(b);
   });
@@ -252,10 +363,10 @@ function renderAnswer(r) {
     ? `<p class="understood">Hiểu câu hỏi là: “${esc(r.query_used)}”</p>` : "";
   const by = { llm: "Gemini viết từ các case bên phải", template: "ghép từ case gần nhất", gate: "hệ thống từ chối", }[r.answered_by] || r.answered_by;
   a.innerHTML = `
-    <h2>${r.refused ? "Chưa có trong video" : "Thợ trả lời"}</h2>
+    <h2>${r.refused ? "Chưa có trong kho" : "Kỹ thuật viên trả lời"}</h2>
     ${understood}
     <div class="body ${r.refused ? "refused" : ""}">${renderText(r.answer)}</div>
-    ${r.refused ? '<p class="meta">Câu này đã được lưu để thợ trả lời sau.</p>' : ""}
+    ${r.refused ? '<p class="meta">Câu này đã được lưu để thợ bổ sung kiến thức.</p>' : ""}
     ${(r.warnings || []).map((w) => `<p class="warn">${esc(w)}</p>`).join("")}
     <p class="meta">Chế độ ${esc(r.mode)}, ${esc(by)}.</p>`;
   a.querySelectorAll(".tag").forEach((t) => t.addEventListener("click", () => {
@@ -282,7 +393,7 @@ async function ask(question) {
   } catch (e) {
     $("answer").innerHTML = `<h2>Không hỏi được</h2><p class="warn">${esc(e.message)}. Kiểm tra máy chủ đang chạy: <code>uvicorn api:app --port 8000</code></p>`;
   } finally {
-    btn.disabled = false; btn.textContent = "Hỏi thợ";
+    btn.disabled = false; btn.textContent = "Hỏi kỹ thuật viên";
   }
 }
 
@@ -294,15 +405,127 @@ async function loadStatus() {
   } catch { $("status").innerHTML = '<span class="dot"></span>Chưa kết nối được máy chủ'; }
 }
 
-async function openUnanswered() {
-  $("dlgBody").innerHTML = '<p class="loading">Đang tải</p>';
-  $("dlg").showModal();
+// ---------------------------------------------------------------- phân quyền thợ
+// Token chỉ để gửi kèm yêu cầu. Quyền thật được máy chủ kiểm: không có token hợp lệ thì API trả 401.
+let token = null;
+try { token = sessionStorage.getItem("dxa_tho"); } catch { token = null; }
+
+async function tho(path, opts = {}) {
+  const res = await fetch(`${API}${path}`, { ...opts,
+    headers: { "Content-Type": "application/json", ...(opts.headers || {}), Authorization: `Bearer ${token || ""}` } });
+  if (res.status === 401) { setTho(null); throw new Error("Phiên đăng nhập thợ đã hết, đăng nhập lại"); }
+  if (!res.ok) { let m = `Máy chủ trả lỗi ${res.status}`; try { m = (await res.json()).detail || m; } catch {} throw new Error(m); }
+  return res.json();
+}
+
+function setTho(t) {
+  token = t;
+  try { t ? sessionStorage.setItem("dxa_tho", t) : sessionStorage.removeItem("dxa_tho"); } catch {}
+  $("tab-tho").hidden = !t;
+  $("who").hidden = !t;
+  $("loginBtn").textContent = t ? "Đăng xuất" : "Đăng nhập thợ";
+  if (!t) showTab("ask");
+}
+
+function showTab(name) {
+  for (const [tab, panel] of [["tab-ask", "panel-ask"], ["tab-tho", "panel-tho"]]) {
+    const on = tab === `tab-${name}`;
+    $(tab).setAttribute("aria-selected", on ? "true" : "false");
+    $(panel).hidden = !on;
+  }
+  if (name === "tho") loadExpert();
+}
+
+async function loadExpert() {
   try {
-    const rows = await (await fetch(`${API}/unanswered`)).json();
-    $("dlgBody").innerHTML = rows.length
-      ? rows.map((r) => `<div class="uq">${esc(r.question)}<br><small>${esc(r.ts)}, ${esc(r.reason)}</small></div>`).join("")
-      : "<p>Chưa có câu nào. Khi khách hỏi điều video chưa nói tới, câu đó sẽ hiện ở đây để thợ trả lời hoặc quay video mới.</p>";
-  } catch (e) { $("dlgBody").innerHTML = `<p class="warn">${esc(e.message)}</p>`; }
+    const [rows, mine] = await Promise.all([tho("/unanswered"), tho("/tho/cases")]);
+    $("uqList").innerHTML = rows.length ? rows.map((r, i) => `<div class="row"><div>${esc(r.question)}
+        <small>${esc(r.ts)}${r.count > 1 ? `, hỏi ${r.count} lần` : ""}</small></div>
+        <div class="acts"><button class="btn ghost" type="button" data-uq="${i}">Bổ sung</button></div></div>`).join("")
+      : '<p class="empty">Chưa có câu nào. Khi khách hỏi điều chưa có trong kho, câu đó sẽ hiện ở đây.</p>';
+    $("uqList").querySelectorAll("[data-uq]").forEach((b) => b.addEventListener("click", () => {
+      const q = rows[+b.dataset.uq].question;
+      $("f-q").value = q;
+      if (!$("f-symptom").value.trim()) $("f-symptom").value = q;
+      $("f-symptom").focus();
+    }));
+    $("myCases").innerHTML = mine.length ? mine.map((c) => `<div class="row"><div><b>${esc(c.id)}</b>: ${esc(c.symptom)}
+        <small>${esc(c.created_at)}, ${esc(c.author)}</small></div>
+        <div class="acts"><button class="btn danger" type="button" data-rm="${esc(c.id)}">Gỡ</button></div></div>`).join("")
+      : '<p class="empty">Chưa có case nào do thợ nhập.</p>';
+    $("myCases").querySelectorAll("[data-rm]").forEach((b) => b.addEventListener("click", async () => {
+      b.disabled = true;
+      try { await tho(`/tho/cases/${encodeURIComponent(b.dataset.rm)}`, { method: "DELETE" }); await loadExpert(); loadStatus(); }
+      catch (e) { b.disabled = false; alertBox(e.message); }
+    }));
+  } catch (e) { $("uqList").innerHTML = `<p class="warn">${esc(e.message)}</p>`; }
+}
+
+function alertBox(msg) { $("saveResult").innerHTML = `<div class="result bad"><p class="warn">${esc(msg)}</p></div>`; }
+
+const lines = (id) => $(id).value.split("\n").map((x) => x.trim()).filter(Boolean);
+const commas = (id) => $(id).value.split(",").map((x) => x.trim()).filter(Boolean);
+function parseSpecs() {
+  return lines("f-specs").map((l) => {
+    const [name, rest = ""] = l.split(/\s*[=:]\s*/, 2);
+    const m = rest.match(/^(\S+)\s*(.*)$/) || ["", rest, ""];
+    return { name: name.trim(), value: m[1].trim(), unit: m[2].trim() };
+  });
+}
+
+async function saveCase(e) {
+  e.preventDefault();
+  const btn = $("saveBtn");
+  btn.disabled = true; btn.textContent = "Đang lưu và dựng lại kho";
+  try {
+    const body = { from_question: $("f-q").value.trim(), symptom: $("f-symptom").value, cause: $("f-cause").value, fix: $("f-fix").value,
+      system: $("f-system").value, author: $("f-author").value.trim() || "thợ", parts: commas("f-parts"), tools: commas("f-tools"),
+      specs: parseSpecs(), warnings: lines("f-warnings") };
+    const r = await tho("/tho/cases", { method: "POST", body: JSON.stringify(body) });
+    const q = body.from_question || r.case.symptom;
+    $("saveResult").innerHTML = `<div class="result"><b>Đã lưu ${esc(r.case.id)}.</b> Kho tri thức đã dựng lại: ${r.cases} case.
+      <div style="margin-top:8px"><button class="btn" type="button" id="retryBtn">Chạy thử lại câu hỏi</button>
+      <small style="color:var(--muted)"> “${esc(q)}”</small></div><div id="retryOut"></div></div>`;
+    $("retryBtn").addEventListener("click", () => retry(q));
+    $("caseForm").reset();
+    loadExpert(); loadStatus();
+  } catch (err) { alertBox(err.message); }
+  finally { btn.disabled = false; btn.textContent = "Lưu"; }
+}
+
+async function retry(q) {
+  const out = $("retryOut");
+  out.innerHTML = '<p class="loading">DXA đang trả lời lại</p>';
+  try {
+    const res = await fetch(`${API}/ask`, { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question: q, use_llm: $("useLlm").checked }) });
+    if (!res.ok) throw new Error(`Máy chủ trả lỗi ${res.status}`);
+    const r = await res.json();
+    const ids = (r.sources || []).filter((s) => s.type === "case").map((s) => s.id).join(", ");
+    out.innerHTML = `<div class="body ${r.refused ? "refused" : ""}">${renderText(r.answer)}</div>
+      <p class="meta">${r.refused ? "Vẫn chưa trả lời được: thử viết triệu chứng giống cách khách hỏi hơn." : `Case dùng để trả lời: ${esc(ids)}.`}</p>`;
+  } catch (e) { out.innerHTML = `<p class="warn">${esc(e.message)}</p>`; }
+}
+
+async function doLogin(e) {
+  e.preventDefault();
+  $("loginErr").hidden = true;
+  try {
+    const res = await fetch(`${API}/tho/login`, { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: $("code").value }) });
+    const d = await res.json();
+    if (!res.ok) throw new Error(d.detail || `Lỗi ${res.status}`);
+    setTho(d.token);
+    $("loginDlg").close(); $("code").value = "";
+    showTab("tho");
+  } catch (err) { $("loginErr").textContent = err.message; $("loginErr").hidden = false; }
+}
+
+async function initTho() {
+  const sys = ["nhiên liệu", "đánh lửa", "động cơ", "điện", "khung sườn", "truyền động", "thân vỏ", "khác"];
+  $("f-system").innerHTML = sys.map((x) => `<option${x === "khác" ? " selected" : ""}>${esc(x)}</option>`).join("");
+  if (!token) return setTho(null);
+  try { await tho("/tho/me"); setTho(token); } catch { setTho(null); }
 }
 
 EXAMPLES.forEach((q) => {
@@ -313,9 +536,18 @@ EXAMPLES.forEach((q) => {
 });
 $("askForm").addEventListener("submit", (e) => { e.preventDefault(); const q = $("q").value.trim(); if (q.length >= 2) ask(q); });
 $("q").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("askForm").requestSubmit(); } });
-$("openUnanswered").addEventListener("click", openUnanswered);
-$("closeDlg").addEventListener("click", () => $("dlg").close());
+$("tab-ask").addEventListener("click", () => showTab("ask"));
+$("tab-tho").addEventListener("click", () => showTab("tho"));
+$("loginBtn").addEventListener("click", async () => {
+  if (!token) { $("loginDlg").showModal(); $("code").focus(); return; }
+  try { await tho("/tho/logout", { method: "POST" }); } catch {}
+  setTho(null);
+});
+$("closeLogin").addEventListener("click", () => $("loginDlg").close());
+$("loginForm").addEventListener("submit", doLogin);
+$("caseForm").addEventListener("submit", saveCase);
 loadStatus();
+initTho();
 </script>
 </body>
 </html>

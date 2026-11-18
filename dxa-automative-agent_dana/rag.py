@@ -72,6 +72,12 @@ def mode():
     return "gemini" if _gemini_ok else "offline"
 
 
+def reset():
+    """Bỏ kho đang nạp trong bộ nhớ, để lần hỏi sau đọc kho vừa dựng lại (sau khi thợ lưu kiến thức)."""
+    global _state, _store, _gemini_ok
+    _state, _store, _gemini_ok = None, None, False
+
+
 # ---------------------------------------------------------------- câu không dấu
 def bare(s):
     """Bỏ dấu, chữ thường, chỉ giữ chữ và số: dùng để so 'có cùng chữ cái không'."""
@@ -158,7 +164,7 @@ def retrieve(q, top_cases=TOP_CASES, top_chunks=TOP_CHUNKS):
 
 # ---------------------------------------------------------------- ngữ cảnh + câu trả lời
 def case_link(c):
-    return dxa.yt_link(c["video_id"], c["t"])
+    return dxa.origin({}, c)[2] if not dxa.from_video(c) else dxa.yt_link(c["video_id"], c["t"])
 
 
 def chunk_link(ch):
@@ -173,7 +179,9 @@ def build_context(st, case_idx, chunk_idx):
     parts = []
     for i in case_idx:
         c = st["cases"][i]
-        lines = [f'[{c["id"]}] (video: {st["videos"][c["video_id"]]["title"]}, phút {dxa.mmss(c["t"])})',
+        head = (f'(video: {st["videos"][c["video_id"]]["title"]}, phút {dxa.mmss(c["t"])})' if dxa.from_video(c)
+                else f'(thợ nhập ngày {c.get("created_at", "")[:10]})')
+        lines = [f'[{c["id"]}] {head}',
                  f'Triệu chứng: {c["symptom"]}', f'Nguyên nhân: {c["cause"]}', f'Cách sửa: {c["fix"]}']
         if c.get("specs"):
             lines.append(f"Thông số: {spec_text(c)}")
@@ -194,12 +202,12 @@ SYSTEM = """Bạn là trợ lý của một thợ sửa xe máy, trả lời kh�
 Quy tắc bắt buộc:
 - CHỈ dùng thông tin trong NGỮ CẢNH. Không thêm kiến thức ngoài, không đoán.
 - Giữ nguyên mọi con số và đơn vị như trong ngữ cảnh. Không đổi đơn vị, không tự tính ra số mới.
-- Sau mỗi ý lấy từ một case, ghi mã case trong ngoặc vuông, ví dụ [C01].
+- Sau mỗi ý lấy từ một case, ghi mã case trong ngoặc vuông, ví dụ [C01] hoặc [T01] (T là case thợ nhập).
 - Nếu NGỮ CẢNH không trả lời được câu hỏi, chỉ trả về đúng một dòng: KHONG_DU_THONG_TIN
 - Không viết link, không viết phần nguồn: hệ thống tự gắn link video.
 Cách trình bày: 1 câu nói bệnh gì và vì sao, rồi các bước sửa ngắn gọn, cuối cùng là thông số và lưu ý nếu có."""
 
-PROMPT = """NGỮ CẢNH (trích từ video của thợ):
+PROMPT = """NGỮ CẢNH (trích từ video của thợ và kiến thức thợ nhập):
 {ctx}
 
 CÂU HỎI CỦA KHÁCH: {q}"""
@@ -221,8 +229,8 @@ def check_answer(text, ctx, q, allowed_ids):
     problems = []
     bad_nums = _numbers(LIST_MARK.sub("", text)) - _numbers(ctx) - _numbers(q)
     if bad_nums:
-        problems.append(f"con số không có trong video: {sorted(bad_nums)}")
-    cited = set(re.findall(r"\[(C\d+)\]", text))
+        problems.append(f"con số không có trong nguồn: {sorted(bad_nums)}")
+    cited = set(re.findall(r"\[([CT]\d+)\]", text))
     if cited - allowed_ids:
         problems.append(f"mã case không có trong ngữ cảnh: {sorted(cited - allowed_ids)}")
     if not cited:
@@ -247,10 +255,11 @@ def sources(st, case_idx, chunk_idx):
     out = []
     for i in case_idx:
         c = st["cases"][i]
+        title, when, link = dxa.origin(st["videos"], c)
         out.append({"type": "case", "id": c["id"], "symptom": c["symptom"], "cause": c["cause"], "fix": c["fix"],
                     "specs": c.get("specs", []), "reviewed": bool(c.get("reviewed")),
-                    "review_note": c.get("review_note"), "video_title": st["videos"][c["video_id"]]["title"],
-                    "time": dxa.mmss(c["t"]), "link": case_link(c)})
+                    "review_note": c.get("review_note"), "video_title": title, "time": when, "link": link,
+                    "source": c.get("source", "video"), "author": c.get("author"), "created_at": c.get("created_at")})
     for i in chunk_idx:
         ch = st["chunks"][i]
         out.append({"type": "chunk", "id": ch["chunk_id"], "video_title": ch["title"], "time": dxa.mmss(ch["start"]),
@@ -265,7 +274,7 @@ def log_unanswered(q, q2, reason):
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
 
-REFUSE = "Chưa có kiến thức này trong các video đã nạp. Không đoán, cần thợ trả lời hoặc nạp thêm video."
+REFUSE = "Chưa có kiến thức này trong kho. Không đoán, cần thợ bổ sung kiến thức hoặc nạp thêm video."
 
 
 def answer(q, use_llm=True):

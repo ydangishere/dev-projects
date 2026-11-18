@@ -91,6 +91,13 @@ for c in cases:
     if miss:
         report(3, "FAIL", f"{c.get('id')}: thiếu trường {miss}")
         continue
+    if c.get("source") == "tho":
+        # case thợ nhập trên tab Bổ sung kiến thức: không có video để đối chiếu, nguồn là chính người thợ
+        if not re.fullmatch(r"T\d+", c["id"]):
+            report(3, "FAIL", f"{c['id']}: case thợ nhập phải có mã dạng Txx")
+        if not c.get("author") or not c.get("created_at"):
+            report(3, "FAIL", f"{c['id']}: case thợ nhập thiếu người nhập hoặc ngày nhập")
+        continue
     vid = c["video_id"]
     if vid not in by_vid:
         report(3, "FAIL", f"{c['id']}: video {vid} không có transcript")
@@ -131,7 +138,7 @@ for n, d in G.nodes(data=True):
     if d["kind"] == "NguyenNhan" and not any(e[2]["rel"] == "SUA_BANG" for e in G.out_edges(n, data=True)):
         report(4, "FAIL", f"nguyên nhân không có cách sửa: {d['name'][:50]}")
 for u, v, d in G.edges(data=True):
-    if not d.get("video_id"):
+    if not d.get("video_id") and d.get("source") != "tho":
         report(4, "FAIL", f"cạnh {u}->{v} không có video nguồn")
 db = sqlite3.connect(OUT / "dxa.sqlite")
 for table, expect in [("cases", len(cases)), ("chunks", len(chunks)),
@@ -139,7 +146,7 @@ for table, expect in [("cases", len(cases)), ("chunks", len(chunks)),
     got = db.execute(f"select count(*) from {table}").fetchone()[0]  # noqa: S608 - tên bảng lấy từ danh sách cố định
     if got != expect:
         report(4, "FAIL", f"bảng {table}: SQL có {got} dòng, JSON có {expect}")
-orphan = db.execute("select count(*) from cases where video_id not in (select video_id from videos)").fetchone()[0]
+orphan = db.execute("select count(*) from cases where video_id is not null and video_id not in (select video_id from videos)").fetchone()[0]
 if orphan:
     report(4, "FAIL", f"{orphan} case trỏ tới video không tồn tại")
 
