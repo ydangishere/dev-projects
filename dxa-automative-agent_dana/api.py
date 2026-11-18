@@ -8,20 +8,28 @@ Endpoint:
     GET  /                    giao diện web (ui/index.html)
     GET  /health             trạng thái: số case, chế độ gemini/offline, model
     POST /ask                 {"question": "...", "use_llm": true}
-    GET  /cases/{case_id}     xem một case (vd C01)
-    GET  /unanswered          các câu chưa trả lời được (cho thợ xem)
+    GET  /cases/{case_id}     xem một case (vd C01, T01)
+
+Tab "Bổ sung kiến thức" (chỉ thợ, kiểm quyền ở máy chủ bằng header Authorization: Bearer <token>):
+    POST   /tho/login         {"code": "..."} -> {"token": "..."}
+    POST   /tho/logout
+    GET    /tho/me            còn đăng nhập không
+    GET    /unanswered        câu chưa trả lời được, bỏ câu đã bổ sung
+    GET    /tho/cases         case thợ đã nhập
+    POST   /tho/cases         lưu case mới rồi dựng lại kho ngay
+    DELETE /tho/cases/{id}    gỡ case (giữ lại trong file để truy vết)
 """
-import json
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 import dxa
 import dxa_dana
+import expert
 import gemini_client as G
 import rag
 
@@ -29,6 +37,7 @@ import rag
 @asynccontextmanager
 async def lifespan(app):
     rag.state()  # nạp index một lần khi khởi động
+    expert.tho_code()  # chưa đặt DXA_THO_CODE thì in mã thợ ra cửa sổ đen
     try:
         dxa_dana._load_agent()  # nạp agent Dana một lần (mất vài giây)
     except Exception as e:
@@ -57,6 +66,9 @@ class Source(BaseModel):
     reviewed: Optional[bool] = None
     review_note: Optional[str] = None
     text: Optional[str] = None
+    source: Optional[str] = None       # "video" hoặc "tho" (thợ nhập)
+    author: Optional[str] = None
+    created_at: Optional[str] = None
 
 
 class AskOut(BaseModel):
@@ -98,14 +110,91 @@ def get_case(case_id: str):
     st = rag.state()
     for c in st["cases"]:
         if c["id"].lower() == case_id.lower():
-            return {**c, "link": rag.case_link(c), "video_title": st["videos"][c["video_id"]]["title"]}
+            title, when, link = dxa.origin(st["videos"], c)
+            return {**c, "link": link, "video_title": title, "time": when}
     raise HTTPException(404, f"Không có case {case_id}")
 
 
-@app.get("/unanswered")
+# ---------------------------------------------------------------- tab Bổ sung kiến thức (chỉ thợ)
+def _token(authorization: Optional[str]) -> str:
+    return (authorization or "").removeprefix("Bearer ").strip()
+
+
+def require_tho(authorization: Optional[str] = Header(None)):
+    """Kiểm quyền ở máy chủ: không có token thợ hợp lệ thì trả 401, dù ai đó gọi thẳng API."""
+    if not expert.is_tho(_token(authorization)):
+        raise HTTPException(401, "Cần đăng nhập thợ")
+
+
+class LoginIn(BaseModel):
+    code: str = Field(..., min_length=1, max_length=64)
+
+
+class SpecIn(BaseModel):
+    name: str = Field(..., max_length=100)
+    value: str = Field(..., max_length=60)
+    unit: str = Field("", max_length=30)
+
+
+class CaseIn(BaseModel):
+    symptom: str = Field(..., max_length=600)
+    cause: str = Field(..., max_length=600)
+    fix: str = Field(..., max_length=600)
+    system: str = "khác"
+    parts: list[str] = []
+    tools: list[str] = []
+    vehicles: list[str] = []
+    specs: list[SpecIn] = []
+    warnings: list[str] = []
+    author: str = Field("thợ", max_length=60)
+    from_question: str = Field("", max_length=500)
+
+
+@app.post("/tho/login")
+def tho_login(body: LoginIn):
+    try:
+        token = expert.login(body.code)
+    except PermissionError as e:
+        raise HTTPException(429, str(e))
+    if not token:
+        raise HTTPException(401, "Sai mã thợ")
+    return {"token": token, "role": "tho"}
+
+
+@app.post("/tho/logout")
+def tho_logout(authorization: Optional[str] = Header(None)):
+    expert.logout(_token(authorization))
+    return {"ok": True}
+
+
+@app.get("/tho/me", dependencies=[Depends(require_tho)])
+def tho_me():
+    return {"role": "tho", "systems": expert.SYSTEMS}
+
+
+@app.get("/unanswered", dependencies=[Depends(require_tho)])
 def unanswered(limit: int = 50):
-    p = dxa.DATA / "unanswered.jsonl"
-    if not p.exists():
-        return []
-    rows = [json.loads(l) for l in p.read_text(encoding="utf-8").splitlines() if l.strip()]
-    return rows[-limit:][::-1]
+    return expert.unanswered(limit)
+
+
+@app.get("/tho/cases", dependencies=[Depends(require_tho)])
+def tho_cases():
+    return expert.list_cases()[::-1]
+
+
+@app.post("/tho/cases", dependencies=[Depends(require_tho)])
+def tho_add_case(body: CaseIn):
+    try:
+        case, mode = expert.add_case(body.model_dump())
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    st = rag.state()
+    return {"case": case, "mode": mode, "cases": len(st["cases"])}
+
+
+@app.delete("/tho/cases/{case_id}", dependencies=[Depends(require_tho)])
+def tho_remove_case(case_id: str):
+    c = expert.remove_case(case_id)
+    if not c:
+        raise HTTPException(404, f"Không có case thợ nhập {case_id}")
+    return {"removed": c["id"]}

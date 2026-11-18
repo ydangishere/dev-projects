@@ -69,6 +69,16 @@ def yt_link(vid, t):
 def mmss(t):
     return f"{int(t)//60}:{int(t)%60:02d}"
 
+def from_video(c):
+    """Case lấy từ video có video_id + giây; case thợ nhập trên tab Bổ sung kiến thức thì không."""
+    return bool(c.get("video_id"))
+
+def origin(videos, c):
+    """(tiêu đề nguồn, thời điểm, link) của một case. Case thợ nhập không có video nên không có link."""
+    if from_video(c):
+        return videos[c["video_id"]]["title"], mmss(c["t"]), yt_link(c["video_id"], c["t"])
+    return f"Thợ nhập ngày {c.get('created_at', '')[:10]}".strip(), "", ""
+
 # ---------------------------------------------------------------- nạp dữ liệu
 def load_videos():
     rows = [l.split("\t") for l in (DATA / "videos.tsv").read_text(encoding="utf-8").splitlines()[1:] if l.strip()]
@@ -141,7 +151,7 @@ def build_graph(cases, videos):
         G.add_node(nid, kind=kind, name=name)
         return nid
     for c in cases:
-        src = {"video_id": c["video_id"], "t": c["t"], "case": c["id"]}
+        src = {"video_id": c.get("video_id") or "", "t": c.get("t") or 0, "case": c["id"], "source": c.get("source", "video")}
         s, ca, f = node("TrieuChung", c["symptom"]), node("NguyenNhan", c["cause"]), node("CachSua", c["fix"])
         G.add_edge(s, ca, rel="DO", **src)
         G.add_edge(ca, f, rel="SUA_BANG", **src)
@@ -152,8 +162,10 @@ def build_graph(cases, videos):
             G.add_edge(f, node("DungCu", tl), rel="DUNG", **src)
         for v in c["vehicles"]:
             G.add_edge(s, node("DongXe", v), rel="GAP_O", **src)
-        vnode = node("Video", videos[c["video_id"]]["title"])
-        G.add_edge(f, vnode, rel="NGUON", **src)
+        if from_video(c):
+            G.add_edge(f, node("Video", videos[c["video_id"]]["title"]), rel="NGUON", **src)
+        else:
+            G.add_edge(f, node("Tho", c.get("author") or "thợ"), rel="NGUON", **src)
     return G
 
 # ---------------------------------------------------------------- tầng 4: SQL
@@ -303,7 +315,8 @@ def ask(q):
         lines.append(f"Thông số: {s['name']} = {s['value']} {s['unit']}")
     for w in best["warnings"]:
         lines.append(f"Lưu ý: {w}")
-    lines.append(f"Xem: {videos[best['video_id']]['title']} @ {mmss(best['t'])} -> {yt_link(best['video_id'], best['t'])}")
+    title, when, link = origin(videos, best)
+    lines.append(f"Xem: {title} @ {when} -> {link}" if link else f"Nguồn: {title}")
     if not best["reviewed"]:
         lines.append("(Tri thức chưa được thợ duyệt)")
 
@@ -317,7 +330,8 @@ def ask(q):
             if c["id"] in seen:
                 continue
             seen.add(c["id"])
-            lines.append(f"  - {c['symptom']} -> {c['cause']}  [{mmss(c['t'])} {yt_link(c['video_id'], c['t'])}]")
+            title, when, link = origin(videos, c)
+            lines.append(f"  - {c['symptom']} -> {c['cause']}  [{when} {link}]" if link else f"  - {c['symptom']} -> {c['cause']}  [{title}]")
             if len(seen) >= 3:
                 break
 

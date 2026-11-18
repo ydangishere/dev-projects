@@ -58,7 +58,13 @@ jobs:
           curl -sf -X POST localhost:8000/ask -H 'Content-Type: application/json' \
             -d '{"question":"Bình xăng con chảy xăng khi dựng xe"}' > ask.json
           python -c "import json;r=json.load(open('ask.json'));print(r['answered_by'],r['mode']);assert not r['answered_by'].startswith('python'), r['warnings']"
+          test "$(curl -s -o /dev/null -w '%{http_code}' localhost:8000/unanswered)" = 401
+          grep -q "Mã đăng nhập thợ" api.log
           tail -5 api.log
+
+      - name: Tab Bổ sung kiến thức (phân quyền thợ, lưu, dựng lại kho)
+        env: { DANA_MOCK_LLM: 'true', GEMINI_API_KEY: '' }
+        run: python test_expert.py
 
       - name: dana deploy (REST /solve) — Dana 0.6.0.3 lỗi khi gọi solve() tự viết
         continue-on-error: true
