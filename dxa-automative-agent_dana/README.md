@@ -19,7 +19,7 @@ DXA là **một trang, hai tab** (`localhost:8000`):
 - **Tab "Hỏi"** (mọi người): khách hỏi bệnh xe, xem câu trả lời kèm nguồn video.
 - **Tab "Bổ sung kiến thức"** (chỉ thợ): bấm **Đăng nhập thợ**, nhập mã thợ, tab này mới hiện ra. Thợ xem câu chưa trả lời được, nhập kiến thức (triệu chứng, nguyên nhân, cách sửa, thông số), bấm **Lưu** thì kho dựng lại ngay, rồi bấm **Chạy thử lại câu hỏi**.
 
-Mã thợ được in ở cửa sổ đen mỗi lần bật DXA. Muốn dùng mã cố định thì thêm dòng `DXA_THO_CODE=...` vào file `.env`.
+Mã thợ của bản chạy thử là **`1234`**. Dùng thật thì đổi mã bằng dòng `DXA_THO_CODE=...` trong file `.env`.
 Quyền được **máy chủ** kiểm: không đăng nhập thợ thì gọi thẳng API lưu kiến thức cũng bị chặn (lỗi 401).
 
 ![Pipeline DXA: từ video đến agent, câu chưa trả lời được quay lại cho thợ](docs/pipeline.png)
