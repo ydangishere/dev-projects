@@ -1,5 +1,21 @@
 # VietPay MMS — AI Document Checker
 
+## Workflow diagrams: How MMS AI Checker works
+
+The following two diagrams explain the same six-step document-review process in English and Vietnamese. They are simplified visual guides; detailed architecture and implementation limitations follow below.
+
+### English
+
+![MMS AI Checker: How it works (English)](docs/module_workflow_en.svg)
+
+### Tiếng Việt
+
+![MMS AI Checker: Cơ chế hoạt động (Tiếng Việt)](docs/module_workflow_vi.svg)
+
+**Implementation note:** Demo mode parses sample TXT without invoking an AI model. With `AI_MODE=gemini`, Gemini can extract PDF/image data and explain findings. Final review and approval remain with a bank employee.
+
+---
+
 **MMS website demo:** [View demo](https://ydangkuul.github.io/mms130926/index.html)
 
 > The linked MMS website is a separate UI reference/demo. It is **not** connected to this AI Document Checker backend, and does not imply a production bank integration.
