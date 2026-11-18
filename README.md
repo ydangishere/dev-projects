@@ -16,6 +16,31 @@
 
 [**MMS AI Checker — English**](./mms-ai-checker/README.md) · [**Tiếng Việt**](./mms-ai-checker/README.vi.md) — runnable Python/FastAPI document-checking prototype for the intended PVcomBank Card Center employee workflow in VietPay MMS: OCR/document extraction → local Markdown RAG → YAML-driven rules → Gemini explanation, with source/version evidence, a review UI, tenant/role checks, Docker, CI and tests. Includes PNG backend and employee UX flow diagrams. **Synthetic demo by default; optional Gemini integration requires a key; no live bank/MMS integration or production-delivery claim.** Module 1 now also includes deterministic local graph retrieval, optional Neo4j persistence, graph-assisted rule prioritization and per-finding provenance paths in the UI/API (see the [Graph Retrieval architecture](./mms-ai-checker/README.md#module-1-graph-retrieval--implemented-locally-optional-neo4j)). Vector embeddings/pgvector and transaction relationship lookup remain unimplemented. Transaction/payout explanation and general handling guidance are outside this build.
 
+### MMS AI Checker — Diagrams
+
+These diagrams are stored in [`mms-ai-checker/docs`](./mms-ai-checker/docs) and shown here directly from the subproject.
+
+#### End-to-end document-checking flow
+
+![MMS AI Checker end-to-end flow](./mms-ai-checker/docs/end_to_end_flow.svg)
+
+#### Backend architecture and processing flow
+
+![MMS AI Checker backend flow](./mms-ai-checker/docs/backend_flow.png)
+
+#### Employee UX flow
+
+![MMS AI Checker employee UX flow](./mms-ai-checker/docs/ux_flow.png)
+
+#### AI model evolution roadmap
+
+![MMS AI Checker model evolution roadmap](./mms-ai-checker/docs/model-roadmap-flow.svg)
+
+#### Five-stage model roadmap
+
+![MMS AI Checker five-stage model roadmap](./mms-ai-checker/docs/model-roadmap-table.svg)
+
+
 ## Featured architecture: Bank Payment + Water AutoPay
 
 [**Bank Payment + Water AutoPay — 45 API, Backend Flow, AI Agent Flow & API Protocol Diagram**](./bank-payment-water-autopay/README.md) — complete Payment → OTP → Debit → Balance → Notification → monthly water-bill AutoPay reference architecture. Includes `backend_flow.png`, `ai_agent_flow.png`, a REST/gRPC/WebSocket/Webhook/Kafka grouping diagram, a searchable 45-endpoint HTML guide, and an **offline simulation** (no actual bank payments).
