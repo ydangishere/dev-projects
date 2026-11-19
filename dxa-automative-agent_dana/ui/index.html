@@ -366,6 +366,7 @@ function renderAnswer(r) {
     <h2>${r.refused ? "Chưa có trong kho" : "Kỹ thuật viên trả lời"}</h2>
     ${understood}
     <div class="body ${r.refused ? "refused" : ""}">${renderText(r.answer)}</div>
+    ${r.refused && (r.sources || []).length ? '<p class="meta">Các nguồn bên cạnh có thể liên quan, nhưng chưa khớp đủ để kỹ thuật viên trả lời chắc chắn.</p>' : ""}
     ${r.refused ? '<p class="meta">Câu này đã được lưu để thợ bổ sung kiến thức.</p>' : ""}
     ${(r.warnings || []).map((w) => `<p class="warn">${esc(w)}</p>`).join("")}
     <p class="meta">Chế độ ${esc(r.mode)}, ${esc(by)}.</p>`;

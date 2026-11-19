@@ -239,6 +239,8 @@ def rrf(rank_lists, k=60):
 # Câu hỏi được coi là "có trong kho" khi đủ CẢ HAI điều kiện (đo trên eval.py, chỉnh lại mỗi lần thêm video):
 #   1. BM25 cao nhất >= MIN_BM25          -> câu hỏi khớp đủ nhiều chữ với một case
 #   2. Độ phủ chữ hiếm >= MIN_COVER       -> những chữ HIẾM trong câu hỏi (vd "lốp", "phanh") phải có trong case trả lời
+#      Chữ hỏi chung chung ("cách", "dùng", "làm", "gì") không tính: vd "cách đấu đèn báo xi nhan khi không dùng
+#      đồng hồ km" từng bị từ chối dù đã tìm đúng C32, chỉ vì "cách" và "dùng" bị đếm là chữ thiếu.
 MIN_BM25 = 12.0
 MIN_COVER = 0.6
 _STOP_SCOPE = None
@@ -249,7 +251,7 @@ def _syl(t):
 def rare_word_cover(state, q, case_idx):
     global _STOP_SCOPE
     if _STOP_SCOPE is None:
-        _STOP_SCOPE = {strip_accents(w) for w in "bị có không là thì cho khi được mà và của như thế nào sao một xe".split()}
+        _STOP_SCOPE = {strip_accents(w) for w in "bị có không là thì cho khi được mà và của như thế nào sao một xe cách dùng làm gì".split()}
     if "_scope_docs" not in state:
         docs = [set(_syl(f'{c["symptom"]} {c["cause"]} {c["fix"]} {" ".join(c["parts"])} {" ".join(c["vehicles"])}')) for c in state["cases"]]
         df = Counter(w for d in docs for w in d)

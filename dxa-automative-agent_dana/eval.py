@@ -42,6 +42,7 @@ QUESTIONS = [
     ("hàn sắt mỏng 1 ly bằng máy hàn điện bị lủng", {"C49"}),
     ("chỉnh lửa đèn cắt oxy gas", {"C50"}),
     ("binh xang con buong ga ma ga khong ve", {"C28"}),   # câu thật gõ không dấu, đang xếp hạng 2
+    ("cách đấu đèn báo xi nhan khi không dùng đồng hồ km", {"C32", "C25"}),  # câu thật, từng bị cổng chặn từ chối
 ]
 
 OUT_OF_SCOPE = ["xe đề không nổ", "thay nhớt bao lâu một lần", "phanh đĩa bị kêu", "lốp xe bị xì", "đèn pha không sáng",
@@ -60,5 +61,7 @@ if __name__ == "__main__":
     ok = sum(not dxa.in_scope(state, q) for q in OUT_OF_SCOPE)
     for q in OUT_OF_SCOPE:
         print(f"{'OK ' if not dxa.in_scope(state, q) else 'XX '} (ngoài phạm vi) {q}")
-    print(f"\nTừ chối đúng câu ngoài phạm vi = {ok}/{len(OUT_OF_SCOPE)}")
+    scope = sum(dxa.in_scope(state, q) for q, _ in QUESTIONS)
+    print(f"\nTrả lời được câu trong phạm vi = {scope}/{n}  (cổng chặn không chặn nhầm)")
+    print(f"Từ chối đúng câu ngoài phạm vi = {ok}/{len(OUT_OF_SCOPE)}")
     print(f"Hit@1 = {h1}/{n} = {h1/n:.0%}   Hit@3 = {h3}/{n} = {h3/n:.0%}")
