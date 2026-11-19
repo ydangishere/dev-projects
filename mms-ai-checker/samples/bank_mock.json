@@ -1,0 +1,98 @@
+{
+  "version": "1",
+  "description": "Synthetic, fictional bank data for the read-only mock bank API. Times are offsets from the request time (Asia/Ho_Chi_Minh), so scenarios stay valid on any day.",
+  "merchants": {
+    "MER-2001": {"tenant": "pvcb", "status": "active", "kyc_status": "verified", "settlement_cycle_days": 1, "payout_account": {"verified": true, "status": "open", "masked_number": "******4321"}, "mdr_percent": 1.1, "fixed_fee": 1100},
+    "MER-2002": {"tenant": "pvcb", "status": "active", "kyc_status": "verified", "settlement_cycle_days": 1, "payout_account": {"verified": true, "status": "closed", "masked_number": "******8890"}, "mdr_percent": 1.1, "fixed_fee": 1100},
+    "MER-2003": {"tenant": "pvcb", "status": "restricted", "kyc_status": "kyc_pending", "application_id": "APP-DEMO-001", "settlement_cycle_days": 1, "payout_account": {"verified": false, "status": "open", "masked_number": "******1177"}, "mdr_percent": 1.1, "fixed_fee": 1100},
+    "MER-9001": {"tenant": "other-bank", "status": "active", "kyc_status": "verified", "settlement_cycle_days": 1, "payout_account": {"verified": true, "status": "open", "masked_number": "******0001"}, "mdr_percent": 1.0, "fixed_fee": 0}
+  },
+  "transactions": {
+    "TXN-1001": {
+      "scenario": "paid; fees explain the difference between gross and net",
+      "transaction": {"merchant_id": "MER-2001", "amount": 2500000, "currency": "VND", "status": "SUCCESS", "channel": "card_present", "created_offset_hours": -50},
+      "switch": {"route": "NAPAS", "response_code": "00", "result": "approved"},
+      "ledger": [{"entry": "merchant_credit_pending", "amount": 2500000, "offset_hours": -50}],
+      "risk": {"decision": "pass", "hold": false},
+      "reconciliation": {"batch_id": "SB-501", "status": "settled", "matched": true, "value_offset_hours": -26},
+      "payout": {"payout_id": "PO-801", "batch_id": "SB-501", "status": "paid", "gross": 2500000, "fee": 28600, "net": 2471400, "reference": "FT26-801", "paid_offset_hours": -24},
+      "logs": [{"offset_hours": -50, "service": "gateway", "event": "authorization_approved"}, {"offset_hours": -26, "service": "settlement", "event": "batch_settled"}, {"offset_hours": -24, "service": "payout", "event": "transfer_completed"}]
+    },
+    "TXN-1002": {
+      "scenario": "declined by issuer: insufficient funds, no money captured",
+      "transaction": {"merchant_id": "MER-2001", "amount": 780000, "currency": "VND", "status": "FAILED", "channel": "ecommerce", "created_offset_hours": -5},
+      "switch": {"route": "NAPAS", "response_code": "51", "result": "declined"},
+      "ledger": [],
+      "risk": {"decision": "pass", "hold": false},
+      "reconciliation": null,
+      "payout": null,
+      "logs": [{"offset_hours": -5, "service": "gateway", "event": "authorization_declined"}]
+    },
+    "TXN-1003": {
+      "scenario": "captured today; settlement cycle T+1 not due yet",
+      "transaction": {"merchant_id": "MER-2001", "amount": 1200000, "currency": "VND", "status": "SUCCESS", "channel": "qr", "created_offset_hours": -2},
+      "switch": {"route": "NAPAS", "response_code": "00", "result": "approved"},
+      "ledger": [{"entry": "merchant_credit_pending", "amount": 1200000, "offset_hours": -2}],
+      "risk": {"decision": "pass", "hold": false},
+      "reconciliation": {"batch_id": null, "status": "pending", "matched": true, "value_offset_hours": 22},
+      "payout": null,
+      "logs": [{"offset_hours": -2, "service": "gateway", "event": "authorization_approved"}]
+    },
+    "TXN-1004": {
+      "scenario": "risk review hold on settlement",
+      "transaction": {"merchant_id": "MER-2001", "amount": 45000000, "currency": "VND", "status": "SUCCESS", "channel": "ecommerce", "created_offset_hours": -40},
+      "switch": {"route": "NAPAS", "response_code": "00", "result": "approved"},
+      "ledger": [{"entry": "merchant_credit_pending", "amount": 45000000, "offset_hours": -40}],
+      "risk": {"decision": "review", "hold": true, "reason": "velocity_review", "case_id": "RISK-3301"},
+      "reconciliation": {"batch_id": "SB-502", "status": "held", "matched": true, "value_offset_hours": -16},
+      "payout": null,
+      "logs": [{"offset_hours": -40, "service": "gateway", "event": "authorization_approved"}, {"offset_hours": -39, "service": "risk", "event": "case_opened"}]
+    },
+    "TXN-1005": {
+      "scenario": "payout failed: receiving account closed",
+      "transaction": {"merchant_id": "MER-2002", "amount": 3300000, "currency": "VND", "status": "SUCCESS", "channel": "card_present", "created_offset_hours": -60},
+      "switch": {"route": "NAPAS", "response_code": "00", "result": "approved"},
+      "ledger": [{"entry": "merchant_credit_pending", "amount": 3300000, "offset_hours": -60}],
+      "risk": {"decision": "pass", "hold": false},
+      "reconciliation": {"batch_id": "SB-503", "status": "settled", "matched": true, "value_offset_hours": -36},
+      "payout": {"payout_id": "PO-803", "batch_id": "SB-503", "status": "failed", "failure_code": "account_closed", "gross": 3300000, "fee": 37400, "net": 3262600, "reference": null, "paid_offset_hours": null},
+      "logs": [{"offset_hours": -34, "service": "payout", "event": "transfer_rejected_by_beneficiary_bank"}]
+    },
+    "TXN-1006": {
+      "scenario": "merchant restricted pending KYC; payouts on hold",
+      "transaction": {"merchant_id": "MER-2003", "amount": 990000, "currency": "VND", "status": "SUCCESS", "channel": "qr", "created_offset_hours": -30},
+      "switch": {"route": "NAPAS", "response_code": "00", "result": "approved"},
+      "ledger": [{"entry": "merchant_credit_pending", "amount": 990000, "offset_hours": -30}],
+      "risk": {"decision": "pass", "hold": false},
+      "reconciliation": {"batch_id": "SB-504", "status": "settled", "matched": true, "value_offset_hours": -6},
+      "payout": {"payout_id": "PO-804", "batch_id": "SB-504", "status": "on_hold", "hold_reason": "merchant_kyc_pending", "gross": 990000, "fee": 12000, "net": 978000, "reference": null, "paid_offset_hours": null},
+      "logs": [{"offset_hours": -6, "service": "payout", "event": "payout_held"}]
+    },
+    "TXN-1007": {
+      "scenario": "customer debited but switch timed out; no reconciliation match: unresolved",
+      "transaction": {"merchant_id": "MER-2001", "amount": 1500000, "currency": "VND", "status": "PENDING", "channel": "ecommerce", "created_offset_hours": -20},
+      "switch": {"route": "NAPAS", "response_code": "68", "result": "timeout"},
+      "ledger": [{"entry": "customer_debit", "amount": 1500000, "offset_hours": -20}],
+      "risk": {"decision": "pass", "hold": false},
+      "reconciliation": {"batch_id": null, "status": "unmatched", "matched": false, "value_offset_hours": null},
+      "payout": null,
+      "logs": [{"offset_hours": -20, "service": "gateway", "event": "switch_timeout"}]
+    },
+    "TXN-1008": {
+      "scenario": "refunded after capture: nothing left to pay out",
+      "transaction": {"merchant_id": "MER-2001", "amount": 640000, "currency": "VND", "status": "REFUNDED", "channel": "ecommerce", "created_offset_hours": -70},
+      "switch": {"route": "NAPAS", "response_code": "00", "result": "approved"},
+      "ledger": [{"entry": "merchant_credit_pending", "amount": 640000, "offset_hours": -70}, {"entry": "refund_debit", "amount": -640000, "offset_hours": -60}],
+      "risk": {"decision": "pass", "hold": false},
+      "reconciliation": {"batch_id": "SB-500", "status": "settled", "matched": true, "value_offset_hours": -46},
+      "payout": null,
+      "logs": [{"offset_hours": -60, "service": "gateway", "event": "refund_completed"}]
+    },
+    "TXN-9001": {
+      "scenario": "belongs to another bank tenant; must be invisible to pvcb",
+      "transaction": {"merchant_id": "MER-9001", "amount": 100000, "currency": "VND", "status": "SUCCESS", "channel": "qr", "created_offset_hours": -10},
+      "switch": {"route": "NAPAS", "response_code": "00", "result": "approved"},
+      "ledger": [], "risk": {"decision": "pass", "hold": false}, "reconciliation": null, "payout": null, "logs": []
+    }
+  }
+}

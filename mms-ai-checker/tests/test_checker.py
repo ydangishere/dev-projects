@@ -347,7 +347,7 @@ def test_gemini_mode_provider_contract_and_fallback(tmp_path, monkeypatch):
     app = create_app(tmp_path, "gemini")
 
     class Fake:
-        def extract(self, source):
+        def extract(self, source, fields=None):
             return extract_demo(source)
 
         def explain(self, findings, sections):
@@ -369,7 +369,7 @@ def test_model_invalid_page_is_failure(tmp_path, monkeypatch):
     app = create_app(tmp_path, "gemini")
 
     class Fake:
-        def extract(self, source):
+        def extract(self, source, fields=None):
             return Extraction.model_validate(
                 {
                     "facts": [

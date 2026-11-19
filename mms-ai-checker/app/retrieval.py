@@ -25,6 +25,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .observability import traced
+from .vectorstore import MemoryVectorStore, build_vector_store
 
 DEFAULT_QUERY = (
     "required expiry matching verification uncertainty security human review"
@@ -335,32 +336,50 @@ class RetrievalSettings:
 
 
 class HybridRetriever:
-    def __init__(self, embedder=None, settings: RetrievalSettings | None = None):
+    def __init__(self, embedder=None, settings: RetrievalSettings | None = None, store=None):
         self.embedder = embedder or HashingEmbedder()
         self.fallback = HashingEmbedder()
         self.settings = settings or RetrievalSettings()
+        self.store = store or MemoryVectorStore()
+        self.fallback_store = MemoryVectorStore()
         self._cache: dict[tuple, tuple] = {}
 
-    def _index(self, md: str, rules: dict, embedder):
-        key = (hashlib.sha256(md.encode()).hexdigest(), embedder.name, self.settings.max_words, self.settings.overlap)
-        if key not in self._cache:
+    def _index(self, md: str, rules: dict, embedder, store):
+        key = (
+            hashlib.sha256(md.encode()).hexdigest(),
+            str(rules.get("tenant")),
+            str(rules.get("version")),
+            embedder.name,
+            self.settings.max_words,
+            self.settings.overlap,
+        )
+        namespace = hashlib.sha256("\0".join(map(str, key)).encode()).hexdigest()[:32]
+        cache_key = (*key, store.name)
+        if cache_key not in self._cache:
             chunks = chunk_policy(md, rules, self.settings.max_words, self.settings.overlap)
-            vectors = dict(zip([c.id for c in chunks], embedder.embed([c.text for c in chunks])))
+            if not store.has(namespace, len(chunks)):
+                store.upsert(namespace, chunks, embedder.embed([c.text for c in chunks]))
             bm25 = BM25({c.id: tokenize(c.text) for c in chunks})
-            self._cache[key] = (chunks, vectors, bm25)
-        return self._cache[key]
+            self._cache[cache_key] = (chunks, namespace, bm25)
+        return self._cache[cache_key]
 
     @traced("policy_retrieval", run_type="retriever")
     def search(self, md, rules, tenant, review_date, query, required_rule_ids):
         """Return (rule-level sections, retrieval trace)."""
         query = (query or "").strip() or DEFAULT_QUERY
         status = None
-        embedder = self.embedder
+        embedder, store = self.embedder, self.store
         try:
-            chunks, vectors, bm25 = self._index(md, rules, embedder)
+            chunks, namespace, bm25 = self._index(md, rules, embedder, store)
         except Exception:
-            embedder, status = self.fallback, "embedding_unavailable_local_fallback"
-            chunks, vectors, bm25 = self._index(md, rules, embedder)
+            # Embedding API or vector database down: rank with local embeddings in memory.
+            status = (
+                "embedding_unavailable_local_fallback"
+                if isinstance(store, MemoryVectorStore)
+                else "vector_index_unavailable_local_fallback"
+            )
+            embedder, store = self.fallback, self.fallback_store
+            chunks, namespace, bm25 = self._index(md, rules, embedder, store)
 
         allowed = filter_chunks(chunks, tenant, review_date, str(rules["version"]))
         allowed_ids = {c.id for c in allowed}
@@ -370,22 +389,29 @@ class HybridRetriever:
         try:
             query_vectors = embedder.embed(rewritten)
         except Exception:
-            embedder, status = self.fallback, "embedding_unavailable_local_fallback"
-            chunks, vectors, bm25 = self._index(md, rules, embedder)
+            embedder, store = self.fallback, self.fallback_store
+            status = "embedding_unavailable_local_fallback"
+            chunks, namespace, bm25 = self._index(md, rules, embedder, store)
             query_vectors = embedder.embed(rewritten)
 
         rule_scores: dict[str, float] = {}
         rule_chunks: dict[str, list[str]] = {}
         candidates = []
         k = self.settings.candidate_k
-        for sub, text, qvec in zip(subqueries, rewritten, query_vectors):
-            vector_scores = {
-                cid: sum(a * b for a, b in zip(qvec, vectors[cid])) for cid in allowed_ids
-            }
-            vector_rank = sorted(
-                (cid for cid, s in vector_scores.items() if s > 0),
-                key=lambda cid: (-vector_scores[cid], cid),
-            )[:k]
+        vector_hits = []
+        try:
+            for qvec in query_vectors:
+                vector_hits.append(store.search(namespace, qvec, allowed_ids, tenant, k))
+        except Exception:
+            embedder, store = self.fallback, self.fallback_store
+            status = "vector_index_unavailable_local_fallback"
+            chunks, namespace, bm25 = self._index(md, rules, embedder, store)
+            query_vectors = embedder.embed(rewritten)
+            vector_hits = [
+                store.search(namespace, qvec, allowed_ids, tenant, k) for qvec in query_vectors
+            ]
+        for sub, text, hits in zip(subqueries, rewritten, vector_hits):
+            vector_rank = [cid for cid, _ in hits]
             keyword_rank, _ = bm25.search(tokenize(text), allowed_ids)
             keyword_rank = keyword_rank[:k]
             fused = rrf([vector_rank, keyword_rank], self.settings.rrf_k)
@@ -428,6 +454,7 @@ class HybridRetriever:
         trace = {
             "method": "hybrid_vector_keyword_rrf_rerank",
             "embedder": embedder.name,
+            "vector_store": store.name,
             "status": status,
             "subqueries": subqueries,
             "rewritten_queries": rewritten,
@@ -458,4 +485,4 @@ def build_embedder(mode: str | None = None):
 
 
 def build_retriever(settings: RetrievalSettings | None = None):
-    return HybridRetriever(build_embedder(), settings)
+    return HybridRetriever(build_embedder(), settings, build_vector_store())

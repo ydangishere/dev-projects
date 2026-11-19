@@ -44,27 +44,27 @@ Hai sơ đồ dưới đây mô tả cùng một quy trình kiểm tra hồ sơ 
 
 **Ranh giới công nghệ:** RAG (truy xuất tài liệu để bổ sung ngữ cảnh) **không huấn luyện model**. Graph Retrieval (tìm kiếm theo quan hệ) bổ sung đường dẫn hồ sơ → giấy tờ → phát hiện → quy định; Rule Engine vẫn kiểm tra lỗi bắt buộc. Fine-tuning (huấn luyện bổ sung trọng số) chỉ được thực hiện sau khi có dữ liệu gắn nhãn đáng tin cậy; dữ liệu pilot phải được phép dùng, xử lý thông tin nhạy cảm, tách bộ train/validation/test và có chuyên viên kiểm chứng. Đo Precision/Recall/F1 của phát hiện lỗi, độ đúng trích xuất và nguồn trích dẫn, tỷ lệ thiếu căn cứ, chi phí, độ trễ.
 
-**Trạng thái code hiện tại (không nhầm với roadmap):** Demo mặc định chạy bộ đọc TXT + Rule Engine; bật `AI_MODE=gemini` mới gọi Gemini thực để đọc PDF/ảnh và giải thích. Module 1 có Graph Retrieval cục bộ, có adapter Neo4j tùy chọn nhưng chưa xác minh chạy Neo4j thật. Tìm quy định đã chạy hybrid: vector index tại chỗ kết hợp tìm từ khóa BM25, gộp kết quả rồi xếp hạng lại, có thể dùng embedding của Gemini. **Chưa tích hợp Qwen, Supabase pgvector, pipeline Fine-tuning hoặc Pilot dữ liệu thật.** Hình bên trên thể hiện kế hoạch, không phải kết quả triển khai hay benchmark đã đo.
+**Trạng thái code hiện tại (không nhầm với roadmap):** Demo mặc định chạy bộ đọc TXT + Rule Engine. `AI_MODE=gemini` dùng Gemini đọc PDF/ảnh và giải thích; `AI_MODE=qwen` dùng Qwen3.5-9B qua bất kỳ endpoint tương thích OpenAI (đã chạy thật bằng Ollama trên GPU 8 GB). Kết quả Qwen đọc bản scan giả lập nằm ở [`docs/model_comparison.json`](docs/model_comparison.json); phần Gemini đang chờ hạn mức API. Graph Retrieval của Module 1 chạy cục bộ hoặc trên Neo4j (đã kiểm thử với Neo4j 5.26 thật). Tìm quy định chạy hybrid (vector + BM25), vector index lưu trong bộ nhớ hoặc trong PostgreSQL + pgvector (đã kiểm thử với pgvector thật). Tra cứu giao dịch và chi trả chạy bằng luồng LangGraph trên API ngân hàng **giả lập** chỉ-đọc. **Chưa có fine-tuning, kết nối hệ thống ngân hàng thật và pilot dữ liệu thật.** Hình bên trên thể hiện kế hoạch model, không phải kết quả huấn luyện.
 
 ## Một tính năng trong nhóm ba tính năng
 
 | Tính năng của trợ lý | Nhân viên hỏi | Có trong dự án này? |
 |---|---|---|
 | **Kiểm tra hồ sơ** | “Hồ sơ này còn thiếu gì để được duyệt?” | **Có:** tìm giấy tờ thiếu, hết hạn, thông tin không khớp, phiên bản chưa xác minh; kèm nguồn |
-| Giải thích giao dịch và chi trả | “Vì sao doanh nghiệp chưa nhận tiền?” | **Không:** dự kiến tra trạng thái, phí và lỗi; phân biệt nguyên nhân đã xác nhận với điều cần kiểm tra thêm |
-| Hướng dẫn xử lý | “Bây giờ tôi cần làm gì?” | **Không:** dự kiến dựa vào quy trình nội bộ để chỉ bước và mở đúng hồ sơ/màn hình |
+| Giải thích giao dịch và chi trả | “Vì sao doanh nghiệp chưa nhận tiền?” | **Đã có, chạy trên API ngân hàng giả lập:** đọc dữ liệu giao dịch, chuyển mạch, sổ cái, rủi ro, đối soát, chi trả, merchant và nhật ký; giải thích trạng thái, phí; tách nguyên nhân đã có căn cứ với câu hỏi chưa xác định |
+| Hướng dẫn xử lý | “Bây giờ tôi cần làm gì?” | **Đã có:** mỗi nguyên nhân hoặc câu hỏi mở được gắn với quy trình đã duyệt (`policies/transaction_procedures.yaml`): các bước, bộ phận cần chuyển và màn hình MMS cần mở; đánh dấu bước mà vai trò hiện tại không được làm |
 
-Bản này nêu vấn đề và quy định liên quan, chưa phải trợ lý hướng dẫn nghiệp vụ tổng quát. AI không duyệt/từ chối hồ sơ, không sửa trạng thái KYC/KYB (xác minh cá nhân/doanh nghiệp), không gửi yêu cầu ra ngoài và không chuyển tiền.
+Cả ba tính năng đều không duyệt/từ chối hồ sơ, không sửa trạng thái KYC/KYB, không gửi yêu cầu ra ngoài, không thực hiện lại, đảo hay chuyển tiền. Nhân viên quyết định và thao tác trong quy trình ngân hàng hiện có.
 
-## Module dự kiến: Điều tra giao dịch thất bại (chỉ thiết kế kiến trúc)
+## Tra cứu giao dịch và chi trả (đã có, chạy với ngân hàng giả lập)
 
-**Trạng thái: kiến trúc đề xuất, CHƯA được triển khai trong repository.** Bản demo đang chạy chỉ có **AI kiểm tra hồ sơ**. Chưa tích hợp dữ liệu giao dịch, Core Banking, Payment Switch, Fraud, đối soát của ngân hàng thật; chưa dùng LangGraph để điều tra giao dịch trong code hiện tại.
+**Trạng thái: đã triển khai trong [`app/investigation.py`](app/investigation.py) bằng LangGraph, chạy trên API ngân hàng giả lập chỉ-đọc ([`app/mock_bank.py`](app/mock_bank.py), dữ liệu ở [`samples/bank_mock.json`](samples/bank_mock.json)).** Mở **http://127.0.0.1:8000/investigate** (nút ở đầu trang checker) hoặc gọi `POST /api/investigations` với `{"transaction_id": "TXN-1001"}`. Mã mẫu `TXN-1001` đến `TXN-1008` gồm: đã chi trả có phí, ngân hàng phát hành từ chối, chưa đến kỳ quyết toán, giữ để rà soát rủi ro, chi trả vào tài khoản đã đóng, merchant bị giữ do chưa xong KYC (dẫn về hồ sơ AI Check) kèm phí lệch, khách bị trừ tiền nhưng chuyển mạch timeout (để ở trạng thái chưa xác định), và đã hoàn tiền. Đặt `BANK_MODE=http` cùng `BANK_API_URL`/`BANK_API_TOKEN` để dùng API ngân hàng thật có cùng hợp đồng chỉ-đọc; môi trường production không cho dùng bản giả lập. Mọi vai trò đều tra cứu được; kết quả được mã hóa khi có khóa, tách theo đơn vị và ghi nhật ký. Câu hỏi của nhân viên chỉ được ghi lại, không thay đổi dữ liệu được đọc, chẩn đoán hay các bước.
 
 ```mermaid
 flowchart TD
     A[Nhân viên nhập Transaction ID] --> B[FastAPI xác thực và phân quyền vai trò / đơn vị]
-    B --> C[LangGraph Agent: Điều tra giao dịch - dự kiến]
-    C --> D[Các bộ kết nối ngân hàng chỉ đọc - dự kiến]
+    B --> C[Luồng LangGraph: lấy giao dịch → gom bằng chứng → chẩn đoán → lập hướng dẫn → giải thích]
+    C --> D[Bộ kết nối ngân hàng chỉ đọc: API giả lập, API thật qua BANK_MODE=http]
     D --> E1[Authentication API - lịch sử xác thực]
     D --> E2[Transaction API - trạng thái và mã lỗi]
     D --> E3[Core Banking API - bút toán trừ tiền và sổ cái]
@@ -84,11 +84,11 @@ flowchart TD
     H --> I[Nhân viên kiểm tra; AI không tự chuyển tiền]
 ```
 
-**Phân biệt dữ liệu và kiến thức:** Transaction API, Core Banking, Payment Switch, Fraud, Logs và Reconciliation cung cấp **bằng chứng của giao dịch cụ thể**. RAG (truy xuất tài liệu hỗ trợ AI trả lời) dùng để tìm **mã lỗi, quy định nội bộ và hướng dẫn xử lý**. RAG **không** thay thế API trong việc xác nhận giao dịch đã trừ/ghi có hay đối soát. Có thể tra theo từ khóa hoặc vector; dự án hiện **chưa** triển khai RAG tra lỗi giao dịch hay Vector DB.
+**Phân biệt dữ liệu và kiến thức:** Transaction API, Core Banking, Payment Switch, Fraud, Logs và Reconciliation cung cấp **bằng chứng của giao dịch cụ thể**; danh mục quy trình cung cấp **kiến thức đã duyệt** để giải nghĩa mã lỗi và liệt kê bước xử lý. Danh mục này không bao giờ là nguồn xác nhận trạng thái giao dịch, ghi nợ/ghi có hay kết quả đối soát. Nguyên nhân được tra theo mã, không tìm theo câu chữ, nên câu hỏi không kéo được quy trình không liên quan. Chẩn đoán là luật cố định; khi bật `AI_MODE=gemini` hoặc `qwen`, model chỉ được viết lại câu trả lời từ mã nguyên nhân, trạng thái, số tiền và ngày (không có tên hay số tài khoản), phải nêu đúng các nguyên nhân đó và qua kiểm tra an toàn, nếu không sẽ hiển thị câu trả lời cố định.
 
 **Nguyên tắc xử lý:** Xác thực và phân quyền trước khi truy vấn; dùng kết nối chỉ đọc, tối thiểu quyền, che dữ liệu nhạy cảm; đối chiếu Transaction ID, timestamp và correlation ID giữa các hệ thống. Phân biệt rõ `FAILED` (thất bại), `PENDING` (chờ kết quả) và `SUCCESS` (đã xác nhận thành công). Nếu đã trừ tiền nhưng Payment Switch bị timeout, chưa thể kết luận người nhận không được ghi có; phải chờ xác nhận/đối soát, **không tự động chuyển lại hay hoàn tiền**. AI cần tách bằng chứng đã xác minh khỏi điều chưa rõ và chuyển thao tác tài chính sang quy trình ngân hàng được kiểm soát.
 
-**Các API trong sơ đồ là điểm tích hợp minh họa, không khẳng định ngân hàng đã có đúng bảy API này.**
+**API giả lập mô phỏng các nguồn dữ liệu này để xây và kiểm thử luồng xử lý; không khẳng định ngân hàng có đúng các endpoint đó.** Lịch sử xác thực chưa được dùng trong chẩn đoán hiện tại.
 
 ## Cài nhanh và dùng ngay
 
@@ -140,7 +140,25 @@ GEMINI_API_KEY=KHOA_CUA_BAN
 
 Khởi động lại server. Vào hồ sơ, tải PDF/JPEG/PNG giả lập vào đúng loại giấy tờ rồi chạy kiểm tra. Giới hạn mỗi file **5 MiB, 20 trang PDF hoặc 20 triệu điểm ảnh**. Muốn thử toàn bộ bằng PDF/ảnh, thay tất cả giấy tờ TXT có sẵn trong hồ sơ. Bản mới vẫn chờ xác minh theo quy trình phía ngân hàng.
 
-**Model hiện đang chạy khi bật AI:** Gemini 3.8 Flash (`gemini-3.8-flash`) là baseline cho pipeline đọc PDF/ảnh hiện có; **Qwen3.5-9B là model mục tiêu để tích hợp và so sánh trong Development/Pilot, chưa chạy trong repository**. Đây chưa phải kết luận về độ chính xác/chi phí trên hồ sơ ngân hàng Việt Nam. Có thể đổi model Gemini qua biến môi trường. [Tài liệu model](https://aistudio.google.com/docs/models/gemini-3.8-flash), [đọc tài liệu](https://aistudio.google.com/docs/document-processing), [JSON có cấu trúc](https://aistudio.google.com/docs/structured-output), kiểm tra ngày 05/11/2026.
+**Model chạy được:** `gemini-3.8-flash` (`AI_MODE=gemini`) và Qwen3.5-9B (`AI_MODE=qwen`, `QWEN_MODEL=qwen3.5:9b` trên Ollama, hoặc server tương thích OpenAI như vLLM/endpoint thuê ngoài qua `QWEN_BASE_URL`/`QWEN_API_KEY`). Hai model dùng chung chỉ dẫn hệ thống, JSON schema, kiểm tra Pydantic và kiểm tra an toàn phần giải thích; Qwen nhận PDF dưới dạng chữ từng trang, hoặc ảnh trang với PDF scan. Qwen3.5 mặc định “suy nghĩ” trước khi trả lời và có thể dùng hết giới hạn đầu ra khi bị ép JSON, nên `QWEN_REASONING_EFFORT=none` tắt phần này. [Tài liệu model](https://aistudio.google.com/docs/models/gemini-3.8-flash), [đọc tài liệu](https://aistudio.google.com/docs/document-processing), [JSON có cấu trúc](https://aistudio.google.com/docs/structured-output), kiểm tra ngày 05/11/2026.
+
+### So sánh Qwen và Gemini (dữ liệu giả lập; Gemini chưa đo)
+
+`python scripts/compare_models.py` vẽ 16 tài liệu giả lập trong [`samples/extraction_eval.json`](samples/extraction_eval.json) (giấy phép kinh doanh, CCCD, xác nhận tài khoản tiếng Việt, có tên và số gây nhiễu, trường bị thiếu và câu lệnh chèn vào) thành ảnh PNG và PDF chỉ có ảnh, rồi cho từng model đọc. Cả hai model đều đọc từ ảnh, không thấy văn bản gốc. Script cũng tạo phần giải thích cho các hồ sơ demo. Qwen3.5-9B chạy trên RTX 3060 8 GB tại máy, một lần, temperature 0. **Gemini chưa đo được:** key miễn phí hết hạn mức request trong ngày (HTTP 429) sau 2/32 lần gọi; chạy lại `python scripts/compare_models.py --models gemini` với key có bật thanh toán hoặc khi hạn mức được làm mới.
+
+| Chỉ số | qwen (`qwen3.5:9b`) |
+|---|---|
+| Đọc đúng trường (mọi bản scan) | 100% |
+| Đọc đúng trường, PNG / PDF chỉ có ảnh | 100% / 100% |
+| Tài liệu đúng hoàn toàn | 31 / 32 |
+| Tự thêm thông tin không có trong giấy tờ | 1 |
+| Nhận giá trị bị chèn trong tài liệu | 0 |
+| Lỗi định dạng hoặc lỗi gọi | 0 |
+| Trích dẫn có trong văn bản gốc | 77% |
+| Thời gian trung vị / p90 mỗi tài liệu (giây) | 5.5 / 8.6 |
+| Giải thích qua kiểm tra an toàn | 2 / 2 |
+
+Qwen cần hai thay đổi, nay áp dụng cho cả hai model: định nghĩa rõ từng trường trong chỉ dẫn, và server báo cho model biết loại giấy tờ này cần những trường nào (trường khác bị bỏ ở server). Tỷ lệ đọc đúng tăng từ 79% lên 92% rồi 100%, thông tin tự thêm giảm từ 38 xuống 32 rồi 1. Chỉ dẫn được sửa sau khi xem kết quả trên chính bộ này, nên con số cuối không phải điểm trên dữ liệu chưa thấy. Không lần nào model nhận giá trị bị chèn. Đây là 16 tài liệu tự viết, nên bảng chỉ cho thấy luồng Qwen chạy được từ đầu đến cuối và sai ở đâu, không phải độ chính xác trên hồ sơ ngân hàng thật. Thời gian phụ thuộc phần cứng và mạng. Kết quả từng tài liệu ở [`docs/model_comparison.json`](docs/model_comparison.json). Muốn chọn model cho production vẫn cần hồ sơ thật được cấp phép, có nhãn, cùng đánh giá chi phí và cách xử lý dữ liệu như lộ trình phía trên.
 
 Mã dùng Google GenAI SDK (thư viện kết nối Google), hàm `models.generate_content`, đầu vào PDF/ảnh và JSON Schema (khuôn dữ liệu cố định). Chưa có API key đi kèm; gọi Gemini thật cần khóa và quyền sử dụng model từ tài khoản của bạn.
 
@@ -161,12 +179,12 @@ Phát hiện bằng luật và phần AI diễn giải hiển thị riêng. Số
 
 ### Module 1 — Graph Retrieval đã có code, Neo4j là tùy chọn
 
-Sơ đồ dưới đây mô tả kiến trúc Hybrid RAG mục tiêu. **Đã triển khai cho Module 1:** graph nối hồ sơ → loại giấy tờ bắt buộc / giấy tờ đã tải → phát hiện của Rule Engine → quy định, truy vấn graph cục bộ (mặc định) hoặc Neo4j (khi cấu hình), ưu tiên quy định dựa trên bằng chứng graph, đưa bằng chứng vào kết quả và Gemini. Tìm quy định nay dùng bộ tìm hybrid trong `app/retrieval.py` với vector index trong bộ nhớ. **Chưa triển khai:** lưu vector vào Supabase pgvector, xếp hạng lại bằng model.
+Sơ đồ dưới đây mô tả kiến trúc Hybrid RAG. **Đã triển khai cho Module 1:** graph nối hồ sơ → loại giấy tờ bắt buộc / giấy tờ đã tải → phát hiện của Rule Engine → quy định, truy vấn graph cục bộ (mặc định) hoặc Neo4j (đã kiểm thử với Neo4j thật), ưu tiên quy định dựa trên bằng chứng graph, đưa bằng chứng vào kết quả và phần giải thích. Tìm quy định dùng bộ tìm hybrid trong `app/retrieval.py`; vector index nằm trong bộ nhớ (mặc định) hoặc PostgreSQL + pgvector (`VECTOR_STORE=pgvector`). **Chưa triển khai:** xếp hạng lại bằng model (cross-encoder).
 
 ```mermaid
 flowchart TB
     Q["User Query<br/>Nhân viên ngân hàng đặt câu hỏi"] --> P["Query Processing<br/>Xử lý câu hỏi"]
-    P --> V["Vector Retrieval (đã có, index trong bộ nhớ)<br/>Supabase pgvector dự kiến<br/>Tìm đoạn quy định"]
+    P --> V["Vector Retrieval (đã có)<br/>Trong bộ nhớ hoặc PostgreSQL + pgvector<br/>Tìm đoạn quy định"]
     P --> G["Graph Retrieval (đã có cho Module 1)<br/>Graph cục bộ / Neo4j tùy chọn<br/>Hồ sơ, giấy tờ, phát hiện, quy định"]
     V --> M["Merge + Reranking<br/>Gộp và xếp hạng lại"]
     G --> M
@@ -191,17 +209,18 @@ pip install -r requirements-graph.txt
 python -m uvicorn app.main:app --env-file .env --host 127.0.0.1 --port 8000
 ```
 
-Hoặc đặt mật khẩu Neo4j và khóa HMAC trong `.env`, sau đó chạy `docker compose -f compose.yaml -f compose.graph.yaml up --build`. Docker Compose thông thường vẫn chạy checker và graph cục bộ, không yêu cầu Neo4j. Định danh lưu trong Neo4j được giả danh bằng HMAC; không ghi tên doanh nghiệp, mã đăng ký, nội dung giấy tờ hay câu hỏi vào graph. Nếu Neo4j lỗi, hệ thống chuyển về graph cục bộ, ghi sự kiện `neo4j_unavailable_local_fallback`, giữ nguyên phát hiện của bộ luật. **Chưa xác nhận chạy đầu-cuối với Neo4j thật khi chưa có cấu hình và kiểm thử dịch vụ đó.**
+Hoặc đặt mật khẩu Neo4j và khóa HMAC trong `.env`, sau đó chạy `docker compose -f compose.yaml -f compose.graph.yaml up --build`. Docker Compose thông thường vẫn chạy checker và graph cục bộ, không yêu cầu Neo4j. Định danh lưu trong Neo4j được giả danh bằng HMAC; không ghi tên doanh nghiệp, mã đăng ký, nội dung giấy tờ hay câu hỏi vào graph. Nếu Neo4j lỗi, hệ thống chuyển về graph cục bộ, ghi sự kiện `neo4j_unavailable_local_fallback`, giữ nguyên phát hiện của bộ luật. **Đã kiểm thử với Neo4j 5.26 thật (Docker):** `tests/test_live_services.py` kiểm tra graph lưu trên Neo4j trả cùng bằng chứng như graph cục bộ, chỉ lưu mã giả danh, tách riêng từng đơn vị và chạy được qua API kiểm tra hồ sơ. Lần kiểm thử này phát hiện và đã sửa lỗi ứng dụng không khởi động được khi đặt `GRAPH_BACKEND=neo4j` với phiên bản FastAPI hiện tại.
 
 ## Thiết kế RAG cho AI Check
 
-Chúng ta chọn phương án dưới đây để xây RAG (tìm tài liệu làm căn cứ cho AI trả lời) cho module AI Check / kiểm tra hồ sơ. Luồng này tìm quy định áp dụng để giải thích phát hiện khi kiểm tra hồ sơ, tách biệt với module điều tra giao dịch dự kiến.
+Chúng ta chọn phương án dưới đây để xây RAG (tìm tài liệu làm căn cứ cho AI trả lời) cho module AI Check / kiểm tra hồ sơ. Luồng này tìm quy định áp dụng để giải thích phát hiện khi kiểm tra hồ sơ, tách riêng với module tra cứu giao dịch.
 
 **Trạng thái: đã triển khai (đợt 1) trong [`app/retrieval.py`](app/retrieval.py).** Mỗi lần kiểm tra hồ sơ đều chạy: tách câu hỏi → viết lại câu hỏi (thuật ngữ nghiệp vụ Việt/Anh, gõ có dấu hay không dấu đều được) → lọc metadata (ngân hàng, ngày hiệu lực, phiên bản quy định lấy từ dữ liệu server) → tìm hybrid (vector + từ khóa BM25, gộp bằng Reciprocal Rank Fusion, bỏ trùng theo mã chunk) → xếp hạng lại (điểm gộp cộng mức phủ từ khóa của câu hỏi) → danh sách mục quy định. Kết quả mỗi lần kiểm tra có thêm phần `policy_retrieval` ghi lại câu hỏi đã tách, câu hỏi đã viết lại, bộ lọc, loại embedding và các chunk ứng viên đã xếp hạng.
 
 - **Embedding:** `EMBED_MODE=local` (mặc định) dùng vector băm từ và cụm ký tự, chạy offline, không cần tải model, nhưng chỉ bắt được sự giống nhau về chữ, chưa hiểu nghĩa. `EMBED_MODE=fastembed` dùng model ngữ nghĩa đa ngôn ngữ chạy offline (`LOCAL_EMBED_MODEL`, mặc định `paraphrase-multilingual-MiniLM-L12-v2`, cài bằng `requirements-semantic.txt`); dữ liệu không rời khỏi server. `EMBED_MODE=gemini` dùng API embedding của Gemini (`GEMINI_EMBED_MODEL`) và sẽ gửi nội dung quy định cùng câu hỏi của nhân viên sang Gemini; đã chạy thử với API thật trên bộ câu hỏi giả lập (`gemini-embedding-001`). Nếu tạo embedding lỗi, hệ thống tự chuyển về embedding tại chỗ và ghi lại sự kiện.
 - **Giới hạn đã đo được:** bộ câu hỏi có nhãn chia làm `dev` (dùng khi xây bộ tìm kiếm) và `holdout` (viết theo cách khác, không dùng để chỉnh). Với embedding băm tại chỗ, bản hybrid tốt hơn bản tìm từ khóa cũ trên dev, nhưng trên holdout thì không tốt hơn ở MRR và NDCG, vì danh sách thuật ngữ viết lại khớp với cách hỏi của dev. Model ngữ nghĩa offline (`fastembed`) và embedding Gemini (`gemini-embedding-001`) đều có điểm cao hơn bản cũ trên holdout, trong đó Gemini cao nhất. Xem `docs/evaluation.json`; đây là bộ câu hỏi nhỏ tự viết, không phải benchmark production.
-- **Chưa làm:** lưu vector vào Supabase pgvector, xếp hạng lại bằng model, viết lại câu hỏi bằng LLM. Bước viết lại hiện dùng danh sách thuật ngữ cố định.
+- **Lưu vector bền vững:** `VECTOR_STORE=pgvector` cùng `PGVECTOR_DSN` (cài `requirements-vector.txt`) lưu embedding của chunk vào PostgreSQL + pgvector, nên giữ được sau khi khởi động lại, dùng chung cho nhiều instance, và chỉ gọi embedding trả phí một lần cho mỗi phiên bản quy định và cấu hình chunk. Chỉ lưu mã index, mã chunk, mã quy định, đơn vị, phiên bản và vector; không lưu nội dung quy định hay câu hỏi. Tìm bằng khoảng cách cosine chính xác, chỉ trong các chunk đã qua lọc metadata, có thêm điều kiện đơn vị trong SQL. Nếu database lỗi, hệ thống chuyển về embedding tại chỗ trong bộ nhớ và ghi `vector_index_unavailable_local_fallback`. Đã kiểm thử thật: thứ hạng giống hệt index trong bộ nhớ trên cả 35 câu hỏi có nhãn. Supabase chính là PostgreSQL có pgvector nên dùng được cùng DSN; ở đây chạy container tự host.
+- **Chưa làm:** xếp hạng lại bằng model, viết lại câu hỏi bằng LLM. Bước viết lại hiện dùng danh sách thuật ngữ cố định.
 - **Tham số:** kích thước chunk, độ chồng lấn, Top-K ứng viên và hằng số gộp nằm trong `RetrievalSettings`. Đây là tham số để thử nghiệm, chưa phải giá trị tối ưu.
 
 ### 1. Chuẩn bị tài liệu khi thêm hoặc cập nhật
@@ -304,9 +323,9 @@ Mã lỗi: `401` chưa xác thực; `403` sai quyền; `404` không có/khác đ
 
 ### Có kết nối ngân hàng/thanh toán thật chưa?
 
-**Kết nối ngoài được viết trong bản này là Gemini API.** API hồ sơ MMS, kho giấy tờ, SSO/OIDC (đăng nhập tập trung), KYC/KYB và API khách hàng/tài khoản ngân hàng mới là các điểm cần tích hợp sau; chưa có kết nối thật. SQLite đang thay vai trò nguồn hồ sơ và kho giấy tờ.
+**Kết nối ngoài đã viết:** **Gemini API**, **endpoint Qwen tương thích OpenAI**, **đăng nhập SSO OpenID Connect** (kiểm tra token có chữ ký từ hệ thống đăng nhập của ngân hàng; đã kiểm thử với bản giả lập `scripts/mock_idp.py`, chưa với IdP ngân hàng), **ClamAV** (clamd), **Neo4j**, **PostgreSQL + pgvector**, và **hợp đồng API dữ liệu ngân hàng** cho tra cứu giao dịch (chạy với ngân hàng giả lập). API hồ sơ MMS, kho giấy tờ, KYC/KYB và API khách hàng/tài khoản/giao dịch thật vẫn là điểm cần tích hợp sau. SQLite đang thay vai trò nguồn hồ sơ và kho giấy tờ.
 
-Tính năng này chưa xử lý giao dịch nên không cần ISO 8583 (thông điệp giao dịch thẻ), authorization (cấp phép giao dịch), clearing/settlement (bù trừ/thanh quyết toán), reconciliation (đối soát), issuer/acquirer (ngân hàng phát hành/thanh toán thẻ). Các khái niệm liên quan trực tiếp là KYC/KYB, maker-checker, phân quyền theo đơn vị và nhật ký kiểm tra.
+Hệ thống không xử lý giao dịch: không có ISO 8583, cấp phép thanh toán, bù trừ hay quyết toán. Module tra cứu chỉ **đọc** dữ liệu trạng thái, quyết toán, chi trả rồi giải thích. Không đưa thông tin đăng nhập hay dữ liệu khách hàng thật vào repository công khai.
 
 ## Công việc end-to-end: từ bài toán tới vận hành
 
@@ -316,10 +335,10 @@ Tính năng này chưa xử lý giao dịch nên không cần ISO 8583 (thông �
 | Chuẩn bị dữ liệu | 3 hồ sơ giả lập được xem và 1 hồ sơ khác đơn vị để thử phân quyền | Hồ sơ được phép dùng, ẩn danh và có nhãn do chuyên gia xác nhận |
 | Chuẩn bị quy định | MD/YAML giả lập, ngày hiệu lực, phiên bản và mã băm | Quy định chính thức, người quản lý và quy trình phê duyệt thay đổi |
 | Xây luồng AI | Kết nối Gemini, đầu ra JSON, RAG hybrid (vector tại chỗ + từ khóa), bộ luật và giải thích dự phòng | Đo chất lượng đọc giấy tờ Việt Nam bằng model thật |
-| Xây backend/giao diện | FastAPI, REST, giao diện web, SQLite, bằng chứng và đánh giá | Kết nối MMS/kho tài liệu/SSO thật; DB phù hợp quy mô |
+| Xây backend/giao diện | FastAPI, REST, giao diện web, SQLite, bằng chứng và đánh giá, luồng tra cứu giao dịch, đăng nhập OIDC | Kết nối MMS/kho tài liệu/API ngân hàng thật; DB phù hợp quy mô |
 | Kiểm thử và bảo vệ | Test luật/API/tình huống tấn công, đánh giá dữ liệu mẫu, quét thư viện | Kiểm thử bảo mật độc lập và nhiều hồ sơ/tình huống thực tế |
-| Đóng gói và triển khai | Docker, Compose, health check và tài liệu triển khai/quay lại phiên bản cũ | Server được cấp phép, TLS, quản lý bí mật, sao lưu, triển khai thí điểm |
-| Theo dõi/cải tiến | Nhật ký, lỗi từng giai đoạn và phản hồi nhân viên | Dashboard độ trễ/chi phí/token, cảnh báo, mục tiêu vận hành và người xử lý sự cố |
+| Đóng gói và triển khai | Docker, Compose, bộ dịch vụ tùy chọn (`compose.services.yaml`: ClamAV, pgvector, Ollama), health check và tài liệu triển khai/quay lại phiên bản cũ | Server được cấp phép, TLS, quản lý bí mật, đăng ký với IdP ngân hàng, sao lưu, triển khai thí điểm |
+| Theo dõi/cải tiến | Nhật ký, phản hồi nhân viên, `/metrics` dạng Prometheus (request, độ trễ, lượt kiểm tra, phát hiện, file bị chặn, lượt tra cứu) | Hệ thống thu thập tập trung, cảnh báo, dashboard chi phí/token, mục tiêu vận hành và người xử lý sự cố |
 
 Có thể trình bày đã xây **prototype end-to-end chạy được với dữ liệu giả lập**. Chưa được mô tả là đã triển khai production cho ngân hàng hoặc đạt một tỷ lệ chính xác khi chưa đo.
 
@@ -345,7 +364,15 @@ CD (đưa bản mới lên server) được mô tả bằng [quy trình triển 
 
 Các tình huống được xem xét gồm **indirect prompt injection** (chỉ dẫn độc hại giấu trong file), **reverse approach** (hỏi ngược “không được làm gì” để moi cách vượt luật), chỉ dẫn ẩn/Unicode, sửa trường nhập, giả vai trò, giả trạng thái đã xác minh, nguồn bịa và đầu ra AI có mã độc. Có test cho các ranh giới chính; không tuyên bố chặn mọi biến thể tấn công. Chi tiết [biện pháp đã có và giới hạn còn lại](docs/SECURITY.md).
 
-Token demo chưa phải đăng nhập SSO ngân hàng. Chưa quét mã độc hay tách trình đọc PDF sang sandbox riêng; SQLite chưa được ứng dụng mã hóa; chưa có hệ thống giám sát tập trung, phát hành quy định có chữ ký hay benchmark Gemini bằng hồ sơ thật. Cần bổ sung và kiểm chứng trước thí điểm ngân hàng được cấp phép.
+**Các lớp bảo vệ đã thêm cho thí điểm:**
+
+- **SSO:** `AUTH_MODE=oidc` kiểm tra JWT do hệ thống đăng nhập ngân hàng cấp bằng khóa công khai (JWKS): chỉ nhận thuật toán bất đối xứng (không nhận `none` hay HMAC), đúng issuer, audience, còn hạn, có subject. Đơn vị phải nằm trong `OIDC_ALLOWED_TENANTS`; nhóm quyền được ánh xạ sang đúng một vai trò qua `OIDC_ROLE_MAP`, người vừa là maker vừa là checker bị từ chối. Hệ thống đăng nhập không phản hồi thì trả 503. Đã kiểm thử với bản giả lập, chưa với IdP ngân hàng.
+- **Mã hóa dữ liệu lưu:** khi có `DATA_ENCRYPTION_KEY`, nội dung hồ sơ, file giấy tờ, kết quả kiểm tra, bản sao bằng chứng và kết quả tra cứu được mã hóa AES-256-GCM, gắn với mã dòng và cột nên chép sang dòng khác sẽ không giải mã được. `scripts/rotate_keys.py` mã hóa dữ liệu cũ hoặc đổi khóa (`DATA_ENCRYPTION_OLD_KEYS`). Mã định danh, đơn vị, loại giấy tờ và nhật ký vẫn để dạng thường để truy vấn. Khóa cần nằm trong hệ thống quản lý bí mật; vẫn nên mã hóa ổ đĩa và bản sao lưu.
+- **Quét mã độc:** `MALWARE_SCAN=clamd` gửi mọi file tải lên cho ClamAV trước khi lưu; file nhiễm bị từ chối (422) và ghi nhật ký kèm tên mẫu, còn khi máy quét không phản hồi thì từ chối luôn (503). Đã kiểm thử với ClamAV 1.4 thật bằng file EICAR. Chỉ bắt được mã độc đã biết; việc đọc file vẫn chưa tách sang sandbox riêng.
+- **Giám sát:** `/metrics` dạng Prometheus, chỉ bật khi đặt `METRICS_TOKEN`. Nhãn chỉ gồm đường dẫn mẫu, mã trạng thái, chế độ và mã phát hiện; không có đơn vị, người dùng, mã hồ sơ hay nội dung.
+- **Chặn khi chạy production:** `APP_ENV=production` không khởi động nếu thiếu khóa mã hóa, `MALWARE_SCAN=clamd`, token mạnh hoặc OIDC, và API ngân hàng thật (`BANK_MODE=http`).
+
+Vẫn thiếu trước thí điểm được cấp phép: đăng ký với IdP ngân hàng và rà soát ánh xạ vai trò, tách việc đọc file sang sandbox, phát hành quy định có chữ ký, hệ thống giám sát tập trung, hợp đồng API ngân hàng thật và benchmark trên hồ sơ thật được cấp phép.
 
 ## Chạy kiểm thử
 
@@ -357,10 +384,18 @@ python scripts/evaluate.py
 python -m pip_audit -r requirements.txt
 # Khi server đang chạy:
 python scripts/smoke.py
+# Tùy chọn, với dịch vụ thật (test tự bỏ qua khi chưa đặt biến); xem docs/VALIDATION.md:
+NEO4J_LIVE_URI=bolt://127.0.0.1:7687 NEO4J_LIVE_PASSWORD=... \
+PGVECTOR_LIVE_DSN=postgresql://postgres:...@127.0.0.1:5433/mms CLAMD_LIVE=127.0.0.1:3310 \
+python -m pytest -q tests/test_live_services.py tests/test_security_controls.py
+# So sánh Qwen với Gemini trên bản scan giả lập (cần Ollama/Qwen và GEMINI_API_KEY):
+python scripts/compare_models.py
 ```
+
+Bộ dịch vụ tùy chọn đầy đủ (ClamAV, pgvector, Ollama) chạy bằng `docker compose -f compose.yaml -f compose.services.yaml up --build`; đặt `PG_PASSWORD` trong `.env` trước.
 
 [`docs/evaluation.json`](docs/evaluation.json) so kết quả với **3 tình huống giả lập bằng luật cố định**; không phải độ chính xác của Gemini hay dữ liệu production. File này cũng có phần `policy_retrieval` so sánh bản tìm theo từ khóa với bản hybrid trên bộ câu hỏi giả lập có nhãn; đây là bộ câu hỏi nhỏ tự viết, không phải benchmark production. Xem [biên bản kiểm chứng](docs/VALIDATION.md) để biết phần đã chạy và phần chưa xác minh.
 
 Muốn đo thật: chuyên gia gắn nhãn giá trị, trang nguồn và lỗi trên tập hồ sơ được phép dùng, tách riêng tập kiểm thử. Đo tìm đúng/tìm sót lỗi, nguồn sai/bịa, trường hợp báo sạch sai, tỷ lệ cần người kiểm tra, tốc độ p50/p95 và chi phí mỗi hồ sơ. Không suy ra “chính xác 92%” hay “giảm 80% thời gian” từ ba hồ sơ mẫu này.
 
-Mã nguồn: `app/main.py` API/phân quyền/điều phối và API Chunking Lab; `providers.py` Gemini/demo; `rag.py` nạp quy định và xếp hạng từ khóa cũ; `retrieval.py` tìm hybrid và các loại embedding; `retrieval_eval.py` chấm điểm tìm kiếm; `observability.py` trace LangSmith tùy chọn; `engine.py` chạy luật; `store.py` SQLite; `static/` giao diện và Chunking Lab; `policies/` MD/YAML; `samples/` JSON; `tests/`; `scripts/`; `docs/` hình và tài liệu. Tạo lại hình luồng bằng `python scripts/diagrams.py` trên Linux có font DejaVu Sans.
+Mã nguồn: `app/main.py` API/phân quyền/điều phối, Chunking Lab và tra cứu giao dịch; `providers.py` Gemini/Qwen/demo; `auth.py` OIDC; `crypto.py` mã hóa dữ liệu lưu; `scanning.py` ClamAV; `metrics.py` số liệu Prometheus; `investigation.py` luồng LangGraph tra cứu giao dịch; `mock_bank.py` API ngân hàng giả lập; `rag.py` nạp quy định và xếp hạng từ khóa cũ; `retrieval.py` tìm hybrid và các loại embedding; `vectorstore.py` index trong bộ nhớ/pgvector; `retrieval_eval.py` chấm điểm tìm kiếm; `observability.py` trace LangSmith tùy chọn; `engine.py` chạy luật; `graph.py` graph; `store.py` SQLite; `static/` giao diện, trang tra cứu và Chunking Lab; `policies/` MD/YAML; `samples/` JSON; `tests/` (test dịch vụ thật tự bỏ qua khi chưa cấu hình); `scripts/`; `docs/`. Tạo lại hình luồng bằng `python scripts/diagrams.py` trên Linux có font DejaVu Sans.

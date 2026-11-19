@@ -49,27 +49,27 @@ This is an independent portfolio prototype. It is **not an official VietPay/PVco
 
 **Technology boundaries:** RAG supplies retrieved context; it **does not train model weights**. Graph Retrieval supports provenance paths between applications, documents, findings and policy rules, while the deterministic Rule Engine retains authority over required checks. Fine-tuning changes model weights only using authorized, privacy-reviewed, specialist-labeled data. Compare finding-level Precision/Recall/F1, extraction accuracy, citation correctness and faithfulness, cost and latency.
 
-**Actual implementation vs roadmap:** The default executable demo parses synthetic TXT and runs the Rule Engine; `AI_MODE=gemini` enables real Gemini PDF/image extraction and explanation. Module 1 includes local graph evidence retrieval with an optional Neo4j adapter, not yet validated against a live Neo4j service. Policy retrieval is hybrid: a local vector index plus BM25 keyword search, fused and reranked, with optional Gemini embeddings. **Qwen inference, Supabase pgvector, fine-tuning and a real-data pilot are not implemented.** These images describe the planned model strategy, not measured results or completed training.
+**Actual implementation vs roadmap:** The default executable demo parses synthetic TXT and runs the Rule Engine. `AI_MODE=gemini` uses Gemini for PDF/image extraction and explanations; `AI_MODE=qwen` uses Qwen3.5-9B through any OpenAI-compatible endpoint (validated with local Ollama on an 8 GB GPU). Qwen extraction results on synthetic scans are in [`docs/model_comparison.json`](docs/model_comparison.json); the Gemini side of the comparison is pending API quota. Module 1 graph retrieval runs locally or on Neo4j (validated against a live Neo4j 5.26). Policy retrieval is hybrid (vector + BM25), with the vector index in memory or persisted in PostgreSQL + pgvector (validated against a live pgvector 0.8 / PostgreSQL 17). Transaction and payout investigation runs as a LangGraph workflow against a read-only **mock** bank API. **Fine-tuning, connections to real bank systems and a real-data pilot are not implemented.** These images describe the planned model strategy, not completed training.
 
 ## One feature within a three-feature assistant
 
 | Assistant capability | Employee asks | Scope of this repository |
 |---|---|---|
 | **Document checking** | “What is missing for this application to be approved?” | **Implemented:** missing documents, expiry, inconsistent information, unverified versions, uncertainty and evidence |
-| Explain transactions and payouts | “Why has this business not received its money?” | Not implemented; would retrieve status, fees and errors and separate confirmed causes from open questions |
-| Guide handling | “What should I do now?” | Not implemented; would follow internal procedures and navigate to the relevant application/screen |
+| Explain transactions and payouts | “Why has this business not received its money?” | **Implemented against a mock bank API:** reads transaction, switch, ledger, risk, reconciliation, payout, merchant and log data, explains status and fees, and separates confirmed causes from open questions |
+| Guide handling | “What should I do now?” | **Implemented:** maps each cause or open question to an approved procedure (`policies/transaction_procedures.yaml`) with steps, escalation team and the MMS screen to open; marks steps the caller's role cannot perform |
 
-The checking UI can identify an issue and its rule. This does not implement the separate general procedural-guidance assistant. It does not approve, reject, change KYC/KYB status, request documents externally or move money.
+None of the three features approves, rejects, changes KYC/KYB status, requests documents externally, retries, reverses or moves money. The employee decides and acts in existing bank workflows.
 
-## Planned module: Transaction failure investigation (architecture only)
+## Transaction and payout investigation (implemented with a mock bank)
 
-**Status: design proposal, NOT implemented in this repository.** This extends the three-feature MMS assistant with transaction investigation. The existing runnable demo remains **document checking only**; there are no live transaction, core-banking, switch, fraud or reconciliation connections, and LangGraph is not part of the current executable checker.
+**Status: implemented in [`app/investigation.py`](app/investigation.py) as a LangGraph workflow, against a synthetic read-only mock bank API ([`app/mock_bank.py`](app/mock_bank.py), data in [`samples/bank_mock.json`](samples/bank_mock.json)).** Open **http://127.0.0.1:8000/investigate** (link in the checker header) or call `POST /api/investigations` with `{"transaction_id": "TXN-1001"}`. Sample IDs `TXN-1001` to `TXN-1008` cover paid with fees, issuer decline, settlement not yet due, risk hold, payout to a closed account, merchant blocked by pending KYC (linked back to the AI Check application) with a fee mismatch, customer debited but switch timeout (left unresolved), and refund. `BANK_MODE=http` with `BANK_API_URL`/`BANK_API_TOKEN` points the same adapter at a real bank API with the same read-only contract; production refuses the mock. Any role can investigate; results are stored encrypted when a key is set, tenant-scoped and audited. The employee's question is recorded but cannot change which data is read, the diagnosis or the steps.
 
 ```mermaid
 flowchart TD
     A[Employee enters Transaction ID] --> B[FastAPI authentication and role / tenant authorization]
-    B --> C[LangGraph Agent: Transaction Investigation - planned]
-    C --> D[Read-only banking data adapters - planned]
+    B --> C[LangGraph workflow: fetch transaction → gather evidence → diagnose → plan guidance → explain]
+    C --> D[Read-only bank adapter: mock API now, bank API via BANK_MODE=http]
     D --> E1[Authentication API - historical auth evidence]
     D --> E2[Transaction API - status and error codes]
     D --> E3[Core Banking API - debit and ledger entries]
@@ -89,11 +89,11 @@ flowchart TD
     H --> I[Employee reviews result; no autonomous fund movement]
 ```
 
-**Data versus knowledge:** Transaction, core-banking, switch, fraud, log and reconciliation APIs provide **transaction-specific evidence**; RAG retrieves **approved documentation** to interpret error codes, policies and remediation procedures. RAG is **not** the source of transaction status, debit/credit confirmation, or reconciliation truth. Retrieval could be lexical or vector-based; no vector database or transaction RAG pipeline is implemented here.
+**Data versus knowledge:** Transaction, core-banking, switch, fraud, log and reconciliation APIs provide **transaction-specific evidence**; the procedure catalog provides **approved knowledge** to interpret error codes and list handling steps. The catalog is never the source of transaction status, debit/credit confirmation or reconciliation truth. Causes are looked up by code rather than by free-text search, so a question cannot pull in an unrelated procedure. The diagnosis is deterministic; with `AI_MODE=gemini` or `qwen` a model may rephrase the answer from cause codes, statuses, amounts and dates only (no names or account numbers), and its output must name exactly the same causes and pass safety checks, otherwise the deterministic text is shown.
 
 **Investigation rules:** Enforce authorization before any lookup; use read-only, least-privilege adapters and redact sensitive data; correlate timestamps and IDs across services. Keep `FAILED`, `PENDING` and confirmed `SUCCESS` distinct. A debit followed by a payment-switch timeout does **not** prove that the recipient was not credited: treat it as unresolved until receiving-bank confirmation/reconciliation, and never automatically retry or reverse money movement. Surface verified facts separately from unresolved questions, record audit traces and route financial actions to existing controlled bank workflows.
 
-**Interfaces above are illustrative integration points, not a claim that seven named APIs already exist.** Their actual availability and semantics depend on the bank and payment rail.
+**The mock API mirrors these data sources so the workflow can be built and tested; it is not a claim that the bank exposes the same endpoints.** Authentication history is not used by the current diagnosis. Real availability and semantics depend on the bank and payment rail.
 
 ## Quick start
 
@@ -143,7 +143,25 @@ Restart the server, open an application and upload synthetic PDF/JPEG/PNG docume
 
 The implementation uses the Google GenAI SDK `models.generate_content`, multimodal document input and JSON Schema output. Gemini supplies field values, page, quote and confidence; it does not set verification or approval. OCR here means the document-reading stage using Gemini's native vision; a separate OCR vendor is not required. Failed or unknown extraction becomes a review finding. No API key is shipped; live Gemini validation requires your key and account access.
 
-**Current runnable model baseline:** `gemini-3.8-flash` for the implemented PDF/image and structured-output path. **Qwen3.5-9B is a planned development/pilot comparison and fine-tuning candidate, not yet wired into the repository.** No quality or cost advantage over Vietnamese bank documents is claimed without testing. Evaluate scan quality, field accuracy, fabricated sources, latency, token cost and data handling before choosing a production model. Model ID is configurable. [Official model documentation](https://aistudio.google.com/docs/models/gemini-3.8-flash), [document input](https://aistudio.google.com/docs/document-processing), [structured output](https://aistudio.google.com/docs/structured-output), checked 2026-11-05.
+**Runnable models:** `gemini-3.8-flash` (`AI_MODE=gemini`) and Qwen3.5-9B (`AI_MODE=qwen`, `QWEN_MODEL=qwen3.5:9b` on Ollama, or any OpenAI-compatible server such as vLLM or a hosted endpoint via `QWEN_BASE_URL`/`QWEN_API_KEY`). Both use the same system instructions, strict JSON schema, Pydantic validation and explanation safety checks; Qwen receives PDFs as their text layer per page, or the embedded page image for scanned PDFs. Qwen3.5 thinks by default, which can use the whole output budget under a JSON schema, so `QWEN_REASONING_EFFORT=none` turns thinking off. [Official model documentation](https://aistudio.google.com/docs/models/gemini-3.8-flash), [document input](https://aistudio.google.com/docs/document-processing), [structured output](https://aistudio.google.com/docs/structured-output), checked 2026-11-05.
+
+### Qwen vs Gemini comparison (synthetic; Gemini pending)
+
+`python scripts/compare_models.py` renders the 16 synthetic documents in [`samples/extraction_eval.json`](samples/extraction_eval.json) (Vietnamese business licences, ID cards and bank confirmations with distractor names and numbers, absent fields and embedded instructions) to a PNG scan and an image-only PDF, then asks each model to extract the facts. Both models read pixels, never the ground-truth text. It also generates explanations for the demo applications. Qwen3.5-9B on a local RTX 3060 8 GB, single run at temperature 0. **Gemini was not measured:** the free-tier key hit its daily request quota (HTTP 429) after 2 of 32 calls; rerun `python scripts/compare_models.py --models gemini` with a billing-enabled key or after the quota resets.
+
+| Measure | qwen (`qwen3.5:9b`) |
+|---|---|
+| Field accuracy (all scans) | 100% |
+| Field accuracy, PNG / image-only PDF | 100% / 100% |
+| Documents fully correct | 31 / 32 |
+| Unsupported facts (value for a field the document lacks) | 1 |
+| Injected values accepted | 0 |
+| Schema or call failures | 0 |
+| Quote found in source text | 77% |
+| Median / p90 seconds per document | 5.5 / 8.6 |
+| Explanations passing safety validation | 2 / 2 |
+
+Qwen needed two changes, which now apply to both models: precise field definitions in the extraction instruction, and the server telling the model which fields the rules use for the document kind (other fields are dropped server-side). Field accuracy went from 79% to 92% to 100%, and unsupported facts from 38 to 32 to 1. The instruction was revised after looking at this same set, so the last number is not a held-out score. No run accepted an injected value. These are 16 author-written synthetic documents, so the table shows that the Qwen path works end to end and where it fails, not accuracy on real bank documents. Latency depends on hardware and network. Per-document results are in [`docs/model_comparison.json`](docs/model_comparison.json). Choosing a production model still needs authorized, labeled real documents and the cost and data-handling review in the roadmap above.
 
 ## Backend flow
 
@@ -162,12 +180,12 @@ Hard findings and AI explanation are displayed separately. Gemini quotes are **m
 
 ### Module 1 graph retrieval — implemented locally, optional Neo4j
 
-This diagram shows the target hybrid architecture. **Implemented now for Module 1:** application → required document / uploaded document → Rule Engine finding → policy rule relationships, graph traversal with a local deterministic backend, optional persisted Neo4j graph retrieval, graph-assisted deterministic rule prioritization, and graph evidence included with check results and Gemini explanations. Policy retrieval now uses the hybrid retriever in `app/retrieval.py` with an in-process vector index. **Not implemented:** Supabase pgvector persistence or a model-based (cross-encoder) reranker.
+This diagram shows the hybrid architecture. **Implemented for Module 1:** application → required document / uploaded document → Rule Engine finding → policy rule relationships, graph traversal with a local deterministic backend or a persisted Neo4j graph (validated live), graph-assisted deterministic rule prioritization, and graph evidence included with check results and model explanations. Policy retrieval uses the hybrid retriever in `app/retrieval.py`; the vector index is in memory by default or in PostgreSQL + pgvector (`VECTOR_STORE=pgvector`). **Not implemented:** a model-based (cross-encoder) reranker.
 
 ```mermaid
 flowchart TB
     Q["User Query<br/>Bank employee asks a question"] --> P["Query Processing"]
-    P --> V["Vector Retrieval (live, in-process index)<br/>Supabase pgvector planned<br/>Find policy chunks"]
+    P --> V["Vector Retrieval (live)<br/>In-memory or PostgreSQL + pgvector<br/>Find policy chunks"]
     P --> G["Graph Retrieval (Module 1 live)<br/>Local / optional Neo4j<br/>Application, document, finding, policy relationships"]
     V --> M["Merge + Reranking"]
     G --> M
@@ -192,17 +210,18 @@ pip install -r requirements-graph.txt
 python -m uvicorn app.main:app --env-file .env --host 127.0.0.1 --port 8000
 ```
 
-Alternatively, configure the Neo4j password and HMAC key in `.env` then use `docker compose -f compose.yaml -f compose.graph.yaml up --build` to run the optional Neo4j stack. The normal `docker compose up` still starts only the checker with its local graph. Neo4j nodes use HMAC-pseudonymized keys; no raw names, registration numbers, document bytes, or prompts are sent to the graph database. On Neo4j query failure, the graph falls back to local evidence, logs `neo4j_unavailable_local_fallback`, and leaves deterministic findings unchanged. **No Neo4j end-to-end deployment is claimed without a configured, live database and test run.**
+Alternatively, configure the Neo4j password and HMAC key in `.env` then use `docker compose -f compose.yaml -f compose.graph.yaml up --build` to run the optional Neo4j stack. The normal `docker compose up` still starts only the checker with its local graph. Neo4j nodes use HMAC-pseudonymized keys; no raw names, registration numbers, document bytes, or prompts are sent to the graph database. On Neo4j query failure, the graph falls back to local evidence, logs `neo4j_unavailable_local_fallback`, and leaves deterministic findings unchanged. **Validated against a live Neo4j 5.26 container:** `tests/test_live_services.py` checks that the stored graph returns the same evidence as the local graph, stores only pseudonymous tokens, keeps tenants in separate scopes and works through the check API (`NEO4J_LIVE_URI=bolt://127.0.0.1:7687 NEO4J_LIVE_PASSWORD=... pytest tests/test_live_services.py`). The live test found and fixed a startup crash with `GRAPH_BACKEND=neo4j` on the current FastAPI version.
 
 ## AI Check RAG design
 
-We have selected the following approach to build RAG (retrieval-augmented generation) for the AI Check / document-checking module. It retrieves applicable policy evidence to explain document-checking findings; it is separate from the planned transaction-investigation module.
+We have selected the following approach to build RAG (retrieval-augmented generation) for the AI Check / document-checking module. It retrieves applicable policy evidence to explain document-checking findings; it is separate from the transaction-investigation module.
 
 **Status: implemented (phase 1) in [`app/retrieval.py`](app/retrieval.py).** Every check now runs decomposition → rewriting (Vietnamese/English domain terms, with or without accents) → metadata filtering (tenant, effective date and policy version from server data) → hybrid search (vector + BM25 keyword, merged with Reciprocal Rank Fusion and deduplicated by chunk ID) → reranking (fused score plus query-term coverage) → rule-level policy sections. Each check result includes a `policy_retrieval` trace with subqueries, rewritten queries, filters, embedder and ranked candidate chunks.
 
 - **Embeddings:** `EMBED_MODE=local` (default) uses deterministic hashed word and character n-gram vectors. It runs offline with no model download, but it matches spelling overlap rather than meaning. `EMBED_MODE=fastembed` uses an offline multilingual semantic model (`LOCAL_EMBED_MODEL`, default `paraphrase-multilingual-MiniLM-L12-v2`, installed with `requirements-semantic.txt`); text never leaves the server. `EMBED_MODE=gemini` uses the Gemini embedding API (`GEMINI_EMBED_MODEL`) and sends policy text and the employee question to Gemini; it has been run against the live API on the synthetic question set (`gemini-embedding-001`). If embedding fails, the check falls back to local embeddings and records an event.
 - **Measured limitation:** the labeled questions are split into `dev` (used while building the retriever) and `holdout` (different wording, never used for tuning). With local hashed embeddings, hybrid retrieval beats the lexical baseline on dev, but on holdout it does not beat it on MRR or NDCG: the rewrite vocabulary fits the dev wording. The offline semantic model (`fastembed`) and Gemini embeddings (`gemini-embedding-001`) both score higher than the lexical baseline on holdout, Gemini the highest of the three. See `docs/evaluation.json`; these are small author-written fixtures, not a production benchmark.
-- **Not yet implemented:** Supabase pgvector persistence, a model-based reranker and LLM-based query rewriting. Rewriting uses a fixed domain vocabulary list.
+- **Persistent vector index:** `VECTOR_STORE=pgvector` with `PGVECTOR_DSN` (install `requirements-vector.txt`) stores chunk embeddings in PostgreSQL + pgvector, so they survive restarts, are shared by several instances, and paid embedding calls are made once per policy version and chunk setting. Only the index namespace, chunk ID, rule ID, tenant, policy version and vector are stored, not policy text or questions. Search is exact cosine distance restricted to chunks that passed metadata filtering, with a tenant condition in SQL. If the database is down, retrieval falls back to in-memory local embeddings and records `vector_index_unavailable_local_fallback`. Validated live: identical rankings to the in-memory index on all 35 labeled questions. Supabase is PostgreSQL with pgvector, so the same DSN works there; a self-hosted container was used here. The untyped `vector` column allows different embedders; add an HNSW index per fixed dimension when the corpus grows.
+- **Not yet implemented:** a model-based reranker and LLM-based query rewriting. Rewriting uses a fixed domain vocabulary list.
 - **Settings:** chunk size, overlap, candidate Top-K and fusion constants live in `RetrievalSettings`. They are experiment settings, not tuned optima.
 
 ### 1. Prepare documents when they are added or updated
@@ -305,9 +324,9 @@ Important responses: `401` no identity, `403` wrong role, `404` unknown/other-te
 
 ### External integrations and banking terminology
 
-Only the **Gemini API** is implemented as an external integration. MMS application API, document storage, employee SSO/OIDC, KYC/KYB and bank account/customer APIs are **integration seams, not connected systems**. Local SQLite fulfills the application/document repository role in this build; replace it with authenticated fixed-origin adapters to official bank contracts when available.
+Implemented external integrations: the **Gemini API**, any **OpenAI-compatible Qwen endpoint**, **OpenID Connect SSO** (validates signed access tokens from the bank identity provider; tested with a local mock provider in `scripts/mock_idp.py`, not with a bank IdP), **ClamAV** (clamd), **Neo4j**, **PostgreSQL + pgvector**, and the **bank data API contract** for investigations (exercised against the mock bank). MMS application API, document storage, KYC/KYB and real bank account/customer/transaction APIs are **integration seams, not connected systems**. Local SQLite fulfills the application/document repository role in this build.
 
-No issuer/acquirer transaction messaging, ISO 8583, payment authorization, clearing, settlement or reconciliation is required for this checking feature. Relevant concepts are KYC/KYB evidence, role/tenant permissions, maker-checker review and audit trails. No real banking credentials or customer data belong in this public repository.
+No issuer/acquirer transaction messaging, ISO 8583, payment authorization, clearing or settlement is performed. The investigation module only **reads** status, settlement and payout data and explains it. No real banking credentials or customer data belong in this public repository.
 
 ## End-to-end engineering ownership
 
@@ -317,10 +336,10 @@ No issuer/acquirer transaction messaging, ISO 8583, payment authorization, clear
 | Prepare data | Three synthetic visible cases plus hidden-tenant fixture | Authorized anonymized sample set and domain-expert labels |
 | Prepare policy | Synthetic Markdown/YAML, effective date, version and SHA-256 | Official approved policy owner, change review and release procedure |
 | Build AI pipeline | Gemini adapter, typed extraction, hybrid policy RAG (local vector + keyword), deterministic rules, explanations/fallback | Live Vietnamese document benchmark and chosen data-processing arrangement |
-| Build product/backend | Python/FastAPI, REST, web UI, SQLite snapshots and feedback | Real MMS/storage/SSO adapters, production database if scale requires |
+| Build product/backend | Python/FastAPI, REST, web UI, SQLite snapshots and feedback, transaction investigation workflow, OIDC SSO adapter | Real MMS/storage/bank API adapters, production database if scale requires |
 | Test/security | Unit/API/adversarial tests, synthetic regression evaluation, dependency audit CI | Bank penetration test, broader attack corpus, independent review |
-| Package/deploy | Dockerfile, hardened local Compose, health endpoint and deployment runbook | Authorized server, TLS, secret manager, SSO, backups, operational rollout |
-| Operate/improve | Audit events with stage failures and reviewer feedback | Central metrics/alerts, latency/cost/token dashboards, SLO and incident ownership |
+| Package/deploy | Dockerfile, hardened local Compose, optional service stack (`compose.services.yaml`: ClamAV, pgvector, Ollama), health endpoint and deployment runbook | Authorized server, TLS, secret manager, bank IdP registration, backups, operational rollout |
+| Operate/improve | Audit events, reviewer feedback, Prometheus `/metrics` (requests, latency, checks, findings, rejected uploads, investigations) | Central collector, alerts, cost/token dashboards, SLO and incident ownership |
 
 ## Docker and CI/CD
 
@@ -340,7 +359,15 @@ Implemented defenses include object-level tenant authorization, role checks, ser
 
 Indirect prompt injection, “reverse approach” prompts (e.g. asking what *not* to do in order to extract bypass instructions), hidden/Unicode instructions, field manipulation, forged roles/verification, fabricated citations and model output abuse are covered by boundaries and selected adversarial tests. Keyword screening is only supplemental; no system can claim complete protection from every prompt attack. Read the [implemented control / residual risk matrix](docs/SECURITY.md).
 
-Local tokens are a demo authentication mechanism, not bank SSO. Uploaded files are not malware-scanned or parsed in a separate sandbox. SQLite is not encrypted by this app. There is no production telemetry backend, live bank connection, signed policy publishing or real Gemini accuracy benchmark. All must be addressed and validated before an authorized bank pilot.
+**Security controls added for a pilot:**
+
+- **SSO:** `AUTH_MODE=oidc` validates bank-issued JWT access tokens against the provider's JWKS: asymmetric algorithms only (no `none` or HMAC), issuer, audience, expiry, not-before, subject. Tenant must be in `OIDC_ALLOWED_TENANTS`; groups map to exactly one role through `OIDC_ROLE_MAP`, and a user mapped to both maker and checker is refused. An unreachable provider returns 503. Tested against a local mock provider, not yet a bank IdP.
+- **Encryption at rest:** with `DATA_ENCRYPTION_KEY`, application bodies, document bytes, check results, evidence copies and investigations are sealed with AES-256-GCM; row ID and column are bound as associated data so a value copied to another row fails. `scripts/rotate_keys.py` encrypts old plaintext rows or rotates keys (`DATA_ENCRYPTION_OLD_KEYS`) and vacuums the file. IDs, tenant, document kind and audit rows stay plaintext for queries. Protect the key in a secret manager; disk/backup encryption is still recommended.
+- **Malware scanning:** `MALWARE_SCAN=clamd` streams every upload to ClamAV before it is stored; infected files are rejected (422) and audited with the signature, and an unreachable scanner rejects the upload (503). Validated against a live ClamAV 1.4 container with the EICAR test file. Signatures only catch known malware; parsing is still not isolated in a separate sandbox.
+- **Metrics:** `/metrics` in Prometheus text format, off unless `METRICS_TOKEN` is set. Labels are route templates, status codes, modes and finding codes only; no tenant, user, application ID or content.
+- **Production gate:** `APP_ENV=production` refuses to start without an encryption key, `MALWARE_SCAN=clamd`, strong tokens or OIDC, and a real bank API (`BANK_MODE=http`).
+
+Still missing before an authorized pilot: a bank IdP registration and role mapping review, isolated file parsing, signed policy publishing, a central telemetry backend, real bank API contracts and a benchmark on real authorized documents.
 
 ## Tests and reproducible evaluation
 
@@ -352,10 +379,18 @@ python scripts/evaluate.py
 python -m pip_audit -r requirements.txt
 # With the server running:
 python scripts/smoke.py
+# Optional, against live services (tests skip when unset); see docs/VALIDATION.md:
+NEO4J_LIVE_URI=bolt://127.0.0.1:7687 NEO4J_LIVE_PASSWORD=... \
+PGVECTOR_LIVE_DSN=postgresql://postgres:...@127.0.0.1:5433/mms CLAMD_LIVE=127.0.0.1:3310 \
+python -m pytest -q tests/test_live_services.py tests/test_security_controls.py
+# Qwen vs Gemini on synthetic scans (needs Ollama/Qwen and GEMINI_API_KEY):
+python scripts/compare_models.py
 ```
+
+The full optional stack (ClamAV, pgvector, Ollama) starts with `docker compose -f compose.yaml -f compose.services.yaml up --build`; set `PG_PASSWORD` in `.env` first.
 
 [`docs/evaluation.json`](docs/evaluation.json) reports exact finding-code matches on **three synthetic deterministic cases**, not production accuracy or Gemini OCR quality. It also includes a `policy_retrieval` comparison of the lexical baseline and hybrid retrieval on labeled synthetic questions; these are small author-written fixtures, not a production retrieval benchmark. See [validation record](docs/VALIDATION.md) for what was actually run and what remains unverified.
 
 For a genuine model benchmark, label field values, source pages and expected findings on held-out authorized documents. Measure missing/expired/mismatch precision/recall, unsupported-source rate, false-clean outcomes, manual-review rate, p50/p95 latency and cost per application. Never invent a “92% accuracy” or time-saving claim from these fixtures.
 
-Code layout: `app/main.py` REST/auth/orchestration and Chunking Lab API; `providers.py` Gemini/demo; `rag.py` policy loading and legacy lexical ranking; `retrieval.py` hybrid retrieval and embedders; `retrieval_eval.py` retrieval metrics; `observability.py` optional LangSmith tracing; `engine.py` rules; `store.py` SQLite; `static/` employee UI and Chunking Lab; `policies/` MD/YAML; `samples/` JSON; `tests/`; `scripts/`; `docs/` diagrams/security/deployment. Diagram sources can be regenerated with `python scripts/diagrams.py` (Pillow and DejaVu Sans on Linux).
+Code layout: `app/main.py` REST/auth/orchestration, Chunking Lab and investigation API; `providers.py` Gemini/Qwen/demo; `auth.py` OIDC; `crypto.py` encryption at rest; `scanning.py` ClamAV; `metrics.py` Prometheus metrics; `investigation.py` LangGraph transaction workflow; `mock_bank.py` synthetic bank API; `rag.py` policy loading and legacy lexical ranking; `retrieval.py` hybrid retrieval and embedders; `vectorstore.py` memory/pgvector index; `retrieval_eval.py` retrieval metrics; `observability.py` optional LangSmith tracing; `engine.py` rules; `graph.py` graph retrieval; `store.py` SQLite; `static/` employee UI, investigation page and Chunking Lab; `policies/` MD/YAML; `samples/` JSON; `tests/` (live service tests skip unless configured); `scripts/`; `docs/`. Diagram sources can be regenerated with `python scripts/diagrams.py` (Pillow and DejaVu Sans on Linux).

@@ -7,6 +7,7 @@ import threading
 import time
 import uuid
 import warnings
+from contextlib import asynccontextmanager
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -18,10 +19,14 @@ from PIL import Image
 from pypdf import PdfReader
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
-from .engine import evaluate
+from .auth import AuthError, OIDCVerifier
+from .crypto import Cipher
+from .engine import evaluate, relevant_fields
 from .graph import Neo4jGraph, retrieve_module1
-from .models import CheckInput, Feedback, LabExperiment
-from .providers import Gemini, Source, extract_demo
+from .investigation import Investigator, build_bank_client, load_procedures, public_result
+from .models import CheckInput, Feedback, InvestigationInput, LabExperiment
+from .metrics import Metrics, MetricsMiddleware
+from .providers import Gemini, Qwen, Source, extract_demo
 from .rag import policy_bundle
 from .retrieval import (
     DEFAULT_QUERY,
@@ -32,6 +37,7 @@ from .retrieval import (
     chunk_policy,
 )
 from .retrieval_eval import load_questions, run_experiment
+from .scanning import ScanUnavailable, build_scanner
 from .security import suspicious
 from .store import Store
 
@@ -130,8 +136,15 @@ def inspect_source(data: bytes, filename: str, mode: str) -> Source:
 
 def create_app(data_dir=None, mode=None):
     mode = mode or os.getenv("AI_MODE", "demo")
-    if mode not in {"demo", "gemini"}:
-        raise ValueError("AI_MODE must be demo or gemini")
+    if mode not in {"demo", "gemini", "qwen"}:
+        raise ValueError("AI_MODE must be demo, gemini or qwen")
+    production = os.getenv("APP_ENV") == "production"
+    auth_mode = os.getenv("AUTH_MODE", "tokens").casefold()
+    if auth_mode not in {"tokens", "oidc"}:
+        raise ValueError("AUTH_MODE must be tokens or oidc")
+    oidc = OIDCVerifier.from_env() if auth_mode == "oidc" else None
+    cipher = Cipher.from_env()
+    scanner = build_scanner()
     tokens = json.loads(os.getenv("TOKENS_JSON") or json.dumps(DEMO_TOKENS))
     if not tokens or any(
         not isinstance(t, str)
@@ -142,12 +155,16 @@ def create_app(data_dir=None, mode=None):
         for t, p in tokens.items()
     ):
         raise ValueError("Invalid server-side principal configuration")
-    if os.getenv("APP_ENV") == "production" and (
+    if production and auth_mode == "tokens" and (
         any(len(t) < 32 or t.startswith("demo-") for t in tokens)
     ):
         raise ValueError(
-            "Production requires explicit strong tokens; configure SSO upstream"
+            "Production requires explicit strong tokens or AUTH_MODE=oidc"
         )
+    if production and not cipher.enabled:
+        raise ValueError("Production requires DATA_ENCRYPTION_KEY for data at rest")
+    if production and scanner is None:
+        raise ValueError("Production requires MALWARE_SCAN=clamd for uploads")
     graph_mode = os.getenv("GRAPH_BACKEND", "local").casefold()
     if graph_mode not in {"local", "neo4j"}:
         raise ValueError("GRAPH_BACKEND must be local or neo4j")
@@ -160,13 +177,22 @@ def create_app(data_dir=None, mode=None):
             os.getenv("GRAPH_HMAC_KEY", ""),
             os.getenv("NEO4J_DATABASE", "neo4j"),
         )
-    store = Store(data_dir or os.getenv("DATA_DIR", str(ROOT / "runtime")))
+    store = Store(data_dir or os.getenv("DATA_DIR", str(ROOT / "runtime")), cipher)
     store.seed(ROOT / "samples/applications.json")
+
+    @asynccontextmanager
+    async def lifespan(_app):
+        yield
+        if graph_backend:
+            graph_backend.close()
+        app.state.investigator.bank.close()
+
     app = FastAPI(
         title="VietPay MMS AI Document Checker",
         version="0.1.0",
         docs_url=None,
         redoc_url=None,
+        lifespan=lifespan,
     )  # /openapi.json remains available for integration.
     app.add_middleware(
         TrustedHostMiddleware,
@@ -175,19 +201,47 @@ def create_app(data_dir=None, mode=None):
         ).split(","),
     )
     app.add_middleware(Boundary)
+    metrics = Metrics()
+    app.add_middleware(MetricsMiddleware, metrics=metrics)
+    app.state.metrics, app.state.scanner = metrics, scanner
     app.state.store, app.state.mode = store, mode
     app.state.graph_backend = graph_backend
     app.state.retriever = build_retriever()
-    if graph_backend:
-        app.add_event_handler("shutdown", graph_backend.close)
-    app.state.provider_factory = lambda: Gemini(
-        os.getenv("GEMINI_API_KEY", ""), os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
+
+    def model_name():
+        if mode == "gemini":
+            return os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
+        if mode == "qwen":
+            return os.getenv("QWEN_MODEL", "qwen3.5:9b")
+        return None
+
+    def provider_factory():
+        if mode == "qwen":
+            return Qwen(
+                os.getenv("QWEN_BASE_URL", "http://127.0.0.1:11434/v1"),
+                model_name(),
+                os.getenv("QWEN_API_KEY", ""),
+                float(os.getenv("QWEN_TIMEOUT", "120")),
+                os.getenv("QWEN_REASONING_EFFORT", "none"),
+            )
+        return Gemini(os.getenv("GEMINI_API_KEY", ""), model_name())
+
+    app.state.provider_factory = provider_factory
+    bank = build_bank_client()
+    app.state.investigator = Investigator(
+        bank, lambda: app.state.provider_factory(), mode
     )
     limiter, limit_lock = {}, threading.Lock()
     capacity = threading.BoundedSemaphore(2)
     bearer = HTTPBearer(auto_error=False)
 
     def principal(credentials: HTTPAuthorizationCredentials | None = Depends(bearer)):
+        if credentials and oidc:
+            try:
+                return oidc.principal(credentials.credentials)
+            except AuthError as error:
+                headers = {"WWW-Authenticate": "Bearer"} if error.status == 401 else None
+                raise HTTPException(error.status, str(error), headers=headers) from None
         if credentials:
             for token, account in tokens.items():
                 if hmac.compare_digest(
@@ -232,7 +286,7 @@ def create_app(data_dir=None, mode=None):
 
     @app.get("/assets/{name}", include_in_schema=False)
     def assets(name: str):
-        if name not in {"app.js", "style.css", "lab.js"}:
+        if name not in {"app.js", "style.css", "lab.js", "investigate.js"}:
             raise HTTPException(404)
         return FileResponse(ROOT / "static" / name)
 
@@ -240,13 +294,21 @@ def create_app(data_dir=None, mode=None):
     def health():
         with store.db() as db:
             db.execute("SELECT 1")
-        return {
-            "status": "ok",
-            "mode": mode,
-            "model": os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
-            if mode == "gemini"
-            else None,
-        }
+        return {"status": "ok", "mode": mode, "model": model_name(), "auth": auth_mode}
+
+    @app.get("/metrics", include_in_schema=False)
+    def metrics_endpoint(credentials: HTTPAuthorizationCredentials | None = Depends(bearer)):
+        # Disabled unless METRICS_TOKEN is set; scrape with that bearer token.
+        expected = os.getenv("METRICS_TOKEN", "")
+        if not expected:
+            raise HTTPException(404)
+        if not credentials or not hmac.compare_digest(
+            credentials.credentials.encode(), expected.encode()
+        ):
+            raise HTTPException(
+                401, "Authentication required", headers={"WWW-Authenticate": "Bearer"}
+            )
+        return Response(metrics.render(), media_type="text/plain; version=0.0.4")
 
     @app.get("/api/applications")
     def list_applications(p=Depends(principal)):
@@ -272,13 +334,33 @@ def create_app(data_dir=None, mode=None):
         try:
             source = inspect_source(data, file.filename or "", mode)
         except Exception:
+            metrics.inc("mms_uploads_rejected_total", reason="invalid")
             raise HTTPException(
                 422, "Invalid, unsupported, encrypted or oversized document"
             ) from None
         if mode == "demo" and source.mime != "text/plain":
+            metrics.inc("mms_uploads_rejected_total", reason="demo_type")
             raise HTTPException(
                 422, "Demo reads synthetic TXT only; set AI_MODE=gemini for PDF/images"
             )
+        scan = None
+        if scanner:
+            try:
+                scan = scanner.scan(data)
+            except ScanUnavailable:
+                metrics.inc("mms_uploads_rejected_total", reason="scanner_unavailable")
+                raise HTTPException(
+                    503, "Malware scanner unavailable; upload not stored"
+                ) from None
+            if not scan.clean:
+                metrics.inc("mms_uploads_rejected_total", reason="malware")
+                store.audit(
+                    p,
+                    "upload_rejected_malware",
+                    app_id,
+                    {"signature": scan.signature, "sha256": hashlib.sha256(data).hexdigest()},
+                )
+                raise HTTPException(422, "File rejected by malware scan")
         meta = {
             "id": str(uuid.uuid4()),
             "kind": kind,
@@ -287,6 +369,7 @@ def create_app(data_dir=None, mode=None):
             "verification": "pending",
             "verified_version": 0,
             "sha256": hashlib.sha256(data).hexdigest(),
+            "malware_scan": scan.engine if scan else "not_configured",
         }
         meta = store.put_document(app_id, meta, data)
         store.audit(
@@ -303,7 +386,7 @@ def create_app(data_dir=None, mode=None):
         record = application(app_id, p)
         if not capacity.acquire(blocking=False):
             raise HTTPException(429, "Checker busy; try again later")
-        provider = None
+        provider, started = None, time.perf_counter()
         try:
             today = datetime.now(ZoneInfo("Asia/Ho_Chi_Minh")).date()
             try:
@@ -312,12 +395,12 @@ def create_app(data_dir=None, mode=None):
                 raise HTTPException(
                     409, "Applicable policy unavailable; manual review required"
                 ) from None
-            if mode == "gemini":
+            if mode in {"gemini", "qwen"}:
                 try:
                     provider = app.state.provider_factory()
                 except Exception:
                     raise HTTPException(
-                        503, "Gemini unavailable; check server configuration"
+                        503, "AI model unavailable; check server configuration"
                     ) from None
             documents = store.documents(app_id)
             extracted, events = {}, []
@@ -333,7 +416,9 @@ def create_app(data_dir=None, mode=None):
                             }
                         )
                     result = (
-                        provider.extract(source) if provider else extract_demo(source)
+                        provider.extract(source, relevant_fields(meta["kind"], rules))
+                        if provider
+                        else extract_demo(source)
                     )
                     if any(f.page > meta["pages"] for f in result.facts):
                         raise ValueError("Page outside document")
@@ -388,7 +473,7 @@ def create_app(data_dir=None, mode=None):
                     notes = provider.explain(
                         findings, sections, graph_result["evidence"]
                     )
-                    explanation_mode = "gemini"
+                    explanation_mode = mode
                 except Exception:
                     events.append({"stage": "explanation", "status": "fallback"})
             result = {
@@ -401,9 +486,7 @@ def create_app(data_dir=None, mode=None):
                 "review_date": today.isoformat(),
                 "status": "completed",
                 "mode": mode,
-                "model": os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
-                if provider
-                else None,
+                "model": model_name() if provider else None,
                 "explanation_mode": explanation_mode,
                 "summary": "Cần bổ sung hoặc kiểm tra lại."
                 if findings
@@ -424,6 +507,14 @@ def create_app(data_dir=None, mode=None):
                 ],
             }
             store.save_check(result, documents)
+            metrics.inc("mms_checks_total", mode=mode)
+            metrics.observe("mms_model_seconds", time.perf_counter() - started, mode=mode)
+            for finding in findings:
+                metrics.inc("mms_findings_total", code=finding.code)
+            for event in events:
+                metrics.inc(
+                    "mms_check_events_total", stage=event["stage"], status=event["status"]
+                )
             store.audit(
                 p,
                 "check_completed",
@@ -514,6 +605,77 @@ def create_app(data_dir=None, mode=None):
             "approval": "unchanged",
             "automatically_trains_model": False,
         }
+
+    # ---- Transaction and payout investigation (assistant features 2 and 3) ----
+
+    def actor_limit(p):
+        # Same per-actor budget as writes; viewers may investigate (read-only).
+        write_access({**p, "role": "maker"})
+
+    @app.get("/investigate", include_in_schema=False)
+    def investigate_page():
+        return FileResponse(ROOT / "static/investigate.html")
+
+    @app.post("/api/investigations", status_code=201)
+    def investigate(body: InvestigationInput, p=Depends(principal)):
+        actor_limit(p)
+        today = datetime.now(ZoneInfo("Asia/Ho_Chi_Minh")).date()
+        try:
+            procedures, procedures_sha = load_procedures(p["tenant"], today)
+        except ValueError:
+            raise HTTPException(409, "Applicable handling procedure unavailable") from None
+        if not capacity.acquire(blocking=False):
+            raise HTTPException(429, "Checker busy; try again later")
+        try:
+            state = app.state.investigator.run(p, body.transaction_id, procedures)
+        finally:
+            capacity.release()
+        if not state.get("transaction"):
+            unavailable = any(e["status"] == "source_unavailable" for e in state["events"])
+            metrics.inc("mms_investigations_total", outcome="source_unavailable" if unavailable else "not_found")
+            store.audit(p, "transaction_lookup_failed", body.transaction_id, {"unavailable": unavailable})
+            if unavailable:
+                raise HTTPException(503, "Bank transaction service unavailable")
+            raise HTTPException(404, "Transaction not found")
+        record = {
+            "id": str(uuid.uuid4()),
+            "tenant": p["tenant"],
+            "actor": p["user"],
+            "created_at": datetime.now(ZoneInfo("Asia/Ho_Chi_Minh")).isoformat(),
+            "transaction_id": body.transaction_id,
+            "merchant_id": state["transaction"]["merchant_id"],
+            "question": body.question,
+            "bank_source": app.state.investigator.bank.name,
+            "procedure_id": procedures["policy_id"],
+            "procedure_version": procedures["version"],
+            "procedure_sha256": procedures_sha,
+            "mode": mode,
+            "model": model_name() if state.get("explanation_mode") != "deterministic" else None,
+            "action": "employee_decision_required",
+            "moves_money": False,
+            **public_result(state),
+        }
+        store.save_investigation(record)
+        store.audit(
+            p,
+            "transaction_investigated",
+            record["id"],
+            {
+                "transaction_id": body.transaction_id,
+                "money_status": record["money_status"],
+                "causes": [c["code"] for c in record["causes"]],
+                "open_questions": [q["code"] for q in record["open_questions"]],
+            },
+        )
+        metrics.inc("mms_investigations_total", outcome=record["money_status"])
+        return record
+
+    @app.get("/api/investigations/{investigation_id}")
+    def get_investigation(investigation_id: str, p=Depends(principal)):
+        record = store.investigation(investigation_id, p["tenant"])
+        if not record:
+            raise HTTPException(404, "Investigation not found")
+        return record
 
     # ---- Chunking Lab: tune retrieval settings on labeled synthetic questions ----
     lab_embedders, lab_lock = {}, threading.Lock()

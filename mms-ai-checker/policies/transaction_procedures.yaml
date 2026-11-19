@@ -1,0 +1,123 @@
+# Approved handling procedures for transaction and payout investigations (synthetic demo).
+# Knowledge only: it explains codes and lists steps. Transaction facts come from the bank
+# APIs, never from this file. Employees act through existing MMS screens and bank
+# workflows; the assistant never moves, retries or reverses money.
+policy_id: TXN-PROC-DEMO
+version: "1"
+tenant: pvcb
+effective_from: "2026-01-01"
+effective_to: "2027-12-31"
+switch_codes:
+  "00": Giao dịch được ngân hàng phát hành chấp thuận.
+  "05": Ngân hàng phát hành từ chối (do not honor), không nêu lý do cụ thể.
+  "51": Tài khoản hoặc thẻ của khách hàng không đủ số dư.
+  "54": Thẻ đã hết hạn.
+  "68": Hết thời gian chờ phản hồi từ ngân hàng phát hành (timeout).
+  "91": Ngân hàng phát hành hoặc hệ thống chuyển mạch tạm thời không phản hồi.
+payout_failures:
+  account_closed: Tài khoản nhận tiền của merchant đã đóng.
+  name_mismatch: Tên chủ tài khoản nhận không khớp tên merchant.
+  invalid_account: Số tài khoản nhận không hợp lệ.
+causes:
+  paid:
+    title: Đã chi trả cho merchant
+    explanation: Tiền đã được chuyển cho merchant. Số tiền nhận bằng tổng giao dịch trừ phí theo biểu phí.
+    steps:
+      - Gửi merchant mã tham chiếu chuyển khoản và ngày chi trả để đối chiếu sao kê.
+      - Nếu merchant vẫn báo chưa nhận, đề nghị merchant liên hệ ngân hàng nhận với mã tham chiếu.
+    screen: /merchants/{merchant_id}/payouts/{payout_id}
+  payment_declined:
+    title: Giao dịch bị từ chối, chưa thu tiền
+    explanation: Ngân hàng phát hành từ chối giao dịch nên không có tiền được thu từ khách hàng và không có khoản chi trả cho merchant.
+    steps:
+      - Giải thích mã từ chối cho merchant; khách hàng cần thanh toán lại bằng phương thức khác.
+      - Không tạo khoản bù tiền thủ công cho giao dịch bị từ chối.
+    screen: /merchants/{merchant_id}/transactions/{transaction_id}
+  refunded:
+    title: Giao dịch đã hoàn tiền
+    explanation: Giao dịch đã được hoàn lại cho khách hàng nên không còn khoản chi trả cho merchant.
+    steps:
+      - Gửi merchant thông tin lần hoàn tiền trong lịch sử giao dịch.
+    screen: /merchants/{merchant_id}/transactions/{transaction_id}
+  settlement_not_due:
+    title: Chưa đến kỳ quyết toán
+    explanation: Giao dịch thành công nhưng chưa đến ngày quyết toán theo chu kỳ của merchant.
+    steps:
+      - Báo merchant ngày quyết toán dự kiến theo chu kỳ.
+      - Kiểm tra lại sau ngày dự kiến; nếu vẫn chưa có lô quyết toán thì chuyển bộ phận đối soát.
+    screen: /merchants/{merchant_id}/settlements
+  risk_hold:
+    title: Đang bị giữ để rà soát rủi ro
+    explanation: Bộ phận rủi ro đang giữ khoản quyết toán để rà soát. Tiền chỉ được chi trả sau khi hồ sơ rủi ro được đóng.
+    steps:
+      - Không hứa ngày chi trả với merchant khi hồ sơ rủi ro chưa đóng.
+      - Theo dõi hồ sơ rủi ro theo mã hồ sơ; cung cấp chứng từ bổ sung nếu bộ phận rủi ro yêu cầu.
+    screen: /risk/cases/{case_id}
+    escalate_to: Bộ phận Quản lý rủi ro
+  merchant_restricted:
+    title: Merchant đang bị hạn chế do chưa hoàn tất KYC
+    explanation: Khoản chi trả bị tạm giữ vì hồ sơ merchant chưa được xác minh đầy đủ.
+    steps:
+      - Mở hồ sơ merchant trong AI Check để xem giấy tờ còn thiếu hoặc chưa xác minh.
+      - Hướng dẫn merchant bổ sung giấy tờ; chi trả được mở lại theo quy trình KYC sau khi duyệt.
+    screen: /applications/{application_id}
+    requires_role: maker
+  payout_account_unverified:
+    title: Tài khoản nhận tiền chưa được xác minh
+    explanation: Tài khoản nhận tiền của merchant chưa được xác minh nên không thể chi trả.
+    steps:
+      - Yêu cầu merchant cung cấp xác nhận tài khoản ngân hàng.
+    screen: /merchants/{merchant_id}/payout-account
+    requires_role: maker
+  payout_failed:
+    title: Chuyển khoản chi trả thất bại
+    explanation: Lệnh chi trả đã được tạo nhưng ngân hàng nhận từ chối.
+    steps:
+      - Liên hệ merchant để cập nhật tài khoản nhận tiền đang hoạt động.
+      - Sau khi checker duyệt thay đổi tài khoản, khoản chi trả được tạo lại theo quy trình chi trả lại; không chuyển tiền thủ công ngoài quy trình.
+    screen: /merchants/{merchant_id}/payout-account
+    requires_role: maker
+  payout_on_hold:
+    title: Khoản chi trả đang tạm giữ
+    explanation: Khoản chi trả đã quyết toán nhưng đang bị tạm giữ.
+    steps:
+      - Xem lý do tạm giữ và xử lý theo nguyên nhân tương ứng.
+    screen: /merchants/{merchant_id}/payouts/{payout_id}
+open_questions:
+  unresolved_debit_timeout:
+    title: Khách hàng đã bị trừ tiền nhưng kết quả giao dịch chưa xác định
+    explanation: Có bút toán trừ tiền khách hàng nhưng hệ thống chuyển mạch hết thời gian chờ và chưa có kết quả đối soát. Chưa đủ căn cứ để kết luận giao dịch thất bại hay thành công.
+    steps:
+      - Không thực hiện lại hoặc đảo giao dịch.
+      - Chuyển bộ phận đối soát kèm mã giao dịch và thời điểm; chờ xác nhận từ ngân hàng nhận/đối soát.
+      - Báo merchant đang xác minh, chưa hứa kết quả.
+    screen: /reconciliation/cases/new?transaction_id={transaction_id}
+    escalate_to: Bộ phận Đối soát
+  fee_mismatch:
+    title: Phí thu khác biểu phí
+    explanation: Phí trên khoản chi trả khác với phí tính theo biểu phí của merchant.
+    steps:
+      - Đối chiếu biểu phí đang áp dụng và phí trên lô chi trả.
+      - Nếu sai, chuyển bộ phận Tài chính xử lý điều chỉnh theo quy trình.
+    screen: /merchants/{merchant_id}/fees
+    escalate_to: Bộ phận Tài chính
+  settlement_overdue:
+    title: Quá ngày quyết toán nhưng chưa có lô quyết toán
+    explanation: Đã quá ngày quyết toán dự kiến nhưng chưa có lô quyết toán khớp.
+    steps:
+      - Chuyển bộ phận đối soát kiểm tra giao dịch chưa vào lô.
+    screen: /merchants/{merchant_id}/settlements
+    escalate_to: Bộ phận Đối soát
+  missing_payout:
+    title: Đã quyết toán nhưng chưa thấy lệnh chi trả
+    explanation: Lô quyết toán đã hoàn tất nhưng không tìm thấy lệnh chi trả tương ứng.
+    steps:
+      - Chuyển bộ phận Vận hành chi trả kiểm tra lô quyết toán.
+    screen: /merchants/{merchant_id}/payouts
+    escalate_to: Bộ phận Vận hành chi trả
+  source_unavailable:
+    title: Không lấy được dữ liệu từ một hệ thống
+    explanation: Một nguồn dữ liệu không phản hồi, nên kết luận có thể chưa đầy đủ.
+    steps:
+      - Thử tra cứu lại sau; nếu vẫn lỗi, báo bộ phận hỗ trợ kỹ thuật.
+    screen: /merchants/{merchant_id}/transactions/{transaction_id}

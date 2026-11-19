@@ -1,0 +1,54 @@
+# Optional local services for the full stack (all ports bound to 127.0.0.1):
+#   docker compose -f compose.yaml -f compose.services.yaml up --build
+# ClamAV for upload scanning, PostgreSQL + pgvector for the policy index, Ollama for Qwen.
+# Set PG_PASSWORD in .env. Pull the model once: docker compose exec ollama ollama pull qwen3.5:9b
+services:
+  checker:
+    build:
+      context: .
+      args:
+        INSTALL_VECTOR: "true"
+    environment:
+      MALWARE_SCAN: clamd
+      CLAMD_HOST: clamav
+      VECTOR_STORE: pgvector
+      PGVECTOR_DSN: "postgresql://postgres:${PG_PASSWORD:?Set_PG_PASSWORD_in_dotenv}@pgvector:5432/mms"
+      QWEN_BASE_URL: http://ollama:11434/v1
+    depends_on:
+      clamav:
+        condition: service_healthy
+      pgvector:
+        condition: service_started
+  clamav:
+    image: clamav/clamav:1.4
+    restart: unless-stopped
+  pgvector:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_DB: mms
+      POSTGRES_PASSWORD: "${PG_PASSWORD:?Set_PG_PASSWORD_in_dotenv}"
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - pgvector-data:/var/lib/postgresql/data
+    restart: unless-stopped
+  ollama:
+    image: ollama/ollama:0.40.15
+    environment:
+      OLLAMA_CONTEXT_LENGTH: "16384"
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    # Remove this block on machines without an NVIDIA GPU (CPU inference is slow).
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+volumes:
+  pgvector-data:
+  ollama-models:

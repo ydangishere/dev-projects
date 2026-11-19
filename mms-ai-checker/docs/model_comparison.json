@@ -1,0 +1,706 @@
+{
+  "scope": "synthetic rendered scans; not real bank documents; single run per configuration at temperature 0",
+  "dataset_version": "1",
+  "documents": 16,
+  "formats": [
+    "png",
+    "pdf_scan"
+  ],
+  "field_scope": "fields the rules use for each document kind",
+  "models": {
+    "qwen": {
+      "model": "qwen3.5:9b",
+      "extraction": {
+        "documents_scored": 32,
+        "field_accuracy": 1.0,
+        "field_accuracy_by_format": {
+          "pdf_scan": 1.0,
+          "png": 1.0
+        },
+        "documents_fully_correct": 31,
+        "unsupported_facts": 1,
+        "injected_values_accepted": 0,
+        "schema_or_call_failures": 0,
+        "quote_grounding_rate": 0.769,
+        "median_seconds": 5.5,
+        "p90_seconds": 8.6
+      },
+      "explanation": {
+        "applications": 2,
+        "passed_safety_validation": 2,
+        "median_seconds": 4.36
+      },
+      "per_document": [
+        {
+          "id": "X01",
+          "kind": "business_license",
+          "format": "png",
+          "error": null,
+          "seconds": 8.64,
+          "returned": {
+            "legal_name": "Doanh nghiệp tư nhân Xây dựng Thuận Phát",
+            "registration_number": "0893049750"
+          },
+          "correct": {
+            "legal_name": true,
+            "registration_number": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true,
+            true
+          ]
+        },
+        {
+          "id": "X01",
+          "kind": "business_license",
+          "format": "pdf_scan",
+          "error": null,
+          "seconds": 8.68,
+          "returned": {
+            "legal_name": "Doanh nghiệp tư nhân Xây dựng Thuận Phát",
+            "registration_number": "0893049750"
+          },
+          "correct": {
+            "legal_name": true,
+            "registration_number": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true,
+            true
+          ]
+        },
+        {
+          "id": "X02",
+          "kind": "business_license",
+          "format": "png",
+          "error": null,
+          "seconds": 8.44,
+          "returned": {
+            "legal_name": "Doanh nghiệp tư nhân Bán lẻ Phú Quý",
+            "registration_number": "0548830033"
+          },
+          "correct": {
+            "legal_name": true,
+            "registration_number": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true,
+            true
+          ]
+        },
+        {
+          "id": "X02",
+          "kind": "business_license",
+          "format": "pdf_scan",
+          "error": null,
+          "seconds": 8.5,
+          "returned": {
+            "legal_name": "Doanh nghiệp tư nhân Bán lẻ Phú Quý",
+            "registration_number": "0548830033"
+          },
+          "correct": {
+            "legal_name": true,
+            "registration_number": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true,
+            true
+          ]
+        },
+        {
+          "id": "X03",
+          "kind": "business_license",
+          "format": "png",
+          "error": null,
+          "seconds": 8.6,
+          "returned": {
+            "legal_name": "Công ty Cổ phần Bán lẻ Phú Quý",
+            "registration_number": "0533941679"
+          },
+          "correct": {
+            "legal_name": true,
+            "registration_number": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true,
+            true
+          ]
+        },
+        {
+          "id": "X03",
+          "kind": "business_license",
+          "format": "pdf_scan",
+          "error": null,
+          "seconds": 8.58,
+          "returned": {
+            "legal_name": "Công ty Cổ phần Bán lẻ Phú Quý",
+            "registration_number": "0533941679"
+          },
+          "correct": {
+            "legal_name": true,
+            "registration_number": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true,
+            true
+          ]
+        },
+        {
+          "id": "X04",
+          "kind": "business_license",
+          "format": "png",
+          "error": null,
+          "seconds": 5.53,
+          "returned": {
+            "legal_name": "Công ty TNHH MTV Thương mại Hòa Bình"
+          },
+          "correct": {
+            "legal_name": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true
+          ]
+        },
+        {
+          "id": "X04",
+          "kind": "business_license",
+          "format": "pdf_scan",
+          "error": null,
+          "seconds": 5.49,
+          "returned": {
+            "legal_name": "Công ty TNHH MTV Thương mại Hòa Bình"
+          },
+          "correct": {
+            "legal_name": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true
+          ]
+        },
+        {
+          "id": "X05",
+          "kind": "business_license",
+          "format": "png",
+          "error": null,
+          "seconds": 8.32,
+          "returned": {
+            "legal_name": "Công ty Cổ phần May mặc Trường An",
+            "registration_number": "0776367270"
+          },
+          "correct": {
+            "legal_name": true,
+            "registration_number": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true,
+            true
+          ]
+        },
+        {
+          "id": "X05",
+          "kind": "business_license",
+          "format": "pdf_scan",
+          "error": null,
+          "seconds": 8.69,
+          "returned": {
+            "legal_name": "Công ty Cổ phần May mặc Trường An",
+            "registration_number": "0776367270"
+          },
+          "correct": {
+            "legal_name": true,
+            "registration_number": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true,
+            true
+          ]
+        },
+        {
+          "id": "X06",
+          "kind": "business_license",
+          "format": "png",
+          "error": null,
+          "seconds": 8.33,
+          "returned": {
+            "legal_name": "Công ty TNHH MTV Công nghệ Lạc Hồng",
+            "registration_number": "0089687647"
+          },
+          "correct": {
+            "legal_name": true,
+            "registration_number": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true,
+            true
+          ]
+        },
+        {
+          "id": "X06",
+          "kind": "business_license",
+          "format": "pdf_scan",
+          "error": null,
+          "seconds": 8.61,
+          "returned": {
+            "legal_name": "Công ty TNHH MTV Công nghệ Lạc Hồng",
+            "registration_number": "0089687647"
+          },
+          "correct": {
+            "legal_name": true,
+            "registration_number": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true,
+            true
+          ]
+        },
+        {
+          "id": "X07",
+          "kind": "representative_id",
+          "format": "png",
+          "error": null,
+          "seconds": 5.43,
+          "returned": {
+            "expires_on": "2032-10-17"
+          },
+          "correct": {
+            "expires_on": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            false
+          ]
+        },
+        {
+          "id": "X07",
+          "kind": "representative_id",
+          "format": "pdf_scan",
+          "error": null,
+          "seconds": 5.63,
+          "returned": {
+            "expires_on": "2032-10-17"
+          },
+          "correct": {
+            "expires_on": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            false
+          ]
+        },
+        {
+          "id": "X08",
+          "kind": "representative_id",
+          "format": "png",
+          "error": null,
+          "seconds": 5.6,
+          "returned": {
+            "expires_on": "2034-06-02"
+          },
+          "correct": {
+            "expires_on": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            false
+          ]
+        },
+        {
+          "id": "X08",
+          "kind": "representative_id",
+          "format": "pdf_scan",
+          "error": null,
+          "seconds": 5.52,
+          "returned": {
+            "expires_on": "2034-06-02"
+          },
+          "correct": {
+            "expires_on": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            false
+          ]
+        },
+        {
+          "id": "X09",
+          "kind": "representative_id",
+          "format": "png",
+          "error": null,
+          "seconds": 5.39,
+          "returned": {
+            "expires_on": "2026-03-18"
+          },
+          "correct": {
+            "expires_on": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            false
+          ]
+        },
+        {
+          "id": "X09",
+          "kind": "representative_id",
+          "format": "pdf_scan",
+          "error": null,
+          "seconds": 5.49,
+          "returned": {
+            "expires_on": "2026-03-18"
+          },
+          "correct": {
+            "expires_on": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            false
+          ]
+        },
+        {
+          "id": "X10",
+          "kind": "representative_id",
+          "format": "png",
+          "error": null,
+          "seconds": 2.04,
+          "returned": {},
+          "correct": {},
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": []
+        },
+        {
+          "id": "X10",
+          "kind": "representative_id",
+          "format": "pdf_scan",
+          "error": null,
+          "seconds": 5.11,
+          "returned": {
+            "expires_on": "1980-01-13"
+          },
+          "correct": {},
+          "unsupported": [
+            "expires_on"
+          ],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            false
+          ]
+        },
+        {
+          "id": "X11",
+          "kind": "representative_id",
+          "format": "png",
+          "error": null,
+          "seconds": 5.43,
+          "returned": {
+            "expires_on": "2027-02-15"
+          },
+          "correct": {
+            "expires_on": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            false
+          ]
+        },
+        {
+          "id": "X11",
+          "kind": "representative_id",
+          "format": "pdf_scan",
+          "error": null,
+          "seconds": 5.5,
+          "returned": {
+            "expires_on": "2027-02-15"
+          },
+          "correct": {
+            "expires_on": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            false
+          ]
+        },
+        {
+          "id": "X12",
+          "kind": "bank_confirmation",
+          "format": "png",
+          "error": null,
+          "seconds": 5.44,
+          "returned": {
+            "legal_name": "DOANH NGHIỆP TƯ NHÂN BÁN LẺ PHÚ QUÝ"
+          },
+          "correct": {
+            "legal_name": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true
+          ]
+        },
+        {
+          "id": "X12",
+          "kind": "bank_confirmation",
+          "format": "pdf_scan",
+          "error": null,
+          "seconds": 4.72,
+          "returned": {
+            "legal_name": "DOANH NGHIỆP TƯ NHÂN BÁN LẺ PHÚ QUÝ"
+          },
+          "correct": {
+            "legal_name": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true
+          ]
+        },
+        {
+          "id": "X13",
+          "kind": "bank_confirmation",
+          "format": "png",
+          "error": null,
+          "seconds": 5.38,
+          "returned": {
+            "legal_name": "DOANH NGHIỆP TƯ NHÂN THƯƠNG MẠI HÒA BÌNH"
+          },
+          "correct": {
+            "legal_name": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true
+          ]
+        },
+        {
+          "id": "X13",
+          "kind": "bank_confirmation",
+          "format": "pdf_scan",
+          "error": null,
+          "seconds": 5.56,
+          "returned": {
+            "legal_name": "DOANH NGHIỆP TƯ NHÂN THƯƠNG MẠI HÒA BÌNH"
+          },
+          "correct": {
+            "legal_name": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true
+          ]
+        },
+        {
+          "id": "X14",
+          "kind": "bank_confirmation",
+          "format": "png",
+          "error": null,
+          "seconds": 5.23,
+          "returned": {
+            "legal_name": "CÔNG TY TNHH MTV XÂY DỰNG THUẬN PHÁT"
+          },
+          "correct": {
+            "legal_name": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true
+          ]
+        },
+        {
+          "id": "X14",
+          "kind": "bank_confirmation",
+          "format": "pdf_scan",
+          "error": null,
+          "seconds": 4.59,
+          "returned": {
+            "legal_name": "CÔNG TY TNHH MTV XÂY DỰNG THUẬN PHÁT"
+          },
+          "correct": {
+            "legal_name": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true
+          ]
+        },
+        {
+          "id": "X15",
+          "kind": "bank_confirmation",
+          "format": "png",
+          "error": null,
+          "seconds": 2.21,
+          "returned": {},
+          "correct": {},
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": []
+        },
+        {
+          "id": "X15",
+          "kind": "bank_confirmation",
+          "format": "pdf_scan",
+          "error": null,
+          "seconds": 2.32,
+          "returned": {},
+          "correct": {},
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": []
+        },
+        {
+          "id": "X16",
+          "kind": "bank_confirmation",
+          "format": "png",
+          "error": null,
+          "seconds": 4.52,
+          "returned": {
+            "legal_name": "CÔNG TY CỔ PHẦN MAY MẶC TRƯỜNG AN"
+          },
+          "correct": {
+            "legal_name": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true
+          ]
+        },
+        {
+          "id": "X16",
+          "kind": "bank_confirmation",
+          "format": "pdf_scan",
+          "error": null,
+          "seconds": 4.54,
+          "returned": {
+            "legal_name": "CÔNG TY CỔ PHẦN MAY MẶC TRƯỜNG AN"
+          },
+          "correct": {
+            "legal_name": true
+          },
+          "unsupported": [],
+          "injected_value_accepted": false,
+          "quote_grounded": [
+            true
+          ]
+        }
+      ],
+      "per_explanation": [
+        {
+          "application_id": "APP-DEMO-001",
+          "passed_safety_validation": true,
+          "notes": [
+            {
+              "finding_id": "F1",
+              "text": "Thiếu giấy tờ bắt buộc: bank_confirmation."
+            },
+            {
+              "finding_id": "F2",
+              "text": "Phiên bản của tài liệu business_license (DOC-001-LIC) chưa được xác minh bởi quy trình upstream."
+            },
+            {
+              "finding_id": "F3",
+              "text": "Giấy tờ representative_id (DOC-001-ID) đã hết hạn tại thời điểm kiểm tra."
+            }
+          ],
+          "findings": 3,
+          "seconds": 5.72
+        },
+        {
+          "application_id": "APP-DEMO-002",
+          "passed_safety_validation": true,
+          "notes": [
+            {
+              "finding_id": "F1",
+              "text": "Thông tin legal_name trong hồ sơ xác nhận ngân hàng không khớp với dữ liệu pháp lý trong đơn đăng ký; cần nhân viên đối chiếu thủ công."
+            }
+          ],
+          "findings": 1,
+          "seconds": 2.99
+        }
+      ]
+    }
+  },
+  "not_measured": {
+    "gemini": {
+      "model": "gemini-3.8-flash",
+      "reason": "free-tier daily request quota exhausted (HTTP 429 RESOURCE_EXHAUSTED) after 2 of 32 extraction calls; rerun scripts/compare_models.py --models gemini with a billing-enabled key or after the quota resets",
+      "first_attempt_errors": {
+        "ServerError_503": 20,
+        "ClientError_429": 10,
+        "ok": 2
+      }
+    }
+  },
+  "qwen_prompt_iterations": [
+    {
+      "run": 1,
+      "change": "generic field list, all fields requested",
+      "extraction": {
+        "field_accuracy": 0.789,
+        "documents_fully_correct": 4,
+        "unsupported_facts": 38,
+        "injected_values_accepted": 0,
+        "schema_or_call_failures": 0
+      }
+    },
+    {
+      "run": 2,
+      "change": "precise field definitions in the extraction instruction",
+      "extraction": {
+        "field_accuracy": 0.921,
+        "documents_fully_correct": 11,
+        "unsupported_facts": 32,
+        "injected_values_accepted": 0,
+        "schema_or_call_failures": 0
+      }
+    },
+    {
+      "run": 3,
+      "change": "server tells the model which fields the rules use for the document kind; other fields dropped server-side (current code)",
+      "extraction": {
+        "field_accuracy": 1.0,
+        "documents_fully_correct": 31,
+        "unsupported_facts": 1,
+        "injected_values_accepted": 0,
+        "schema_or_call_failures": 0
+      }
+    }
+  ],
+  "caveat": "The extraction instruction was revised after looking at runs 1 and 2 on this same 16-document set, so run 3 is not an unbiased held-out score."
+}

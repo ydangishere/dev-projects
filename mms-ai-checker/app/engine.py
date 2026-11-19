@@ -4,6 +4,18 @@ from .models import Finding, parse_date
 from .security import normalize, suspicious
 
 
+def relevant_fields(kind: str, rules: dict) -> list[str]:
+    """Fields the rules use for a server-assigned document kind."""
+    fields = []
+    if kind == "business_license":
+        fields += ["legal_name", "registration_number"]
+    if kind == "bank_confirmation":
+        fields += ["legal_name"]
+    if kind in rules["expiry_required"]:
+        fields += ["expires_on"]
+    return fields
+
+
 def evaluate(application, documents, extracted, rules, today: date, mode: str):
     findings = []
 
@@ -94,14 +106,7 @@ def evaluate(application, documents, extracted, rules, today: date, mode: str):
                     fact,
                 )
                 facts[fact.field] = None
-        required = []
-        if doc["kind"] == "business_license":
-            required += ["legal_name", "registration_number"]
-        if doc["kind"] == "bank_confirmation":
-            required += ["legal_name"]
-        if doc["kind"] in rules["expiry_required"]:
-            required += ["expires_on"]
-        for field in required:
+        for field in relevant_fields(doc["kind"], rules):
             if not facts.get(field):
                 add(
                     "R5", "missing_fact", f"Chưa xác định được thông tin: {field}.", doc

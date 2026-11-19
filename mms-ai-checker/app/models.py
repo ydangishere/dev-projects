@@ -68,6 +68,25 @@ class Explanation(StrictModel):
     notes: list[Note] = Field(max_length=50)
 
 
+class InvestigationInput(StrictModel):
+    transaction_id: str = Field(pattern=r"^[A-Za-z0-9][A-Za-z0-9-]{2,39}$")
+    # Recorded for audit only. The workflow is fixed; the question cannot change which
+    # data is read, the diagnosis or the steps.
+    question: str = Field(
+        default="Vì sao merchant chưa nhận được tiền? Tôi nên làm gì?", min_length=1, max_length=500
+    )
+
+
+class InvestigationNote(StrictModel):
+    code: str = Field(pattern=r"^[a-z_]{2,40}$")
+    text: str = Field(min_length=1, max_length=500)
+
+
+class InvestigationExplanation(StrictModel):
+    summary: str = Field(min_length=1, max_length=600)
+    notes: list[InvestigationNote] = Field(max_length=20)
+
+
 def parse_date(value: str) -> date:
     if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
         raise ValueError("Expected YYYY-MM-DD")

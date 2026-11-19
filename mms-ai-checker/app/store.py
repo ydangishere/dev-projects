@@ -4,9 +4,14 @@ from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
+from .crypto import Cipher
+
 
 class Store:
-    def __init__(self, directory):
+    def __init__(self, directory, cipher: Cipher | None = None):
+        # Sensitive columns (application body, document bytes, check body, evidence
+        # bytes) are sealed with AES-GCM when a key is configured. See app/crypto.py.
+        self.cipher = cipher or Cipher()
         self.directory = Path(directory)
         self.directory.mkdir(parents=True, exist_ok=True)
         self.path = self.directory / "checker.sqlite3"
@@ -28,6 +33,9 @@ class Store:
             CREATE TABLE IF NOT EXISTS experiments (
                 id TEXT PRIMARY KEY, tenant TEXT NOT NULL, created_at TEXT NOT NULL,
                 actor TEXT NOT NULL, body TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS investigations (
+                id TEXT PRIMARY KEY, tenant TEXT NOT NULL, created_at TEXT NOT NULL,
+                actor TEXT NOT NULL, transaction_id TEXT NOT NULL, body TEXT NOT NULL);
             """)
 
     @contextmanager
@@ -59,7 +67,14 @@ class Store:
             with self.db() as db:
                 cursor = db.execute(
                     "INSERT OR IGNORE INTO applications VALUES(?,?,?,1)",
-                    (sample["id"], sample["tenant"], json.dumps(sample["application"])),
+                    (
+                        sample["id"],
+                        sample["tenant"],
+                        self.cipher.seal_text(
+                            json.dumps(sample["application"]),
+                            f"applications.body:{sample['id']}",
+                        ),
+                    ),
                 )
                 if not cursor.rowcount:
                     continue
@@ -74,7 +89,9 @@ class Store:
                             sample["id"],
                             item["kind"],
                             json.dumps(meta),
-                            item["text"].encode(),
+                            self.cipher.seal(
+                                item["text"].encode(), f"documents.data:{item['id']}"
+                            ),
                         ),
                     )
 
@@ -89,7 +106,9 @@ class Store:
                 "id": row["id"],
                 "tenant": row["tenant"],
                 "revision": row["revision"],
-                **json.loads(row["body"]),
+                **json.loads(
+                    self.cipher.open_text(row["body"], f"applications.body:{row['id']}")
+                ),
             }
 
     def applications(self, tenant):
@@ -102,10 +121,16 @@ class Store:
     def documents(self, app_id):
         with self.db() as db:
             rows = db.execute(
-                "SELECT meta,data FROM documents WHERE application_id=? ORDER BY kind",
+                "SELECT id,meta,data FROM documents WHERE application_id=? ORDER BY kind",
                 (app_id,),
             ).fetchall()
-        return [(json.loads(r["meta"]), bytes(r["data"])) for r in rows]
+        return [
+            (
+                json.loads(r["meta"]),
+                self.cipher.open(bytes(r["data"]), f"documents.data:{r['id']}"),
+            )
+            for r in rows
+        ]
 
     def put_document(self, app_id, meta, data):
         with self.db() as db:
@@ -121,7 +146,13 @@ class Store:
                 )
             db.execute(
                 "INSERT INTO documents VALUES(?,?,?,?,?)",
-                (meta["id"], app_id, meta["kind"], json.dumps(meta), data),
+                (
+                    meta["id"],
+                    app_id,
+                    meta["kind"],
+                    json.dumps(meta),
+                    self.cipher.seal(data, f"documents.data:{meta['id']}"),
+                ),
             )
             db.execute(
                 "UPDATE applications SET revision=revision+1 WHERE id=?", (app_id,)
@@ -136,13 +167,20 @@ class Store:
                     result["id"],
                     result["application_id"],
                     result["tenant"],
-                    json.dumps(result, ensure_ascii=False),
+                    self.cipher.seal_text(
+                        json.dumps(result, ensure_ascii=False), f"checks.body:{result['id']}"
+                    ),
                 ),
             )
             for meta, data in documents:
                 db.execute(
                     "INSERT INTO evidence VALUES(?,?,?,?)",
-                    (result["id"], meta["id"], json.dumps(meta), data),
+                    (
+                        result["id"],
+                        meta["id"],
+                        json.dumps(meta),
+                        self.cipher.seal(data, f"evidence.data:{result['id']}/{meta['id']}"),
+                    ),
                 )
 
     def check(self, check_id, tenant):
@@ -150,7 +188,9 @@ class Store:
             row = db.execute(
                 "SELECT body FROM checks WHERE id=? AND tenant=?", (check_id, tenant)
             ).fetchone()
-        return json.loads(row["body"]) if row else None
+        if not row:
+            return None
+        return json.loads(self.cipher.open_text(row["body"], f"checks.body:{check_id}"))
 
     def save_experiment(self, record):
         with self.db() as db:
@@ -181,10 +221,73 @@ class Store:
             ).fetchone()
         return json.loads(row["body"]) if row else None
 
+    def save_investigation(self, record):
+        with self.db() as db:
+            db.execute(
+                "INSERT INTO investigations VALUES(?,?,?,?,?,?)",
+                (
+                    record["id"],
+                    record["tenant"],
+                    record["created_at"],
+                    record["actor"],
+                    record["transaction_id"],
+                    self.cipher.seal_text(
+                        json.dumps(record, ensure_ascii=False), f"investigations.body:{record['id']}"
+                    ),
+                ),
+            )
+
+    def investigation(self, investigation_id, tenant):
+        with self.db() as db:
+            row = db.execute(
+                "SELECT body FROM investigations WHERE id=? AND tenant=?",
+                (investigation_id, tenant),
+            ).fetchone()
+        if not row:
+            return None
+        return json.loads(
+            self.cipher.open_text(row["body"], f"investigations.body:{investigation_id}")
+        )
+
     def evidence(self, check_id, doc_id):
         with self.db() as db:
             row = db.execute(
                 "SELECT meta,data FROM evidence WHERE check_id=? AND document_id=?",
                 (check_id, doc_id),
             ).fetchone()
-        return (json.loads(row["meta"]), bytes(row["data"])) if row else None
+        if not row:
+            return None
+        data = self.cipher.open(bytes(row["data"]), f"evidence.data:{check_id}/{doc_id}")
+        return json.loads(row["meta"]), data
+
+    def rotate(self):
+        """Re-seal every sensitive value with the current key (or plaintext if none)."""
+        columns = [
+            ("applications", "body", "id", lambda r: f"applications.body:{r['id']}", True),
+            ("documents", "data", "id", lambda r: f"documents.data:{r['id']}", False),
+            ("checks", "body", "id", lambda r: f"checks.body:{r['id']}", True),
+            ("investigations", "body", "id", lambda r: f"investigations.body:{r['id']}", True),
+        ]
+        changed = 0
+        with self.db() as db:
+            for table, column, key, aad, text in columns:
+                for row in db.execute(f"SELECT {key},{column} FROM {table}").fetchall():
+                    value = row[column] if text else bytes(row[column])
+                    if self.cipher.is_current(value):
+                        continue
+                    if text:
+                        new = self.cipher.seal_text(self.cipher.open_text(value, aad(row)), aad(row))
+                    else:
+                        new = self.cipher.seal(self.cipher.open(value, aad(row)), aad(row))
+                    db.execute(f"UPDATE {table} SET {column}=? WHERE {key}=?", (new, row[key]))
+                    changed += 1
+            for row in db.execute("SELECT check_id,document_id,data FROM evidence").fetchall():
+                value, aad = bytes(row["data"]), f"evidence.data:{row['check_id']}/{row['document_id']}"
+                if self.cipher.is_current(value):
+                    continue
+                db.execute(
+                    "UPDATE evidence SET data=? WHERE check_id=? AND document_id=?",
+                    (self.cipher.seal(self.cipher.open(value, aad), aad), row["check_id"], row["document_id"]),
+                )
+                changed += 1
+        return changed

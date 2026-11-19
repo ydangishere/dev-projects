@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="vi">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MMS • Tra cứu giao dịch</title><link rel="stylesheet" href="/assets/style.css"><script src="/assets/investigate.js" defer></script></head>
+<body>
+<header><div><span class="brand">VIETPAY <b>MMS</b></span><span class="context">Tra cứu giao dịch và chi trả</span></div><a class="pill navlink" href="/">← Trợ lý kiểm tra hồ sơ</a></header>
+<main>
+<section class="intro"><p class="eyebrow">GIẢI THÍCH GIAO DỊCH · HƯỚNG DẪN XỬ LÝ</p><h1>Vì sao merchant chưa nhận được tiền?</h1><p>Nhập mã giao dịch. Hệ thống đọc dữ liệu chỉ-đọc từ các hệ thống ngân hàng, tách nguyên nhân đã có căn cứ và câu hỏi chưa xác định, rồi đưa bước xử lý theo quy trình.</p><div class="notice">Dữ liệu ngân hàng giả lập (mock) · không chuyển, hoàn hay đảo tiền · nhân viên quyết định và thao tác trên màn hình nghiệp vụ.</div></section>
+<section class="session"><label for="token">Mã truy cập thử nghiệm</label><div class="row"><input id="token" type="password" autocomplete="off" placeholder="demo-viewer-token"></div><small>Mọi vai trò đều xem được; bước cần maker/checker sẽ được đánh dấu.</small></section>
+<section class="panel"><label for="txn">Mã giao dịch</label><div class="row"><input id="txn" maxlength="40" placeholder="TXN-1001" list="samples"><button id="go">Tra cứu</button></div>
+<datalist id="samples"><option value="TXN-1001">Đã chi trả, có phí</option><option value="TXN-1002">Bị từ chối</option><option value="TXN-1003">Chưa đến kỳ quyết toán</option><option value="TXN-1004">Giữ rà soát rủi ro</option><option value="TXN-1005">Chi trả thất bại</option><option value="TXN-1006">Merchant chưa hoàn tất KYC</option><option value="TXN-1007">Trừ tiền nhưng timeout</option><option value="TXN-1008">Đã hoàn tiền</option></datalist>
+<label for="question">Câu hỏi (chỉ để ghi nhận, không thay đổi kết quả)</label><input id="question" maxlength="500" value="Vì sao merchant chưa nhận được tiền? Tôi nên làm gì?"></section>
+<p id="status" role="status" aria-live="polite">Nhập mã và tra cứu.</p>
+<section class="panel" id="result" hidden></section>
+<footer>Kết quả là hỗ trợ tra cứu, không phải xác nhận đối soát chính thức.</footer>
+</main></body></html>
