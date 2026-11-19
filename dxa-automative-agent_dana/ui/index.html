@@ -363,10 +363,10 @@ function renderAnswer(r) {
     ? `<p class="understood">Hiểu câu hỏi là: “${esc(r.query_used)}”</p>` : "";
   const by = { llm: "Gemini viết từ các case bên phải", template: "ghép từ case gần nhất", gate: "hệ thống từ chối", }[r.answered_by] || r.answered_by;
   a.innerHTML = `
-    <h2>${r.refused ? "Chưa có trong kho" : "Kỹ thuật viên trả lời"}</h2>
+    <h2>${r.refused ? "Chưa có trong kho" : r.near ? "Câu trả lời gần nhất" : "Kỹ thuật viên trả lời"}</h2>
     ${understood}
     <div class="body ${r.refused ? "refused" : ""}">${renderText(r.answer)}</div>
-    ${r.refused && (r.sources || []).length ? '<p class="meta">Các nguồn bên cạnh có thể liên quan, nhưng chưa khớp đủ để kỹ thuật viên trả lời chắc chắn.</p>' : ""}
+    ${r.near ? '<p class="warn">Câu hỏi chưa khớp hẳn với kiến thức trong kho, đây là câu trả lời gần nhất. Câu hỏi đã được lưu để thợ bổ sung.</p>' : ""}
     ${r.refused ? '<p class="meta">Câu này đã được lưu để thợ bổ sung kiến thức.</p>' : ""}
     ${(r.warnings || []).map((w) => `<p class="warn">${esc(w)}</p>`).join("")}
     <p class="meta">Chế độ ${esc(r.mode)}, ${esc(by)}.</p>`;
@@ -389,8 +389,10 @@ async function ask(question) {
     current = await res.json();
     renderAnswer(current);
     renderSources(current.sources || []);
+    // Mở nguồn đứng đầu. Không tự nhảy sang video xếp sau: video đó thường không liên quan (đã thử với T01, T02).
     const first = (current.sources || [])[0];
-    if (first) play(first); else { $("screen").textContent = "Không có đoạn video phù hợp"; $("cap").hidden = true; }
+    if (first) play(first);
+    else { $("screen").classList.remove("has-video"); $("screen").textContent = "Không có đoạn video phù hợp"; $("cap").hidden = true; }
   } catch (e) {
     $("answer").innerHTML = `<h2>Không hỏi được</h2><p class="warn">${esc(e.message)}. Kiểm tra máy chủ đang chạy: <code>uvicorn api:app --port 8000</code></p>`;
   } finally {

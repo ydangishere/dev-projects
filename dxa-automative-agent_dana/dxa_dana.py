@@ -92,12 +92,14 @@ def ask(question: str) -> dict:
     try:
         r = _plain(_load_agent().ask(question))
         r.setdefault("warnings", [])
+        r["near"] = bool(r.get("near"))
         return r
     except Exception as e:
         import rag
 
         r = rag.answer(question)
-        r = {k: r[k] for k in ("question", "query_used", "answer", "refused", "answered_by", "mode", "warnings", "sources")}
+        r = {k: r.get(k) for k in ("question", "query_used", "answer", "refused", "near", "answered_by", "mode", "warnings", "sources")}
+        r["near"] = bool(r["near"])
         r["answered_by"] = f"python ({r['answered_by']})"
         r["warnings"] = r["warnings"] + [f"Agent Dana lỗi, dùng bản Python: {e.__class__.__name__}: {e}"]
         return r

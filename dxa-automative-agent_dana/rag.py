@@ -155,7 +155,8 @@ def retrieve(q, top_cases=TOP_CASES, top_chunks=TOP_CHUNKS):
     return {
         "question": q,
         "query_used": q2,
-        "in_scope": any(dxa.in_scope(st, x) for x in queries),
+        "in_scope": "in" in (levels := [dxa.scope_level(st, x) for x in queries]),
+        "near": "in" not in levels and "near" in levels,
         "cases": [i for i, _ in cases],
         "chunks": [i for i, _ in chunks],
         "mode": mode(),
@@ -275,6 +276,7 @@ def log_unanswered(q, q2, reason):
 
 
 REFUSE = "Chưa có kiến thức này trong kho. Không đoán, cần thợ bổ sung kiến thức hoặc nạp thêm video."
+NEAR_NOTE = "Câu hỏi chưa khớp hẳn với kiến thức trong kho, đây là câu trả lời gần nhất. Câu hỏi đã được lưu để thợ bổ sung."
 
 
 def answer(q, use_llm=True):
@@ -282,9 +284,12 @@ def answer(q, use_llm=True):
     r = retrieve(q)
     out = {**r, "answer": None, "answered_by": None, "refused": False, "warnings": [], "sources": []}
 
-    if not r["in_scope"] or not r["cases"]:
+    # Quy tắc: có nguồn (video) thì phải có câu trả lời bằng chữ; từ chối thì không kèm nguồn.
+    if not r["cases"] or not (r["in_scope"] or r["near"]):
         log_unanswered(q, r["query_used"], "ngoài phạm vi")
-        return {**out, "answer": REFUSE, "answered_by": "gate", "refused": True}
+        return {**out, "answer": REFUSE, "answered_by": "gate", "refused": True, "near": False}
+    if r["near"]:
+        log_unanswered(q, r["query_used"], "gần đúng")
 
     ctx = build_context(st, r["cases"], r["chunks"])
     out["sources"] = sources(st, r["cases"], r["chunks"])
@@ -294,7 +299,7 @@ def answer(q, use_llm=True):
             text = G.generate(PROMPT.format(ctx=ctx, q=r["query_used"]), system=SYSTEM)
             if text.strip() == "KHONG_DU_THONG_TIN":
                 log_unanswered(q, r["query_used"], "LLM: ngữ cảnh không đủ")
-                return {**out, "answer": REFUSE, "answered_by": "llm", "refused": True}
+                return {**out, "answer": REFUSE, "answered_by": "llm", "refused": True, "near": False, "sources": []}
             problems = check_answer(text, ctx, q, {st["cases"][i]["id"] for i in r["cases"]})
             if not problems:
                 return {**out, "answer": text, "answered_by": "llm"}

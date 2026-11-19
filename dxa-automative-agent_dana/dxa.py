@@ -243,6 +243,11 @@ def rrf(rank_lists, k=60):
 #      đồng hồ km" từng bị từ chối dù đã tìm đúng C32, chỉ vì "cách" và "dùng" bị đếm là chữ thiếu.
 MIN_BM25 = 12.0
 MIN_COVER = 0.6
+# Vùng "gần đúng": khớp chữ rất mạnh (BM25 cao) nhưng thiếu vài chữ hiếm. DXA vẫn trả lời bằng case gần nhất,
+# ghi rõ là câu trả lời gần nhất, và lưu câu hỏi để thợ bổ sung. Đo trên eval.py: 8 câu ngoài phạm vi có BM25
+# cao nhất 19.3, câu trong phạm vi thấp nhất 46, nên ngưỡng 25 nằm giữa hai nhóm.
+NEAR_BM25 = 25.0
+NEAR_COVER = 0.45
 _STOP_SCOPE = None
 
 def _syl(t):
@@ -262,9 +267,18 @@ def rare_word_cover(state, q, case_idx):
     total = sum(idf(w) for w in qs)
     return sum(idf(w) for w in qs if w in docs[case_idx]) / total if total else 0.0
 
-def in_scope(state, q):
+def scope_level(state, q):
+    """'in' = có trong kho, 'near' = gần đúng (trả lời bằng case gần nhất, có ghi chú), 'out' = từ chối."""
     b = state["bm25_cases"].scores(tokens(q))
-    return b.max() >= MIN_BM25 and rare_word_cover(state, q, int(np.argmax(b))) >= MIN_COVER
+    top, cover = float(b.max()), rare_word_cover(state, q, int(np.argmax(b)))
+    if top >= MIN_BM25 and cover >= MIN_COVER:
+        return "in"
+    if top >= NEAR_BM25 and cover >= NEAR_COVER:
+        return "near"
+    return "out"
+
+def in_scope(state, q):
+    return scope_level(state, q) == "in"
 
 def search(state, q, top=5):
     qt = tokens(q)
