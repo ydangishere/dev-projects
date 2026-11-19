@@ -1,10 +1,13 @@
 """Reproducible synthetic rule evaluation; not a live Gemini accuracy benchmark."""
 
 import json
+import os
 import sys
 from collections import Counter
 from datetime import date
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -61,6 +64,15 @@ except ImportError:
     )
 else:
     report["policy_retrieval"]["fastembed"] = run_retrieval(retriever=semantic)
+load_dotenv(ROOT / ".env")
+if os.getenv("GEMINI_API_KEY"):
+    from app.retrieval import GeminiEmbedder, HybridRetriever  # noqa: E402
+
+    report["policy_retrieval"]["gemini"] = run_retrieval(
+        retriever=HybridRetriever(GeminiEmbedder())
+    )
+else:
+    report["policy_retrieval"]["gemini"] = "skipped; set GEMINI_API_KEY to include it"
 (ROOT / "docs").mkdir(exist_ok=True)
 (ROOT / "docs/evaluation.json").write_text(
     json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n"

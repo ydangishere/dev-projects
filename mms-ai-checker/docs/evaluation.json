@@ -79,7 +79,7 @@
             "ndcg@5": 0.9662
           }
         },
-        "processing_seconds": 0.044,
+        "processing_seconds": 0.021,
         "per_question": {
           "Q01": {
             "relevant": {
@@ -486,7 +486,7 @@
             "ndcg@5": 0.6423
           }
         },
-        "processing_seconds": 0.03,
+        "processing_seconds": 0.017,
         "per_question": {
           "H01": {
             "relevant": {
@@ -874,7 +874,7 @@
             "ndcg@5": 0.9662
           }
         },
-        "processing_seconds": 2.0,
+        "processing_seconds": 0.198,
         "per_question": {
           "Q01": {
             "relevant": {
@@ -1281,7 +1281,7 @@
             "ndcg@5": 0.7162
           }
         },
-        "processing_seconds": 1.111,
+        "processing_seconds": 0.114,
         "per_question": {
           "H01": {
             "relevant": {
@@ -1583,6 +1583,801 @@
               "DEMO-POLICY-01:0.1:R7:0",
               "DEMO-POLICY-01:0.1:R1:0",
               "DEMO-POLICY-01:0.1:R3:0"
+            ]
+          },
+          "H16": {
+            "relevant": {
+              "R7": 2
+            },
+            "lexical": [
+              "R7",
+              "R1",
+              "R2"
+            ],
+            "hybrid": [
+              "R7",
+              "R3",
+              "R2"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R7:0",
+              "DEMO-POLICY-01:0.1:R3:0",
+              "DEMO-POLICY-01:0.1:R2:0"
+            ]
+          },
+          "H17": {
+            "relevant": {
+              "R7": 2
+            },
+            "lexical": [
+              "R1",
+              "R7",
+              "R2"
+            ],
+            "hybrid": [
+              "R1",
+              "R7",
+              "R3"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R7:0",
+              "DEMO-POLICY-01:0.1:R3:0"
+            ]
+          }
+        }
+      }
+    },
+    "gemini": {
+      "dev": {
+        "split": "dev",
+        "questions": 18,
+        "dataset_version": "2",
+        "dataset_sha256": "3ea81ec9235c089598390a0c55bb361009c68b71e0c08e4e7d1cfdf094a3b046",
+        "policy_sha256": "555a6fffc21a460a5340e0c73241363656689b065919a4221940437f1b631b82",
+        "embedder": "gemini:gemini-embedding-001",
+        "settings": {
+          "max_words": 60,
+          "overlap": 15,
+          "candidate_k": 8,
+          "rrf_k": 60,
+          "coverage_weight": 0.02
+        },
+        "lexical_baseline": {
+          "recall@3": 0.6389,
+          "precision@3": 0.2407,
+          "mrr": 0.6505,
+          "ndcg@5": 0.6677
+        },
+        "hybrid": {
+          "recall@3": 0.9722,
+          "precision@3": 0.3704,
+          "mrr": 0.9722,
+          "ndcg@5": 0.9651
+        },
+        "ranx_cross_check": {
+          "lexical_baseline": {
+            "recall@3": 0.6389,
+            "precision@3": 0.2407,
+            "mrr": 0.6505,
+            "ndcg@5": 0.6677
+          },
+          "hybrid": {
+            "recall@3": 0.9722,
+            "precision@3": 0.3704,
+            "mrr": 0.9722,
+            "ndcg@5": 0.9651
+          }
+        },
+        "processing_seconds": 7.883,
+        "per_question": {
+          "Q01": {
+            "relevant": {
+              "R1": 2
+            },
+            "lexical": [
+              "R1",
+              "R2",
+              "R3"
+            ],
+            "hybrid": [
+              "R1",
+              "R5",
+              "R2"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R5:0",
+              "DEMO-POLICY-01:0.1:R2:0"
+            ]
+          },
+          "Q02": {
+            "relevant": {
+              "R1": 2
+            },
+            "lexical": [
+              "R1",
+              "R2",
+              "R3"
+            ],
+            "hybrid": [
+              "R1",
+              "R5",
+              "R3"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R5:0",
+              "DEMO-POLICY-01:0.1:R3:0"
+            ]
+          },
+          "Q03": {
+            "relevant": {
+              "R1": 2
+            },
+            "lexical": [
+              "R1",
+              "R2",
+              "R3"
+            ],
+            "hybrid": [
+              "R1",
+              "R5",
+              "R2"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R5:0",
+              "DEMO-POLICY-01:0.1:R2:0"
+            ]
+          },
+          "Q04": {
+            "relevant": {
+              "R2": 2
+            },
+            "lexical": [
+              "R2",
+              "R7",
+              "R1"
+            ],
+            "hybrid": [
+              "R2",
+              "R1",
+              "R7"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R2:0",
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R7:0"
+            ]
+          },
+          "Q05": {
+            "relevant": {
+              "R2": 2
+            },
+            "lexical": [
+              "R1",
+              "R2",
+              "R4"
+            ],
+            "hybrid": [
+              "R2",
+              "R1",
+              "R7"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R2:0",
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R7:0"
+            ]
+          },
+          "Q06": {
+            "relevant": {
+              "R2": 2
+            },
+            "lexical": [
+              "R2",
+              "R1",
+              "R4"
+            ],
+            "hybrid": [
+              "R2",
+              "R1",
+              "R4"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R2:0",
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R4:0"
+            ]
+          },
+          "Q07": {
+            "relevant": {
+              "R3": 2
+            },
+            "lexical": [
+              "R1",
+              "R5",
+              "R2"
+            ],
+            "hybrid": [
+              "R3",
+              "R1",
+              "R7"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R3:0",
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R7:0"
+            ]
+          },
+          "Q08": {
+            "relevant": {
+              "R3": 2
+            },
+            "lexical": [
+              "R1",
+              "R2",
+              "R4"
+            ],
+            "hybrid": [
+              "R3",
+              "R1",
+              "R5"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R3:0",
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R5:0"
+            ]
+          },
+          "Q09": {
+            "relevant": {
+              "R3": 2
+            },
+            "lexical": [
+              "R4",
+              "R1",
+              "R2"
+            ],
+            "hybrid": [
+              "R3",
+              "R1",
+              "R4"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R3:0",
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R4:0"
+            ]
+          },
+          "Q10": {
+            "relevant": {
+              "R4": 2
+            },
+            "lexical": [
+              "R4",
+              "R1",
+              "R2"
+            ],
+            "hybrid": [
+              "R4",
+              "R5",
+              "R7"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R4:0",
+              "DEMO-POLICY-01:0.1:R5:0",
+              "DEMO-POLICY-01:0.1:R7:0"
+            ]
+          },
+          "Q11": {
+            "relevant": {
+              "R4": 2,
+              "R7": 1
+            },
+            "lexical": [
+              "R4",
+              "R1",
+              "R2"
+            ],
+            "hybrid": [
+              "R4",
+              "R1",
+              "R5"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R4:0",
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R5:0"
+            ]
+          },
+          "Q12": {
+            "relevant": {
+              "R5": 2
+            },
+            "lexical": [
+              "R1",
+              "R2",
+              "R3"
+            ],
+            "hybrid": [
+              "R5",
+              "R6",
+              "R7"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R5:0",
+              "DEMO-POLICY-01:0.1:R6:0",
+              "DEMO-POLICY-01:0.1:R7:0"
+            ]
+          },
+          "Q13": {
+            "relevant": {
+              "R5": 2
+            },
+            "lexical": [
+              "R2",
+              "R1",
+              "R5"
+            ],
+            "hybrid": [
+              "R1",
+              "R5",
+              "R2"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R5:0",
+              "DEMO-POLICY-01:0.1:R2:0"
+            ]
+          },
+          "Q14": {
+            "relevant": {
+              "R6": 2,
+              "R7": 1
+            },
+            "lexical": [
+              "R7",
+              "R1",
+              "R2"
+            ],
+            "hybrid": [
+              "R7",
+              "R6",
+              "R3"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R7:0",
+              "DEMO-POLICY-01:0.1:R6:0",
+              "DEMO-POLICY-01:0.1:R3:0"
+            ]
+          },
+          "Q15": {
+            "relevant": {
+              "R6": 2
+            },
+            "lexical": [
+              "R1",
+              "R2",
+              "R6"
+            ],
+            "hybrid": [
+              "R6",
+              "R1",
+              "R5"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R6:0",
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R5:0"
+            ]
+          },
+          "Q16": {
+            "relevant": {
+              "R7": 2
+            },
+            "lexical": [
+              "R5",
+              "R1",
+              "R2"
+            ],
+            "hybrid": [
+              "R7",
+              "R3",
+              "R2"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R7:0",
+              "DEMO-POLICY-01:0.1:R3:0",
+              "DEMO-POLICY-01:0.1:R2:0"
+            ]
+          },
+          "Q17": {
+            "relevant": {
+              "R7": 2
+            },
+            "lexical": [
+              "R7",
+              "R2",
+              "R5"
+            ],
+            "hybrid": [
+              "R7",
+              "R6",
+              "R3"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R7:0",
+              "DEMO-POLICY-01:0.1:R6:0",
+              "DEMO-POLICY-01:0.1:R3:0"
+            ]
+          },
+          "Q18": {
+            "relevant": {
+              "R2": 2,
+              "R3": 2
+            },
+            "lexical": [
+              "R1",
+              "R2",
+              "R5"
+            ],
+            "hybrid": [
+              "R2",
+              "R3",
+              "R1"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R2:0",
+              "DEMO-POLICY-01:0.1:R3:0",
+              "DEMO-POLICY-01:0.1:R1:0"
+            ]
+          }
+        }
+      },
+      "holdout": {
+        "split": "holdout",
+        "questions": 17,
+        "dataset_version": "2",
+        "dataset_sha256": "3ea81ec9235c089598390a0c55bb361009c68b71e0c08e4e7d1cfdf094a3b046",
+        "policy_sha256": "555a6fffc21a460a5340e0c73241363656689b065919a4221940437f1b631b82",
+        "embedder": "gemini:gemini-embedding-001",
+        "settings": {
+          "max_words": 60,
+          "overlap": 15,
+          "candidate_k": 8,
+          "rrf_k": 60,
+          "coverage_weight": 0.02
+        },
+        "lexical_baseline": {
+          "recall@3": 0.6471,
+          "precision@3": 0.2353,
+          "mrr": 0.6574,
+          "ndcg@5": 0.7017
+        },
+        "hybrid": {
+          "recall@3": 0.8529,
+          "precision@3": 0.3137,
+          "mrr": 0.7255,
+          "ndcg@5": 0.7712
+        },
+        "ranx_cross_check": {
+          "lexical_baseline": {
+            "recall@3": 0.6471,
+            "precision@3": 0.2353,
+            "mrr": 0.6574,
+            "ndcg@5": 0.7017
+          },
+          "hybrid": {
+            "recall@3": 0.8529,
+            "precision@3": 0.3137,
+            "mrr": 0.7255,
+            "ndcg@5": 0.7712
+          }
+        },
+        "processing_seconds": 6.27,
+        "per_question": {
+          "H01": {
+            "relevant": {
+              "R1": 2
+            },
+            "lexical": [
+              "R1",
+              "R2",
+              "R3"
+            ],
+            "hybrid": [
+              "R1",
+              "R3",
+              "R4"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R3:0",
+              "DEMO-POLICY-01:0.1:R4:0"
+            ]
+          },
+          "H02": {
+            "relevant": {
+              "R1": 2
+            },
+            "lexical": [
+              "R1",
+              "R2",
+              "R3"
+            ],
+            "hybrid": [
+              "R1",
+              "R4",
+              "R2"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R4:0",
+              "DEMO-POLICY-01:0.1:R2:0"
+            ]
+          },
+          "H03": {
+            "relevant": {
+              "R1": 2
+            },
+            "lexical": [
+              "R1",
+              "R4",
+              "R2"
+            ],
+            "hybrid": [
+              "R4",
+              "R1",
+              "R5"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R4:0",
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R5:0"
+            ]
+          },
+          "H04": {
+            "relevant": {
+              "R2": 2
+            },
+            "lexical": [
+              "R1",
+              "R5",
+              "R7"
+            ],
+            "hybrid": [
+              "R1",
+              "R7",
+              "R6"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R7:0",
+              "DEMO-POLICY-01:0.1:R6:0"
+            ]
+          },
+          "H05": {
+            "relevant": {
+              "R2": 2,
+              "R5": 1
+            },
+            "lexical": [
+              "R2",
+              "R5",
+              "R1"
+            ],
+            "hybrid": [
+              "R2",
+              "R5",
+              "R1"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R2:0",
+              "DEMO-POLICY-01:0.1:R5:0",
+              "DEMO-POLICY-01:0.1:R1:0"
+            ]
+          },
+          "H06": {
+            "relevant": {
+              "R2": 2
+            },
+            "lexical": [
+              "R2",
+              "R7",
+              "R1"
+            ],
+            "hybrid": [
+              "R2",
+              "R7",
+              "R3"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R2:0",
+              "DEMO-POLICY-01:0.1:R7:0",
+              "DEMO-POLICY-01:0.1:R3:0"
+            ]
+          },
+          "H07": {
+            "relevant": {
+              "R3": 2
+            },
+            "lexical": [
+              "R1",
+              "R2",
+              "R3"
+            ],
+            "hybrid": [
+              "R1",
+              "R3",
+              "R5"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R3:0",
+              "DEMO-POLICY-01:0.1:R5:0"
+            ]
+          },
+          "H08": {
+            "relevant": {
+              "R3": 2
+            },
+            "lexical": [
+              "R5",
+              "R1",
+              "R2"
+            ],
+            "hybrid": [
+              "R3",
+              "R5",
+              "R7"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R3:0",
+              "DEMO-POLICY-01:0.1:R5:0",
+              "DEMO-POLICY-01:0.1:R7:0"
+            ]
+          },
+          "H09": {
+            "relevant": {
+              "R3": 2
+            },
+            "lexical": [
+              "R6",
+              "R1",
+              "R2"
+            ],
+            "hybrid": [
+              "R3",
+              "R6",
+              "R1"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R3:0",
+              "DEMO-POLICY-01:0.1:R6:0",
+              "DEMO-POLICY-01:0.1:R1:0"
+            ]
+          },
+          "H10": {
+            "relevant": {
+              "R4": 2
+            },
+            "lexical": [
+              "R4",
+              "R1",
+              "R2"
+            ],
+            "hybrid": [
+              "R7",
+              "R4",
+              "R3"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R7:0",
+              "DEMO-POLICY-01:0.1:R4:0",
+              "DEMO-POLICY-01:0.1:R3:0"
+            ]
+          },
+          "H11": {
+            "relevant": {
+              "R4": 2
+            },
+            "lexical": [
+              "R4",
+              "R1",
+              "R2"
+            ],
+            "hybrid": [
+              "R4",
+              "R5",
+              "R7"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R4:0",
+              "DEMO-POLICY-01:0.1:R5:0",
+              "DEMO-POLICY-01:0.1:R7:0"
+            ]
+          },
+          "H12": {
+            "relevant": {
+              "R5": 2
+            },
+            "lexical": [
+              "R4",
+              "R1",
+              "R2"
+            ],
+            "hybrid": [
+              "R4",
+              "R6",
+              "R5"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R4:0",
+              "DEMO-POLICY-01:0.1:R6:0",
+              "DEMO-POLICY-01:0.1:R5:0"
+            ]
+          },
+          "H13": {
+            "relevant": {
+              "R5": 2
+            },
+            "lexical": [
+              "R5",
+              "R6",
+              "R1"
+            ],
+            "hybrid": [
+              "R6",
+              "R5",
+              "R2"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R6:0",
+              "DEMO-POLICY-01:0.1:R5:0",
+              "DEMO-POLICY-01:0.1:R2:0"
+            ]
+          },
+          "H14": {
+            "relevant": {
+              "R6": 2
+            },
+            "lexical": [
+              "R1",
+              "R7",
+              "R2"
+            ],
+            "hybrid": [
+              "R1",
+              "R7",
+              "R3"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R7:0",
+              "DEMO-POLICY-01:0.1:R3:0"
+            ]
+          },
+          "H15": {
+            "relevant": {
+              "R6": 2,
+              "R7": 1
+            },
+            "lexical": [
+              "R1",
+              "R2",
+              "R4"
+            ],
+            "hybrid": [
+              "R7",
+              "R1",
+              "R2"
+            ],
+            "top_chunks": [
+              "DEMO-POLICY-01:0.1:R7:0",
+              "DEMO-POLICY-01:0.1:R1:0",
+              "DEMO-POLICY-01:0.1:R2:0"
             ]
           },
           "H16": {
