@@ -98,11 +98,15 @@ Trả JSON: {{"query": "<câu đã thêm dấu>"}}
 Câu: {q}"""
 
 
+accent_seconds = {}  # câu hỏi -> số giây gọi Gemini để thêm dấu (api.py đọc để báo thời gian)
+
+
 def restore_accents(q):
     """Gõ không dấu -> có dấu. Nếu Gemini đổi chữ (không chỉ thêm dấu) thì giữ câu gốc."""
     if has_accents(q) or not G.available():
         return q
     if q not in _accent_cache:
+        t0 = time.perf_counter()
         out = q
         try:
             cand = str(G.generate(ACCENT_PROMPT.format(q=q), temperature=0, json_mode=True).get("query", "")).strip()
@@ -111,6 +115,7 @@ def restore_accents(q):
         except Exception as e:
             print(f"[rag] không thêm dấu được: {e}", file=sys.stderr)
         _accent_cache[q] = out
+        accent_seconds[q] = time.perf_counter() - t0
     return _accent_cache[q]
 
 
