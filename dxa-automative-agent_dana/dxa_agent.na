@@ -29,6 +29,7 @@ def find_cases(job: dict) -> dict:
     r = tools.retrieve(job["question"])
     job["query_used"] = r["query_used"]
     job["in_scope"] = r["in_scope"]
+    job["near"] = r["near"]
     job["case_ids"] = r["case_ids"]
     job["case_idx"] = r["case_idx"]
     job["context"] = r["context"]
@@ -37,12 +38,18 @@ def find_cases(job: dict) -> dict:
 
 
 def gate(job: dict) -> dict:
+    # Có nguồn (video) thì phải có câu trả lời bằng chữ; từ chối thì không kèm nguồn.
     job["refused"] = False
-    if not job["in_scope"]:
-        job["refused"] = True
-        job["answer"] = tools.refuse_text()
-        job["answered_by"] = "gate"
-        tools.log_unanswered(job["question"], job["query_used"], "ngoài phạm vi")
+    if job["in_scope"]:
+        return job
+    if job["near"]:
+        tools.log_unanswered(job["question"], job["query_used"], "gần đúng")
+        return job
+    job["refused"] = True
+    job["answer"] = tools.refuse_text()
+    job["answered_by"] = "gate"
+    job["sources"] = []
+    tools.log_unanswered(job["question"], job["query_used"], "ngoài phạm vi")
     return job
 
 
@@ -62,6 +69,7 @@ def write_answer(job: dict) -> dict:
         return job
     if "khong_du_thong_tin" in d:
         job["refused"] = True
+        job["sources"] = []
         job["answer"] = tools.refuse_text()
         job["answered_by"] = "llm"
         tools.log_unanswered(job["question"], job["query_used"], "LLM: ngữ cảnh không đủ")
@@ -93,6 +101,7 @@ def ask(question: str) -> dict:
     job = wf_answer({"question": question, "warnings": [], "answered_by": "", "mode": tools.mode()})
     out = {"question": question, "query_used": job["query_used"], "answer": job["answer"]}
     out["refused"] = job["refused"]
+    out["near"] = job["near"] and not job["refused"]
     out["answered_by"] = job["answered_by"]
     out["mode"] = job["mode"]
     out["warnings"] = job["warnings"]

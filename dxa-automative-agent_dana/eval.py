@@ -58,9 +58,10 @@ if __name__ == "__main__":
         h1 += ok1; h3 += ok3
         print(f"{'OK ' if ok1 else ('~  ' if ok3 else 'XX ')} {q:55s} -> {ids}  gold={sorted(gold)}")
     n = len(QUESTIONS)
-    ok = sum(not dxa.in_scope(state, q) for q in OUT_OF_SCOPE)
+    ok = sum(dxa.scope_level(state, q) == "out" for q in OUT_OF_SCOPE)
     for q in OUT_OF_SCOPE:
-        print(f"{'OK ' if not dxa.in_scope(state, q) else 'XX '} (ngoài phạm vi) {q}")
+        lv = dxa.scope_level(state, q)
+        print(f"{'OK ' if lv == 'out' else 'XX '} (ngoài phạm vi) {q}  [{lv}]")
     scope = sum(dxa.in_scope(state, q) for q, _ in QUESTIONS)
     print(f"\nTrả lời được câu trong phạm vi = {scope}/{n}  (cổng chặn không chặn nhầm)")
     print(f"Từ chối đúng câu ngoài phạm vi = {ok}/{len(OUT_OF_SCOPE)}")

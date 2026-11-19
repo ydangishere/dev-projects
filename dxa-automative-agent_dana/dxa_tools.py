@@ -36,6 +36,7 @@ def retrieve(question: str) -> dict:
     return {
         "query_used": r["query_used"],
         "in_scope": bool(r["in_scope"] and r["cases"]),
+        "near": bool(r["near"] and r["cases"]),
         "case_ids": [st["cases"][i]["id"] for i in r["cases"]],
         "context": rag.build_context(st, r["cases"], r["chunks"]) if r["cases"] else "",
         "sources": rag.sources(st, r["cases"], r["chunks"]),
@@ -45,6 +46,10 @@ def retrieve(question: str) -> dict:
 
 def refuse_text() -> str:
     return REFUSE
+
+
+def near_note() -> str:
+    return rag.NEAR_NOTE
 
 
 def log_unanswered(question: str, query_used: str, reason: str) -> bool:

@@ -76,6 +76,7 @@ class AskOut(BaseModel):
     query_used: str
     answer: str
     refused: bool
+    near: bool = False                 # trả lời bằng case gần nhất (câu hỏi chưa khớp hẳn)
     answered_by: str
     mode: str
     warnings: list[str]
