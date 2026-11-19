@@ -49,7 +49,7 @@ This is an independent portfolio prototype. It is **not an official VietPay/PVco
 
 **Technology boundaries:** RAG supplies retrieved context; it **does not train model weights**. Graph Retrieval supports provenance paths between applications, documents, findings and policy rules, while the deterministic Rule Engine retains authority over required checks. Fine-tuning changes model weights only using authorized, privacy-reviewed, specialist-labeled data. Compare finding-level Precision/Recall/F1, extraction accuracy, citation correctness and faithfulness, cost and latency.
 
-**Actual implementation vs roadmap:** The default executable demo parses synthetic TXT and runs the Rule Engine; `AI_MODE=gemini` enables real Gemini PDF/image extraction and explanation. Module 1 includes local graph evidence retrieval with an optional Neo4j adapter, not yet validated against a live Neo4j service. **Qwen inference, Supabase pgvector, fine-tuning and a real-data pilot are not implemented.** These images describe the planned model strategy, not measured results or completed training.
+**Actual implementation vs roadmap:** The default executable demo parses synthetic TXT and runs the Rule Engine; `AI_MODE=gemini` enables real Gemini PDF/image extraction and explanation. Module 1 includes local graph evidence retrieval with an optional Neo4j adapter, not yet validated against a live Neo4j service. Policy retrieval is hybrid: a local vector index plus BM25 keyword search, fused and reranked, with optional Gemini embeddings. **Qwen inference, Supabase pgvector, fine-tuning and a real-data pilot are not implemented.** These images describe the planned model strategy, not measured results or completed training.
 
 ## One feature within a three-feature assistant
 
@@ -153,7 +153,7 @@ The implementation uses the Google GenAI SDK `models.generate_content`, multimod
 
 1. FastAPI authenticates a server-configured principal and checks tenant/role. It reads application metadata and current source bytes from the repository adapter, currently SQLite fixtures/uploads.
 2. Demo mode parses known TXT fields. Gemini mode reads actual PDF/images into strict Pydantic JSON: `field`, `value`, `page`, `quote`, `confidence`. Unknown values are omitted and treated as uncertainty.
-3. RAG loads versioned local Markdown sections, scopes policy to tenant and effective date, then ranks sections by lexical matching. Every rule used by the checker is always included. This is **local lexical RAG, not embedding/vector-database RAG**. The question cannot suppress a rule or substitute a policy file.
+3. RAG loads the versioned local Markdown policy, splits it into section-aware chunks with source metadata, filters chunks by tenant, effective date and policy version, then runs hybrid retrieval: question decomposition and rewriting, vector search plus BM25 keyword search, Reciprocal Rank Fusion and reranking (see AI Check RAG design below). Every rule used by the checker is always included. The question can reorder policy sections but cannot suppress a rule or substitute a policy file; a suspicious question is ignored for retrieval.
 4. The Python Rule Engine executes synthetic `rules.yaml`: required document types, expiry, normalized names/registration numbers, current verification version and minimum extraction confidence. Rules determine findings; the LLM cannot remove them.
 5. Gemini receives immutable findings and retrieved policy sections for explanation, without raw document quotes, names or registration IDs in this second call. Strict JSON, known finding IDs and output screening are enforced. Invalid/model-failed explanations fall back to deterministic text. Extracting documents still sends their original content to Google when Gemini mode is selected.
 6. SQLite stores the application snapshot, source bytes/versions/hashes, extracted JSON, findings, exact retrieved policy sections/hash and audit events. Evidence comes from this historical snapshot. Replacing a document makes old results stale and blocks feedback until a new check.
@@ -162,12 +162,12 @@ Hard findings and AI explanation are displayed separately. Gemini quotes are **m
 
 ### Module 1 graph retrieval — implemented locally, optional Neo4j
 
-This diagram shows the target hybrid architecture. **Implemented now for Module 1:** application → required document / uploaded document → Rule Engine finding → policy rule relationships, graph traversal with a local deterministic backend, optional persisted Neo4j graph retrieval, graph-assisted deterministic rule prioritization, and graph evidence included with check results and Gemini explanations. **Not implemented:** Supabase pgvector/embedding retrieval or a model-based reranker. The existing `app/rag.py` still performs lexical policy retrieval.
+This diagram shows the target hybrid architecture. **Implemented now for Module 1:** application → required document / uploaded document → Rule Engine finding → policy rule relationships, graph traversal with a local deterministic backend, optional persisted Neo4j graph retrieval, graph-assisted deterministic rule prioritization, and graph evidence included with check results and Gemini explanations. Policy retrieval now uses the hybrid retriever in `app/retrieval.py` with an in-process vector index. **Not implemented:** Supabase pgvector persistence or a model-based (cross-encoder) reranker.
 
 ```mermaid
 flowchart TB
     Q["User Query<br/>Bank employee asks a question"] --> P["Query Processing"]
-    P --> V["Vector Retrieval (planned)<br/>Supabase pgvector<br/>Find policy and document chunks"]
+    P --> V["Vector Retrieval (live, in-process index)<br/>Supabase pgvector planned<br/>Find policy chunks"]
     P --> G["Graph Retrieval (Module 1 live)<br/>Local / optional Neo4j<br/>Application, document, finding, policy relationships"]
     V --> M["Merge + Reranking"]
     G --> M
@@ -198,7 +198,11 @@ Alternatively, configure the Neo4j password and HMAC key in `.env` then use `doc
 
 We have selected the following approach to build RAG (retrieval-augmented generation) for the AI Check / document-checking module. It retrieves applicable policy evidence to explain document-checking findings; it is separate from the planned transaction-investigation module.
 
-Status: selected architecture for the next iteration. The runnable checker currently uses local lexical retrieval in `app/rag.py`; decomposition, rewriting, embedding-based vector search, hybrid fusion and model-based reranking are not implemented by this documentation update.
+**Status: implemented (phase 1) in [`app/retrieval.py`](app/retrieval.py).** Every check now runs decomposition → rewriting (Vietnamese/English domain terms, with or without accents) → metadata filtering (tenant, effective date and policy version from server data) → hybrid search (vector + BM25 keyword, merged with Reciprocal Rank Fusion and deduplicated by chunk ID) → reranking (fused score plus query-term coverage) → rule-level policy sections. Each check result includes a `policy_retrieval` trace with subqueries, rewritten queries, filters, embedder and ranked candidate chunks.
+
+- **Embeddings:** `EMBED_MODE=local` (default) uses deterministic hashed word and character n-gram vectors. It runs offline with no model download, but it matches spelling overlap rather than deep meaning. `EMBED_MODE=gemini` uses the Gemini embedding API (`GEMINI_EMBED_MODEL`) and sends policy text and the employee question to Gemini. It is covered by a mocked-client test and not yet validated against the live API. If embedding fails, the check falls back to local embeddings and records an event.
+- **Not yet implemented:** Supabase pgvector persistence, a model-based reranker and LLM-based query rewriting. Rewriting uses a fixed domain vocabulary list.
+- **Settings:** chunk size, overlap, candidate Top-K and fusion constants live in `RetrievalSettings`. They are experiment settings, not tuned optima.
 
 ### 1. Prepare documents when they are added or updated
 
@@ -232,7 +236,7 @@ Change one parameter or strategy at a time, rerun the same test questions and co
 
 For evaluation of this planned pipeline, use the same labeled questions and applicable policy versions when comparing configurations. Recall@K and Precision@K measure retrieval coverage and relevance; MRR (Mean Reciprocal Rank) and NDCG (Normalized Discounted Cumulative Gain) measure ranking quality. Evaluate answer faithfulness and answer correctness separately. These are evaluation results, not ranking knobs, and are not claimed as measured by the current three-case synthetic checker evaluation.
 
-### Evaluation and observability tools (planned integration)
+### Evaluation and observability tools (ranx implemented; Ragas and LangSmith planned)
 
 These tools have different roles; adding this documentation does not install or connect them to the executable checker. Using all three is optional.
 
@@ -250,7 +254,7 @@ Run a labeled question set --> Collect retrieved chunks and generated answers --
 
 Chunking Lab is the custom workspace for selecting chunking strategies, changing parameters and previewing chunks. It can display results produced by these tools; it is not a replacement name for any of them. LangSmith provides an additional experiment/tracing interface, while ranx and Ragas can run in the Python backend.
 
-Keep the metric names and definitions explicit: Ragas context metrics are not automatically identical to standard ID-based Recall@K or Precision@K. Validate answer-judge scores with human review. The current checker evaluation remains the three synthetic finding-code cases documented below, not an implemented ranx/Ragas/LangSmith benchmark.
+Keep the metric names and definitions explicit: Ragas context metrics are not automatically identical to standard ID-based Recall@K or Precision@K. Validate answer-judge scores with human review. Implemented now: `python scripts/evaluate.py` scores the lexical baseline and the hybrid retriever on author-written labeled questions in [`samples/retrieval_questions.json`](samples/retrieval_questions.json) with Recall@3, Precision@3, MRR and NDCG@5, and cross-checks the numbers with ranx when `requirements-eval.txt` is installed. CI fails if the hybrid retriever scores below the lexical baseline. Ragas answer evaluation, LangSmith tracing and the Chunking Lab screen are not implemented yet.
 
 ### What MD, YAML and JSON do
 
@@ -311,7 +315,7 @@ No issuer/acquirer transaction messaging, ISO 8583, payment authorization, clear
 | Define problem | Document-checking scope, employee UX, issue taxonomy and advisory boundary | Card Center stakeholder validation and approved success criteria |
 | Prepare data | Three synthetic visible cases plus hidden-tenant fixture | Authorized anonymized sample set and domain-expert labels |
 | Prepare policy | Synthetic Markdown/YAML, effective date, version and SHA-256 | Official approved policy owner, change review and release procedure |
-| Build AI pipeline | Gemini adapter, typed extraction, lexical RAG, deterministic rules, explanations/fallback | Live Vietnamese document benchmark and chosen data-processing arrangement |
+| Build AI pipeline | Gemini adapter, typed extraction, hybrid policy RAG (local vector + keyword), deterministic rules, explanations/fallback | Live Vietnamese document benchmark and chosen data-processing arrangement |
 | Build product/backend | Python/FastAPI, REST, web UI, SQLite snapshots and feedback | Real MMS/storage/SSO adapters, production database if scale requires |
 | Test/security | Unit/API/adversarial tests, synthetic regression evaluation, dependency audit CI | Bank penetration test, broader attack corpus, independent review |
 | Package/deploy | Dockerfile, hardened local Compose, health endpoint and deployment runbook | Authorized server, TLS, secret manager, SSO, backups, operational rollout |
@@ -349,8 +353,8 @@ python -m pip_audit -r requirements.txt
 python scripts/smoke.py
 ```
 
-[`docs/evaluation.json`](docs/evaluation.json) reports exact finding-code matches on **three synthetic deterministic cases**, not production accuracy or Gemini OCR quality. See [validation record](docs/VALIDATION.md) for what was actually run and what remains unverified.
+[`docs/evaluation.json`](docs/evaluation.json) reports exact finding-code matches on **three synthetic deterministic cases**, not production accuracy or Gemini OCR quality. It also includes a `policy_retrieval` comparison of the lexical baseline and hybrid retrieval on labeled synthetic questions; these are small author-written fixtures, not a production retrieval benchmark. See [validation record](docs/VALIDATION.md) for what was actually run and what remains unverified.
 
 For a genuine model benchmark, label field values, source pages and expected findings on held-out authorized documents. Measure missing/expired/mismatch precision/recall, unsupported-source rate, false-clean outcomes, manual-review rate, p50/p95 latency and cost per application. Never invent a “92% accuracy” or time-saving claim from these fixtures.
 
-Code layout: `app/main.py` REST/auth/orchestration; `providers.py` Gemini/demo; `rag.py` retrieval; `engine.py` rules; `store.py` SQLite; `static/` employee UI; `policies/` MD/YAML; `samples/` JSON; `tests/`; `scripts/`; `docs/` diagrams/security/deployment. Diagram sources can be regenerated with `python scripts/diagrams.py` (Pillow and DejaVu Sans on Linux).
+Code layout: `app/main.py` REST/auth/orchestration; `providers.py` Gemini/demo; `rag.py` policy loading and legacy lexical ranking; `retrieval.py` hybrid retrieval; `retrieval_eval.py` retrieval metrics; `engine.py` rules; `store.py` SQLite; `static/` employee UI; `policies/` MD/YAML; `samples/` JSON; `tests/`; `scripts/`; `docs/` diagrams/security/deployment. Diagram sources can be regenerated with `python scripts/diagrams.py` (Pillow and DejaVu Sans on Linux).

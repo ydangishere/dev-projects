@@ -22,7 +22,8 @@ from .engine import evaluate
 from .graph import Neo4jGraph, retrieve_module1
 from .models import CheckInput, Feedback
 from .providers import Gemini, Source, extract_demo
-from .rag import policy_bundle, retrieve
+from .rag import policy_bundle
+from .retrieval import DEFAULT_QUERY, build_retriever
 from .security import suspicious
 from .store import Store
 
@@ -168,6 +169,7 @@ def create_app(data_dir=None, mode=None):
     app.add_middleware(Boundary)
     app.state.store, app.state.mode = store, mode
     app.state.graph_backend = graph_backend
+    app.state.retriever = build_retriever()
     if graph_backend:
         app.add_event_handler("shutdown", graph_backend.close)
     app.state.provider_factory = lambda: Gemini(
@@ -343,16 +345,24 @@ def create_app(data_dir=None, mode=None):
             findings = evaluate(
                 record, [m for m, _ in documents], extracted, rules, today, mode
             )
+            query = body.question
             if suspicious(body.question):
-                # Question is never forwarded to the model or used as policy authority.
+                # Question is never forwarded to the generative model or used as
+                # policy authority. A suspicious question does not steer retrieval.
                 events.append(
                     {"stage": "input", "status": "suspicious_question_ignored"}
                 )
-            sections = retrieve(
+                query = DEFAULT_QUERY
+            sections, retrieval_trace = app.state.retriever.search(
                 md,
-                "required expiry matching verification uncertainty security human review",
+                rules,
+                p["tenant"],
+                today.isoformat(),
+                query,
                 set(rules["rules"].values()),
             )
+            if retrieval_trace["status"]:
+                events.append({"stage": "retrieval", "status": retrieval_trace["status"]})
             graph_result, sections, graph_warning = retrieve_module1(
                 record,
                 [m for m, _ in documents],
@@ -395,6 +405,7 @@ def create_app(data_dir=None, mode=None):
                 "policy_version": rules["version"],
                 "policy_sha256": digest,
                 "policy_sections": sections,
+                "policy_retrieval": retrieval_trace,
                 "graph_retrieval": graph_result,
                 "findings": [f.model_dump() for f in findings],
                 "notes": notes,

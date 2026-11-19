@@ -44,7 +44,7 @@ Hai sơ đồ dưới đây mô tả cùng một quy trình kiểm tra hồ sơ 
 
 **Ranh giới công nghệ:** RAG (truy xuất tài liệu để bổ sung ngữ cảnh) **không huấn luyện model**. Graph Retrieval (tìm kiếm theo quan hệ) bổ sung đường dẫn hồ sơ → giấy tờ → phát hiện → quy định; Rule Engine vẫn kiểm tra lỗi bắt buộc. Fine-tuning (huấn luyện bổ sung trọng số) chỉ được thực hiện sau khi có dữ liệu gắn nhãn đáng tin cậy; dữ liệu pilot phải được phép dùng, xử lý thông tin nhạy cảm, tách bộ train/validation/test và có chuyên viên kiểm chứng. Đo Precision/Recall/F1 của phát hiện lỗi, độ đúng trích xuất và nguồn trích dẫn, tỷ lệ thiếu căn cứ, chi phí, độ trễ.
 
-**Trạng thái code hiện tại (không nhầm với roadmap):** Demo mặc định chạy bộ đọc TXT + Rule Engine; bật `AI_MODE=gemini` mới gọi Gemini thực để đọc PDF/ảnh và giải thích. Module 1 có Graph Retrieval cục bộ, có adapter Neo4j tùy chọn nhưng chưa xác minh chạy Neo4j thật. **Chưa tích hợp Qwen, Supabase pgvector, pipeline Fine-tuning hoặc Pilot dữ liệu thật.** Hình bên trên thể hiện kế hoạch, không phải kết quả triển khai hay benchmark đã đo.
+**Trạng thái code hiện tại (không nhầm với roadmap):** Demo mặc định chạy bộ đọc TXT + Rule Engine; bật `AI_MODE=gemini` mới gọi Gemini thực để đọc PDF/ảnh và giải thích. Module 1 có Graph Retrieval cục bộ, có adapter Neo4j tùy chọn nhưng chưa xác minh chạy Neo4j thật. Tìm quy định đã chạy hybrid: vector index tại chỗ kết hợp tìm từ khóa BM25, gộp kết quả rồi xếp hạng lại, có thể dùng embedding của Gemini. **Chưa tích hợp Qwen, Supabase pgvector, pipeline Fine-tuning hoặc Pilot dữ liệu thật.** Hình bên trên thể hiện kế hoạch, không phải kết quả triển khai hay benchmark đã đo.
 
 ## Một tính năng trong nhóm ba tính năng
 
@@ -152,7 +152,7 @@ Mã dùng Google GenAI SDK (thư viện kết nối Google), hàm `models.genera
 
 1. **Nhận yêu cầu và phân quyền:** FastAPI (công cụ xây backend bằng Python) kiểm tra token, vai trò và đơn vị ngân hàng. Backend lấy thông tin hồ sơ và giấy tờ hiện hành. Trong bản này nguồn là dữ liệu SQLite giả lập và file tải lên.
 2. **OCR / Document AI (đọc giấy tờ):** Gemini nhìn PDF/ảnh và xuất JSON gồm trường thông tin, giá trị, trang, câu trích nguyên văn và độ tin cậy. Không rõ thì bỏ trống để nhân viên kiểm tra; không đoán. “OCR” ở đây là giai đoạn đọc tài liệu bằng khả năng nhìn của Gemini, không bắt buộc thuê dịch vụ OCR riêng. Chế độ demo chỉ đọc các dòng TXT theo mẫu.
-3. **RAG (tìm tài liệu để AI tham khảo):** đọc các mục quy định Markdown, lọc theo ngân hàng và ngày hiệu lực, xếp hạng theo từ khóa. Các quy định mà bộ kiểm tra thực thi luôn được đưa vào. Đây là **RAG tìm theo từ khóa tại chỗ**, chưa dùng embedding/vector database (mã hóa và tìm theo độ gần nghĩa).
+3. **RAG (tìm tài liệu để AI tham khảo):** đọc quy định Markdown, chia thành các chunk theo từng mục kèm nguồn, lọc theo ngân hàng, ngày hiệu lực và phiên bản quy định, rồi tìm hybrid: tách và viết lại câu hỏi, tìm vector kết hợp tìm từ khóa BM25, gộp bằng Reciprocal Rank Fusion và xếp hạng lại (xem phần Thiết kế RAG bên dưới). Các quy định mà bộ kiểm tra thực thi luôn được đưa vào. Câu hỏi chỉ đổi được thứ tự, không loại bỏ được quy định hay thay file quy định; câu hỏi đáng ngờ bị bỏ qua khi tìm kiếm.
 4. **Rule Engine (bộ máy chạy luật):** Python thực hiện quy tắc YAML về giấy tờ bắt buộc, hết hạn, tên/mã số không khớp, phiên bản chưa xác minh và độ tin cậy thấp. Gemini không được xóa hoặc thay đổi phát hiện này.
 5. **Giải thích:** Gemini nhận danh sách phát hiện cố định và mục quy định đã tìm được, trả lời tiếng Việt theo JSON. Lần gọi giải thích không gửi tên, mã số, trích đoạn gốc hay câu hỏi người dùng; nhưng lần đọc giấy tờ có gửi bản gốc tới Google khi bật Gemini. Nếu trả sai cấu trúc, mã phát hiện lạ, nội dung bị chặn hoặc gọi model lỗi, backend dùng lời giải thích cố định và giữ nguyên phát hiện.
 6. **Lưu bằng chứng:** SQLite lưu ảnh chụp dữ liệu tại thời điểm kiểm tra, phiên bản/file gốc, mã băm SHA-256 (dấu nhận diện nội dung), dữ liệu bóc ra, phát hiện, quy định và nhật ký. Khi giấy tờ thay đổi, kết quả cũ được đánh dấu lịch sử, cần chạy lại.
@@ -161,12 +161,12 @@ Phát hiện bằng luật và phần AI diễn giải hiển thị riêng. Số
 
 ### Module 1 — Graph Retrieval đã có code, Neo4j là tùy chọn
 
-Sơ đồ dưới đây mô tả kiến trúc Hybrid RAG mục tiêu. **Đã triển khai cho Module 1:** graph nối hồ sơ → loại giấy tờ bắt buộc / giấy tờ đã tải → phát hiện của Rule Engine → quy định, truy vấn graph cục bộ (mặc định) hoặc Neo4j (khi cấu hình), ưu tiên quy định dựa trên bằng chứng graph, đưa bằng chứng vào kết quả và Gemini. **Chưa triển khai:** Supabase pgvector/embedding search, reranking bằng model. `app/rag.py` vẫn tìm quy định theo từ khóa.
+Sơ đồ dưới đây mô tả kiến trúc Hybrid RAG mục tiêu. **Đã triển khai cho Module 1:** graph nối hồ sơ → loại giấy tờ bắt buộc / giấy tờ đã tải → phát hiện của Rule Engine → quy định, truy vấn graph cục bộ (mặc định) hoặc Neo4j (khi cấu hình), ưu tiên quy định dựa trên bằng chứng graph, đưa bằng chứng vào kết quả và Gemini. Tìm quy định nay dùng bộ tìm hybrid trong `app/retrieval.py` với vector index trong bộ nhớ. **Chưa triển khai:** lưu vector vào Supabase pgvector, xếp hạng lại bằng model.
 
 ```mermaid
 flowchart TB
     Q["User Query<br/>Nhân viên ngân hàng đặt câu hỏi"] --> P["Query Processing<br/>Xử lý câu hỏi"]
-    P --> V["Vector Retrieval (dự kiến)<br/>Supabase pgvector<br/>Tìm tài liệu, quy định"]
+    P --> V["Vector Retrieval (đã có, index trong bộ nhớ)<br/>Supabase pgvector dự kiến<br/>Tìm đoạn quy định"]
     P --> G["Graph Retrieval (đã có cho Module 1)<br/>Graph cục bộ / Neo4j tùy chọn<br/>Hồ sơ, giấy tờ, phát hiện, quy định"]
     V --> M["Merge + Reranking<br/>Gộp và xếp hạng lại"]
     G --> M
@@ -197,7 +197,11 @@ Hoặc đặt mật khẩu Neo4j và khóa HMAC trong `.env`, sau đó chạy `d
 
 Chúng ta chọn phương án dưới đây để xây RAG (tìm tài liệu làm căn cứ cho AI trả lời) cho module AI Check / kiểm tra hồ sơ. Luồng này tìm quy định áp dụng để giải thích phát hiện khi kiểm tra hồ sơ, tách biệt với module điều tra giao dịch dự kiến.
 
-Trạng thái: kiến trúc đã chọn cho bước phát triển tiếp theo. Code chạy được hiện tại trong `app/rag.py` mới tìm theo từ khóa tại chỗ; cập nhật tài liệu này chưa triển khai tách câu hỏi, viết lại câu hỏi, tìm vector, gộp tìm kiếm kết hợp hay xếp hạng lại bằng model.
+**Trạng thái: đã triển khai (đợt 1) trong [`app/retrieval.py`](app/retrieval.py).** Mỗi lần kiểm tra hồ sơ đều chạy: tách câu hỏi → viết lại câu hỏi (thuật ngữ nghiệp vụ Việt/Anh, gõ có dấu hay không dấu đều được) → lọc metadata (ngân hàng, ngày hiệu lực, phiên bản quy định lấy từ dữ liệu server) → tìm hybrid (vector + từ khóa BM25, gộp bằng Reciprocal Rank Fusion, bỏ trùng theo mã chunk) → xếp hạng lại (điểm gộp cộng mức phủ từ khóa của câu hỏi) → danh sách mục quy định. Kết quả mỗi lần kiểm tra có thêm phần `policy_retrieval` ghi lại câu hỏi đã tách, câu hỏi đã viết lại, bộ lọc, loại embedding và các chunk ứng viên đã xếp hạng.
+
+- **Embedding:** `EMBED_MODE=local` (mặc định) dùng vector băm từ và cụm ký tự, chạy offline, không cần tải model, nhưng chỉ bắt được sự giống nhau về chữ, chưa hiểu sâu nghĩa. `EMBED_MODE=gemini` dùng API embedding của Gemini (`GEMINI_EMBED_MODEL`) và sẽ gửi nội dung quy định cùng câu hỏi của nhân viên sang Gemini. Phần này đã có test với client giả lập, chưa chạy thử với API thật. Nếu tạo embedding lỗi, hệ thống tự chuyển về embedding tại chỗ và ghi lại sự kiện.
+- **Chưa làm:** lưu vector vào Supabase pgvector, xếp hạng lại bằng model, viết lại câu hỏi bằng LLM. Bước viết lại hiện dùng danh sách thuật ngữ cố định.
+- **Tham số:** kích thước chunk, độ chồng lấn, Top-K ứng viên và hằng số gộp nằm trong `RetrievalSettings`. Đây là tham số để thử nghiệm, chưa phải giá trị tối ưu.
 
 ### 1. Chuẩn bị tài liệu khi thêm hoặc cập nhật
 
@@ -231,7 +235,7 @@ Mỗi lần thử cần lưu: cấu hình, phiên bản tài liệu/bộ dữ li
 
 Khi đánh giá luồng dự kiến này, dùng cùng bộ câu hỏi có nhãn chuẩn và phiên bản quy định áp dụng để so sánh cấu hình. Recall@K (tỷ lệ tìm đủ), Precision@K (tỷ lệ tìm đúng), MRR — Mean Reciprocal Rank (trung bình nghịch đảo thứ hạng) và NDCG — Normalized Discounted Cumulative Gain (điểm hữu ích tích lũy giảm theo thứ hạng, đã chuẩn hóa) chấm tìm kiếm/xếp hạng. Chấm riêng faithfulness (bám nguồn) và answer correctness (độ đúng câu trả lời). Đây là điểm đo, không phải nút chỉnh xếp hạng; chưa được đo bởi bộ đánh giá ba hồ sơ giả lập hiện tại.
 
-### Công cụ đánh giá và theo dõi (dự kiến tích hợp)
+### Công cụ đánh giá và theo dõi (đã có ranx; Ragas và LangSmith dự kiến)
 
 Ba công cụ có vai trò khác nhau. Việc bổ sung tài liệu này chưa cài đặt hay kết nối chúng vào code checker; không bắt buộc dùng cả ba.
 
@@ -249,7 +253,7 @@ Chạy bộ câu hỏi có nhãn chuẩn --> Thu các chunk tìm được và c�
 
 Chunking Lab là giao diện riêng để chọn cách chia, chỉnh tham số và xem trước chunk. Lab có thể hiển thị điểm do các công cụ trên tính; không phải tên khác của LangSmith, Ragas hay ranx. LangSmith có thêm giao diện theo dõi/so sánh; ranx và Ragas có thể chạy trong backend Python (phần xử lý phía máy chủ).
 
-Cần ghi rõ tên và định nghĩa chỉ số: điểm context của Ragas (đánh giá các đoạn ngữ cảnh) không mặc nhiên giống Recall@K/Precision@K chuẩn tính theo mã chunk. Điểm AI chấm câu trả lời cần được đối chiếu bằng đánh giá của con người. Bộ kiểm thử checker hiện tại vẫn là ba hồ sơ giả lập so mã phát hiện, chưa phải bộ đo đã tích hợp ranx/Ragas/LangSmith.
+Cần ghi rõ tên và định nghĩa chỉ số: điểm context của Ragas (đánh giá các đoạn ngữ cảnh) không mặc nhiên giống Recall@K/Precision@K chuẩn tính theo mã chunk. Điểm AI chấm câu trả lời cần được đối chiếu bằng đánh giá của con người. Đã có: `python scripts/evaluate.py` chấm bản tìm theo từ khóa cũ và bản hybrid trên bộ câu hỏi có nhãn tự viết trong [`samples/retrieval_questions.json`](samples/retrieval_questions.json) bằng Recall@3, Precision@3, MRR, NDCG@5, và đối chiếu với ranx khi cài `requirements-eval.txt`. CI báo lỗi nếu bản hybrid có điểm thấp hơn bản tìm theo từ khóa. Chưa có: chấm câu trả lời bằng Ragas, trace bằng LangSmith, màn hình Chunking Lab.
 
 ### MD, YAML, JSON lưu gì?
 
@@ -310,7 +314,7 @@ Tính năng này chưa xử lý giao dịch nên không cần ISO 8583 (thông �
 | Chốt bài toán | Phạm vi kiểm tra, UX nhân viên, loại lỗi và giới hạn quyền AI | Xác nhận với Trung tâm thẻ và thống nhất tiêu chí thành công |
 | Chuẩn bị dữ liệu | 3 hồ sơ giả lập được xem và 1 hồ sơ khác đơn vị để thử phân quyền | Hồ sơ được phép dùng, ẩn danh và có nhãn do chuyên gia xác nhận |
 | Chuẩn bị quy định | MD/YAML giả lập, ngày hiệu lực, phiên bản và mã băm | Quy định chính thức, người quản lý và quy trình phê duyệt thay đổi |
-| Xây luồng AI | Kết nối Gemini, đầu ra JSON, RAG theo từ khóa, bộ luật và giải thích dự phòng | Đo chất lượng đọc giấy tờ Việt Nam bằng model thật |
+| Xây luồng AI | Kết nối Gemini, đầu ra JSON, RAG hybrid (vector tại chỗ + từ khóa), bộ luật và giải thích dự phòng | Đo chất lượng đọc giấy tờ Việt Nam bằng model thật |
 | Xây backend/giao diện | FastAPI, REST, giao diện web, SQLite, bằng chứng và đánh giá | Kết nối MMS/kho tài liệu/SSO thật; DB phù hợp quy mô |
 | Kiểm thử và bảo vệ | Test luật/API/tình huống tấn công, đánh giá dữ liệu mẫu, quét thư viện | Kiểm thử bảo mật độc lập và nhiều hồ sơ/tình huống thực tế |
 | Đóng gói và triển khai | Docker, Compose, health check và tài liệu triển khai/quay lại phiên bản cũ | Server được cấp phép, TLS, quản lý bí mật, sao lưu, triển khai thí điểm |
@@ -354,8 +358,8 @@ python -m pip_audit -r requirements.txt
 python scripts/smoke.py
 ```
 
-[`docs/evaluation.json`](docs/evaluation.json) so kết quả với **3 tình huống giả lập bằng luật cố định**; không phải độ chính xác của Gemini hay dữ liệu production. Xem [biên bản kiểm chứng](docs/VALIDATION.md) để biết phần đã chạy và phần chưa xác minh.
+[`docs/evaluation.json`](docs/evaluation.json) so kết quả với **3 tình huống giả lập bằng luật cố định**; không phải độ chính xác của Gemini hay dữ liệu production. File này cũng có phần `policy_retrieval` so sánh bản tìm theo từ khóa với bản hybrid trên bộ câu hỏi giả lập có nhãn; đây là bộ câu hỏi nhỏ tự viết, không phải benchmark production. Xem [biên bản kiểm chứng](docs/VALIDATION.md) để biết phần đã chạy và phần chưa xác minh.
 
 Muốn đo thật: chuyên gia gắn nhãn giá trị, trang nguồn và lỗi trên tập hồ sơ được phép dùng, tách riêng tập kiểm thử. Đo tìm đúng/tìm sót lỗi, nguồn sai/bịa, trường hợp báo sạch sai, tỷ lệ cần người kiểm tra, tốc độ p50/p95 và chi phí mỗi hồ sơ. Không suy ra “chính xác 92%” hay “giảm 80% thời gian” từ ba hồ sơ mẫu này.
 
-Mã nguồn: `app/main.py` API/phân quyền/điều phối; `providers.py` Gemini/demo; `rag.py` tìm quy định; `engine.py` chạy luật; `store.py` SQLite; `static/` giao diện; `policies/` MD/YAML; `samples/` JSON; `tests/`; `scripts/`; `docs/` hình và tài liệu. Tạo lại hình luồng bằng `python scripts/diagrams.py` trên Linux có font DejaVu Sans.
+Mã nguồn: `app/main.py` API/phân quyền/điều phối; `providers.py` Gemini/demo; `rag.py` nạp quy định và xếp hạng từ khóa cũ; `retrieval.py` tìm hybrid; `retrieval_eval.py` chấm điểm tìm kiếm; `engine.py` chạy luật; `store.py` SQLite; `static/` giao diện; `policies/` MD/YAML; `samples/` JSON; `tests/`; `scripts/`; `docs/` hình và tài liệu. Tạo lại hình luồng bằng `python scripts/diagrams.py` trên Linux có font DejaVu Sans.

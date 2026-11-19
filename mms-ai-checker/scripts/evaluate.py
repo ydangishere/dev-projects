@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT))
 from app.engine import evaluate  # noqa: E402
 from app.providers import Source, extract_demo  # noqa: E402
 from app.rag import policy_bundle  # noqa: E402
+from app.retrieval_eval import run as run_retrieval  # noqa: E402
 
 EXPECTED = {
     "APP-DEMO-001": ["missing_document", "unverified_version", "expired"],
@@ -48,6 +49,7 @@ report = {
     "exact_match_cases": sum(r["exact_match"] for r in results),
     "total_cases": len(results),
     "production_accuracy": "not measured",
+    "policy_retrieval": run_retrieval(),
 }
 (ROOT / "docs").mkdir(exist_ok=True)
 (ROOT / "docs/evaluation.json").write_text(
@@ -56,3 +58,8 @@ report = {
 print(json.dumps(report, ensure_ascii=False, indent=2))
 if not all(r["exact_match"] for r in results):
     raise SystemExit(1)
+retrieval = report["policy_retrieval"]
+if any(
+    retrieval["hybrid"][m] < retrieval["lexical_baseline"][m] for m in retrieval["hybrid"]
+):
+    raise SystemExit("Hybrid retrieval regressed below the lexical baseline")

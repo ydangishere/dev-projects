@@ -36,5 +36,319 @@
   ],
   "exact_match_cases": 3,
   "total_cases": 3,
-  "production_accuracy": "not measured"
+  "production_accuracy": "not measured",
+  "policy_retrieval": {
+    "scope": "Author-written synthetic questions with rule-level relevance labels (2 = primary, 1 = supporting). Not employee data and not a production benchmark.",
+    "policy_sha256": "555a6fffc21a460a5340e0c73241363656689b065919a4221940437f1b631b82",
+    "questions": 18,
+    "embedder": "local-hashing-v1",
+    "settings": {
+      "max_words": 60,
+      "overlap": 15,
+      "candidate_k": 8,
+      "rrf_k": 60,
+      "coverage_weight": 0.02
+    },
+    "lexical_baseline": {
+      "recall@3": 0.6389,
+      "precision@3": 0.2407,
+      "mrr": 0.6505,
+      "ndcg@5": 0.6677
+    },
+    "hybrid": {
+      "recall@3": 1.0,
+      "precision@3": 0.3889,
+      "mrr": 0.9722,
+      "ndcg@5": 0.9662
+    },
+    "per_question": {
+      "Q01": {
+        "relevant": {
+          "R1": 2
+        },
+        "lexical": [
+          "R1",
+          "R2",
+          "R3"
+        ],
+        "hybrid": [
+          "R1",
+          "R2",
+          "R5"
+        ]
+      },
+      "Q02": {
+        "relevant": {
+          "R1": 2
+        },
+        "lexical": [
+          "R1",
+          "R2",
+          "R3"
+        ],
+        "hybrid": [
+          "R1",
+          "R2",
+          "R3"
+        ]
+      },
+      "Q03": {
+        "relevant": {
+          "R1": 2
+        },
+        "lexical": [
+          "R1",
+          "R2",
+          "R3"
+        ],
+        "hybrid": [
+          "R1",
+          "R2",
+          "R3"
+        ]
+      },
+      "Q04": {
+        "relevant": {
+          "R2": 2
+        },
+        "lexical": [
+          "R2",
+          "R7",
+          "R1"
+        ],
+        "hybrid": [
+          "R2",
+          "R7",
+          "R1"
+        ]
+      },
+      "Q05": {
+        "relevant": {
+          "R2": 2
+        },
+        "lexical": [
+          "R1",
+          "R2",
+          "R4"
+        ],
+        "hybrid": [
+          "R2",
+          "R1",
+          "R7"
+        ]
+      },
+      "Q06": {
+        "relevant": {
+          "R2": 2
+        },
+        "lexical": [
+          "R2",
+          "R1",
+          "R4"
+        ],
+        "hybrid": [
+          "R2",
+          "R1",
+          "R4"
+        ]
+      },
+      "Q07": {
+        "relevant": {
+          "R3": 2
+        },
+        "lexical": [
+          "R1",
+          "R5",
+          "R2"
+        ],
+        "hybrid": [
+          "R3",
+          "R1",
+          "R5"
+        ]
+      },
+      "Q08": {
+        "relevant": {
+          "R3": 2
+        },
+        "lexical": [
+          "R1",
+          "R2",
+          "R4"
+        ],
+        "hybrid": [
+          "R3",
+          "R1",
+          "R7"
+        ]
+      },
+      "Q09": {
+        "relevant": {
+          "R3": 2
+        },
+        "lexical": [
+          "R4",
+          "R1",
+          "R2"
+        ],
+        "hybrid": [
+          "R3",
+          "R4",
+          "R1"
+        ]
+      },
+      "Q10": {
+        "relevant": {
+          "R4": 2
+        },
+        "lexical": [
+          "R4",
+          "R1",
+          "R2"
+        ],
+        "hybrid": [
+          "R4",
+          "R5",
+          "R7"
+        ]
+      },
+      "Q11": {
+        "relevant": {
+          "R4": 2,
+          "R7": 1
+        },
+        "lexical": [
+          "R4",
+          "R1",
+          "R2"
+        ],
+        "hybrid": [
+          "R4",
+          "R5",
+          "R7"
+        ]
+      },
+      "Q12": {
+        "relevant": {
+          "R5": 2
+        },
+        "lexical": [
+          "R1",
+          "R2",
+          "R3"
+        ],
+        "hybrid": [
+          "R5",
+          "R2",
+          "R3"
+        ]
+      },
+      "Q13": {
+        "relevant": {
+          "R5": 2
+        },
+        "lexical": [
+          "R2",
+          "R1",
+          "R5"
+        ],
+        "hybrid": [
+          "R1",
+          "R5",
+          "R2"
+        ]
+      },
+      "Q14": {
+        "relevant": {
+          "R6": 2,
+          "R7": 1
+        },
+        "lexical": [
+          "R7",
+          "R1",
+          "R2"
+        ],
+        "hybrid": [
+          "R7",
+          "R6",
+          "R3"
+        ]
+      },
+      "Q15": {
+        "relevant": {
+          "R6": 2
+        },
+        "lexical": [
+          "R1",
+          "R2",
+          "R6"
+        ],
+        "hybrid": [
+          "R6",
+          "R7",
+          "R5"
+        ]
+      },
+      "Q16": {
+        "relevant": {
+          "R7": 2
+        },
+        "lexical": [
+          "R5",
+          "R1",
+          "R2"
+        ],
+        "hybrid": [
+          "R7",
+          "R3",
+          "R2"
+        ]
+      },
+      "Q17": {
+        "relevant": {
+          "R7": 2
+        },
+        "lexical": [
+          "R7",
+          "R2",
+          "R5"
+        ],
+        "hybrid": [
+          "R7",
+          "R6",
+          "R5"
+        ]
+      },
+      "Q18": {
+        "relevant": {
+          "R2": 2,
+          "R3": 2
+        },
+        "lexical": [
+          "R1",
+          "R2",
+          "R5"
+        ],
+        "hybrid": [
+          "R2",
+          "R3",
+          "R1"
+        ]
+      }
+    },
+    "ranx_cross_check": {
+      "lexical_baseline": {
+        "recall@3": 0.6389,
+        "precision@3": 0.2407,
+        "mrr": 0.6505,
+        "ndcg@5": 0.6677
+      },
+      "hybrid": {
+        "recall@3": 1.0,
+        "precision@3": 0.3889,
+        "mrr": 0.9722,
+        "ndcg@5": 0.9662
+      }
+    }
+  }
 }

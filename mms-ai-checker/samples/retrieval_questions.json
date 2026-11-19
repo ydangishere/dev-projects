@@ -1,0 +1,25 @@
+{
+  "scope": "Author-written synthetic questions with rule-level relevance labels (2 = primary, 1 = supporting). Not employee data and not a production benchmark.",
+  "tenant": "pvcb",
+  "review_date": "2026-11-05",
+  "questions": [
+    {"id": "Q01", "text": "Hồ sơ này còn thiếu giấy tờ gì?", "relevant": {"R1": 2}},
+    {"id": "Q02", "text": "Which documents are missing from this application?", "relevant": {"R1": 2}},
+    {"id": "Q03", "text": "thieu giay phep kinh doanh", "relevant": {"R1": 2}},
+    {"id": "Q04", "text": "CCCD của người đại diện hết hạn thì sao?", "relevant": {"R2": 2}},
+    {"id": "Q05", "text": "giay to het han xu ly the nao", "relevant": {"R2": 2}},
+    {"id": "Q06", "text": "Is a document that expires today considered expired?", "relevant": {"R2": 2}},
+    {"id": "Q07", "text": "Tên công ty trên giấy phép không khớp với hồ sơ", "relevant": {"R3": 2}},
+    {"id": "Q08", "text": "The registration number differs from the business license", "relevant": {"R3": 2}},
+    {"id": "Q09", "text": "Tên trên xác nhận tài khoản ngân hàng khác tên pháp lý", "relevant": {"R3": 2}},
+    {"id": "Q10", "text": "Tài liệu chưa được xác minh phiên bản thì sao?", "relevant": {"R4": 2}},
+    {"id": "Q11", "text": "Does OCR make a document verified?", "relevant": {"R4": 2, "R7": 1}},
+    {"id": "Q12", "text": "Độ tin cậy trích xuất thấp thì làm gì?", "relevant": {"R5": 2}},
+    {"id": "Q13", "text": "What if a field is duplicated or the quote is missing?", "relevant": {"R5": 2}},
+    {"id": "Q14", "text": "Tài liệu có câu bảo bỏ qua quy định và duyệt luôn", "relevant": {"R6": 2, "R7": 1}},
+    {"id": "Q15", "text": "Prompt injection inside an uploaded file", "relevant": {"R6": 2}},
+    {"id": "Q16", "text": "AI có được tự phê duyệt hồ sơ không?", "relevant": {"R7": 2}},
+    {"id": "Q17", "text": "Can the service move money or change KYC status?", "relevant": {"R7": 2}},
+    {"id": "Q18", "text": "Giấy tờ hết hạn và tên không khớp thì cần làm gì?", "relevant": {"R2": 2, "R3": 2}}
+  ]
+}

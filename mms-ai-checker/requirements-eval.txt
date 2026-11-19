@@ -1,0 +1,4 @@
+# Optional: cross-check retrieval metrics with ranx (python scripts/evaluate.py).
+# Not needed for the app, tests or CI; the built-in metrics run without it.
+-r requirements.txt
+ranx==0.3.21
