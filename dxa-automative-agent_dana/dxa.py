@@ -74,10 +74,15 @@ def from_video(c):
     return bool(c.get("video_id"))
 
 def origin(videos, c):
-    """(tiêu đề nguồn, thời điểm, link) của một case. Case thợ nhập không có video nên không có link."""
+    """(tiêu đề nguồn, thời điểm, link) của một case.
+    Case thợ nhập: có link YouTube thợ gắn thì mở video đó đúng giây, không gắn thì không có link."""
     if from_video(c):
         return videos[c["video_id"]]["title"], mmss(c["t"]), yt_link(c["video_id"], c["t"])
-    return f"Thợ nhập ngày {c.get('created_at', '')[:10]}".strip(), "", ""
+    title = f"Thợ nhập ngày {c.get('created_at', '')[:10]}".strip()
+    if c.get("yt_id"):
+        t = int(c.get("yt_t") or 0)
+        return f"{title}, video thợ gắn", mmss(t), yt_link(c["yt_id"], t)
+    return title, "", ""
 
 # ---------------------------------------------------------------- nạp dữ liệu
 def load_videos():

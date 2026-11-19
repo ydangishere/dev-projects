@@ -139,8 +139,31 @@ def _clean_specs(specs):
     return out[:20]
 
 
+def parse_video(url, at=""):
+    """Link YouTube (+ thời điểm 'phút:giây' hoặc số giây) -> (video_id, giây). Không gắn video thì (None, None)."""
+    url, at = str(url or "").strip(), str(at or "").strip()
+    if not url:
+        return None, None
+    m = re.search(r"(?:youtu\.be/|[?&]v=|/shorts/|/embed/|/live/)([A-Za-z0-9_-]{11})", url) or re.fullmatch(r"([A-Za-z0-9_-]{11})", url)
+    if not m:
+        raise ValueError("Link video phải là link YouTube, vd https://youtu.be/xxxxxxxxxxx")
+    t = 0
+    tm = re.search(r"[?&#]t=(?:(\d+)h)?(?:(\d+)m)?(\d+)s?", url)
+    if tm:
+        t = int(tm.group(1) or 0) * 3600 + int(tm.group(2) or 0) * 60 + int(tm.group(3))
+    if at:
+        parts = at.split(":")
+        if not all(p.isdigit() for p in parts) or len(parts) > 3:
+            raise ValueError("Thời điểm phải dạng phút:giây, vd 4:01")
+        t = 0
+        for p in parts:
+            t = t * 60 + int(p)
+    return m.group(1), t
+
+
 def build_case(data, cases):
     """Biến dữ liệu form thành case đúng khuôn của kho (cùng trường với case lấy từ video)."""
+    yt_id, yt_t = parse_video(data.get("video_url"), data.get("video_at"))
     system = str(data.get("system") or "khác").strip()
     if system not in SYSTEMS:
         raise ValueError(f"Hệ thống phải là một trong: {', '.join(SYSTEMS)}")
@@ -149,6 +172,8 @@ def build_case(data, cases):
         "source": "tho",
         "video_id": None,
         "t": None,
+        "yt_id": yt_id,          # video YouTube thợ gắn (không bắt buộc), không thuộc 30 video gốc
+        "yt_t": yt_t,
         "system": system,
         "symptom": _clean_text(data.get("symptom"), "triệu chứng"),
         "cause": _clean_text(data.get("cause"), "nguyên nhân"),
@@ -161,7 +186,7 @@ def build_case(data, cases):
         "reviewed": True,
         "status": "active",
         "review_note": "Thợ nhập trên tab Bổ sung kiến thức",
-        "author": _clean_text(data.get("author") or "thợ", "tên người nhập", max_len=60),
+        "author": _clean_text(data.get("author"), "tên người nhập", required=False, max_len=60) or "thợ",
         "created_at": time.strftime("%Y-%m-%d %H:%M"),
         "from_question": _clean_text(data.get("from_question"), "câu hỏi gốc", required=False, max_len=500),
     }

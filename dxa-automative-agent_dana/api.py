@@ -149,6 +149,8 @@ class CaseIn(BaseModel):
     warnings: list[str] = []
     author: str = Field("thợ", max_length=60)
     from_question: str = Field("", max_length=500)
+    video_url: str = Field("", max_length=300)   # link YouTube thợ gắn (không bắt buộc)
+    video_at: str = Field("", max_length=12)     # thời điểm phút:giây, vd 4:01
 
 
 @app.post("/tho/login")
