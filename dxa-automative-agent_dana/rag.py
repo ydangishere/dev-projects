@@ -23,6 +23,7 @@ import numpy as np
 
 import dxa
 import gemini_client as G
+import vn_text as V
 from vector_store import VectorStore
 
 TOP_CASES = 3
@@ -31,7 +32,6 @@ RRF_K = 60
 
 _state = _store = None
 _gemini_ok = False
-_accent_cache = {}
 
 
 # ---------------------------------------------------------------- nạp
@@ -74,8 +74,8 @@ def mode():
 
 def reset():
     """Bỏ kho đang nạp trong bộ nhớ, để lần hỏi sau đọc kho vừa dựng lại (sau khi thợ lưu kiến thức)."""
-    global _state, _store, _gemini_ok
-    _state, _store, _gemini_ok = None, None, False
+    global _state, _store, _gemini_ok, _accent_dict
+    _state, _store, _gemini_ok, _accent_dict = None, None, False, None
 
 
 # ---------------------------------------------------------------- câu không dấu
@@ -90,33 +90,75 @@ def has_accents(q):
     return any(unicodedata.category(ch) == "Mn" for ch in unicodedata.normalize("NFD", q)) or "đ" in q.lower()
 
 
-ACCENT_PROMPT = """Câu dưới đây là tiếng Việt gõ không dấu, nói về sửa xe máy.
-Hãy thêm dấu cho đúng. CHỈ thêm dấu: không thêm, bớt, đổi hay sắp xếp lại chữ nào.
-Thuật ngữ thợ hay dùng: bình xăng con, buông ga, cò mổ, bánh cam, sên cam, xupap, piston, bugi, phao xăng, rơ le, xi nhan, côn, nồi, sườn, gấp, đùm, dè.
-Trả JSON: {{"query": "<câu đã thêm dấu>"}}
+TRANSLATE_PROMPT = """Câu dưới đây là câu hỏi tiếng Anh về sửa xe máy. Dịch sang tiếng Việt theo cách thợ sửa xe Việt Nam hay nói.
+Thuật ngữ: carburetor = bình xăng con, idle = ralenti, rocker arm = cò mổ, camshaft = bánh cam, cam chain = sên cam,
+valve = xupap, spark plug = bugi, float = phao xăng, relay = rơ le, turn signal = xi nhan, clutch = côn, frame = sườn.
+Trả JSON: {{"query": "<câu tiếng Việt có dấu>"}}
 
 Câu: {q}"""
 
+accent_seconds = {}  # câu hỏi -> số giây chuẩn hóa câu hỏi (dịch bằng Gemini); api.py đọc để báo thời gian
+_english = {}        # câu tiếng Việt đã dịch -> câu tiếng Anh gốc, để trả lời lại bằng tiếng Anh
+_accent_dict = None
+TRANSLATE_CACHE = dxa.OUT / "translate_cache.json"
 
-accent_seconds = {}  # câu hỏi -> số giây gọi Gemini để thêm dấu (api.py đọc để báo thời gian)
+
+def accent_dict():
+    """Từ điển thêm dấu rút từ phụ đề, case và tên video trong kho (dựng một lần, ~0,1 giây)."""
+    global _accent_dict
+    if _accent_dict is None:
+        st = state()
+        texts = [ch["text"] for ch in st["chunks"]] + [v["title"] for v in st["videos"].values()]
+        texts += [f'{c["symptom"]} {c["cause"]} {c["fix"]} {" ".join(c.get("parts", []))}' for c in st["cases"]]
+        _accent_dict = V.AccentDict(texts)
+    return _accent_dict
+
+
+def _translate(q):
+    cache = {}
+    if TRANSLATE_CACHE.exists():
+        try:
+            cache = json.loads(TRANSLATE_CACHE.read_text(encoding="utf-8"))
+        except ValueError:
+            cache = {}
+    if q not in cache:
+        cand = str(G.generate(TRANSLATE_PROMPT.format(q=q), temperature=0, json_mode=True).get("query", "")).strip()
+        if not cand:
+            return q
+        cache[q] = cand
+        TRANSLATE_CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=1), encoding="utf-8")
+    return cache[q]
 
 
 def restore_accents(q):
-    """Gõ không dấu -> có dấu. Nếu Gemini đổi chữ (không chỉ thêm dấu) thì giữ câu gốc."""
-    if has_accents(q) or not G.available():
+    """Chuẩn hóa câu hỏi:
+    - có dấu: dùng luôn
+    - không dấu: thêm dấu bằng từ điển rút từ video, KHÔNG gọi Gemini
+    - tiếng Anh: gọi Gemini dịch sang tiếng Việt (một lần, có cache), rồi trả lời lại bằng tiếng Anh"""
+    if has_accents(q):
         return q
-    if q not in _accent_cache:
+    d = accent_dict()
+    if V.looks_english(q, d):
+        if not G.available():
+            return q
         t0 = time.perf_counter()
-        out = q
         try:
-            cand = str(G.generate(ACCENT_PROMPT.format(q=q), temperature=0, json_mode=True).get("query", "")).strip()
-            if cand and bare(cand) == bare(q):
-                out = cand
+            vi = _translate(q)
         except Exception as e:
-            print(f"[rag] không thêm dấu được: {e}", file=sys.stderr)
-        _accent_cache[q] = out
+            print(f"[rag] không dịch được: {e}", file=sys.stderr)
+            vi = q
         accent_seconds[q] = time.perf_counter() - t0
-    return _accent_cache[q]
+        if vi != q:
+            _english[vi] = q
+        return vi
+    return d.restore(q)
+
+
+def is_english(query_used):
+    return query_used in _english
+
+
+EN_NOTE = "\nKhách hỏi bằng tiếng Anh: viết câu trả lời bằng tiếng Anh, vẫn ghi mã case trong ngoặc vuông."
 
 
 # ---------------------------------------------------------------- tìm kiếm
@@ -301,7 +343,7 @@ def answer(q, use_llm=True):
 
     if use_llm and G.available():
         try:
-            text = G.generate(PROMPT.format(ctx=ctx, q=r["query_used"]), system=SYSTEM)
+            text = G.generate(PROMPT.format(ctx=ctx, q=r["query_used"]) + (EN_NOTE if is_english(r["query_used"]) else ""), system=SYSTEM)
             if text.strip() == "KHONG_DU_THONG_TIN":
                 log_unanswered(q, r["query_used"], "LLM: ngữ cảnh không đủ")
                 return {**out, "answer": REFUSE, "answered_by": "llm", "refused": True, "near": False, "sources": []}
