@@ -245,6 +245,12 @@
             <div class="field"><label for="f-parts">Phụ tùng <i>(cách nhau bằng dấu phẩy)</i></label><input id="f-parts"></div>
             <div class="field"><label for="f-tools">Dụng cụ <i>(cách nhau bằng dấu phẩy)</i></label><input id="f-tools"></div>
           </div>
+          <div class="two">
+            <div class="field"><label for="f-video">Link video YouTube <i>(không bắt buộc)</i></label>
+              <input id="f-video" maxlength="300" placeholder="https://youtu.be/..."></div>
+            <div class="field"><label for="f-at">Phút giây trong video <i>(vd 4:01)</i></label>
+              <input id="f-at" maxlength="12" placeholder="4:01"></div>
+          </div>
           <div class="field"><label for="f-specs">Thông số <i>(mỗi dòng: tên = giá trị đơn vị)</i></label>
             <textarea id="f-specs" placeholder="vd: áp suất lốp sau = 33 psi"></textarea></div>
           <div class="field"><label for="f-warnings">Lưu ý <i>(mỗi dòng một lưu ý)</i></label>
@@ -313,7 +319,7 @@ function renderText(text) {
 
 function play(src) {
   const id = videoId(src.link);
-  if (src.source === "tho") {
+  if (src.source === "tho" && !id) {
     document.querySelectorAll(".src").forEach((b) => b.setAttribute("aria-pressed", b.dataset.key === src.key ? "true" : "false"));
     $("screen").classList.remove("has-video");
     $("screen").textContent = `Kiến thức do thợ nhập, không có video. ${src.video_title}${src.author ? `, người nhập: ${src.author}` : ""}.`;
@@ -342,7 +348,7 @@ function renderSources(sources) {
     const badge = !isCase ? "" : fromTho ? '<span class="badge ok">Thợ nhập</span>'
       : (s.reviewed && !(s.review_note || "").toLowerCase().includes("tạm")
       ? '<span class="badge ok">Thợ đã duyệt</span>' : '<span class="badge wait">Duyệt tạm</span>');
-    const sub = fromTho ? `${esc(s.video_title)}${s.author ? `, ${esc(s.author)}` : ""}`
+    const sub = fromTho ? `${esc(s.video_title)}${s.author ? `, ${esc(s.author)}` : ""}${s.time ? `, phút <span class="time">${esc(s.time)}</span>` : ""}`
       : `${esc(s.video_title)}, phút <span class="time">${esc(s.time)}</span>`;
     const b = document.createElement("button");
     b.type = "button"; b.className = "src"; b.dataset.key = s.key; if (isCase) b.dataset.case = s.id;
@@ -483,7 +489,7 @@ async function saveCase(e) {
   try {
     const body = { from_question: $("f-q").value.trim(), symptom: $("f-symptom").value, cause: $("f-cause").value, fix: $("f-fix").value,
       system: $("f-system").value, author: $("f-author").value.trim() || "thợ", parts: commas("f-parts"), tools: commas("f-tools"),
-      specs: parseSpecs(), warnings: lines("f-warnings") };
+      specs: parseSpecs(), warnings: lines("f-warnings"), video_url: $("f-video").value.trim(), video_at: $("f-at").value.trim() };
     const r = await tho("/tho/cases", { method: "POST", body: JSON.stringify(body) });
     const q = body.from_question || r.case.symptom;
     $("saveResult").innerHTML = `<div class="result"><b>Đã lưu ${esc(r.case.id)}.</b> Kho tri thức đã dựng lại: ${r.cases} case.

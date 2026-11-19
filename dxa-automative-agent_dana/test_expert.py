@@ -74,6 +74,19 @@ try:
         a = cl.post("/ask", json={"question": "Bình xăng con chảy xăng khi dựng xe"}).json()
         check(next(x["id"] for x in a["sources"] if x["type"] == "case") == "C02", "câu cũ vẫn trả lời bằng case video C02")
 
+        # 4b. gắn video YouTube cho kiến thức thợ nhập
+        v = dict(case, symptom="Đèn báo xi nhan trên đồng hồ không sáng khi bật xi nhan", from_question="",
+                 video_url="https://youtu.be/wu9NFVma4Lo?t=60", video_at="1:45")
+        s2 = cl.post("/tho/cases", headers=H, json=v)
+        check(s2.status_code == 200 and s2.json()["case"]["yt_id"] == "wu9NFVma4Lo" and s2.json()["case"]["yt_t"] == 105,
+              "gắn link YouTube + 1:45 -> lưu video và giây 105")
+        c2 = cl.get(f"/cases/{s2.json()['case']['id']}").json()
+        check(c2["link"].startswith("https://www.youtube.com/watch?v=wu9NFVma4Lo") and c2["time"] == "1:45",
+              "case thợ nhập có video -> có link mở đúng giây")
+        check(cl.post("/tho/cases", headers=H, json=dict(v, video_url="https://example.com/x")).status_code == 422,
+              "link không phải YouTube -> 422")
+        cl.delete(f"/tho/cases/{s2.json()['case']['id']}", headers=H)
+
         # 5. gỡ case
         check(cl.delete("/tho/cases/T01", headers=H).status_code == 200, "gỡ T01")
         check(cl.post("/ask", json={"question": Q}).json()["refused"], "sau khi gỡ: DXA lại từ chối")
