@@ -199,7 +199,8 @@ Chúng ta chọn phương án dưới đây để xây RAG (tìm tài liệu là
 
 **Trạng thái: đã triển khai (đợt 1) trong [`app/retrieval.py`](app/retrieval.py).** Mỗi lần kiểm tra hồ sơ đều chạy: tách câu hỏi → viết lại câu hỏi (thuật ngữ nghiệp vụ Việt/Anh, gõ có dấu hay không dấu đều được) → lọc metadata (ngân hàng, ngày hiệu lực, phiên bản quy định lấy từ dữ liệu server) → tìm hybrid (vector + từ khóa BM25, gộp bằng Reciprocal Rank Fusion, bỏ trùng theo mã chunk) → xếp hạng lại (điểm gộp cộng mức phủ từ khóa của câu hỏi) → danh sách mục quy định. Kết quả mỗi lần kiểm tra có thêm phần `policy_retrieval` ghi lại câu hỏi đã tách, câu hỏi đã viết lại, bộ lọc, loại embedding và các chunk ứng viên đã xếp hạng.
 
-- **Embedding:** `EMBED_MODE=local` (mặc định) dùng vector băm từ và cụm ký tự, chạy offline, không cần tải model, nhưng chỉ bắt được sự giống nhau về chữ, chưa hiểu sâu nghĩa. `EMBED_MODE=gemini` dùng API embedding của Gemini (`GEMINI_EMBED_MODEL`) và sẽ gửi nội dung quy định cùng câu hỏi của nhân viên sang Gemini. Phần này đã có test với client giả lập, chưa chạy thử với API thật. Nếu tạo embedding lỗi, hệ thống tự chuyển về embedding tại chỗ và ghi lại sự kiện.
+- **Embedding:** `EMBED_MODE=local` (mặc định) dùng vector băm từ và cụm ký tự, chạy offline, không cần tải model, nhưng chỉ bắt được sự giống nhau về chữ, chưa hiểu nghĩa. `EMBED_MODE=fastembed` dùng model ngữ nghĩa đa ngôn ngữ chạy offline (`LOCAL_EMBED_MODEL`, mặc định `paraphrase-multilingual-MiniLM-L12-v2`, cài bằng `requirements-semantic.txt`); dữ liệu không rời khỏi server. `EMBED_MODE=gemini` dùng API embedding của Gemini (`GEMINI_EMBED_MODEL`) và sẽ gửi nội dung quy định cùng câu hỏi của nhân viên sang Gemini; phần này đã có test với client giả lập, chưa chạy thử với API thật. Nếu tạo embedding lỗi, hệ thống tự chuyển về embedding tại chỗ và ghi lại sự kiện.
+- **Giới hạn đã đo được:** bộ câu hỏi có nhãn chia làm `dev` (dùng khi xây bộ tìm kiếm) và `holdout` (viết theo cách khác, không dùng để chỉnh). Với embedding băm tại chỗ, bản hybrid tốt hơn bản tìm từ khóa cũ trên dev, nhưng trên holdout thì không tốt hơn ở MRR và NDCG, vì danh sách thuật ngữ viết lại khớp với cách hỏi của dev. Model ngữ nghĩa offline (`fastembed`) có điểm cao hơn bản cũ trên holdout. Xem `docs/evaluation.json`; đây là bộ câu hỏi nhỏ tự viết, không phải benchmark production.
 - **Chưa làm:** lưu vector vào Supabase pgvector, xếp hạng lại bằng model, viết lại câu hỏi bằng LLM. Bước viết lại hiện dùng danh sách thuật ngữ cố định.
 - **Tham số:** kích thước chunk, độ chồng lấn, Top-K ứng viên và hằng số gộp nằm trong `RetrievalSettings`. Đây là tham số để thử nghiệm, chưa phải giá trị tối ưu.
 
@@ -225,9 +226,9 @@ Query (câu hỏi) --> Decomposition (tách câu hỏi nếu cần) --> Rewritin
 6. Reranking: chấm lại các đoạn ứng viên theo từng câu đã làm rõ rồi chọn đoạn hữu ích nhất. Top-K (số đoạn ứng viên lấy về) và số đoạn cuối cùng đưa cho AI là hai tham số riêng; tổng hợp căn cứ từ các câu nhỏ khi cần.
 7. Generation: dùng câu hỏi gốc, các đoạn quy định đã chọn và phát hiện cố định của Rule Engine (bộ máy chạy luật) để giải thích kèm nguồn. Căn cứ của mọi luật bắt buộc vẫn phải có, kể cả nằm ngoài danh sách xếp hạng đã chọn. Model không được xóa phát hiện hay duyệt hồ sơ; thiếu căn cứ thì báo chưa đủ thông tin.
 
-### Chunking Lab và lịch sử thử nghiệm dự kiến
+### Chunking Lab và lịch sử thử nghiệm (đã có)
 
-Chunking Lab là GUI (giao diện đồ họa) kết nối luồng chuẩn bị tài liệu với việc thử tìm kiếm bằng câu hỏi. Đây là công cụ dự kiến xây, chưa phải màn hình hay dịch vụ lưu thử nghiệm đã triển khai trong checker hiện tại.
+Chunking Lab có tại `/lab` (có nút ở đầu trang checker). Người có vai trò maker hoặc checker có thể đổi số từ mỗi chunk, độ chồng lấn, Top-K ứng viên, hằng số gộp, trọng số phủ từ khóa và loại embedding, xem trước các chunk, chạy bộ câu hỏi có nhãn (dev, holdout hoặc tất cả) và so bản tìm từ khóa cũ với bản hybrid. Mỗi lần chạy được lưu vào SQLite gồm cấu hình, loại embedding, mã hash của bộ câu hỏi và quy định, thứ hạng từng câu, các chunk đứng đầu, điểm, thời gian xử lý, ngày chạy và người chạy, hiển thị mới nhất ở trên. API: `GET /api/lab/chunks`, `POST /api/lab/experiments`, `GET /api/lab/experiments[/{id}]`. Các nguyên tắc bên dưới vẫn áp dụng.
 
 Mỗi lần thử cần lưu: cấu hình, phiên bản tài liệu/bộ dữ liệu, cách chia chunk và tham số, mô hình embedding và phiên bản chỉ mục, cấu hình tìm kiếm/xếp hạng lại, bộ câu hỏi có nhãn chuẩn, các chunk tìm được cùng thứ tự, câu trả lời AI, điểm đánh giá, thời gian xử lý và ngày chạy.
 
@@ -235,9 +236,9 @@ Mỗi lần thử cần lưu: cấu hình, phiên bản tài liệu/bộ dữ li
 
 Khi đánh giá luồng dự kiến này, dùng cùng bộ câu hỏi có nhãn chuẩn và phiên bản quy định áp dụng để so sánh cấu hình. Recall@K (tỷ lệ tìm đủ), Precision@K (tỷ lệ tìm đúng), MRR — Mean Reciprocal Rank (trung bình nghịch đảo thứ hạng) và NDCG — Normalized Discounted Cumulative Gain (điểm hữu ích tích lũy giảm theo thứ hạng, đã chuẩn hóa) chấm tìm kiếm/xếp hạng. Chấm riêng faithfulness (bám nguồn) và answer correctness (độ đúng câu trả lời). Đây là điểm đo, không phải nút chỉnh xếp hạng; chưa được đo bởi bộ đánh giá ba hồ sơ giả lập hiện tại.
 
-### Công cụ đánh giá và theo dõi (đã có ranx; Ragas và LangSmith dự kiến)
+### Công cụ đánh giá và theo dõi (tùy chọn, đã có)
 
-Ba công cụ có vai trò khác nhau. Việc bổ sung tài liệu này chưa cài đặt hay kết nối chúng vào code checker; không bắt buộc dùng cả ba.
+Ba công cụ có vai trò khác nhau và đều không bắt buộc; ứng dụng, test và CI chạy được khi không cài. ranx: `requirements-eval.txt`, dùng trong `scripts/evaluate.py`. Ragas: `requirements-eval.txt`, dùng trong `scripts/evaluate_answers.py` với `OPENAI_API_KEY`. LangSmith: `requirements-observability.txt` cùng `LANGSMITH_TRACING=true` và `LANGSMITH_API_KEY`; trace chỉ gửi câu hỏi, ngân hàng, ngày kiểm tra, mã quy định, điểm và mã chunk, không gửi nội dung quy định, dữ liệu hồ sơ hay giấy tờ.
 
 | Công cụ | Vai trò trong thiết kế RAG cho AI Check / Chunking Lab |
 |---|---|
@@ -253,7 +254,7 @@ Chạy bộ câu hỏi có nhãn chuẩn --> Thu các chunk tìm được và c�
 
 Chunking Lab là giao diện riêng để chọn cách chia, chỉnh tham số và xem trước chunk. Lab có thể hiển thị điểm do các công cụ trên tính; không phải tên khác của LangSmith, Ragas hay ranx. LangSmith có thêm giao diện theo dõi/so sánh; ranx và Ragas có thể chạy trong backend Python (phần xử lý phía máy chủ).
 
-Cần ghi rõ tên và định nghĩa chỉ số: điểm context của Ragas (đánh giá các đoạn ngữ cảnh) không mặc nhiên giống Recall@K/Precision@K chuẩn tính theo mã chunk. Điểm AI chấm câu trả lời cần được đối chiếu bằng đánh giá của con người. Đã có: `python scripts/evaluate.py` chấm bản tìm theo từ khóa cũ và bản hybrid trên bộ câu hỏi có nhãn tự viết trong [`samples/retrieval_questions.json`](samples/retrieval_questions.json) bằng Recall@3, Precision@3, MRR, NDCG@5, và đối chiếu với ranx khi cài `requirements-eval.txt`. CI báo lỗi nếu bản hybrid có điểm thấp hơn bản tìm theo từ khóa. Chưa có: chấm câu trả lời bằng Ragas, trace bằng LangSmith, màn hình Chunking Lab.
+Cần ghi rõ tên và định nghĩa chỉ số: điểm context của Ragas (đánh giá các đoạn ngữ cảnh) không mặc nhiên giống Recall@K/Precision@K chuẩn tính theo mã chunk. Điểm AI chấm câu trả lời cần được đối chiếu bằng đánh giá của con người. `python scripts/evaluate.py` chấm bản tìm từ khóa cũ và bản hybrid trên hai phần dev và holdout của [`samples/retrieval_questions.json`](samples/retrieval_questions.json) (Recall@3, Precision@3, MRR, NDCG@5), chấm thêm model ngữ nghĩa offline khi đã cài, và đối chiếu với ranx khi đã cài; CI báo lỗi nếu bản hybrid điểm thấp hơn bản cũ trên dev. `python scripts/evaluate_answers.py` tạo câu trả lời ngắn từ các mục quy định tìm được rồi chấm bằng Ragas: faithfulness (bám nguồn), factual correctness (so với câu trả lời chuẩn) và context recall (nguồn tìm được có đủ ý không), ghi ra [`docs/answer_evaluation.json`](docs/answer_evaluation.json). Phần tạo và chấm câu trả lời ở đây dùng model OpenAI, không phải luồng Gemini của checker; điểm là ước lượng do AI chấm trên dữ liệu giả lập.
 
 ### MD, YAML, JSON lưu gì?
 
@@ -362,4 +363,4 @@ python scripts/smoke.py
 
 Muốn đo thật: chuyên gia gắn nhãn giá trị, trang nguồn và lỗi trên tập hồ sơ được phép dùng, tách riêng tập kiểm thử. Đo tìm đúng/tìm sót lỗi, nguồn sai/bịa, trường hợp báo sạch sai, tỷ lệ cần người kiểm tra, tốc độ p50/p95 và chi phí mỗi hồ sơ. Không suy ra “chính xác 92%” hay “giảm 80% thời gian” từ ba hồ sơ mẫu này.
 
-Mã nguồn: `app/main.py` API/phân quyền/điều phối; `providers.py` Gemini/demo; `rag.py` nạp quy định và xếp hạng từ khóa cũ; `retrieval.py` tìm hybrid; `retrieval_eval.py` chấm điểm tìm kiếm; `engine.py` chạy luật; `store.py` SQLite; `static/` giao diện; `policies/` MD/YAML; `samples/` JSON; `tests/`; `scripts/`; `docs/` hình và tài liệu. Tạo lại hình luồng bằng `python scripts/diagrams.py` trên Linux có font DejaVu Sans.
+Mã nguồn: `app/main.py` API/phân quyền/điều phối và API Chunking Lab; `providers.py` Gemini/demo; `rag.py` nạp quy định và xếp hạng từ khóa cũ; `retrieval.py` tìm hybrid và các loại embedding; `retrieval_eval.py` chấm điểm tìm kiếm; `observability.py` trace LangSmith tùy chọn; `engine.py` chạy luật; `store.py` SQLite; `static/` giao diện và Chunking Lab; `policies/` MD/YAML; `samples/` JSON; `tests/`; `scripts/`; `docs/` hình và tài liệu. Tạo lại hình luồng bằng `python scripts/diagrams.py` trên Linux có font DejaVu Sans.

@@ -49,17 +49,26 @@ report = {
     "exact_match_cases": sum(r["exact_match"] for r in results),
     "total_cases": len(results),
     "production_accuracy": "not measured",
-    "policy_retrieval": run_retrieval(),
+    "policy_retrieval": {"local-hashing": run_retrieval()},
 }
+try:
+    from app.retrieval import FastEmbedEmbedder, HybridRetriever  # noqa: E402
+
+    semantic = HybridRetriever(FastEmbedEmbedder())
+except ImportError:
+    report["policy_retrieval"]["fastembed"] = (
+        "not installed; pip install -r requirements-semantic.txt to include it"
+    )
+else:
+    report["policy_retrieval"]["fastembed"] = run_retrieval(retriever=semantic)
 (ROOT / "docs").mkdir(exist_ok=True)
 (ROOT / "docs/evaluation.json").write_text(
-    json.dumps(report, ensure_ascii=False, indent=2) + "\n"
+    json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n"
 )
 print(json.dumps(report, ensure_ascii=False, indent=2))
 if not all(r["exact_match"] for r in results):
     raise SystemExit(1)
-retrieval = report["policy_retrieval"]
-if any(
-    retrieval["hybrid"][m] < retrieval["lexical_baseline"][m] for m in retrieval["hybrid"]
-):
-    raise SystemExit("Hybrid retrieval regressed below the lexical baseline")
+# Gate only on the dev split. The holdout split is reported, never tuned against.
+dev = report["policy_retrieval"]["local-hashing"]["dev"]
+if any(dev["hybrid"][m] < dev["lexical_baseline"][m] for m in dev["hybrid"]):
+    raise SystemExit("Hybrid retrieval regressed below the lexical baseline on dev")

@@ -22,6 +22,9 @@ import re
 import unicodedata
 from collections import Counter
 from dataclasses import dataclass
+from pathlib import Path
+
+from .observability import traced
 
 DEFAULT_QUERY = (
     "required expiry matching verification uncertainty security human review"
@@ -257,6 +260,35 @@ class GeminiEmbedder:
         return vectors
 
 
+class FastEmbedEmbedder:
+    """Offline semantic embeddings with a multilingual ONNX model (EMBED_MODE=fastembed).
+
+    Install with `pip install -r requirements-semantic.txt`. The model is downloaded once
+    into FASTEMBED_CACHE_PATH (default: <DATA_DIR>/models) and then runs on CPU with no
+    network calls. Text never leaves the server.
+    """
+
+    def __init__(self, model: str | None = None, cache_dir: str | None = None):
+        from fastembed import TextEmbedding
+
+        self.model = model or os.getenv(
+            "LOCAL_EMBED_MODEL", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+        )
+        cache_dir = cache_dir or os.getenv("FASTEMBED_CACHE_PATH") or str(
+            Path(os.getenv("DATA_DIR", "runtime")) / "models"
+        )
+        self._model = TextEmbedding(model_name=self.model, cache_dir=cache_dir)
+        self.name = f"fastembed:{self.model}"
+
+    def embed(self, texts: list[str]) -> list[list[float]]:
+        vectors = []
+        for values in self._model.embed(list(texts)):
+            values = [float(v) for v in values]
+            norm = math.sqrt(sum(v * v for v in values)) or 1.0
+            vectors.append([v / norm for v in values])
+        return vectors
+
+
 class BM25:
     def __init__(self, docs: dict[str, list[str]], k1: float = 1.5, b: float = 0.75):
         self.docs = docs
@@ -318,6 +350,7 @@ class HybridRetriever:
             self._cache[key] = (chunks, vectors, bm25)
         return self._cache[key]
 
+    @traced("policy_retrieval", run_type="retriever")
     def search(self, md, rules, tenant, review_date, query, required_rule_ids):
         """Return (rule-level sections, retrieval trace)."""
         query = (query or "").strip() or DEFAULT_QUERY
@@ -410,10 +443,19 @@ class HybridRetriever:
         return sections, trace
 
 
-def build_retriever():
-    mode = os.getenv("EMBED_MODE", "local").casefold()
+EMBED_MODES = ("local", "fastembed", "gemini")
+
+
+def build_embedder(mode: str | None = None):
+    mode = (mode or os.getenv("EMBED_MODE", "local")).casefold()
     if mode == "gemini":
-        return HybridRetriever(GeminiEmbedder())
+        return GeminiEmbedder()
+    if mode == "fastembed":
+        return FastEmbedEmbedder()
     if mode != "local":
-        raise ValueError("EMBED_MODE must be local or gemini")
-    return HybridRetriever()
+        raise ValueError("EMBED_MODE must be local, fastembed or gemini")
+    return HashingEmbedder()
+
+
+def build_retriever(settings: RetrievalSettings | None = None):
+    return HybridRetriever(build_embedder(), settings)

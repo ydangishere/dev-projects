@@ -25,6 +25,9 @@ class Store:
             CREATE TABLE IF NOT EXISTS audit (
                 id INTEGER PRIMARY KEY, at TEXT NOT NULL, actor TEXT NOT NULL, tenant TEXT NOT NULL,
                 action TEXT NOT NULL, object_id TEXT NOT NULL, details TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS experiments (
+                id TEXT PRIMARY KEY, tenant TEXT NOT NULL, created_at TEXT NOT NULL,
+                actor TEXT NOT NULL, body TEXT NOT NULL);
             """)
 
     @contextmanager
@@ -146,6 +149,35 @@ class Store:
         with self.db() as db:
             row = db.execute(
                 "SELECT body FROM checks WHERE id=? AND tenant=?", (check_id, tenant)
+            ).fetchone()
+        return json.loads(row["body"]) if row else None
+
+    def save_experiment(self, record):
+        with self.db() as db:
+            db.execute(
+                "INSERT INTO experiments VALUES(?,?,?,?,?)",
+                (
+                    record["id"],
+                    record["tenant"],
+                    record["created_at"],
+                    record["actor"],
+                    json.dumps(record, ensure_ascii=False),
+                ),
+            )
+
+    def experiments(self, tenant, limit=50):
+        with self.db() as db:
+            rows = db.execute(
+                "SELECT body FROM experiments WHERE tenant=? ORDER BY created_at DESC LIMIT ?",
+                (tenant, limit),
+            ).fetchall()
+        return [json.loads(r["body"]) for r in rows]
+
+    def experiment(self, experiment_id, tenant):
+        with self.db() as db:
+            row = db.execute(
+                "SELECT body FROM experiments WHERE id=? AND tenant=?",
+                (experiment_id, tenant),
             ).fetchone()
         return json.loads(row["body"]) if row else None
 

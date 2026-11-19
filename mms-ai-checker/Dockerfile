@@ -1,10 +1,13 @@
 FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 DATA_DIR=/data
 WORKDIR /app
-COPY requirements.txt requirements-graph.txt ./
+COPY requirements.txt requirements-graph.txt requirements-semantic.txt ./
 ARG INSTALL_NEO4J=false
+# INSTALL_SEMANTIC=true adds the offline multilingual embedding model runtime (EMBED_MODE=fastembed).
+ARG INSTALL_SEMANTIC=false
 RUN pip install --no-cache-dir -r requirements.txt && \
     if [ "$INSTALL_NEO4J" = "true" ]; then pip install --no-cache-dir -r requirements-graph.txt; fi && \
+    if [ "$INSTALL_SEMANTIC" = "true" ]; then pip install --no-cache-dir -r requirements-semantic.txt; fi && \
     useradd --uid 10001 --create-home checker && mkdir /data && chown checker:checker /data
 COPY --chown=checker:checker app app
 COPY --chown=checker:checker static static

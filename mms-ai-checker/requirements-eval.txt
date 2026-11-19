@@ -1,4 +1,7 @@
-# Optional: cross-check retrieval metrics with ranx (python scripts/evaluate.py).
-# Not needed for the app, tests or CI; the built-in metrics run without it.
+# Optional evaluation tools; not needed for the app, tests or CI.
+# - ranx: cross-checks retrieval metrics in scripts/evaluate.py
+# - ragas + openai: answer evaluation in scripts/evaluate_answers.py (needs OPENAI_API_KEY)
 -r requirements.txt
 ranx==0.3.21
+ragas==0.4.4
+openai==3.3.0

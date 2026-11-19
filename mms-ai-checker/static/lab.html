@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="vi">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MMS • Chunking Lab</title><link rel="stylesheet" href="/assets/style.css"><script src="/assets/lab.js" defer></script></head>
+<body>
+<header><div><span class="brand">VIETPAY <b>MMS</b></span><span class="context">Chunking Lab · tìm quy định</span></div><a class="pill navlink" href="/">← Trợ lý kiểm tra hồ sơ</a></header>
+<main>
+<section class="intro"><p class="eyebrow">AI CHECK RAG / CHUNKING LAB</p><h1>Thử cách chia và tìm quy định.</h1><p>Đổi từng tham số, xem trước chunk, chạy cùng bộ câu hỏi có nhãn và so với lần trước.</p><div class="notice">Câu hỏi và nhãn là dữ liệu giả lập do tác giả viết · tách <b>dev</b> (dùng khi xây) và <b>holdout</b> (chỉ để kiểm tra) · không phải benchmark production.</div></section>
+<section class="session"><label for="token">Mã truy cập thử nghiệm</label><div class="row"><input id="token" type="password" autocomplete="off" placeholder="demo-checker-token"><button id="connect">Kết nối</button></div><small>Chạy thử nghiệm cần vai trò maker hoặc checker.</small></section>
+<p id="status" role="status" aria-live="polite">Kết nối để bắt đầu.</p>
+<div class="workspace">
+<aside class="panel"><p class="eyebrow">CẤU HÌNH</p>
+<label for="max_words">Số từ mỗi chunk (10–200)</label><input id="max_words" type="number" min="10" max="200" value="60">
+<label for="overlap">Số từ chồng lấn</label><input id="overlap" type="number" min="0" max="150" value="15">
+<label for="candidate_k">Top-K ứng viên (1–20)</label><input id="candidate_k" type="number" min="1" max="20" value="8">
+<label for="rrf_k">Hằng số RRF (1–200)</label><input id="rrf_k" type="number" min="1" max="200" value="60">
+<label for="coverage_weight">Trọng số phủ từ khóa (0–1)</label><input id="coverage_weight" type="number" min="0" max="1" step="0.01" value="0.02">
+<label for="embedder">Embedding</label><select id="embedder"><option value="local">local · băm n-gram, offline</option><option value="fastembed">fastembed · đa ngôn ngữ, offline</option><option value="gemini">gemini · cần GEMINI_API_KEY</option></select>
+<label for="split">Bộ câu hỏi</label><select id="split"><option value="all">Tất cả</option><option value="dev">dev</option><option value="holdout">holdout</option></select>
+<label for="note">Ghi chú lần thử</label><input id="note" maxlength="300" placeholder="Ví dụ: chunk nhỏ hơn">
+<div class="row lab-actions"><button id="preview" class="secondary" disabled>Xem trước chunk</button><button id="run" disabled>Chạy thử nghiệm</button></div>
+</aside>
+<section class="panel"><p class="eyebrow">KẾT QUẢ</p><div id="result"><p class="muted">Chạy thử nghiệm để xem điểm.</p></div><p class="eyebrow">XEM TRƯỚC CHUNK</p><div id="chunks"><p class="muted">Chưa xem trước.</p></div></section>
+</div>
+<section class="panel evidence"><div class="row spread"><h2>Lịch sử thử nghiệm</h2><span class="muted">Mới nhất ở trên · lưu cấu hình, phiên bản dữ liệu và điểm</span></div><div id="history"><p class="muted">Chưa có.</p></div></section>
+<footer>Recall@3, Precision@3, MRR, NDCG@5 · so bản tìm từ khóa cũ (lexical) với bản hybrid.</footer>
+</main></body></html>

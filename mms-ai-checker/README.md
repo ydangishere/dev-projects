@@ -200,7 +200,8 @@ We have selected the following approach to build RAG (retrieval-augmented genera
 
 **Status: implemented (phase 1) in [`app/retrieval.py`](app/retrieval.py).** Every check now runs decomposition → rewriting (Vietnamese/English domain terms, with or without accents) → metadata filtering (tenant, effective date and policy version from server data) → hybrid search (vector + BM25 keyword, merged with Reciprocal Rank Fusion and deduplicated by chunk ID) → reranking (fused score plus query-term coverage) → rule-level policy sections. Each check result includes a `policy_retrieval` trace with subqueries, rewritten queries, filters, embedder and ranked candidate chunks.
 
-- **Embeddings:** `EMBED_MODE=local` (default) uses deterministic hashed word and character n-gram vectors. It runs offline with no model download, but it matches spelling overlap rather than deep meaning. `EMBED_MODE=gemini` uses the Gemini embedding API (`GEMINI_EMBED_MODEL`) and sends policy text and the employee question to Gemini. It is covered by a mocked-client test and not yet validated against the live API. If embedding fails, the check falls back to local embeddings and records an event.
+- **Embeddings:** `EMBED_MODE=local` (default) uses deterministic hashed word and character n-gram vectors. It runs offline with no model download, but it matches spelling overlap rather than meaning. `EMBED_MODE=fastembed` uses an offline multilingual semantic model (`LOCAL_EMBED_MODEL`, default `paraphrase-multilingual-MiniLM-L12-v2`, installed with `requirements-semantic.txt`); text never leaves the server. `EMBED_MODE=gemini` uses the Gemini embedding API (`GEMINI_EMBED_MODEL`) and sends policy text and the employee question to Gemini; it is covered by a mocked-client test and not yet validated against the live API. If embedding fails, the check falls back to local embeddings and records an event.
+- **Measured limitation:** the labeled questions are split into `dev` (used while building the retriever) and `holdout` (different wording, never used for tuning). With local hashed embeddings, hybrid retrieval beats the lexical baseline on dev, but on holdout it does not beat it on MRR or NDCG: the rewrite vocabulary fits the dev wording. The offline semantic model (`fastembed`) scores higher than the lexical baseline on holdout. See `docs/evaluation.json`; these are small author-written fixtures, not a production benchmark.
 - **Not yet implemented:** Supabase pgvector persistence, a model-based reranker and LLM-based query rewriting. Rewriting uses a fixed domain vocabulary list.
 - **Settings:** chunk size, overlap, candidate Top-K and fusion constants live in `RetrievalSettings`. They are experiment settings, not tuned optima.
 
@@ -226,9 +227,9 @@ Query --> Query Decomposition (if needed) --> Query Rewriting --> Metadata Filte
 6. Reranking: score the retrieved candidates against each clarified question, then select the most useful chunks. Candidate count (Top-K) and final context count are separate settings; combine evidence from the subquestions when needed.
 7. Generation: use the original question, selected policy chunks and immutable Rule Engine findings to produce an explanation with source references. Required rule evidence must remain included even if it falls outside the ranked shortlist. The model cannot remove findings or approve a dossier; insufficient evidence must be reported as uncertainty.
 
-### Planned Chunking Lab and experiment history
+### Chunking Lab and experiment history (implemented)
 
-The Chunking Lab GUI (graphical user interface) will connect the document-preparation flow with query-time testing. It is planned tooling, not an implemented screen or experiment service in the current checker.
+The Chunking Lab is available at `/lab` (link in the checker header). A maker or checker can change chunk size, overlap, candidate Top-K, fusion constant, coverage weight and embedding backend, preview the resulting chunks, run the labeled question set (dev, holdout or all) and compare the lexical baseline with hybrid retrieval. Each run is stored in SQLite with its configuration, embedder, dataset and policy hashes, per-question rankings, top chunks, scores, processing time, run date and actor, and listed newest first. APIs: `GET /api/lab/chunks`, `POST /api/lab/experiments`, `GET /api/lab/experiments[/{id}]`. The guidance below still applies.
 
 For each experiment, record the configuration, document/dataset versions, chunking strategy and parameters, embedding model and index version, retrieval/reranking settings, labeled question set, retrieved chunks and their ranking, generated answers, evaluation scores, processing time and run date.
 
@@ -236,9 +237,9 @@ Change one parameter or strategy at a time, rerun the same test questions and co
 
 For evaluation of this planned pipeline, use the same labeled questions and applicable policy versions when comparing configurations. Recall@K and Precision@K measure retrieval coverage and relevance; MRR (Mean Reciprocal Rank) and NDCG (Normalized Discounted Cumulative Gain) measure ranking quality. Evaluate answer faithfulness and answer correctness separately. These are evaluation results, not ranking knobs, and are not claimed as measured by the current three-case synthetic checker evaluation.
 
-### Evaluation and observability tools (ranx implemented; Ragas and LangSmith planned)
+### Evaluation and observability tools (optional, implemented)
 
-These tools have different roles; adding this documentation does not install or connect them to the executable checker. Using all three is optional.
+These tools have different roles and are all optional; the app, tests and CI run without them. ranx: `requirements-eval.txt`, used by `scripts/evaluate.py`. Ragas: `requirements-eval.txt`, used by `scripts/evaluate_answers.py` with `OPENAI_API_KEY`. LangSmith: `requirements-observability.txt` plus `LANGSMITH_TRACING=true` and `LANGSMITH_API_KEY`; traces send only the question, tenant, review date, rule IDs, scores and chunk IDs, never policy text, application data or documents.
 
 | Tool | Role in the AI Check RAG / Chunking Lab design |
 |---|---|
@@ -254,7 +255,7 @@ Run a labeled question set --> Collect retrieved chunks and generated answers --
 
 Chunking Lab is the custom workspace for selecting chunking strategies, changing parameters and previewing chunks. It can display results produced by these tools; it is not a replacement name for any of them. LangSmith provides an additional experiment/tracing interface, while ranx and Ragas can run in the Python backend.
 
-Keep the metric names and definitions explicit: Ragas context metrics are not automatically identical to standard ID-based Recall@K or Precision@K. Validate answer-judge scores with human review. Implemented now: `python scripts/evaluate.py` scores the lexical baseline and the hybrid retriever on author-written labeled questions in [`samples/retrieval_questions.json`](samples/retrieval_questions.json) with Recall@3, Precision@3, MRR and NDCG@5, and cross-checks the numbers with ranx when `requirements-eval.txt` is installed. CI fails if the hybrid retriever scores below the lexical baseline. Ragas answer evaluation, LangSmith tracing and the Chunking Lab screen are not implemented yet.
+Keep the metric names and definitions explicit: Ragas context metrics are not automatically identical to standard ID-based Recall@K or Precision@K. Validate answer-judge scores with human review. `python scripts/evaluate.py` scores the lexical baseline and hybrid retrieval on the dev and holdout splits of [`samples/retrieval_questions.json`](samples/retrieval_questions.json) (Recall@3, Precision@3, MRR, NDCG@5), includes the offline semantic model when installed, and cross-checks with ranx when installed; CI fails if hybrid scores below the lexical baseline on dev. `python scripts/evaluate_answers.py` generates a short answer from the retrieved policy sections and scores it with Ragas faithfulness, factual correctness (against the reference answer) and context recall, writing [`docs/answer_evaluation.json`](docs/answer_evaluation.json). Answer generation and judging there use OpenAI models, not the Gemini path used by the checker; the scores are LLM-judge estimates on synthetic data.
 
 ### What MD, YAML and JSON do
 
@@ -357,4 +358,4 @@ python scripts/smoke.py
 
 For a genuine model benchmark, label field values, source pages and expected findings on held-out authorized documents. Measure missing/expired/mismatch precision/recall, unsupported-source rate, false-clean outcomes, manual-review rate, p50/p95 latency and cost per application. Never invent a “92% accuracy” or time-saving claim from these fixtures.
 
-Code layout: `app/main.py` REST/auth/orchestration; `providers.py` Gemini/demo; `rag.py` policy loading and legacy lexical ranking; `retrieval.py` hybrid retrieval; `retrieval_eval.py` retrieval metrics; `engine.py` rules; `store.py` SQLite; `static/` employee UI; `policies/` MD/YAML; `samples/` JSON; `tests/`; `scripts/`; `docs/` diagrams/security/deployment. Diagram sources can be regenerated with `python scripts/diagrams.py` (Pillow and DejaVu Sans on Linux).
+Code layout: `app/main.py` REST/auth/orchestration and Chunking Lab API; `providers.py` Gemini/demo; `rag.py` policy loading and legacy lexical ranking; `retrieval.py` hybrid retrieval and embedders; `retrieval_eval.py` retrieval metrics; `observability.py` optional LangSmith tracing; `engine.py` rules; `store.py` SQLite; `static/` employee UI and Chunking Lab; `policies/` MD/YAML; `samples/` JSON; `tests/`; `scripts/`; `docs/` diagrams/security/deployment. Diagram sources can be regenerated with `python scripts/diagrams.py` (Pillow and DejaVu Sans on Linux).

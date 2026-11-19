@@ -1,0 +1,4 @@
+# Optional: offline multilingual semantic embeddings (EMBED_MODE=fastembed).
+# Downloads the model once (about 220 MB) into FASTEMBED_CACHE_PATH or <DATA_DIR>/models.
+-r requirements.txt
+fastembed==0.9.1

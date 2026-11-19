@@ -27,6 +27,19 @@ class CheckInput(StrictModel):
     )
 
 
+class LabExperiment(StrictModel):
+    """One Chunking Lab run; bounds keep a single request cheap."""
+
+    max_words: int = Field(default=60, ge=10, le=200)
+    overlap: int = Field(default=15, ge=0, le=150)
+    candidate_k: int = Field(default=8, ge=1, le=20)
+    rrf_k: int = Field(default=60, ge=1, le=200)
+    coverage_weight: float = Field(default=0.02, ge=0, le=1)
+    embedder: Literal["local", "fastembed", "gemini"] = "local"
+    split: Literal["dev", "holdout", "all"] = "all"
+    note: str = Field(default="", max_length=300)
+
+
 class Feedback(StrictModel):
     finding_id: str = Field(pattern=r"^F[1-9][0-9]*$", max_length=30)
     verdict: Literal["correct", "incorrect", "needs_review"]

@@ -1,3 +1,4 @@
+import os
 from datetime import date
 
 import pytest
@@ -18,7 +19,14 @@ from app.retrieval import (
     rrf,
     tokenize,
 )
-from app.retrieval_eval import ndcg_at, precision_at, recall_at, reciprocal_rank, run
+from app.retrieval_eval import (
+    load_questions,
+    ndcg_at,
+    precision_at,
+    recall_at,
+    reciprocal_rank,
+    run,
+)
 
 TODAY = date(2026, 11, 5)
 CHECKER = {"Authorization": "Bearer demo-checker-token"}
@@ -173,10 +181,76 @@ def test_metric_functions():
     assert ndcg_at(["R1", "R2"], {"R2": 2}, 2) < 1.0
 
 
-def test_hybrid_is_not_worse_than_lexical_on_labeled_questions():
+def test_hybrid_is_not_worse_than_lexical_on_dev_questions():
     report = run()
-    for metric, value in report["hybrid"].items():
-        assert value >= report["lexical_baseline"][metric], metric
+    dev = report["dev"]
+    for metric, value in dev["hybrid"].items():
+        assert value >= dev["lexical_baseline"][metric], metric
+    assert report["holdout"]["questions"] > 0
+    assert {q["split"] for q in load_questions("all")[1]} == {"dev", "holdout"}
+
+
+def test_every_question_has_labels_and_reference_answer():
+    _, questions, _ = load_questions("all")
+    assert len({q["id"] for q in questions}) == len(questions)
+    for q in questions:
+        assert q["relevant"] and set(q["relevant"]) <= {f"R{i}" for i in range(1, 8)}
+        assert q["reference"]
+
+
+def lab_client(tmp_path):
+    return TestClient(create_app(tmp_path, "demo"))
+
+
+def test_lab_preview_requires_auth_and_validates_bounds(tmp_path):
+    client = lab_client(tmp_path)
+    assert client.get("/api/lab/chunks").status_code == 401
+    assert client.get("/api/lab/chunks?max_words=20&overlap=20", headers=CHECKER).status_code == 422
+    body = client.get("/api/lab/chunks?max_words=20&overlap=5", headers=CHECKER).json()
+    assert body["policy_id"] == "DEMO-POLICY-01"
+    assert all(c["words"] <= 20 + 12 for c in body["chunks"])
+
+
+def test_lab_experiment_is_saved_with_config_and_history(tmp_path):
+    client = lab_client(tmp_path)
+    viewer = {"Authorization": "Bearer demo-viewer-token"}
+    payload = {"max_words": 30, "overlap": 5, "split": "dev", "note": "small chunks"}
+    assert client.post("/api/lab/experiments", headers=viewer, json=payload).status_code == 403
+    record = client.post("/api/lab/experiments", headers=CHECKER, json=payload).json()
+    assert record["settings"]["max_words"] == 30 and record["split"] == "dev"
+    assert record["embedder"] == "local-hashing-v1" and record["dataset_sha256"]
+    assert set(record["hybrid"]) == {"recall@3", "precision@3", "mrr", "ndcg@5"}
+    history = client.get("/api/lab/experiments", headers=CHECKER).json()
+    assert history[0]["id"] == record["id"] and history[0]["note"] == "small chunks"
+    full = client.get(f"/api/lab/experiments/{record['id']}", headers=CHECKER).json()
+    assert full["per_question"]
+    assert client.get("/api/lab/experiments/nope", headers=CHECKER).status_code == 404
+
+
+def test_lab_rejects_unknown_fields_and_bad_overlap(tmp_path):
+    client = lab_client(tmp_path)
+    bad = client.post("/api/lab/experiments", headers=CHECKER, json={"max_words": 20, "overlap": 25})
+    assert bad.status_code == 422
+    extra = client.post("/api/lab/experiments", headers=CHECKER, json={"tenant": "other"})
+    assert extra.status_code == 422
+
+
+def test_lab_page_is_served_with_csp(tmp_path):
+    client = lab_client(tmp_path)
+    page = client.get("/lab")
+    assert page.status_code == 200 and "Chunking Lab" in page.text
+    assert "script-src 'self'" in page.headers["content-security-policy"]
+    assert client.get("/assets/lab.js").status_code == 200
+
+
+def test_fastembed_semantic_embedder_when_installed(tmp_path):
+    pytest.importorskip("fastembed")
+    from app.retrieval import FastEmbedEmbedder
+
+    embedder = FastEmbedEmbedder(cache_dir=os.getenv("FASTEMBED_CACHE_PATH") or str(tmp_path))
+    a, b, c = embedder.embed(["giấy tờ hết hạn", "expired document", "chuyển tiền"])
+    assert abs(sum(v * v for v in a) - 1) < 1e-6
+    assert sum(x * y for x, y in zip(a, b)) > sum(x * y for x, y in zip(a, c))
 
 
 def test_check_api_returns_retrieval_trace_and_ignores_suspicious_question(tmp_path):

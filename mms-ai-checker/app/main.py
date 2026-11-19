@@ -20,10 +20,18 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .engine import evaluate
 from .graph import Neo4jGraph, retrieve_module1
-from .models import CheckInput, Feedback
+from .models import CheckInput, Feedback, LabExperiment
 from .providers import Gemini, Source, extract_demo
 from .rag import policy_bundle
-from .retrieval import DEFAULT_QUERY, build_retriever
+from .retrieval import (
+    DEFAULT_QUERY,
+    HybridRetriever,
+    RetrievalSettings,
+    build_embedder,
+    build_retriever,
+    chunk_policy,
+)
+from .retrieval_eval import load_questions, run_experiment
 from .security import suspicious
 from .store import Store
 
@@ -224,7 +232,7 @@ def create_app(data_dir=None, mode=None):
 
     @app.get("/assets/{name}", include_in_schema=False)
     def assets(name: str):
-        if name not in {"app.js", "style.css"}:
+        if name not in {"app.js", "style.css", "lab.js"}:
             raise HTTPException(404)
         return FileResponse(ROOT / "static" / name)
 
@@ -507,7 +515,115 @@ def create_app(data_dir=None, mode=None):
             "automatically_trains_model": False,
         }
 
+    # ---- Chunking Lab: tune retrieval settings on labeled synthetic questions ----
+    lab_embedders, lab_lock = {}, threading.Lock()
+
+    def lab_embedder(name):
+        with lab_lock:
+            if name not in lab_embedders:
+                try:
+                    lab_embedders[name] = build_embedder(name)
+                except ImportError:
+                    raise HTTPException(
+                        400, "fastembed not installed; pip install -r requirements-semantic.txt"
+                    ) from None
+                except ValueError as error:
+                    raise HTTPException(400, str(error)) from None
+            return lab_embedders[name]
+
+    def lab_policy(p):
+        today = datetime.now(ZoneInfo("Asia/Ho_Chi_Minh")).date()
+        try:
+            return policy_bundle(p["tenant"], today)
+        except ValueError:
+            raise HTTPException(409, "Applicable policy unavailable") from None
+
+    @app.get("/lab", include_in_schema=False)
+    def lab_page():
+        return FileResponse(ROOT / "static/lab.html")
+
+    @app.get("/api/lab/chunks")
+    def lab_chunks(max_words: int = 60, overlap: int = 15, p=Depends(principal)):
+        if not 10 <= max_words <= 200 or not 0 <= overlap < max_words:
+            raise HTTPException(422, "Need 10 <= max_words <= 200 and 0 <= overlap < max_words")
+        rules, md, digest = lab_policy(p)
+        chunks = chunk_policy(md, rules, max_words, overlap)
+        return {
+            "policy_id": rules["policy_id"],
+            "policy_version": rules["version"],
+            "policy_sha256": digest,
+            "chunks": [
+                {
+                    "id": c.id,
+                    "rule": c.rule,
+                    "title": c.title,
+                    "position": c.position,
+                    "words": len(c.text.split()),
+                    "text": c.text,
+                }
+                for c in chunks
+            ],
+        }
+
+    @app.post("/api/lab/experiments", status_code=201)
+    def lab_run(body: LabExperiment, p=Depends(principal)):
+        write_access(p)
+        if body.overlap >= body.max_words:
+            raise HTTPException(422, "overlap must be smaller than max_words")
+        lab_policy(p)
+        if p["tenant"] != lab_dataset_tenant():
+            raise HTTPException(409, "Labeled questions exist only for the demo tenant")
+        settings = RetrievalSettings(
+            max_words=body.max_words,
+            overlap=body.overlap,
+            candidate_k=body.candidate_k,
+            rrf_k=body.rrf_k,
+            coverage_weight=body.coverage_weight,
+        )
+        retriever = HybridRetriever(lab_embedder(body.embedder), settings)
+        if not capacity.acquire(blocking=False):
+            raise HTTPException(429, "Checker busy; try again later")
+        try:
+            result = run_experiment(retriever, body.split)
+        except Exception:
+            raise HTTPException(502, "Experiment failed; embedding backend unavailable") from None
+        finally:
+            capacity.release()
+        record = {
+            "id": str(uuid.uuid4()),
+            "tenant": p["tenant"],
+            "actor": p["user"],
+            "created_at": datetime.now(ZoneInfo("Asia/Ho_Chi_Minh")).isoformat(),
+            "note": body.note,
+            "request": body.model_dump(),
+            **result,
+        }
+        store.save_experiment(record)
+        store.audit(p, "lab_experiment", record["id"], {"embedder": result["embedder"]})
+        return record
+
+    @app.get("/api/lab/experiments")
+    def lab_history(p=Depends(principal)):
+        return [
+            {key: item[key] for key in (
+                "id", "created_at", "actor", "note", "split", "embedder", "settings",
+                "lexical_baseline", "hybrid", "processing_seconds", "dataset_version",
+            )}
+            for item in store.experiments(p["tenant"])
+        ]
+
+    @app.get("/api/lab/experiments/{experiment_id}")
+    def lab_experiment(experiment_id: str, p=Depends(principal)):
+        record = store.experiment(experiment_id, p["tenant"])
+        if not record:
+            raise HTTPException(404, "Experiment not found")
+        return record
+
     return app
+
+
+def lab_dataset_tenant():
+    return load_questions("all")[0]["tenant"]
 
 
 app = create_app()
