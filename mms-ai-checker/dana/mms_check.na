@@ -1,0 +1,157 @@
+# MMS AI Checker — Module 1 written in Dana (prototype).
+#
+# Same idea as the Python version:
+#   1. Rules find the problems (deterministic code, no AI).
+#   2. Policy retrieval finds the matching policy sections.
+#   3. The LLM only explains the problems; it cannot add, remove or approve.
+#   4. An employee reads the result and decides.
+#
+# Synthetic demo data only. Demo mode: facts come from TXT, not OCR,
+# so rule R7 (AI-read documents need human review) is not triggered here.
+
+import mms_tools.py as tools
+
+struct Finding:
+    id: str
+    rule: str
+    code: str
+    severity: str
+    message: str
+    document_id: str
+
+
+def add(findings: list, rule: str, code: str, severity: str, message: str, document_id: str) -> list:
+    f = Finding(id=f"F{len(findings) + 1}", rule=rule, code=code, severity=severity, message=message, document_id=document_id)
+    return findings + [f]
+
+
+# ---------- Step 1: rules find the problems ----------
+
+def run_rules(case: dict) -> dict:
+    rules = case["policy"]["rules"]
+    app = case["application"]
+    docs = case["documents"]
+    findings = []
+
+    # R1 — required documents
+    kinds = []
+    for d in docs:
+        kinds = kinds + [d["kind"]]
+    for kind in rules["required_documents"]:
+        if kind not in kinds:
+            findings = add(findings, "R1", "missing_document", "blocker", f"Thiếu giấy tờ: {kind}.", "")
+
+    for d in docs:
+        doc_id = d["id"]
+        facts = d["facts"]
+
+        # R4 — current version must be verified
+        if d["verification"] != "verified" or d["verified_version"] != d["version"]:
+            findings = add(findings, "R4", "unverified_version", "review", "Phiên bản giấy tờ hiện tại chưa được xác minh.", doc_id)
+
+        # R6 / R5 — suspicious content and low confidence make a fact unusable
+        usable = {}
+        for field in facts:
+            fact = facts[field]
+            if tools.suspicious(fact["value"] + " " + fact["quote"]):
+                findings = add(findings, "R6", "suspicious_content", "review", "Phát hiện nội dung giống chỉ dẫn thao túng; cần kiểm tra.", doc_id)
+            elif fact["confidence"] < rules["minimum_confidence"]:
+                findings = add(findings, "R5", "low_confidence", "review", "Thông tin đọc chưa đủ chắc chắn.", doc_id)
+            else:
+                usable[field] = fact
+
+        # R5 — fields each document type must have
+        required = []
+        if d["kind"] == "business_license":
+            required = ["legal_name", "registration_number"]
+        if d["kind"] == "bank_confirmation":
+            required = ["legal_name"]
+        if d["kind"] in rules["expiry_required"]:
+            required = required + ["expires_on"]
+        for field in required:
+            if field not in usable:
+                findings = add(findings, "R5", "missing_fact", "review", f"Chưa xác định được thông tin: {field}.", doc_id)
+
+        # R2 — expiry (ISO dates compare correctly as strings)
+        if "expires_on" in usable:
+            expires = usable["expires_on"]["value"]
+            if not tools.is_iso_date(expires):
+                findings = add(findings, "R5", "invalid_date", "review", "Ngày hết hạn không rõ hoặc không hợp lệ.", doc_id)
+            elif expires < case["today"]:
+                findings = add(findings, "R2", "expired", "blocker", "Giấy tờ đã hết hạn tại ngày kiểm tra.", doc_id)
+
+        # R3 — names and registration numbers must match the MMS application
+        compare = []
+        if d["kind"] == "business_license":
+            compare = ["legal_name", "registration_number"]
+        if d["kind"] == "bank_confirmation":
+            compare = ["legal_name"]
+        for field in compare:
+            if field in usable:
+                if tools.normalize(usable[field]["value"]) != tools.normalize(app[field]):
+                    findings = add(findings, "R3", "mismatch", "review", f"Thông tin {field} không khớp với hồ sơ MMS; cần đối chiếu.", doc_id)
+
+    case["findings"] = findings
+    return case
+
+
+# ---------- Step 2: find the policy sections ----------
+
+def find_policy(case: dict) -> dict:
+    rule_ids = []
+    for f in case["findings"]:
+        if f.rule not in rule_ids:
+            rule_ids = rule_ids + [f.rule]
+    case["policy_sections"] = tools.retrieve_policy(case["policy"]["md"], case["question"], rule_ids)
+    return case
+
+
+# ---------- Step 3: the LLM explains (it does not decide) ----------
+
+def explain(case: dict) -> dict:
+    findings = case["findings"]
+    if len(findings) == 0:
+        case["explanation"] = "Không phát hiện lỗi trong phạm vi quy tắc demo. Nhân viên vẫn cần kiểm tra trước khi duyệt."
+        return case
+
+    findings_text = ""
+    for f in findings:
+        findings_text = findings_text + f"{f.id} [{f.rule}/{f.severity}] {f.message} (giấy tờ: {f.document_id})\n"
+
+    policy_text = ""
+    for s in case["policy_sections"]:
+        policy_text = policy_text + s["text"] + "\n\n"
+
+    prompt = "Bạn hỗ trợ nhân viên ngân hàng kiểm tra hồ sơ merchant. "
+    prompt = prompt + "Giải thích từng lỗi bằng tiếng Việt đơn giản, mỗi lỗi một dòng bắt đầu bằng mã lỗi (F1, F2...), "
+    prompt = prompt + "nêu điều quy định liên quan và việc nhân viên nên kiểm tra. "
+    prompt = prompt + "Chỉ dùng danh sách lỗi và quy định được cung cấp. Không thêm lỗi mới, không bỏ lỗi, "
+    prompt = prompt + "không nói hồ sơ được duyệt hay bị từ chối. "
+    prompt = prompt + f"Câu hỏi của nhân viên: {case['question']}"
+
+    case["explanation"] = reason(prompt, context=[findings_text, policy_text], temperature=0.0)
+    return case
+
+
+# ---------- Workflow: rules → policy → explanation ----------
+
+def wf_check(case) = run_rules | find_policy | explain
+
+
+def show(case: dict):
+    print(f"Hồ sơ: {case['app_id']} — ngày kiểm tra {case['today']}")
+    print(f"Policy digest: {case['policy']['digest'][:12]}")
+    print("Lỗi do luật tìm ra (AI không sửa được):")
+    if len(case["findings"]) == 0:
+        print("  (không có)")
+    for f in case["findings"]:
+        print(f"  {f.id} {f.rule} {f.severity:8} {f.code:20} {f.document_id} — {f.message}")
+    print("Giải thích của AI (nhân viên đọc rồi tự quyết định):")
+    print(case["explanation"])
+    print("")
+
+
+question = "Hồ sơ này còn thiếu gì để được duyệt?"
+for app_id in ["APP-DEMO-001", "APP-DEMO-002", "APP-DEMO-003"]:
+    result = wf_check(tools.load_case(app_id, question))
+    show(result)
