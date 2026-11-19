@@ -19,6 +19,8 @@ Tab "Bổ sung kiến thức" (chỉ thợ, kiểm quyền ở máy chủ bằng
     POST   /tho/cases         lưu case mới rồi dựng lại kho ngay
     DELETE /tho/cases/{id}    gỡ case (giữ lại trong file để truy vết)
 """
+import sys
+import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Optional
@@ -77,6 +79,8 @@ class AskOut(BaseModel):
     answer: str
     refused: bool
     near: bool = False                 # trả lời bằng case gần nhất (câu hỏi chưa khớp hẳn)
+    seconds: float = 0                 # tổng thời gian trả lời
+    seconds_accent: float = 0          # phần thời gian gọi Gemini thêm dấu cho câu gõ không dấu
     answered_by: str
     mode: str
     warnings: list[str]
@@ -102,8 +106,13 @@ def health():
 @app.post("/ask", response_model=AskOut)
 def ask(body: AskIn):
     q = body.question.strip()
+    t0 = time.perf_counter()
     res = dxa_dana.ask(q) if body.use_llm else rag.answer(q, use_llm=False)
-    return {k: res[k] for k in AskOut.model_fields}
+    res["seconds"] = round(time.perf_counter() - t0, 2)
+    res["seconds_accent"] = round(rag.accent_seconds.pop(q, 0.0), 2)
+    print(f"[DXA] trả lời trong {res['seconds']} giây (thêm dấu {res['seconds_accent']} giây, "
+          f"trả lời bởi {res['answered_by']}): {q[:60]}", file=sys.stderr, flush=True)
+    return {k: res.get(k) for k in AskOut.model_fields}
 
 
 @app.get("/cases/{case_id}")
