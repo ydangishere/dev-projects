@@ -45,6 +45,16 @@ QUESTIONS = [
     ("cách đấu đèn báo xi nhan khi không dùng đồng hồ km", {"C32", "C25"}),  # câu thật, từng bị cổng chặn từ chối
 ]
 
+# Câu gõ không dấu, chạy qua rag.retrieve (thêm dấu bằng từ điển rút từ video, không gọi Gemini)
+NO_ACCENT = [
+    ("binh xang con chay xang khi dung xe", {"C01", "C02"}),
+    ("co mo bi bo khong co do ro", {"C14"}),
+    ("con bi truot, chua bop con ma dap da tuot", {"C40"}),
+    ("lap den bao xi nhan ma khong can dong ho", {"C32", "C25"}),
+    ("moc mat piston sau bao nhieu thi khong lung", {"C10"}),
+    ("chay bi hut xang mat ga hoai", {"C03"}),
+]
+
 OUT_OF_SCOPE = ["xe đề không nổ", "thay nhớt bao lâu một lần", "phanh đĩa bị kêu", "lốp xe bị xì", "đèn pha không sáng",
                 "xe tay ga bị rung đầu", "ắc quy nhanh hết điện", "ô tô bị nóng máy"]
 
@@ -66,3 +76,13 @@ if __name__ == "__main__":
     print(f"\nTrả lời được câu trong phạm vi = {scope}/{n}  (cổng chặn không chặn nhầm)")
     print(f"Từ chối đúng câu ngoài phạm vi = {ok}/{len(OUT_OF_SCOPE)}")
     print(f"Hit@1 = {h1}/{n} = {h1/n:.0%}   Hit@3 = {h3}/{n} = {h3/n:.0%}")
+
+    import rag
+    na = 0
+    for q, gold in NO_ACCENT:
+        r = rag.retrieve(q)
+        ids = [state["cases"][i]["id"] for i in r["cases"]]
+        ok_ = r["in_scope"] and bool(set(ids[:3]) & gold)
+        na += ok_
+        print(f"{'OK ' if ok_ else 'XX '} (không dấu) {q:45s} -> \"{r['query_used']}\" {ids[:3]}")
+    print(f"Câu không dấu trả lời đúng (top 3, không gọi Gemini) = {na}/{len(NO_ACCENT)}")

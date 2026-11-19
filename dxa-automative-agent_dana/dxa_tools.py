@@ -70,7 +70,7 @@ Trả về ĐÚNG MỘT object JSON, không viết gì ngoài JSON, theo mẫu:
 Mã case có thể là Cxx (lấy từ video) hoặc Txx (thợ nhập).
 Nếu NGỮ CẢNH không trả lời được câu hỏi: {"khong_du_thong_tin": true}
 
-""" + rag.PROMPT.format(ctx=context, q=question)
+""" + rag.PROMPT.format(ctx=context, q=question) + (rag.EN_NOTE if rag.is_english(question) else "")
 
 
 def parse_answer(raw) -> dict:

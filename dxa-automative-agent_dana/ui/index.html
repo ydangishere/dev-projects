@@ -375,7 +375,7 @@ function renderAnswer(r) {
     ${r.near ? '<p class="warn">Câu hỏi chưa khớp hẳn với kiến thức trong kho, đây là câu trả lời gần nhất. Câu hỏi đã được lưu để thợ bổ sung.</p>' : ""}
     ${r.refused ? '<p class="meta">Câu này đã được lưu để thợ bổ sung kiến thức.</p>' : ""}
     ${(r.warnings || []).map((w) => `<p class="warn">${esc(w)}</p>`).join("")}
-    <p class="meta">Chế độ ${esc(r.mode)}, ${esc(by)}.${r.seconds ? ` Trả lời trong ${r.seconds.toFixed(1)} giây${r.seconds_accent >= 0.1 ? `, trong đó ${r.seconds_accent.toFixed(1)} giây để thêm dấu cho câu gõ không dấu` : ""}.` : ""}</p>`;
+    <p class="meta">Chế độ ${esc(r.mode)}, ${esc(by)}.${r.seconds ? ` Trả lời trong ${r.seconds.toFixed(1)} giây${r.seconds_accent >= 0.1 ? `, trong đó ${r.seconds_accent.toFixed(1)} giây để dịch câu tiếng Anh` : ""}.` : ""}</p>`;
   a.querySelectorAll(".tag").forEach((t) => t.addEventListener("click", () => {
     const src = (current?.sources || []).find((s) => s.type === "case" && s.id === t.dataset.case);
     if (src) play(src);

@@ -80,7 +80,7 @@ class AskOut(BaseModel):
     refused: bool
     near: bool = False                 # trả lời bằng case gần nhất (câu hỏi chưa khớp hẳn)
     seconds: float = 0                 # tổng thời gian trả lời
-    seconds_accent: float = 0          # phần thời gian gọi Gemini thêm dấu cho câu gõ không dấu
+    seconds_accent: float = 0          # phần thời gian gọi Gemini dịch câu tiếng Anh (câu không dấu thêm dấu trên máy, ~0 giây)
     answered_by: str
     mode: str
     warnings: list[str]
@@ -110,7 +110,7 @@ def ask(body: AskIn):
     res = dxa_dana.ask(q) if body.use_llm else rag.answer(q, use_llm=False)
     res["seconds"] = round(time.perf_counter() - t0, 2)
     res["seconds_accent"] = round(rag.accent_seconds.pop(q, 0.0), 2)
-    print(f"[DXA] trả lời trong {res['seconds']} giây (thêm dấu {res['seconds_accent']} giây, "
+    print(f"[DXA] trả lời trong {res['seconds']} giây (dịch {res['seconds_accent']} giây, "
           f"trả lời bởi {res['answered_by']}): {q[:60]}", file=sys.stderr, flush=True)
     return {k: res.get(k) for k in AskOut.model_fields}
 
