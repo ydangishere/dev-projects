@@ -117,4 +117,4 @@ async function showEvidence(checkId,findingId){
   }
   box.scrollIntoView({behavior:"smooth",block:"start"});
 }
-fetch("/healthz").then(r=>r.json()).then(h=>{$("mode").textContent=h.mode==="demo"?"DEMO · không gọi AI":`Gemini · ${h.model}`;}).catch(()=>{$("mode").textContent="Chưa kết nối máy chủ";});
+fetch("/healthz").then(r=>r.json()).then(h=>{$("mode").textContent=h.mode==="demo"?"DEMO · không gọi AI":`${h.mode==="qwen"?"Qwen":"Gemini"} · ${h.model}`;}).catch(()=>{$("mode").textContent="Chưa kết nối máy chủ";});
