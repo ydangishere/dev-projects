@@ -45,6 +45,6 @@ Before an authorized pilot: bank IdP registration and identity-mapping review, o
 
 ## Tóm tắt tiếng Việt
 
-Biện pháp quan trọng nhất là **tài liệu và câu hỏi không có quyền thay luật, phân quyền hay quyết định duyệt**. Từ khóa phát hiện tấn công chỉ hỗ trợ; AI vẫn có thể đọc sai hoặc bị ảnh hưởng khi bóc thông tin. Vì vậy bản này giữ phát hiện bằng luật riêng, lưu nguồn thật, bắt đối chiếu thông tin Gemini đọc, và không cung cấp lệnh duyệt/chuyển tiền.
+Biện pháp quan trọng nhất là **tài liệu và câu hỏi không có quyền thay luật, phân quyền hay quyết định duyệt**. Từ khóa phát hiện tấn công chỉ hỗ trợ; AI vẫn có thể đọc sai hoặc bị ảnh hưởng khi bóc thông tin. Vì vậy bản này giữ phát hiện bằng luật riêng, lưu nguồn thật, bắt đối chiếu thông tin do model (Gemini hoặc Qwen) đọc, và không cung cấp lệnh duyệt/chuyển tiền.
 
 “Reverse approach” được hiểu ở đây là hỏi ngược hoặc giả lập vai trò để moi cách vượt quy định, không phải tên một giao thức riêng. Bản này không chuyển câu hỏi thành lệnh/công cụ; chưa chứng minh chống được mọi cách tấn công đó. Những kiểm thử hiện có chỉ chứng minh các ranh giới được ghi rõ ở trên.

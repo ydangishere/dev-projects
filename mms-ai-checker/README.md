@@ -176,7 +176,7 @@ Qwen needed two changes, which now apply to both models: precise field definitio
 5. Gemini receives immutable findings and retrieved policy sections for explanation, without raw document quotes, names or registration IDs in this second call. Strict JSON, known finding IDs and output screening are enforced. Invalid/model-failed explanations fall back to deterministic text. Extracting documents still sends their original content to Google when Gemini mode is selected.
 6. SQLite stores the application snapshot, source bytes/versions/hashes, extracted JSON, findings, exact retrieved policy sections/hash and audit events. Evidence comes from this historical snapshot. Replacing a document makes old results stale and blocks feedback until a new check.
 
-Hard findings and AI explanation are displayed separately. Gemini quotes are **model-proposed evidence**, not guaranteed ground truth: page bounds and value/quote consistency are checked, but employees must inspect the actual source. All Gemini-read documents receive an explicit human-review finding.
+Hard findings and AI explanation are displayed separately. Gemini quotes are **model-proposed evidence**, not guaranteed ground truth: page bounds and value/quote consistency are checked, but employees must inspect the actual source. Every document read by a model (Gemini or Qwen) receives an explicit human-review finding.
 
 ### Module 1 graph retrieval — implemented locally, optional Neo4j
 

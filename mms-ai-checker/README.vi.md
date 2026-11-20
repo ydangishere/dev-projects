@@ -175,7 +175,7 @@ Mã dùng Google GenAI SDK (thư viện kết nối Google), hàm `models.genera
 5. **Giải thích:** Gemini nhận danh sách phát hiện cố định và mục quy định đã tìm được, trả lời tiếng Việt theo JSON. Lần gọi giải thích không gửi tên, mã số, trích đoạn gốc hay câu hỏi người dùng; nhưng lần đọc giấy tờ có gửi bản gốc tới Google khi bật Gemini. Nếu trả sai cấu trúc, mã phát hiện lạ, nội dung bị chặn hoặc gọi model lỗi, backend dùng lời giải thích cố định và giữ nguyên phát hiện.
 6. **Lưu bằng chứng:** SQLite lưu ảnh chụp dữ liệu tại thời điểm kiểm tra, phiên bản/file gốc, mã băm SHA-256 (dấu nhận diện nội dung), dữ liệu bóc ra, phát hiện, quy định và nhật ký. Khi giấy tờ thay đổi, kết quả cũ được đánh dấu lịch sử, cần chạy lại.
 
-Phát hiện bằng luật và phần AI diễn giải hiển thị riêng. Số trang/câu trích do Gemini đề xuất **chưa bảo đảm là sự thật**: backend kiểm tra giới hạn trang và việc giá trị xuất hiện trong câu trích, còn nhân viên phải mở bản gốc để xác nhận. Mọi giấy tờ do Gemini đọc đều có yêu cầu nhân viên đối chiếu.
+Phát hiện bằng luật và phần AI diễn giải hiển thị riêng. Số trang/câu trích do Gemini đề xuất **chưa bảo đảm là sự thật**: backend kiểm tra giới hạn trang và việc giá trị xuất hiện trong câu trích, còn nhân viên phải mở bản gốc để xác nhận. Mọi giấy tờ do model đọc (Gemini hoặc Qwen) đều có yêu cầu nhân viên đối chiếu.
 
 ### Module 1 — Graph Retrieval đã có code, Neo4j là tùy chọn
 

@@ -59,7 +59,8 @@ def evaluate(application, documents, extracted, rules, today: date, mode: str):
                 doc,
             )
             continue
-        if mode == "gemini":
+        if mode != "demo":
+            # Any model-read document (Gemini, Qwen or a future model) needs review.
             add(
                 "R7",
                 "ocr_needs_review",

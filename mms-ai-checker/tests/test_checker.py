@@ -342,9 +342,10 @@ def test_body_size_and_host(client):
     assert "script-src 'self'" in response.headers["content-security-policy"]
 
 
-def test_gemini_mode_provider_contract_and_fallback(tmp_path, monkeypatch):
+@pytest.mark.parametrize("mode", ["gemini", "qwen"])
+def test_model_mode_provider_contract_and_fallback(tmp_path, monkeypatch, mode):
     monkeypatch.delenv("TOKENS_JSON", raising=False)
-    app = create_app(tmp_path, "gemini")
+    app = create_app(tmp_path, mode)
 
     class Fake:
         def extract(self, source, fields=None):
@@ -358,7 +359,7 @@ def test_gemini_mode_provider_contract_and_fallback(tmp_path, monkeypatch):
 
     app.state.provider_factory = Fake
     result = check(TestClient(app), "APP-DEMO-003").json()
-    assert result["mode"] == "gemini"
+    assert result["mode"] == mode
     assert any(f["code"] == "ocr_needs_review" for f in result["findings"])
     assert result["explanation_mode"] == "deterministic"
     assert result["events"][-1]["status"] == "fallback"
