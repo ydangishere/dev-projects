@@ -46,7 +46,7 @@ jobs:
           printf '{"executablePath":"%s","args":["--no-sandbox","--disable-dev-shm-usage"]}\n' "$CHROME" > /tmp/dxa-puppeteer.json
           mmdc=/tmp/dxa-mermaid/node_modules/.bin/mmdc
           root=dxa-automative-agent_dana/docs
-          for chart in architecture flow run-flow; do
+          for chart in architecture flow run-flow next-step-unified-flow; do
             "$mmdc" -i "$root/$chart.mmd" -o "$root/$chart.png" -p /tmp/dxa-puppeteer.json -b white -w 1800 -s 2
             file "$root/$chart.png"
           done
@@ -67,7 +67,7 @@ jobs:
           from pathlib import Path
           import struct
           base=Path("dxa-automative-agent_dana/docs")
-          names=("architecture.png","flow.png","run-flow.png","pipeline.png","ui.png","dxa_7_layers.png")
+          names=("architecture.png","flow.png","run-flow.png","next-step-unified-flow.png","pipeline.png","ui.png","dxa_7_layers.png")
           for name in names:
               blob=(base/name).read_bytes()
               assert blob.startswith(b"\x89PNG\r\n\x1a\n"),name
@@ -80,7 +80,7 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add dxa-automative-agent_dana/docs/architecture.png dxa-automative-agent_dana/docs/flow.png dxa-automative-agent_dana/docs/run-flow.png dxa-automative-agent_dana/docs/pipeline.png dxa-automative-agent_dana/docs/ui.png
+          git add dxa-automative-agent_dana/docs/architecture.png dxa-automative-agent_dana/docs/flow.png dxa-automative-agent_dana/docs/run-flow.png dxa-automative-agent_dana/docs/next-step-unified-flow.png dxa-automative-agent_dana/docs/pipeline.png dxa-automative-agent_dana/docs/ui.png
           if git diff --cached --quiet; then
             echo "All PNG diagrams are up to date"
             exit 0
