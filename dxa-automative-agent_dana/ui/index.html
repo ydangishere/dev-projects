@@ -285,7 +285,8 @@ const EXAMPLES = [
   "Côn bị trượt, chưa bóp côn mà đạp đã tuột",
 ];
 const $ = (id) => document.getElementById(id);
-let current = null;\nlet diagnosticSession = null;
+let current = null;
+let diagnosticSession = null;
 
 function esc(s) {
   return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
