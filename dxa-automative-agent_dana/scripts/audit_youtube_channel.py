@@ -30,6 +30,11 @@ for category, url in TABS.items():
         with YoutubeDL(opts) as ydl:
             info = ydl.extract_info(url, download=False)
         if not info or "entries" not in info:
+            if category == "streams":
+                # yt-dlp returns no playlist when this channel has no streams tab.
+                status[category] = {"count": 0, "status": "ok", "note": "no public streams tab"}
+                print("[youtube inventory] streams=0 (no public streams tab)", flush=True)
+                continue
             raise ValueError("YouTube did not return a playlist")
         count = 0
         for item in info["entries"]:
