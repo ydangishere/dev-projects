@@ -1,45 +1,54 @@
-// Pipeline DXA: video → tri thức → agent → câu chưa trả lời được → thợ bổ sung → kho tri thức.
-// Một trang (localhost:8000), hai tab: "Hỏi" cho mọi người, "Bổ sung kiến thức" chỉ thợ đăng nhập mới thấy.
-// Dựng ảnh: dot -Tpng -Gdpi=150 pipeline.dot -o pipeline.png
+// DXA Dana — 2 workflows: /ask (fixed) and /diagnose (bounded Agentic).
+// Render: dot -Tpng -Gdpi=160 docs/pipeline.dot -o docs/pipeline.png
 digraph DXA {
-  graph [rankdir=TB, bgcolor="white", fontname="Inter", fontsize=16, nodesep=0.45, ranksep=0.7, pad=0.3, newrank=true];
-  node  [fontname="Inter", fontsize=13, shape=box, style="rounded,filled", fillcolor="#F7F7F4", color="#1F2A2E", fontcolor="#1F2A2E", margin="0.18,0.10"];
-  edge  [fontname="Inter", fontsize=12, color="#33566B", fontcolor="#1F2A2E"];
+  graph [rankdir=TB, bgcolor="white", fontname="DejaVu Sans", fontsize=17, nodesep=.48, ranksep=.65, pad=.45, compound=true];
+  node [fontname="DejaVu Sans", fontsize=12, shape=box, style="rounded,filled", fillcolor="#F7F9FC", color="#0E233D", margin=".2,.13"];
+  edge [fontname="DejaVu Sans", fontsize=11, color="#106A84", fontcolor="#0E233D"];
 
-  subgraph cluster_build {
-    label=<<b>1. Dựng tri thức</b>  —  biến kinh nghiệm thợ thành dữ liệu>; style="rounded,filled"; fillcolor="#ECEDE8"; color="#C9CCC4";
-    V [label=<<b>Video</b><br/><font point-size="11">30 video kênh @ydang7076</font>>];
-    P [label=<<b>Phụ đề</b><br/><font point-size="11">giữ mốc giây</font>>];
-    L [label=<<b>LLM rút ra case</b><br/><font point-size="11">Triệu chứng → Nguyên nhân → Cách sửa</font>>];
-    C [label=<<b>Kiểm chống bịa</b><br/><font point-size="11">số, chữ phải có<br/>trong phụ đề</font>>, shape=diamond, margin="0.02,0.02", style="filled", fillcolor="#F2C230"];
-    T [label=<<b>Thợ duyệt</b><br/><font point-size="11">Đúng / Cần sửa / Sai</font>>, fillcolor="#DCEBE1", color="#3E7C59"];
+  subgraph cluster_kb {
+    label="1. Prepare verified knowledge"; style="rounded,filled"; fillcolor="#EDF3F9"; color="#BBCFDF";
+    VIDEO [label="YouTube video\nand transcripts"];
+    EXTRACT [label="Extract symptoms,\ncauses, checks, fixes"];
+    REVIEW [label="Mechanic reviews cases", fillcolor="#DDF0E4"];
+    INDEX [label="BM25 + Vector / Qdrant\nGraph + SQLite + JSON"];
+    VIDEO -> EXTRACT -> REVIEW -> INDEX;
   }
 
-  subgraph cluster_run {
-    label=<<b>2. Tab "Hỏi"</b>  —  mọi người dùng được>; style="rounded,filled"; fillcolor="#ECEDE8"; color="#C9CCC4";
-    K [label=<<b>Kho tri thức</b><br/><font point-size="11">53 case, 259 đoạn</font>>, shape=cylinder, style="filled"];
-    A [label=<<b>Agent Dana</b><br/><font point-size="11">trả lời kèm mã case và link video</font>>, fillcolor="#1F2A2E", fontcolor="white"];
-    U [label=<<b>Câu chưa trả lời được</b><br/><font point-size="11">lưu lại cho thợ</font>>, fillcolor="#F3DAD5", color="#A93A2A"];
+  subgraph cluster_ui {
+    label="2. UI and API"; style="rounded,filled"; fillcolor="#F0F6FB"; color="#BBCFDF";
+    UI [label="Web UI\nAsk / Agentic / Expert"];
+    API [label="FastAPI\n/ask | /diagnose"];
+    UI -> API;
+  }
+
+  subgraph cluster_dana {
+    label="3. Dana Agent Orchestration"; style="rounded,filled"; fillcolor="#E9F5F9"; color="#106A84";
+    MODE [label="Workflow mode?",shape=diamond, fillcolor="#FFE5AA"];
+    CLASSIC [label="Fixed /ask\nfind_cases -> gate -> write_answer -> check"];
+    PLAN [label="Planner (Dana + LLM)\nChoose permitted action", fillcolor="#D7EDF6"];
+    TOOL [label="Tool selection\nask_user | search_rag | answer | handoff"];
+    MEMORY [label="Session Memory (SQLite)\nSymptoms, evidence, queries"];
+    EVAL [label="Evaluate evidence / limits",shape=diamond,fillcolor="#FFE5AA"];
+    REPLAN [label="Replanning (ask model again)\nwith updated state",fillcolor="#D7EDF6"];
+    FINAL [label="Grounded answer with source\nor handoff to mechanic", fillcolor="#DDF0E4"];
+    MODE -> CLASSIC -> FINAL;
+    MODE -> PLAN -> TOOL -> MEMORY -> EVAL;
+    EVAL -> REPLAN [label="insufficient"];
+    REPLAN -> PLAN [constraint=false];
+    EVAL -> FINAL [label="enough / stop"];
   }
 
   subgraph cluster_expert {
-    label=<<b>3. Tab "Bổ sung kiến thức"</b>  —  chỉ thợ đăng nhập, máy chủ kiểm quyền>; labelloc="b"; style="rounded,filled"; fillcolor="#F4F8F5"; color="#3E7C59";
-    E1 [label=<<b>Xem câu chưa trả lời được</b><br/><font point-size="11">trong lúc chạy thử</font>>, fillcolor="#DCEBE1", color="#3E7C59"];
-    E2 [label=<<b>Nhập kiến thức, bấm Lưu</b><br/><font point-size="11">case mới mã T01, T02…</font>>, fillcolor="#DCEBE1", color="#3E7C59"];
-    E3 [label=<<b>Chạy thử lại câu hỏi</b><br/><font point-size="11">xem DXA đã trả lời đúng chưa</font>>, fillcolor="#DCEBE1", color="#3E7C59"];
+    label="4. Mechanic feedback (authenticated)"; style="rounded,filled"; fillcolor="#EDF7F0"; color="#539173";
+    PENDING [label="Unanswered questions"];
+    ADD [label="Mechanic adds or rejects case"];
+    PENDING -> ADD;
   }
 
-  { rank=same; V; P; L; C; T; }
-  { rank=same; K; A; U; }
-  { rank=same; E1; E2; E3; }
-
-  V -> P -> L -> C;
-  C -> T [label="  qua  "];
-  C -> L [label="trượt: rút lại", constraint=false];
-  T -> K;
-  A -> K [dir=back];
-  U -> A [dir=back, label="  chưa có trong kho  "];
-  U -> E1;
-  E1 -> E2 -> E3;
-  E2 -> K [style=dashed, color="#3E7C59", fontcolor="#3E7C59", label="  lưu, dựng lại kho  ", constraint=false];
+  INDEX -> CLASSIC [lhead=cluster_dana];
+  INDEX -> TOOL [label="RAG tool", lhead=cluster_dana];
+  API -> MODE;
+  FINAL -> UI [constraint=false];
+  FINAL -> PENDING [style=dashed, label="no evidence"];
+  ADD -> INDEX [style=dashed, label="reindex", constraint=false];
 }
