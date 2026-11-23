@@ -33,6 +33,9 @@ jobs:
           python validate.py
           python eval.py
 
+      - name: Kiểm thử Agentic Planning, Replanning, Memory (offline)
+        run: python test_agentic.py
+
       - name: Agent Dana với LLM giả (DANA_MOCK_LLM)
         env: { DANA_MOCK_LLM: 'true', GEMINI_API_KEY: '' }
         run: python test_dana.py
