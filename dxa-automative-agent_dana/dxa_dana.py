@@ -111,3 +111,23 @@ if __name__ == "__main__":
     print(f"[chế độ: {res['mode']}, trả lời bởi: {res['answered_by']}]")
     for w in res["warnings"]:
         print("!", w)
+
+
+
+def plan_diagnostic(context: dict) -> dict:
+    """Ask Dana to select the next safe action; reject malformed output."""
+    import dxa_tools
+    payload = json.dumps(context, ensure_ascii=False)
+    raw = _plain(_load_agent().plan_diagnostic(payload))
+    return dxa_tools.parse_plan(raw)
+
+
+def answer_diagnostic(question: str, evidence: dict) -> dict:
+    """Generate only from previously retrieved case evidence, with citation checks."""
+    return _plain(_load_agent().answer_diagnostic(
+        question,
+        evidence.get("context") or "",
+        evidence.get("case_ids") or [],
+        evidence.get("sources") or [],
+        evidence.get("case_idx") or [],
+    ))
