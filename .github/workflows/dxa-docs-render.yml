@@ -1,0 +1,89 @@
+name: DXA Dana documentation diagrams
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'dxa-automative-agent_dana/docs/**'
+      - 'dxa-automative-agent_dana/ui/index.html'
+      - '.github/workflows/dxa-docs-render.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dxa-docs-render
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Graphviz and fonts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y graphviz fonts-dejavu-core fonts-noto-core
+      - name: Install Mermaid renderer without downloading a second browser
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: 'true'
+        run: |
+          npm install --prefix /tmp/dxa-mermaid --no-audit --no-fund @mermaid-js/mermaid-cli@11.12.0
+          ls -lah /tmp/dxa-mermaid/node_modules/.bin/mmdc
+      - name: Render all diagrams to PNG from maintained sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          if [ -z "$CHROME" ]; then echo "Chrome/Chromium not installed"; exit 1; fi
+          printf '{"executablePath":"%s","args":["--no-sandbox","--disable-dev-shm-usage"]}\n' "$CHROME" > /tmp/dxa-puppeteer.json
+          mmdc=/tmp/dxa-mermaid/node_modules/.bin/mmdc
+          root=dxa-automative-agent_dana/docs
+          for chart in architecture flow run-flow; do
+            "$mmdc" -i "$root/$chart.mmd" -o "$root/$chart.png" -p /tmp/dxa-puppeteer.json -b white -w 1800 -s 2
+            file "$root/$chart.png"
+          done
+          dot -Tpng -Gdpi=160 "$root/pipeline.dot" -o "$root/pipeline.png"
+          file "$root/pipeline.png"
+      - name: Refresh actual web UI screenshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          HTML="$(realpath dxa-automative-agent_dana/ui/index.html)"
+          OUT="$(realpath dxa-automative-agent_dana/docs)/ui.png"
+          "$CHROME" --headless --no-sandbox --disable-dev-shm-usage --disable-gpu --hide-scrollbars --window-size=1440,1050 --run-all-compositor-stages-before-draw --virtual-time-budget=1500 --screenshot="$OUT" "file://$HTML" >/tmp/dxa-ui-render.log 2>&1
+          file "$OUT"
+      - name: Confirm all PNGs exist and are nonempty
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import struct
+          base=Path("dxa-automative-agent_dana/docs")
+          names=("architecture.png","flow.png","run-flow.png","pipeline.png","ui.png","dxa_7_layers.png")
+          for name in names:
+              blob=(base/name).read_bytes()
+              assert blob.startswith(b"\x89PNG\r\n\x1a\n"),name
+              width,height=struct.unpack(">II",blob[16:24])
+              assert width>=700 and height>=400,(name,width,height)
+              print(name,width,height,len(blob))
+          PY
+      - name: Commit generated images, if changed
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add dxa-automative-agent_dana/docs/architecture.png dxa-automative-agent_dana/docs/flow.png dxa-automative-agent_dana/docs/run-flow.png dxa-automative-agent_dana/docs/pipeline.png dxa-automative-agent_dana/docs/ui.png
+          if git diff --cached --quiet; then
+            echo "All PNG diagrams are up to date"
+            exit 0
+          fi
+          git commit -m 'docs(dxa): regenerate PNG diagrams from Agentic sources'
+          git push origin HEAD:main
