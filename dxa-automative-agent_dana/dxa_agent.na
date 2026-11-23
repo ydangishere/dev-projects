@@ -127,3 +127,30 @@ dxa = DXAMechanic()
 def __main__(question: str = "Bình xăng con chảy xăng khi dựng xe"):
     print(f"Hỏi: {question}")
     print(dxa.solve(question))
+
+
+# ---------------------------------------------------------------- Optional agentic diagnostic mode
+# Unlike wf_answer, the decision below is chosen by the LLM on every turn.
+# Python diagnostic.py enforces finite loops and retains memory across requests.
+
+def plan_diagnostic(context_json: str) -> dict:
+    if not tools.llm_ready():
+        return {"action": "handoff"}
+    raw = reason(tools.planning_prompt(context_json), temperature=0.1)
+    return tools.parse_plan(raw)
+
+
+def answer_diagnostic(question: str, context: str, case_ids: list, sources: list, case_idx: list) -> dict:
+    if not case_ids:
+        return {"refused": True, "answer": tools.refuse_text(), "sources": [], "warnings": ["Không có case"]}
+    if not tools.llm_ready():
+        return {"refused": True, "answer": tools.refuse_text(), "sources": [], "warnings": ["Chưa cấu hình LLM"]}
+    raw = reason(tools.answer_prompt(question, context), temperature=0.2)
+    parsed = tools.parse_answer(raw)
+    if len(parsed) == 0 or "khong_du_thong_tin" in parsed:
+        return {"refused": True, "answer": tools.refuse_text(), "sources": [], "warnings": ["LLM: thiếu bằng chứng hoặc JSON sai"]}
+    text = tools.render_answer(parsed)
+    problems = tools.check_answer(text, context, question, case_ids)
+    if len(problems) > 0:
+        return {"refused": True, "answer": tools.refuse_text(), "sources": [], "warnings": problems}
+    return {"refused": False, "answer": text, "sources": sources, "warnings": []}
