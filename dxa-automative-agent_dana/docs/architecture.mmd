@@ -1,29 +1,44 @@
-%%{init: {"theme":"base","fontFamily":"Inter, DejaVu Sans, sans-serif","themeVariables":{"fontFamily":"Inter, DejaVu Sans, sans-serif","fontSize":"15px","primaryColor":"#F7F7F4","primaryBorderColor":"#1F2A2E","primaryTextColor":"#1F2A2E","lineColor":"#33566B","clusterBkg":"#ECEDE8","clusterBorder":"#C9CCC4","edgeLabelBackground":"#FFFFFF"},"flowchart":{"curve":"basis","nodeSpacing":36,"rankSpacing":40}}}%%
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#F7F7F4","primaryBorderColor":"#0E233D","primaryTextColor":"#0E233D","lineColor":"#106A84","clusterBkg":"#EEF5FA","clusterBorder":"#B9CAD9"},"flowchart":{"curve":"basis","nodeSpacing":38,"rankSpacing":52}}}%%
 flowchart TB
-    U(["Khách hoặc thợ"]) --> UI["<b>Giao diện web</b><br/>ui/index.html"]
-    UI <-- "POST /ask" --> API["<b>FastAPI</b><br/>api.py"]
-    API <--> BR["<b>Cầu nối Python → Dana</b><br/>dxa_dana.py"]
-    BR <--> AG
+    USER(["Người dùng / Thợ sửa xe"])
+    UI["TẦNG 1 · Presentation<br/>Web UI: Hỏi thường / Agentic / Bổ sung kiến thức"]
+    API["TẦNG 2 · API<br/>FastAPI /ask · /diagnose · /tho"]
+    USER --> UI --> API
 
-    subgraph AG["Agent Dana <b>DXAMechanic</b> (dxa_agent.na), workflow wf_answer"]
-        direction LR
-        A1["find_cases<br/>tìm case + đoạn video"] --> A2{"gate<br/>có trong video?"}
-        A2 -- "có" --> A3["write_answer<br/><b>reason()</b> trả về<br/>RepairAnswer (JSON)"]
-        A3 --> A4{"check<br/>chống bịa"}
-        A4 -- "qua" --> OK["Câu trả lời<br/>+ link video"]
-        A4 -- "trượt" --> TPL["Câu ghép khuôn<br/>+ cảnh báo"]
-        A2 -- "không" --> NO["Từ chối,<br/>không đoán"]
+    subgraph AGENT["TẦNG 3 · Agent Orchestration — DANA"]
+        direction TB
+        MODE{"Chọn chế độ"}
+        CLASSIC["Workflow cố định<br/>find_cases → gate → write_answer → check"]
+        PLAN["Planner: LLM chọn hành động<br/>ask_user / search_rag / answer / handoff"]
+        MEM["Memory: SQLite session<br/>lịch sử, bằng chứng, truy vấn"]
+        EVAL{"Evaluation<br/>đủ chứng cứ / hợp lệ / giới hạn?"}
+        REPLAN["Replanning: gọi Planner lại<br/>với trạng thái vừa cập nhật"]
+        MODE -->|Tra cứu| CLASSIC
+        MODE -->|Agentic nhiều lượt| PLAN
+        PLAN --> MEM --> EVAL
+        EVAL -->|Chưa đủ| REPLAN --> PLAN
     end
+    API --> MODE
 
-    AG -. "gọi hàm Python" .-> TOOLS["<b>dxa_tools.py</b><br/>tìm kiếm, prompt, đọc JSON, kiểm số<br/><small>dùng lại rag.py</small>"]
-    TOOLS -.-> KHO[("<b>Kho tri thức</b><br/>BM25, graph, vector<br/>259 đoạn, 53 case")]
-    AG -. "reason()" .-> G["<b>Gemini</b><br/>qua cổng tương thích OpenAI<br/><small>model local của Dana</small>"]
+    LLM["TẦNG 4 · LLM Reasoning<br/>Gemini (thay được model tương thích)"]
+    TOOLS["TẦNG 5 · Python Tools / Validation<br/>dxa_tools.py · giới hạn hành động · check_answer"]
+    RAG["TẦNG 6 · Retrieval<br/>BM25 + Vector + RRF + ngữ cảnh nguồn"]
+    DATA[("TẦNG 7 · Knowledge & Data<br/>Video / phụ đề / case · Qdrant · JSON · SQLite")]
+    CLASSIC --> TOOLS
+    PLAN <--> LLM
+    REPLAN <--> LLM
+    PLAN --> TOOLS
+    TOOLS --> RAG
+    RAG <--> DATA
+    EVAL -->|Đủ| OUT["Câu trả lời + mã case<br/>hoặc chuyển thợ kiểm tra"]
+    CLASSIC --> OUT
+    OUT --> UI
 
-    classDef gate fill:#F2C230,stroke:#1F2A2E,color:#1F2A2E
-    classDef stop fill:#F3DAD5,stroke:#A93A2A,color:#1F2A2E
-    classDef good fill:#DCEBE1,stroke:#3E7C59,color:#1F2A2E
-    classDef ext fill:#1F2A2E,stroke:#1F2A2E,color:#FFFFFF
-    class A2,A4 gate
-    class NO,TPL stop
-    class OK good
-    class G ext
+    classDef engine fill:#0E233D,stroke:#0E233D,color:#FFFFFF
+    classDef plan fill:#DBEDF7,stroke:#106A84,color:#0E233D
+    classDef gate fill:#FFE2A0,stroke:#AC7421,color:#0E233D
+    classDef store fill:#E3F1E5,stroke:#2C8259,color:#0E233D
+    class USER,UI,API engine
+    class PLAN,MEM,REPLAN plan
+    class MODE,EVAL gate
+    class DATA store
