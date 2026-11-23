@@ -1,22 +1,52 @@
-%%{init: {"theme":"base","fontFamily":"Inter, DejaVu Sans, sans-serif","themeVariables":{"fontFamily":"Inter, DejaVu Sans, sans-serif","fontSize":"15px","primaryColor":"#F7F7F4","primaryBorderColor":"#1F2A2E","primaryTextColor":"#1F2A2E","lineColor":"#33566B","clusterBkg":"#ECEDE8","clusterBorder":"#C9CCC4","edgeLabelBackground":"#FFFFFF"},"flowchart":{"curve":"basis","nodeSpacing":40,"rankSpacing":46}}}%%
+%%{init: {"theme":"base","fontFamily":"Arial, sans-serif","themeVariables":{"primaryColor":"#F7F7F4","primaryBorderColor":"#1F2A2E","primaryTextColor":"#1F2A2E","lineColor":"#33566B","clusterBkg":"#F3F6F8","clusterBorder":"#A3B6C4","fontSize":"14px"},"flowchart":{"curve":"basis","nodeSpacing":34,"rankSpacing":42}}}%%
 flowchart TB
-    S1["<b>1. Lấy phụ đề</b><br/>30 video kênh @ydang7076<br/><small>Kiểm: số chữ/phút, mốc giây cuối</small>"]
-    S2["<b>2. Làm sạch, chia đoạn</b><br/>sửa lỗi nghe sai, giữ mốc giây → 259 đoạn<br/><small>Kiểm: hết lỗi nghe sai, mốc giây tăng dần</small>"]
-    S3["<b>3. Rút tri thức</b><br/>Triệu chứng → Nguyên nhân → Cách sửa → 53 case<br/><small>Kiểm chống bịa: con số và cụm chữ phải có trong phụ đề</small>"]
-    S4["<b>4. Thợ duyệt</b><br/>bảng duyệt Claude Sheets → import_review.py<br/><small>Đúng / Cần sửa / Sai</small>"]
-    S5["<b>5. Dựng kho tri thức</b><br/>python dxa.py build<br/><small>BM25, graph, SQLite</small>"]
-    S6["<b>6. Dựng tầng vector</b><br/>python build_gemini.py<br/><small>Gemini embedding → Qdrant</small>"]
-    S7{"<b>7. Kiểm thử</b><br/>validate.py, eval.py,<br/>eval_gemini.py"}
-    S8["<b>8. Chạy cho người dùng</b><br/>uvicorn api:app → giao diện web"]
+    subgraph PREP["A. Chuẩn bị kho tri thức sửa xe"]
+        direction TB
+        S1["1. Video YouTube / phụ đề<br/>30 video có mốc thời gian"]
+        S2["2. Làm sạch + chia chunk<br/>Giữ mốc giây và nội dung gốc"]
+        S3["3. LLM trích xuất ca sửa chữa<br/>Triệu chứng → Nguyên nhân → Cách sửa"]
+        S4["4. Thợ kiểm duyệt<br/>Chấp nhận / sửa / loại case"]
+        S5["5. Dựng kho tri thức<br/>BM25 + Graph + SQLite"]
+        S6["6. Embedding + Vector Store<br/>Gemini embedding + Qdrant / offline"]
+        S7{"7. Kiểm thử dữ liệu<br/>validate.py + eval.py"}
+        S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7
+        S7 -- "Không đạt: rà soát case" --> S3
+    end
+    S7 -- "Đạt" --> UI["8. Web UI + FastAPI<br/>Giao diện Hỏi / Bổ sung kiến thức"]
+    UI --> CHOICE{"Người dùng chọn chế độ"}
+    subgraph CLASSIC["B. Tra cứu RAG cổ điển - /ask"]
+        direction TB
+        C1["Dana: find_cases"] --> C2["gate → write_answer → check"]
+        C2 --> C3["Trả lời có nguồn / từ chối nếu thiếu dữ liệu"]
+    end
+    subgraph AGENTIC["C. Agentic Diagnosis - /diagnose"]
+        direction TB
+        A1["Dana + LLM Planner<br/>Tự chọn bước tiếp theo"]
+        A2{"Tool Selector<br/>Hành động cho phép?"}
+        A3["ask_user<br/>Hỏi thêm triệu chứng"]
+        A4["search_rag<br/>Tra lại BM25 / Vector"]
+        A5["Session Memory<br/>Lưu câu trả lời + bằng chứng"]
+        A6{"Evaluator<br/>Đủ bằng chứng chưa?"}
+        A7["Replanner<br/>Điều chỉnh câu hỏi / truy vấn"]
+        A8["Trả lời có dẫn nguồn<br/>Hoặc chuyển thợ kiểm tra"]
+        A1 --> A2
+        A2 -->|Cần người xác nhận| A3 --> A5
+        A2 -->|Cần tài liệu| A4 --> A5
+        A5 --> A6
+        A6 -->|Chưa đủ| A7 --> A2
+        A6 -->|Đủ / quá giới hạn| A8
+    end
+    CHOICE -->|Hỏi thông thường| C1
+    CHOICE -->|Chẩn đoán nhiều lượt| A1
+    C3 --> F["Ghi nhận câu chưa trả lời được"]
+    A8 --> F
+    F -->|Thợ bổ sung case / video| S4
 
-    S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7
-    S7 -- "đạt" --> S8
-    S7 -- "chưa đạt: sửa dữ liệu gốc, build lại" --> S3
-    S8 -. "câu chưa trả lời được: thợ trả lời hoặc quay video mới" .-> S1
-
-    classDef human fill:#DCEBE1,stroke:#3E7C59,color:#1F2A2E
-    classDef gate fill:#F2C230,stroke:#1F2A2E,color:#1F2A2E
-    classDef run fill:#1F2A2E,stroke:#1F2A2E,color:#FFFFFF
-    class S4 human
-    class S7 gate
-    class S8 run
+    classDef human fill:#E1F1E6,stroke:#3B7F59,color:#1F2A2E
+    classDef agent fill:#DAEDF5,stroke:#0D7490,color:#1F2A2E
+    classDef gate fill:#FFF0C7,stroke:#B98521,color:#1F2A2E
+    classDef output fill:#0D304B,stroke:#0D304B,color:#FFFFFF
+    class S4,A3,F human
+    class A1,A5,A7 agent
+    class S7,CHOICE,A2,A6 gate
+    class UI,C3,A8 output
