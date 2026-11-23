@@ -28,7 +28,7 @@
 
 ## NOTE FOR NEXT STEP — Hợp nhất RAG + Agentic (CHƯA TRIỂN KHAI)
 
-**Trạng thái: đề xuất kiến trúc, chỉ ghi tài liệu. Không sửa ứng dụng đang chạy, API, giao diện, Dana Agent hoặc bộ test hiện tại.**
+**Trạng thái: chỉ là đề xuất luồng hợp nhất — CHƯA TRIỂN KHAI Planning/Replanning chung.** Các chỉnh sửa Giai đoạn 1 bên dưới chỉ cải thiện hiệu năng đường RAG offline và trải nghiệm timeout; không thay kiến trúc hai chế độ hiện tại.
 
 ![Đề xuất luồng RAG-first hợp nhất với Planning, Replanning và Validation, chưa triển khai](docs/next-step-unified-flow.png)
 
@@ -55,6 +55,21 @@
 **Tiêu chí triển khai ở bước sau:** bảo toàn khả năng tra cứu offline, đo latency/chi phí so với luồng cũ, bổ sung test tình huống “RAG đủ / thiếu triệu chứng / nguồn sai / Validation trượt / quá giới hạn”, kiểm tra lại hành vi với LLM thật và thợ sửa xe. Giữ các endpoint cũ tương thích cho đến khi migration được kiểm chứng.
 
 Nguồn có thể chỉnh sửa: [docs/next-step-unified-flow.mmd](docs/next-step-unified-flow.mmd). PNG tự sinh bằng workflow tài liệu; không phản ánh thay đổi runtime.
+
+---
+
+## Giai đoạn 1 — Sửa hiệu năng và trải nghiệm (đã đưa vào code)
+
+**Mục tiêu:** Câu hỏi nào cũng được gửi vào RAG trước khi hệ thống quyết định có nguồn phù hợp hay cần thợ bổ sung. Không giới hạn quyền đặt câu hỏi. Nếu không đủ bằng chứng sau khi tìm, DXA ghi nhận để thợ xem xét; không nói “đang cập nhật” khi chưa có việc cập nhật thực tế.
+
+- **Offline bypass:** `POST /ask` không có Gemini key sẽ gọi `rag.answer(..., use_llm=False)` trực tiếp, bỏ qua khởi tạo/gọi Dana dù checkbox LLM được gửi là `true`. Không thay đổi `POST /diagnose` (Agentic).
+- **Khởi động:** nạp `state.pkl` và từ điển chuẩn hóa câu hỏi trước khi mở API; không cần nạp Dana trong môi trường offline.
+- **Đo hiệu năng:** log `[DXA perf]` báo `index_ms`, `normalize_ms`, `bm25_ms`, `vector_ms`, `rank_gate_ms`, `retrieval_ms`, `total_ms` và `other_ms`. `POST /ask` trả thêm `timings_ms`.
+- **UI:** offline tự bỏ tick và vô hiệu hóa Gemini; hiển thị lỗi và mở lại nút hỏi nếu quá `12s` (offline), `60s` (LLM), hoặc `90s` (Agentic). Thời gian này là *timeout phía trình duyệt*, không hủy chắc chắn tác vụ đồng bộ đang chạy trong backend.
+- **Cache:** kho tri thức được giữ trong RAM giữa các câu hỏi; trang chủ gửi `Cache-Control: no-store` để không thấy checkbox UI cũ.
+- **Test:** `python test_perf.py` gửi **10 câu hỏi RAG thật liên tiếp**, kiểm tra đường offline không gọi Dana, báo median và max. Mục tiêu vận hành offline sau warm-up là ~1–3 giây/câu, nhưng chưa coi đó là kết quả đo trên PC của người dùng.
+
+**Vẫn còn:** không có Gemini key thì DXA chỉ trả lời bằng dữ liệu đã có hoặc báo chưa đủ bằng chứng; quyền đặt câu hỏi không đồng nghĩa LLM có thể trả lời mọi lĩnh vực. Việc cho LLM trả lời ngoài kho theo mức độ tin cậy và việc hợp nhất Agentic vẫn dành cho bước phát triển tiếp theo.
 
 ---
 
