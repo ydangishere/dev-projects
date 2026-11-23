@@ -191,7 +191,9 @@
     </div>
     <div class="ticket-foot">
       <div class="chips" id="chips"></div>
-      <label class="toggle"><input type="checkbox" id="useLlm" checked> Để Gemini viết câu trả lời</label>\n      <label class="toggle"><input type="checkbox" id="agenticMode"> Agentic: chủ động hỏi và điều tra</label>\n      <button type="button" class="linkbtn" id="newDiagnosis" hidden>Bắt đầu ca mới</button>
+      <label class="toggle"><input type="checkbox" id="useLlm" checked> Để Gemini viết câu trả lời</label>
+      <label class="toggle"><input type="checkbox" id="agenticMode"> Agentic: chủ động hỏi và điều tra</label>
+      <button type="button" class="linkbtn" id="newDiagnosis" hidden>Bắt đầu ca mới</button>
     </div>
   </form>
 
@@ -567,6 +569,25 @@ EXAMPLES.forEach((q) => {
   c.type = "button"; c.className = "chip"; c.textContent = q;
   c.addEventListener("click", () => { $("q").value = q; ask(q); });
   $("chips").appendChild(c);
+});
+$("agenticMode").addEventListener("change", () => {
+  diagnosticSession = null;
+  $("newDiagnosis").hidden = true;
+  $("q").value = "";
+  $("q").placeholder = "Mô tả triệu chứng của xe";
+});
+$("newDiagnosis").addEventListener("click", async () => {
+  const sid = diagnosticSession;
+  diagnosticSession = null;
+  $("newDiagnosis").hidden = true;
+  $("q").value = "";
+  $("q").placeholder = "Mô tả sự cố để bắt đầu chẩn đoán mới";
+  $("answer").innerHTML = '<p class="empty">Đã bắt đầu ca mới. Hãy mô tả triệu chứng.</p>';
+  $("sources").innerHTML = "";
+  $("screen").textContent = "Chọn một nguồn để xem đoạn video";
+  if (sid) {
+    try { await fetch(`${API}/diagnose/${sid}`, { method: "DELETE" }); } catch {}
+  }
 });
 $("askForm").addEventListener("submit", (e) => { e.preventDefault(); const q = $("q").value.trim(); if (q.length >= 2) ask(q); });
 $("q").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("askForm").requestSubmit(); } });
