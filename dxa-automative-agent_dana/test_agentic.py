@@ -16,8 +16,8 @@ def case_result(query):
 
 
 def answer(question, evidence):
-    assert "đề quay" in question.lower(), question
-    assert evidence["case_ids"] == ["C02"]
+    assert "đề quay" in question.lower(), question  # noqa: S101 - asserts are intentional in regression tests
+    assert evidence["case_ids"] == ["C02"]  # noqa: S101 - asserts are intentional in regression tests
     return {"answer": "Kiểm tra có căn cứ [C02].", "sources": evidence["sources"], "refused": False, "warnings": []}
 
 
@@ -35,14 +35,14 @@ def test_dialogue(db):
     first = diagnostic.run_turn(
         "Xe tôi không nổ máy", planner=planner, retriever=case_result, answerer=answer, db_path=db
     )
-    assert first["status"] == "ask_user", first
+    assert first["status"] == "ask_user", first  # noqa: S101 - asserts are intentional in regression tests
     second = diagnostic.run_turn(
         "Đề quay nhưng không nổ", session_id=first["session_id"],
         planner=planner, retriever=case_result, answerer=answer, db_path=db
     )
-    assert second["status"] == "answer" and "[C02]" in second["answer"], second
-    assert second["turns"] == 2 and second["sources"], second
-    assert second["actions"][0]["action"] == "search_rag", second
+    assert second["status"] == "answer" and "[C02]" in second["answer"], second  # noqa: S101 - asserts are intentional in regression tests
+    assert second["turns"] == 2 and second["sources"], second  # noqa: S101 - asserts are intentional in regression tests
+    assert second["actions"][0]["action"] == "search_rag", second  # noqa: S101 - asserts are intentional in regression tests
     try:
         diagnostic.run_turn("Đề quay", first["session_id"], planner=planner, retriever=case_result, answerer=answer, db_path=db)
         raise AssertionError("Finished session must not be reused")
@@ -58,7 +58,7 @@ def test_no_evidence(db):
         "Xe có triệu chứng không xác định", planner=lambda _: next(seq),
         retriever=no_evidence, answerer=answer, db_path=db
     )
-    assert result["status"] == "handoff" and result["sources"] == [], result
+    assert result["status"] == "handoff" and result["sources"] == [], result  # noqa: S101 - asserts are intentional in regression tests
 
 
 def test_loop_bound(db):
@@ -69,7 +69,7 @@ def test_loop_bound(db):
     result = diagnostic.run_turn(
         "Xe khó nổ", planner=endless, retriever=case_result, answerer=answer, db_path=db
     )
-    assert result["status"] == "handoff" and i[0] <= diagnostic.MAX_STEPS_PER_TURN
+    assert result["status"] == "handoff" and i[0] <= diagnostic.MAX_STEPS_PER_TURN  # noqa: S101 - asserts are intentional in regression tests
 
 
 def test_invalid_sessions(db):
@@ -83,9 +83,9 @@ def test_invalid_sessions(db):
 
 def test_parser():
     import dxa_tools
-    assert dxa_tools.parse_plan('{"action":"search_rag","query":"honda wave"}')["action"] == "search_rag"
-    assert dxa_tools.parse_plan('{"action":"rm -rf"}') == {"action": "handoff"}
-    assert dxa_tools.parse_plan("not json") == {"action": "handoff"}
+    assert dxa_tools.parse_plan('{"action":"search_rag","query":"honda wave"}')["action"] == "search_rag"  # noqa: S101 - asserts are intentional in regression tests
+    assert dxa_tools.parse_plan('{"action":"rm -rf"}') == {"action": "handoff"}  # noqa: S101 - asserts are intentional in regression tests
+    assert dxa_tools.parse_plan("not json") == {"action": "handoff"}  # noqa: S101 - asserts are intentional in regression tests
 
 
 if __name__ == "__main__":
