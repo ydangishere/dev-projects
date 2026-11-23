@@ -1,0 +1,63 @@
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#F7F9FC","primaryBorderColor":"#153B57","primaryTextColor":"#153B57","lineColor":"#39748E","clusterBkg":"#EEF5FA","clusterBorder":"#9FBBD0","edgeLabelBackground":"#FFFFFF"},"flowchart":{"curve":"basis","nodeSpacing":36,"rankSpacing":50}}}%%
+flowchart TB
+    NOTE["NEXT STEP · PROPOSED DESIGN ONLY<br/>Chưa triển khai trong DXA hiện tại"]
+    USER(["Người dùng mô tả bệnh xe"])
+    API["Tầng 1–2 · Web UI + FastAPI<br/>Một luồng hỏi đáp, không bắt người dùng chọn mode"]
+    NOTE -.-> API
+    USER --> API
+
+    subgraph DANA["TẦNG 3 · DANA AGENT ORCHESTRATION"]
+        direction TB
+        ENTRY["Nhận câu hỏi và Memory phiên<br/>Đọc triệu chứng / lịch sử đã biết"]
+        RETRIEVE["Tool Selector<br/>Gọi RAG theo câu hỏi hiện tại"]
+        GATE{"Đã có bằng chứng liên quan,<br/>đủ để trả lời?"}
+        DRAFT["Tạo câu trả lời<br/>chỉ từ case / video có nguồn"]
+        VALIDATE{"Validation<br/>Nguồn, mã case, số liệu, giới hạn an toàn?"}
+        PASS["Trả lời có dẫn nguồn<br/>và lưu Memory"]
+        PLAN["Planner / Replanner<br/>Chọn bước tiếp theo theo state mới"]
+        NEXT{"Cần làm gì tiếp?"}
+        ASK["Ask User<br/>Hỏi thêm triệu chứng"]
+        MEM["Memory<br/>Lưu dữ kiện mới"]
+        SEARCH["Search Again<br/>Đổi truy vấn, lọc case"]
+        STOP{"Còn trong giới hạn<br/>lượt hỏi / truy vấn / thời gian?"}
+        HANDOFF["Handoff<br/>Thiếu chứng cứ: đề nghị thợ kiểm tra"]
+
+        ENTRY --> RETRIEVE --> GATE
+        GATE -->|Đủ| DRAFT --> VALIDATE
+        VALIDATE -->|Đạt| PASS
+        GATE -->|Thiếu / không liên quan| PLAN
+        VALIDATE -->|Không đạt| PLAN
+        PLAN --> STOP
+        STOP -->|Không| HANDOFF
+        STOP -->|Có| NEXT
+        NEXT -->|Thiếu triệu chứng| ASK --> MEM --> ENTRY
+        NEXT -->|Cần tài liệu khác| SEARCH --> RETRIEVE
+        NEXT -->|Không có hướng an toàn| HANDOFF
+    end
+
+    RAG["TẦNG 6 · RAG TOOL<br/>BM25 + Vector + RRF"]
+    DATA[("TẦNG 7 · DATABASE<br/>Case / transcript / video nguồn / SQLite")]
+    LLM["TẦNG 4 · LLM<br/>Reasoning cho trả lời và điều phối"]
+    TOOLS["TẦNG 5 · PYTHON TOOLS<br/>Truy vấn, đối chiếu nguồn, validation"]
+
+    API --> ENTRY
+    RETRIEVE -.-> TOOLS
+    SEARCH -.-> TOOLS
+    TOOLS <--> RAG
+    RAG <--> DATA
+    DRAFT <--> LLM
+    PLAN <--> LLM
+    VALIDATE -.-> TOOLS
+    PASS --> END(["Kết quả cho người dùng"])
+    HANDOFF --> END
+
+    classDef proposed fill:#E4EEF6,stroke:#4A7897,color:#153B57
+    classDef decision fill:#FFF0CA,stroke:#BC8628,color:#153B57
+    classDef good fill:#DDF1E4,stroke:#2B7650,color:#153B57
+    classDef stop fill:#F7DEDF,stroke:#AC4551,color:#153B57
+    classDef dark fill:#153B57,stroke:#153B57,color:#FFFFFF
+    class NOTE,ENTRY,PLAN,MEM,SEARCH proposed
+    class GATE,VALIDATE,NEXT,STOP decision
+    class PASS good
+    class HANDOFF stop
+    class API,END dark
