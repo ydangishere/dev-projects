@@ -287,6 +287,7 @@ const EXAMPLES = [
 const $ = (id) => document.getElementById(id);
 let current = null;
 let diagnosticSession = null;
+let llmAvailable = false;  // được xác nhận từ /health
 
 function esc(s) {
   return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -387,14 +388,18 @@ function renderAnswer(r) {
 
 async function ask(question) {
   const btn = $("askBtn");
+  if (btn.disabled) return;  // tránh gửi trùng khi đang chờ
   btn.disabled = true; btn.textContent = "Đang hỏi";
+  const agentic = $("agenticMode").checked;
+  const timeoutMs = agentic ? 90000 : (llmAvailable && $("useLlm").checked ? 60000 : 12000);
+  const controller = new AbortController();
+  const deadline = setTimeout(() => controller.abort(), timeoutMs);
   const t0 = Date.now();
   $("answer").innerHTML = '<p class="loading">Kỹ thuật viên đang lục lại video <span id="elapsed"></span></p>';
   const tick = setInterval(() => { const e = $("elapsed"); if (e) e.textContent = `(${Math.round((Date.now() - t0) / 1000)} giây)`; }, 1000);
   try {
-    const agentic = $("agenticMode").checked;
     const res = await fetch(`${API}${agentic ? "/diagnose" : "/ask"}`, {
-      method: "POST", headers: { "Content-Type": "application/json" },
+      method: "POST", headers: { "Content-Type": "application/json" }, signal: controller.signal,
       body: JSON.stringify(agentic
         ? { message: question, session_id: diagnosticSession }
         : { question, use_llm: $("useLlm").checked }),
@@ -427,8 +432,12 @@ async function ask(question) {
     if (first) play(first);
     else { $("screen").classList.remove("has-video"); $("screen").textContent = "Không có đoạn video phù hợp"; $("cap").hidden = true; }
   } catch (e) {
-    $("answer").innerHTML = `<h2>Không hỏi được</h2><p class="warn">${esc(e.message)}. Kiểm tra máy chủ đang chạy: <code>uvicorn api:app --port 8000</code></p>`;
+    const msg = e.name === "AbortError"
+      ? `Hết thời gian chờ sau ${Math.round(timeoutMs / 1000)} giây. Bạn có thể hỏi lại; nếu tiếp tục chậm, kiểm tra log [DXA perf] trong PowerShell.`
+      : `${e.message}. Kiểm tra máy chủ: <code>uvicorn api:app --port 8000</code>`;
+    $("answer").innerHTML = `<h2>Không hỏi được</h2><p class="warn">${e.name === "AbortError" ? esc(msg) : msg}</p>`;
   } finally {
+    clearTimeout(deadline);
     clearInterval(tick);
     btn.disabled = false; btn.textContent = "Hỏi kỹ thuật viên";
   }
@@ -436,9 +445,14 @@ async function ask(question) {
 
 async function loadStatus() {
   try {
-    const h = await (await fetch(`${API}/health`)).json();
-    const label = h.mode === "gemini" ? `Gemini (${h.llm_model})` : "Chế độ offline (chưa có key Gemini)";
-    $("status").innerHTML = `<span class="dot ${h.mode}"></span>${esc(label)}, ${h.cases} case, ${h.videos} video`;
+    const h = await (await fetch(`${API}/health`, { cache: "no-store" })).json();
+    llmAvailable = h.llm_available === true;
+    const toggle = $("useLlm");
+    if (!llmAvailable) toggle.checked = false;  // offline tự bỏ tick Gemini
+    toggle.disabled = !llmAvailable;
+    toggle.parentElement.title = llmAvailable ? "" : "Không có Gemini key: DXA chạy RAG offline trực tiếp.";
+    const label = llmAvailable ? `Gemini sẵn sàng (${h.llm_model})` : "Chế độ offline (RAG không gọi Gemini)";
+    $("status").innerHTML = `<span class="dot ${llmAvailable ? "gemini" : "offline"}"></span>${esc(label)}, ${h.cases} case, ${h.videos} video`;
   } catch { $("status").innerHTML = '<span class="dot"></span>Chưa kết nối được máy chủ'; }
 }
 
