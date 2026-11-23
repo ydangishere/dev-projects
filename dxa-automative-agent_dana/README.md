@@ -26,6 +26,38 @@
 | 6 — Retrieval | RAG (`rag.py`), BM25, vector, RRF | Tìm case và phụ đề sửa xe |
 | 7 — Data | Qdrant/NumPy, SQLite, JSON, video transcripts | Lưu tri thức, chỉ mục, nguồn và trạng thái phiên chẩn đoán |
 
+## NOTE FOR NEXT STEP — Hợp nhất RAG + Agentic (CHƯA TRIỂN KHAI)
+
+**Trạng thái: đề xuất kiến trúc, chỉ ghi tài liệu. Không sửa ứng dụng đang chạy, API, giao diện, Dana Agent hoặc bộ test hiện tại.**
+
+![Đề xuất luồng RAG-first hợp nhất với Planning, Replanning và Validation, chưa triển khai](docs/next-step-unified-flow.png)
+
+**Mục tiêu:** Một ô hỏi đáp duy nhất; người dùng không phải biết hoặc chọn giữa “RAG” và “Agentic”. **Dana (tầng 3)** sẽ điều phối toàn bộ; **RAG vẫn ở tầng 6** và được gọi như một tool, không tạo tầng thứ 8 hay thêm Agent độc lập.
+
+**Cơ chế đề xuất:**
+
+1. **RAG trước khi cần:** câu hỏi đủ rõ → truy xuất BM25 + vector và case/video liên quan; đọc Memory phiên hiện có nếu có. Không nhất thiết gọi Planner cho mỗi câu hỏi đơn giản.
+2. **Evidence Gate (cổng kiểm chứng bằng chứng):** đủ tài liệu **liên quan trực tiếp** để trả lời thì tạo câu trả lời có nguồn, sau đó bắt buộc chạy **Validation** (kiểm mã case, dẫn nguồn, số liệu, an toàn). **Không được bỏ qua Validation**, dù RAG tìm thấy tài liệu.
+3. **Thiếu triệu chứng:** gọi **Planner** chọn câu hỏi bổ sung → nhận câu trả lời người dùng → **Memory** lưu dữ kiện → tìm RAG lại.
+4. **Thiếu hoặc lệch tài liệu, Validation trượt:** gọi **Replanner** xem bằng chứng và lịch sử, đổi truy vấn RAG hoặc hỏi thêm; rồi kiểm tra lại. Replanning là gọi lại logic ra quyết định với state mới, **không phải một model/Agent mới**.
+5. **Không có căn cứ hoặc quá giới hạn:** **handoff** cho thợ / báo không đủ dữ liệu, không suy diễn nguyên nhân. Giữ giới hạn số bước, số truy vấn và thời gian.
+
+| Điều kiện | Xử lý đề xuất |
+|---|---|
+| Câu hỏi rõ + RAG đủ bằng chứng | Tạo câu trả lời → Validation → trả lời kèm nguồn |
+| Chưa biết triệu chứng quan trọng | Planner hỏi thêm → Memory → RAG |
+| RAG thiếu/sai nguồn hoặc Validation không đạt | Replanner → tìm lại / hỏi thêm → Validation |
+| Không tìm được chứng cứ phù hợp sau số lượt cho phép | Handoff; không đoán bừa |
+| Không có LLM hoạt động | Tra cứu và kiểm chứng offline khi có thể; nêu rõ giới hạn, không giả lập Planning |
+
+**Phân tách hiện tại và tương lai:** Bản DXA **đang chạy** vẫn có hai đường `POST /ask` (workflow cố định) và `POST /diagnose` (Agentic nhiều lượt) và checkbox trên UI. Việc hợp nhất chúng thành một trải nghiệm **chưa được code**; sơ đồ bên trên chỉ là **note cho lần phát triển tiếp theo**.
+
+**Tiêu chí triển khai ở bước sau:** bảo toàn khả năng tra cứu offline, đo latency/chi phí so với luồng cũ, bổ sung test tình huống “RAG đủ / thiếu triệu chứng / nguồn sai / Validation trượt / quá giới hạn”, kiểm tra lại hành vi với LLM thật và thợ sửa xe. Giữ các endpoint cũ tương thích cho đến khi migration được kiểm chứng.
+
+Nguồn có thể chỉnh sửa: [docs/next-step-unified-flow.mmd](docs/next-step-unified-flow.mmd). PNG tự sinh bằng workflow tài liệu; không phản ánh thay đổi runtime.
+
+---
+
 ## Chạy DXA
 
 1. Tải repo, vào thư mục `dxa-automative-agent_dana`, chạy `run.bat` trên Windows.
