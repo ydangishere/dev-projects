@@ -1,46 +1,86 @@
-# DXA (bản Dana) – Hỏi thợ sửa xe máy
+# DXA Dana — AI Agent hỗ trợ chẩn đoán và sửa xe máy
 
-Bản này giống DXA thường, nhưng phần trả lời câu hỏi do agent viết bằng [Dana](https://github.com/aitomatic/dana) đảm nhận (`dxa_agent.na`).
+**Hai chế độ:** tra cứu RAG theo workflow cố định (giữ nguyên) và **Agentic Diagnosis** (Planner tự chọn hành động, hỏi tiếp, tra cứu lại, đánh giá và điều chỉnh kế hoạch).
+
+## Kiến trúc 7 tầng của DXA Dana
+
+![DXA Dana — một sơ đồ PNG mô tả đầy đủ 7 tầng kiến trúc](docs/dxa_7_layers.png)
+
+> **Không có tầng Agentic thứ 8.** Planning, Memory, Replanning và Evaluation thuộc **tầng 3 — Agent Orchestration**. Dana là ngôn ngữ/runtime điều phối; mô hình Gemini hoặc LLM tương thích là tầng suy luận. Không cần fine-tune trọng số để bổ sung vòng điều phối này.
+
+| Tầng | Thành phần đang dùng | Vai trò |
+|---|---|---|
+| 1 — Presentation | Web UI (`ui/index.html`) | Hỏi đáp và bổ sung kiến thức bởi thợ |
+| 2 — API | FastAPI (`api.py`) | `/ask` và `/diagnose`; xác thực thao tác của thợ |
+| 3 — Agent Orchestration | Dana (`dxa_agent.na`) + session engine (`diagnostic.py`) | Planning, tool selection, Memory, Replanning, Evaluation; giới hạn số bước |
+| 4 — Reasoning | LLM (`reason()`) | Tạo kế hoạch dạng JSON và giải thích có căn cứ; cấu hình hiện tại qua Gemini |
+| 5 — Tool Execution | Python (`dxa_tools.py`) | Truy vấn RAG, kiểm tra nguồn/câu trả lời; chỉ thực thi hành động được phép |
+| 6 — Retrieval | RAG (`rag.py`), BM25, vector, RRF | Tìm case và phụ đề sửa xe |
+| 7 — Data | Qdrant/NumPy, SQLite, JSON, video transcripts | Lưu tri thức, chỉ mục, nguồn và trạng thái phiên chẩn đoán |
 
 ## Chạy DXA
 
-1. Tải repo về: trên GitHub bấm **Code → Download ZIP**, giải nén.
-2. Mở thư mục `dxa-automative-agent_dana`, bấm đúp **`run.bat`**.
-3. Lần đầu: bấm **Y** nếu được hỏi cài Python, rồi chờ cài thư viện (5–10 phút).
-4. Dán Gemini API key rồi bấm Enter (hoặc bấm Enter để bỏ qua).
-5. Trình duyệt tự mở DXA. Gõ câu hỏi, bấm **Hỏi thợ**.
+1. Tải repo, vào thư mục `dxa-automative-agent_dana`, chạy `run.bat` trên Windows.
+2. Cấu hình `GEMINI_API_KEY` trong `.env` để dùng LLM hiện tại. Nếu không có LLM, chế độ **Hỏi thường** vẫn có đường dự phòng offline; **Agentic** sẽ yêu cầu thợ xử lý thay vì giả vờ suy luận.
+3. Mở `http://localhost:8000`.
+4. Tab **Hỏi**: để tra cứu truyền thống, không bật **Agentic**. Để AI tự hỏi và chọn công cụ, bật **Agentic: chủ động hỏi và điều tra** và tiếp tục trả lời các câu hỏi DXA đưa ra. Bấm **Bắt đầu ca mới** nếu muốn xóa phiên cũ.
+5. Tab **Bổ sung kiến thức**: thợ đăng nhập, xem câu chưa trả lời, bổ sung ca sửa chữa, lưu để dựng lại chỉ mục.
 
-## DXA làm gì, nhìn một lần
+**Lưu ý:** Mã thợ demo là `1234`. Khi triển khai thực tế phải đổi `DXA_THO_CODE`, kiểm tra quyền và không đưa dữ liệu nhạy cảm lên mạng.
 
-Video → phụ đề → LLM rút ra case → bộ kiểm chống bịa → thợ duyệt → kho tri thức → agent → câu chưa trả lời được → thợ bổ sung kiến thức trên tab riêng → kho tri thức.
+## Agentic Diagnosis: Planning + Replanning
 
-DXA là **một trang, hai tab** (`localhost:8000`):
+**Luồng cũ:** `find_cases → gate → write_answer → check` (giữ nguyên ở `/ask`).
 
-- **Tab "Hỏi"** (mọi người): khách hỏi bệnh xe, xem câu trả lời kèm nguồn video.
-- **Tab "Bổ sung kiến thức"** (chỉ thợ): bấm **Đăng nhập thợ**, nhập mã thợ, tab này mới hiện ra. Thợ xem câu chưa trả lời được, nhập kiến thức (triệu chứng, nguyên nhân, cách sửa, thông số), bấm **Lưu** thì kho dựng lại ngay, rồi bấm **Chạy thử lại câu hỏi**.
+**Luồng mới:** `User → Planner (Dana + LLM) → {ask_user | search_rag | answer | handoff} → Memory → Replanning → Evaluator → Kết quả có nguồn`.
 
-Mã thợ của bản chạy thử là **`1234`**. Dùng thật thì đổi mã bằng dòng `DXA_THO_CODE=...` trong file `.env`.
-Quyền được **máy chủ** kiểm: không đăng nhập thợ thì gọi thẳng API lưu kiến thức cũng bị chặn (lỗi 401).
+Ví dụ: người dùng nhập "Xe không nổ máy" → Agent hỏi "Đề có quay không?" → người dùng trả lời "Đề quay" → Agent chọn lại truy vấn RAG → kiểm chứng trước khi trả lời. Đây là luồng hội thoại nhiều lượt, **không** phải ba agent khác nhau.
 
-![Pipeline DXA: từ video đến agent, câu chưa trả lời được quay lại cho thợ](docs/pipeline.png)
+### Sử dụng qua API
 
-## DXA so với một "Digital Engineer"
+Bắt đầu phiên:
 
-|  | DXA hiện tại | Digital Engineer |
-|---|:---:|:---:|
-| Kiến thức chuyên gia | ✅ | ✅ |
-| Kiểm soát, có người duyệt | ✅ | ✅ |
-| Suy luận nhiều bước để chẩn đoán | ❌ | ✅ |
-| Dùng dữ liệu thật (cảm biến, ảnh) | ❌ | ✅ |
+```bash
+curl -X POST http://localhost:8000/diagnose -H "Content-Type: application/json" -d '{"message":"Xe Honda Wave không nổ máy"}'
+```
 
-## Luồng chạy khi bấm run.bat
+Khi nhận `status: "ask_user"`, gửi câu trả lời cùng `session_id` đã nhận:
 
-![Luồng chạy khi bấm run.bat](docs/run-flow.png)
+```json
+{"message":"Đề quay nhưng không nổ","session_id":"<session_id được trả về>"}
+```
 
-## Các bước dựng DXA
+- `ask_user`: hỏi thêm triệu chứng và chờ người dùng; `answer`: có bằng chứng từ kho; `handoff`: thiếu căn cứ hoặc chạm giới hạn an toàn.
+- Giới hạn **4 bước Planner mỗi lượt**, **12 lượt hội thoại**, **12 truy vấn tìm kiếm mỗi phiên**. Không có vòng vô hạn, không tự vận hành xe hoặc tự ra lệnh sửa chữa nguy hiểm.
+- Trạng thái hội thoại lưu trong `index/diagnostic_sessions.sqlite3`, tự hết hạn sau 24 giờ. Xóa sớm bằng `DELETE /diagnose/{session_id}`.
+- Hành động có allow-list; đầu ra LLM bị kiểm tra; không đủ nguồn thì yêu cầu thợ đánh giá trực tiếp. **Không bảo đảm chẩn đoán đúng** — cần kiểm tra thực tế.
+- Có thể thay Gemini bằng mô hình LLM tương thích mà Dana hỗ trợ; phần **embedding Gemini** và đường fallback offline là cấu hình độc lập, không tự chuyển theo LLM.
 
-![Các bước dựng DXA](docs/flow.png)
+### Test
 
-## Kiến trúc DXA (bản Dana)
+```bash
+python dxa.py build
+python test_dana.py
+python test_agentic.py
+python test_expert.py
+```
 
-![Kiến trúc DXA bản Dana](docs/architecture.png)
+`test_agentic.py` kiểm tra hội thoại hai lượt, lưu session, thay đổi kế hoạch sau dữ kiện mới, nguồn bằng chứng, giới hạn vòng lặp và hành động không hợp lệ bằng **LLM giả**; không chứng minh chất lượng chẩn đoán thực tế. Cần chạy thêm với model thật và các tình huống thợ đã xác minh trước khi sử dụng ngoài demo.
+
+## Nạp kiến thức sửa xe
+
+`Video → Phụ đề → Trích xuất case → Kiểm chứng → Thợ duyệt → Kho tri thức → RAG → Agent`. Câu chưa trả lời được được ghi lại để thợ bổ sung, không tự bịa thông tin.
+
+![Pipeline kiến thức và thợ duyệt](docs/pipeline.png)
+
+## Các sơ đồ bổ sung
+
+**Luồng khởi động:** ![Chạy DXA](docs/run-flow.png)
+
+**Các bước dựng DXA:** ![Dựng DXA](docs/flow.png)
+
+**Sơ đồ kiến trúc phiên bản cũ:** ![Kiến trúc cũ](docs/architecture.png)
+
+## Phạm vi hiện tại
+
+Đây là **AI Agent demo trợ giúp thợ**, không phải hệ thống chẩn đoán xác thực qua thiết bị OBD/ECU. Phần tự lập kế hoạch thực hiện ở tầng điều phối hiện tại; không yêu cầu huấn luyện lại trọng số mô hình. Triển khai production cần bảo mật phiên, xác thực đa người dùng, kiểm thử an toàn hướng dẫn sửa chữa và đánh giá định lượng với dữ liệu thực.
