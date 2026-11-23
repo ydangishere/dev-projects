@@ -4,7 +4,15 @@
 
 ## Kiến trúc 7 tầng của DXA Dana
 
-![DXA Dana — một sơ đồ PNG mô tả đầy đủ 7 tầng kiến trúc](docs/dxa_7_layers.png)
+![DXA Dana — sơ đồ PNG 7 tầng kiến trúc, Agentic tích hợp ở tầng 3](docs/dxa_7_layers.png)
+
+**Luồng xây dựng tri thức và chẩn đoán Agentic (đã cập nhật):**
+
+![DXA Dana — flow có Planner, Memory, Replanner, chế độ RAG và vòng phản hồi thợ](docs/flow.png)
+
+**Sơ đồ kỹ thuật đầy đủ:**
+
+![Dana + Planner + Replanning + LLM + Tools + RAG + Data](docs/architecture.png)
 
 > **Không có tầng Agentic thứ 8.** Planning, Memory, Replanning và Evaluation thuộc **tầng 3 — Agent Orchestration**. Dana là ngôn ngữ/runtime điều phối; mô hình Gemini hoặc LLM tương thích là tầng suy luận. Không cần fine-tune trọng số để bổ sung vòng điều phối này.
 
@@ -75,11 +83,19 @@ python test_expert.py
 
 ## Các sơ đồ bổ sung
 
-**Luồng khởi động:** ![Chạy DXA](docs/run-flow.png)
+**Luồng khởi động, lựa chọn Agentic và xử lý offline:**
 
-**Các bước dựng DXA:** ![Dựng DXA](docs/flow.png)
+![Chạy DXA](docs/run-flow.png)
 
-**Sơ đồ kiến trúc phiên bản cũ:** ![Kiến trúc cũ](docs/architecture.png)
+**Pipeline tri thức, hai chế độ Agent và feedback thợ:**
+
+![Pipeline](docs/pipeline.png)
+
+**Giao diện DXA:**
+
+![Giao diện Hỏi và bật Agentic](docs/ui.png)
+
+Tài liệu kỹ thuật được đồng bộ với các PNG: [KY-THUAT.md](docs/KY-THUAT.md), [chi-tiet.md](docs/chi-tiet.md). Nguồn sơ đồ: `docs/flow.mmd`, `docs/architecture.mmd`, `docs/run-flow.mmd`, `docs/pipeline.dot`; workflow [dxa-docs-render.yml](../.github/workflows/dxa-docs-render.yml) tái tạo ảnh từ nguồn. Các bài test CI không thay thế kiểm thử chẩn đoán bằng LLM thật.
 
 ## Phạm vi hiện tại
 
