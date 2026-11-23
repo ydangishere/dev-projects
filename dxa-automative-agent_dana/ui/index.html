@@ -199,7 +199,7 @@
 
   <main>
     <section class="answer" id="answer" aria-live="polite">
-      <p class="empty"><strong>Mô tả triệu chứng của xe</strong>, thợ sẽ trả lời bằng kiến thức trong 30 video của kênh, kèm link mở đúng giây trong video. Câu nào video chưa nói tới, hệ thống sẽ báo chưa có chứ không đoán.</p>
+      <p class="empty"><strong>Bạn có thể đặt bất kỳ câu hỏi nào.</strong> DXA hiện ưu tiên kiến thức sửa xe đã có nguồn và dẫn video đúng thời điểm; nếu chưa đủ căn cứ sẽ nói rõ giới hạn, không tự bịa câu trả lời.</p>
     </section>
 
     <aside>
@@ -434,8 +434,8 @@ async function ask(question) {
   } catch (e) {
     const msg = e.name === "AbortError"
       ? `Hết thời gian chờ sau ${Math.round(timeoutMs / 1000)} giây. Bạn có thể hỏi lại; nếu tiếp tục chậm, kiểm tra log [DXA perf] trong PowerShell.`
-      : `${e.message}. Kiểm tra máy chủ: <code>uvicorn api:app --port 8000</code>`;
-    $("answer").innerHTML = `<h2>Không hỏi được</h2><p class="warn">${e.name === "AbortError" ? esc(msg) : msg}</p>`;
+      : `${e.message}. Kiểm tra máy chủ đang chạy ở http://localhost:8000`;
+    $("answer").innerHTML = `<h2>Không hỏi được</h2><p class="warn">${esc(msg)}</p>`;
   } finally {
     clearTimeout(deadline);
     clearInterval(tick);
