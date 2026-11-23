@@ -339,7 +339,7 @@ def log_unanswered(q, q2, reason):
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
 
-REFUSE = "Chưa có kiến thức này trong kho. Không đoán, cần thợ bổ sung kiến thức hoặc nạp thêm video."
+REFUSE = "Tôi đã tìm trong kho kiến thức DXA nhưng chưa thấy tài liệu đủ phù hợp để trả lời chắc chắn. Câu hỏi đã được ghi nhận để thợ xem xét bổ sung kiến thức."
 NEAR_NOTE = "Câu hỏi chưa khớp hẳn với kiến thức trong kho, đây là câu trả lời gần nhất. Câu hỏi đã được lưu để thợ bổ sung."
 
 
