@@ -31,6 +31,7 @@ from pydantic import BaseModel, Field
 
 import dxa
 import dxa_dana
+import diagnostic
 import expert
 import gemini_client as G
 import rag
@@ -113,6 +114,43 @@ def ask(body: AskIn):
     print(f"[DXA] trả lời trong {res['seconds']} giây (dịch {res['seconds_accent']} giây, "
           f"trả lời bởi {res['answered_by']}): {q[:60]}", file=sys.stderr, flush=True)
     return {k: res.get(k) for k in AskOut.model_fields}
+
+
+class DiagnoseIn(BaseModel):
+    message: str = Field(..., min_length=2, max_length=500)
+    session_id: Optional[str] = None
+
+
+class DiagnoseOut(BaseModel):
+    session_id: str
+    status: str
+    answer: str
+    sources: list[Source]
+    actions: list[dict]
+    turns: int
+    warnings: list[str]
+
+
+@app.post("/diagnose", response_model=DiagnoseOut)
+def diagnose(body: DiagnoseIn):
+    """Optional agentic mode. POST next answer with session_id to resume planning."""
+    try:
+        return diagnostic.run_turn(body.message, body.session_id)
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    except Exception as e:
+        # Do not leak provider configuration, prompts, traces or credentials.
+        print(f"[DXA] diagnostic error: {type(e).__name__}", file=sys.stderr)
+        raise HTTPException(503, "Không thể lập kế hoạch lúc này. Hãy dùng Hỏi thông thường hoặc thử lại.")
+
+
+@app.delete("/diagnose/{session_id}")
+def end_diagnosis(session_id: str):
+    try:
+        diagnostic.delete_session(session_id)
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    return {"deleted": True}
 
 
 @app.get("/cases/{case_id}")
