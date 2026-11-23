@@ -190,23 +190,40 @@ def _vec_rank(kind, query, n=20):
 
 
 def retrieve(q, top_cases=TOP_CASES, top_chunks=TOP_CHUNKS):
+    t0 = time.perf_counter()
     st = state()
+    t_index = time.perf_counter()
     q2 = restore_accents(q)
     queries = [q] if q2 == q else [q, q2]
+    t_normalize = time.perf_counter()
 
     case_bm, _ = _bm25_rank(st["bm25_cases"], queries)
     chunk_bm, _ = _bm25_rank(st["bm25_chunks"], queries)
-    cases = _rrf([case_bm, _vec_rank("cases", q2)])[:top_cases]
-    chunks = _rrf([chunk_bm, _vec_rank("chunks", q2)])[:top_chunks]
+    t_bm25 = time.perf_counter()
+    case_vec = _vec_rank("cases", q2)
+    chunk_vec = _vec_rank("chunks", q2)
+    t_vector = time.perf_counter()
+    cases = _rrf([case_bm, case_vec])[:top_cases]
+    chunks = _rrf([chunk_bm, chunk_vec])[:top_chunks]
+    levels = [dxa.scope_level(st, x) for x in queries]
+    t_done = time.perf_counter()
 
     return {
         "question": q,
         "query_used": q2,
-        "in_scope": "in" in (levels := [dxa.scope_level(st, x) for x in queries]),
+        "in_scope": "in" in levels,
         "near": "in" not in levels and "near" in levels,
         "cases": [i for i, _ in cases],
         "chunks": [i for i, _ in chunks],
         "mode": mode(),
+        "timings_ms": {
+            "index_ms": round((t_index - t0) * 1000, 2),
+            "normalize_ms": round((t_normalize - t_index) * 1000, 2),
+            "bm25_ms": round((t_bm25 - t_normalize) * 1000, 2),
+            "vector_ms": round((t_vector - t_bm25) * 1000, 2),
+            "rank_gate_ms": round((t_done - t_vector) * 1000, 2),
+            "retrieval_ms": round((t_done - t0) * 1000, 2),
+        },
     }
 
 
