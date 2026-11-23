@@ -19,6 +19,7 @@ Tab "Bổ sung kiến thức" (chỉ thợ, kiểm quyền ở máy chủ bằng
     POST   /tho/cases         lưu case mới rồi dựng lại kho ngay
     DELETE /tho/cases/{id}    gỡ case (giữ lại trong file để truy vết)
 """
+import os
 import sys
 import time
 from contextlib import asynccontextmanager
@@ -39,12 +40,17 @@ import rag
 
 @asynccontextmanager
 async def lifespan(app):
-    rag.state()  # nạp index một lần khi khởi động
-    expert.tho_code()  # chưa đặt DXA_THO_CODE thì in mã thợ ra cửa sổ đen
-    try:
-        dxa_dana._load_agent()  # nạp agent Dana một lần (mất vài giây)
-    except Exception as e:
-        print(f"[api] Chưa nạp được agent Dana: {e}")
+    start = time.perf_counter()
+    rag.state()  # index đã được cache trong memory
+    rag.accent_dict()  # warm-up một lần, không làm chậm câu hỏi đầu tiên
+    print(f"[DXA perf] index_preload_ms={(time.perf_counter() - start) * 1000:.1f}", file=sys.stderr, flush=True)
+    expert.tho_code()
+    # Offline không cần nạp Dana; vẫn hỗ trợ mock khi kiểm thử runtime.
+    if G.available() or os.getenv("DANA_MOCK_LLM", "").lower() == "true":
+        try:
+            dxa_dana._load_agent()
+        except Exception as e:
+            print(f"[api] Chưa nạp được Dana: {type(e).__name__}", file=sys.stderr, flush=True)
     yield
 
 
@@ -82,6 +88,7 @@ class AskOut(BaseModel):
     near: bool = False                 # trả lời bằng case gần nhất (câu hỏi chưa khớp hẳn)
     seconds: float = 0                 # tổng thời gian trả lời
     seconds_accent: float = 0          # phần thời gian gọi Gemini dịch câu tiếng Anh (câu không dấu thêm dấu trên máy, ~0 giây)
+    timings_ms: dict[str, float] = Field(default_factory=dict)  # thời gian từng bước
     answered_by: str
     mode: str
     warnings: list[str]
@@ -93,13 +100,14 @@ UI = Path(__file__).parent / "ui" / "index.html"
 
 @app.get("/", include_in_schema=False)
 def home():
-    return FileResponse(UI)
+    return FileResponse(UI, headers={"Cache-Control": "no-store"})
 
 
 @app.get("/health")
 def health():
     st = rag.state()
-    return {"ok": True, "engine": "dana", "mode": rag.mode(), "cases": len(st["cases"]), "chunks": len(st["chunks"]),
+    return {"ok": True, "engine": "dana", "mode": rag.mode(), "llm_available": G.available(),
+            "cases": len(st["cases"]), "chunks": len(st["chunks"]),
             "videos": len(st["videos"]), "llm_model": G.LLM_MODEL if G.available() else None,
             "embed_model": G.EMBED_MODEL if rag.mode() == "gemini" else "offline TF-IDF"}
 
@@ -108,11 +116,21 @@ def health():
 def ask(body: AskIn):
     q = body.question.strip()
     t0 = time.perf_counter()
-    res = dxa_dana.ask(q) if body.use_llm else rag.answer(q, use_llm=False)
-    res["seconds"] = round(time.perf_counter() - t0, 2)
+    # Offline bypass: không có Gemini key thì RAG trả lời trực tiếp, không import/gọi Dana.
+    use_dana = body.use_llm and G.available()
+    route = "dana" if use_dana else "rag_offline"
+    res = dxa_dana.ask(q) if use_dana else rag.answer(q, use_llm=False)
+    total_ms = round((time.perf_counter() - t0) * 1000, 2)
+    timings = dict(res.get("timings_ms") or {})
+    timings["total_ms"] = total_ms
+    timings["other_ms"] = round(max(0.0, total_ms - timings.get("retrieval_ms", 0.0)), 2)
+    res["timings_ms"] = timings
+    res["seconds"] = round(total_ms / 1000, 2)
     res["seconds_accent"] = round(rag.accent_seconds.pop(q, 0.0), 2)
-    print(f"[DXA] trả lời trong {res['seconds']} giây (dịch {res['seconds_accent']} giây, "
-          f"trả lời bởi {res['answered_by']}): {q[:60]}", file=sys.stderr, flush=True)
+    perf = " ".join(f"{name}={value:.1f}" for name, value in sorted(timings.items()))
+    # Không in nguyên văn câu hỏi để tránh lộ thông tin của khách hàng.
+    print(f"[DXA perf] route={route} answered_by={res['answered_by']} "
+          f"question_chars={len(q)} {perf}", file=sys.stderr, flush=True)
     return {k: res.get(k) for k in AskOut.model_fields}
 
 
