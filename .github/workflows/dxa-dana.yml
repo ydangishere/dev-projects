@@ -33,6 +33,10 @@ jobs:
           python validate.py
           python eval.py
 
+      - name: Hiệu năng RAG offline - 10 câu liên tiếp, bypass Dana
+        env: { GEMINI_API_KEY: '', GOOGLE_API_KEY: '', DANA_MOCK_LLM: '' }
+        run: python test_perf.py
+
       - name: Kiểm thử Agentic Planning, Replanning, Memory (offline)
         run: python test_agentic.py
 
@@ -51,7 +55,7 @@ jobs:
           export DANA_CONFIG=$PWD/index/dana_config.json
           dana dxa_agent.na question="Bình xăng con chảy xăng khi dựng xe" 2>&1 | grep -vE "^\{'local'|Final Context|^-{5,}" | tail -25
 
-      - name: Giao diện web + API gọi agent Dana
+      - name: Giao diện web + API ưu tiên RAG offline
         env: { DANA_MOCK_LLM: 'true', GEMINI_API_KEY: '' }
         run: |
           uvicorn api:app --port 8000 > api.log 2>&1 &
@@ -60,7 +64,7 @@ jobs:
           curl -sf localhost:8000/ | grep -q "Xe bạn đang bị gì"
           curl -sf -X POST localhost:8000/ask -H 'Content-Type: application/json' \
             -d '{"question":"Bình xăng con chảy xăng khi dựng xe"}' > ask.json
-          python -c "import json;r=json.load(open('ask.json'));print(r['answered_by'],r['mode']);assert not r['answered_by'].startswith('python'), r['warnings']"
+          python -c "import json;r=json.load(open('ask.json'));print(r['answered_by'],r['mode'],r['timings_ms']);assert r['mode']=='offline' and r['answered_by'] in ('template','gate') and r['timings_ms']['total_ms']>=0,r"
           test "$(curl -s -o /dev/null -w '%{http_code}' localhost:8000/unanswered)" = 401
           grep -q "Mã đăng nhập thợ" api.log
           tail -5 api.log
