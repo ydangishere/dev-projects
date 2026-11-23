@@ -1,34 +1,37 @@
-%%{init: {"theme":"base","fontFamily":"Inter, DejaVu Sans, sans-serif","themeVariables":{"fontFamily":"Inter, DejaVu Sans, sans-serif","fontSize":"15px","primaryColor":"#F7F7F4","primaryBorderColor":"#1F2A2E","primaryTextColor":"#1F2A2E","lineColor":"#33566B","clusterBkg":"#ECEDE8","clusterBorder":"#C9CCC4","edgeLabelBackground":"#FFFFFF"},"flowchart":{"curve":"basis","nodeSpacing":36,"rankSpacing":40}}}%%
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#F7F7F4","primaryBorderColor":"#0E233D","primaryTextColor":"#0E233D","lineColor":"#106A84","clusterBkg":"#EEF5FA","clusterBorder":"#B9CAD9"}}}%%
 flowchart TB
-    START(["Bấm đúp <b>run.bat</b>"])
-    P{"Có Python<br/>3.12 trở lên?"}
-    PI["Hỏi: cài Python 3.12?<br/><small>bấm Y để tự cài</small>"]
-    V{"Đã cài<br/>thư viện chưa?"}
-    VI["Cài thư viện, gồm Dana<br/><small>chỉ lần đầu, 5–10 phút</small>"]
-    K{"Đã có Gemini<br/>API key chưa?"}
-    ASK["Cửa sổ đen hỏi key"]
-    SAVE["Lưu key<br/><small>lần sau không hỏi nữa</small>"]
-    OFF["Chạy không có LLM<br/><small>lần sau hỏi lại</small>"]
-    B["Dựng kho tri thức"]
-    WEB["Bật máy chủ, nạp agent Dana,<br/>tự mở trình duyệt <b>localhost:8000</b>"]
-    USE(["Hỏi DXA trên giao diện web.<br/>Đóng cửa sổ đen là tắt."])
+    START(["Bấm run.bat trên Windows"])
+    PY{"Python >= 3.12?"}
+    INSTALL["Đề nghị cài Python"]
+    DEPS{"Đã cài dependencies?"}
+    PIP["Tạo virtualenv và cài requirements"]
+    KEY{"Có GEMINI_API_KEY?"}
+    MODELLM["Dana + LLM được cấu hình"]
+    FALLBACK["Tra cứu offline, trả lời theo khuôn<br/>Agentic không tự suy luận nếu thiếu LLM"]
+    BUILD["Dựng / nạp index<br/>BM25, vector, SQLite, Qdrant nếu có"]
+    SERVER["Nạp Dana Agent và FastAPI<br/>localhost:8000"]
+    CHOICE{"Bật Agentic trong tab Hỏi?"}
+    ASK["/ask: workflow RAG cố định"]
+    DIAG["/diagnose: Planning + Memory<br/>chọn hỏi thêm / RAG / trả lời"]
+    LOOP["Replanning sau thông tin mới<br/>tối đa 4 bước mỗi lượt"]
+    RESULT["Trả lời có nguồn / chuyển thợ"]
+    EXPERT["Tab Bổ sung kiến thức<br/>đăng nhập thợ để thêm / sửa case"]
 
-    START --> P
-    P -- "chưa" --> PI --> V
-    P -- "có" --> V
-    V -- "chưa" --> VI --> K
-    V -- "rồi" --> K
-    K -- "rồi" --> B
-    K -- "chưa" --> ASK
-    ASK -- "dán key" --> SAVE --> B
-    ASK -- "bỏ trống" --> OFF --> B
-    B --> WEB --> USE
-
-    classDef gate fill:#F2C230,stroke:#1F2A2E,color:#1F2A2E
-    classDef go fill:#1F2A2E,stroke:#1F2A2E,color:#FFFFFF
-    classDef good fill:#DCEBE1,stroke:#3E7C59,color:#1F2A2E
-    classDef warn fill:#F3DAD5,stroke:#A93A2A,color:#1F2A2E
-    class P,V,K gate
-    class START,USE go
-    class SAVE good
-    class OFF warn
+    START --> PY
+    PY -->|Không| INSTALL --> DEPS
+    PY -->|Có| DEPS
+    DEPS -->|Chưa| PIP --> KEY
+    DEPS -->|Rồi| KEY
+    KEY -->|Có| MODELLM --> BUILD
+    KEY -->|Không| FALLBACK --> BUILD
+    BUILD --> SERVER --> CHOICE
+    CHOICE -->|Không| ASK --> RESULT
+    CHOICE -->|Có| DIAG --> LOOP --> RESULT
+    SERVER --> EXPERT
+    EXPERT -. "dựng lại index" .-> BUILD
+    classDef gate fill:#FFE2A0,stroke:#AC7421,color:#0E233D
+    classDef agent fill:#DBEDF7,stroke:#106A84,color:#0E233D
+    classDef end fill:#0E233D,stroke:#0E233D,color:#FFFFFF
+    class PY,DEPS,KEY,CHOICE gate
+    class DIAG,LOOP agent
+    class START,RESULT end
