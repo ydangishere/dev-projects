@@ -1,0 +1,34 @@
+name: DXA YouTube channel inventory
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'dxa-automative-agent_dana/scripts/audit_youtube_channel.py'
+      - '.github/workflows/dxa-youtube-inventory.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: dxa-automative-agent_dana
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install public channel inventory tool
+        run: python -m pip install -U yt-dlp
+      - name: Scan all public video, Shorts, and live tabs
+        run: python scripts/audit_youtube_channel.py
+      - name: Save inventory and coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dxa-youtube-channel-inventory
+          path: dxa-automative-agent_dana/reports/youtube_channel_inventory*
