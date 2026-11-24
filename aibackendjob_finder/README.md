@@ -2,6 +2,15 @@
 
 Automated tool that scrapes job listings from TopCV or ITviec, uses an LLM to identify backend-related jobs, then displays results in a desktop window.
 
+
+## Application Run Flow
+
+![AI Backend Job Finder — actual GUI and CLI run flow](docs/run-flow.png)
+
+The diagram follows the implemented Python pipeline: **TopCV / ITviec → scraping → structured job listings → GPT-4o-mini classification → backend-role filtering → GUI results or CLI notification**. The GUI supports up to 20 listings per run; the CLI output depends on `NOTIFICATION_MODE` (JSON, terminal, or email). This is a fixed LLM-powered data pipeline, **not an autonomous Agentic AI system**.
+
+---
+
 ---
 
 ## How to Run (Step-by-Step)
