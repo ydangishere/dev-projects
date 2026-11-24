@@ -11,8 +11,6 @@ The diagram follows the implemented Python pipeline: **TopCV / ITviec → scrapi
 
 ---
 
----
-
 ## How to Run (Step-by-Step)
 
 **Prerequisites:** Installation and configuration done (see below).
