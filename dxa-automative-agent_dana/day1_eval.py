@@ -52,7 +52,7 @@ def semantic_metrics(model_name):
     from deepeval.models import OllamaModel
     from deepeval.test_case import LLMTestCaseParams as Params
 
-    judge = OllamaModel(model=model_name, base_url="http://127.0.0.1:11434")
+    judge = OllamaModel(model=model_name, base_url="http://127.0.0.1:11434", timeout=20.0, generation_kwargs={"num_predict": 384})
     return {
         "correctness": GEval(name="Correctness", model=judge,
             criteria="Compare the answer to the source reference. Penalize unsupported or contradictory repair facts.",
@@ -75,6 +75,7 @@ def run(questions, judge=None, judge_limit=None):
     # Baseline questions should never populate the mechanic's feedback queue.
     dxa_tools.log_unanswered = lambda *args: True
     rag.log_unanswered = lambda *args: None
+    os.environ.setdefault("DEEPEVAL_RETRY_MAX_ATTEMPTS", "1")
     metrics = semantic_metrics(judge) if judge else {}
     results = []
     judged = 0
