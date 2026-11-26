@@ -55,14 +55,14 @@ Parser = Callable[[str], Any]
 # doc_type -> list of (field, accent-free label prefixes, parser, description for the LLM)
 FIELD_SPECS: dict[str, list[tuple[str, tuple[str, ...], Parser, str]]] = {
     "cccd": [
-        ("full_name", ("ho va ten",), _text, "họ và tên"),
-        ("id_number", ("so dinh danh ca nhan", "so cccd"), _id, "số CCCD 12 chữ số"),
+        ("full_name", ("ho va ten",), _text, "họ và tên (giữ nguyên nếu là <PERSON_n>)"),
+        ("id_number", ("so dinh danh ca nhan", "so cccd"), _id, "số CCCD 12 chữ số (giữ nguyên nếu là <CCCD_n>)"),
         ("date_of_birth", ("ngay sinh",), parse_date, "ngày sinh dd/mm/yyyy"),
         ("expiry_date", ("co gia tri den",), _date_or_indefinite, "ngày hết hạn hoặc 'Không thời hạn'"),
     ],
     "loan_application": [
-        ("full_name", ("ho va ten khach hang", "ho va ten"), _text, "họ tên khách hàng"),
-        ("id_number", ("so cccd",), _id, "số CCCD"),
+        ("full_name", ("ho va ten khach hang", "ho va ten"), _text, "họ tên người đề nghị vay (giữ nguyên nếu là <PERSON_n>)"),
+        ("id_number", ("so cccd",), _id, "số căn cước/CCCD (giữ nguyên nếu là <CCCD_n>)"),
         ("requested_amount", ("so tien de nghi vay", "so tien vay"), parse_vnd, "số tiền đề nghị vay (VND)"),
         ("term_months", ("thoi han vay",), _int, "thời hạn vay (tháng)"),
         ("purpose", ("muc dich vay",), _text, "mục đích vay"),
@@ -73,7 +73,7 @@ FIELD_SPECS: dict[str, list[tuple[str, tuple[str, ...], Parser, str]]] = {
         ("employer", ("ben su dung lao dong",), _text, "tên đơn vị sử dụng lao động"),
         ("full_name", ("nguoi lao dong",), _text, "họ tên người lao động"),
         ("id_number", ("so cccd",), _id, "số CCCD"),
-        ("contract_type", ("loai hop dong",), _text, "loại hợp đồng"),
+        ("contract_type", ("loai hop dong",), _text, "loại hợp đồng: không xác định thời hạn, hoặc xác định thời hạn"),
         ("start_date", ("ngay bat dau",), parse_date, "ngày bắt đầu"),
         ("end_date", ("ngay ket thuc",), parse_date, "ngày kết thúc (nếu có)"),
         ("monthly_salary", ("muc luong",), parse_vnd, "mức lương tháng (VND)"),
@@ -165,6 +165,13 @@ def extract_regex(doc: Document) -> tuple[dict[str, Evidence], list[SalaryCredit
                 if value is not None:
                     found[name] = Evidence(value, line, doc.filename, page)
                 break
+        if doc.doc_type == "labor_contract" and "contract_type" not in found:
+            # contract type often sits inside a sentence: "Thời hạn hợp đồng: không xác định thời hạn, kể từ ..."
+            term = re.search(r"(khong xac dinh thoi han|xac dinh thoi han(?: \d+ thang)?)", key)
+            if term:
+                label = "Không xác định thời hạn" if term.group(1).startswith("khong") else \
+                    "Xác định thời hạn" + term.group(1)[len("xac dinh thoi han"):].replace("thang", "tháng")
+                found["contract_type"] = Evidence(label, line, doc.filename, page)
         if doc.doc_type == "bank_statement":
             match = _ROW.search(line)
             if match and match.group(3) == "+" and "luong" in norm(match.group(2)):
