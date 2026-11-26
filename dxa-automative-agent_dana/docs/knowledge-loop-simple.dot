@@ -1,0 +1,52 @@
+// DXA Dana — simple knowledge collection and improvement loop.
+// Render: dot -Tpng -Gdpi=160 docs/knowledge-loop-simple.dot -o docs/knowledge-loop-simple.png
+digraph DXA {
+  graph [
+    rankdir=TB,
+    bgcolor="white",
+    fontname="DejaVu Sans",
+    fontsize=22,
+    labelloc="t",
+    label="VÒNG THU THẬP VÀ CẢI THIỆN KIẾN THỨC",
+    nodesep=.55,
+    ranksep=.72,
+    pad=.5
+  ];
+
+  node [
+    fontname="DejaVu Sans",
+    fontsize=14,
+    shape=box,
+    style="rounded,filled",
+    fillcolor="#F7F9FC",
+    color="#0E233D",
+    penwidth=1.5,
+    margin=".28,.18"
+  ];
+
+  edge [
+    fontname="DejaVu Sans",
+    fontsize=12,
+    color="#106A84",
+    fontcolor="#0E233D",
+    penwidth=1.6,
+    arrowsize=.8
+  ];
+
+  SOURCE [label="Nguồn kiến thức\nVideo / tài liệu", fillcolor="#EDF3F9"];
+  EXTRACT [label="AI trích xuất kiến thức\nTriệu chứng • Nguyên nhân • Cách sửa"];
+  REVIEW [label="Thợ kiểm duyệt", fillcolor="#DDF0E4"];
+  STORE [label="Kho kiến thức đã xác minh", fillcolor="#D7EDF6"];
+  DANA [label="Dana dùng kiến thức\nđể trả lời người dùng", fillcolor="#E9F5F9"];
+  CHECK [label="Đủ kiến thức?", shape=diamond, style="filled", fillcolor="#FFE5AA"];
+  ANSWER [label="Trả lời có nguồn", fillcolor="#DDF0E4"];
+  PENDING [label="Lưu câu hỏi chưa trả lời"];
+  ADD [label="Thợ bổ sung kiến thức", fillcolor="#EDF7F0"];
+  UPDATE [label="Cập nhật lại kho", fillcolor="#D7EDF6"];
+
+  SOURCE -> EXTRACT -> REVIEW -> STORE -> DANA -> CHECK;
+  CHECK -> ANSWER [label="Đủ"];
+  CHECK -> PENDING [label="Chưa đủ"];
+  PENDING -> ADD -> UPDATE;
+  UPDATE -> STORE [label="Học thêm cho lần sau", constraint=false];
+}

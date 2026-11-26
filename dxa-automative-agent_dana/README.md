@@ -155,7 +155,13 @@ python test_expert.py
 
 `Video/tài liệu → AI trích xuất → Thợ kiểm duyệt → Lưu vào kho → Dana trả lời → Câu chưa trả lời được → Thợ bổ sung → Cập nhật lại kho`.
 
-![Vòng thu thập và cải thiện kiến thức DXA Dana](docs/pipeline.png)
+### Sơ đồ đơn giản
+
+![Vòng thu thập và cải thiện kiến thức DXA Dana](docs/knowledge-loop-simple.png)
+
+### Sơ đồ kỹ thuật đầy đủ
+
+![Thu thập kiến thức, Dana tìm kiếm và chuyển cho thợ](docs/pipeline.png)
 
 ## Các sơ đồ bổ sung
 
