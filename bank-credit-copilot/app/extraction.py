@@ -207,14 +207,18 @@ def _llm_fill(doc: Document, missing: list[tuple[str, Parser, str]], config: LLM
     user = (f"Loại giấy tờ: {doc.label}\nCác trường cần lấy:\n{json.dumps(schema, ensure_ascii=False)}"
             f"\n\nVăn bản (mỗi dòng có mã [L..]):\n{body[:12000]}")
     try:
-        answer = complete_json(config, system, user, purpose="extract")
+        answer = complete_json(config, system, user, purpose="extract", max_tokens=900)
     except LLMError:
         return {}
     by_id = {f"L{i}": (page, line) for i, page, line in shown}
     filled: dict[str, Evidence] = {}
+    if isinstance(answer.get("fields"), dict):  # some models nest the answer
+        answer = answer["fields"]
     for name, parser, _ in missing:
         item = answer.get(name)
-        if not isinstance(item, dict) or item.get("value") in (None, ""):
+        if isinstance(item, (str, int, float)):  # small models often drop the {"value", "line"} wrapper
+            item = {"value": item}
+        if not isinstance(item, dict) or item.get("value") in (None, "", "null"):
             continue
         raw = masker.unmask(str(item["value"]))
         value = parser(raw)

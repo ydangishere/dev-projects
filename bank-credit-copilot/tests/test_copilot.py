@@ -164,7 +164,7 @@ MESSY_ANSWERS = {  # what a well-behaved model would return for HS-005
 
 
 def fake_messy_llm(prompts):
-    def fake(config, system, user, purpose="general"):
+    def fake(config, system, user, purpose="general", **kwargs):
         prompts.append(user)
         if purpose != "extract":
             raise extraction_module.LLMError("only extraction is faked here")
@@ -244,3 +244,22 @@ def test_policy_answer_citation_normalised(copilot, monkeypatch):
     copilot.llm = FAKE_LLM
     answer = copilot.ask_policy("DTI tối đa là bao nhiêu?")
     assert answer["cited"] == ["5.3"] and answer["source"] == "openai"
+
+
+def test_guard_ignores_privacy_category_only_for_memo(monkeypatch):
+    import sys
+    import types
+
+    fake = types.SimpleNamespace(completion=lambda **k: types.SimpleNamespace(
+        choices=[types.SimpleNamespace(message=types.SimpleNamespace(content="unsafe\nS7"))]))
+    monkeypatch.setitem(sys.modules, "litellm", fake)
+    monkeypatch.setenv("GUARD_MODEL", "ollama_chat/llama-guard3:1b")
+    assert moderate("tờ trình", "memo_output").safe
+    assert not moderate("câu hỏi", "policy_question").safe
+
+
+def test_llm_extraction_accepts_plain_string_answers(monkeypatch):
+    doc = load_document("don.txt", "GIẤY ĐỀ NGHỊ VAY VỐN\nThời gian vay mong muốn: 24 tháng".encode())
+    monkeypatch.setattr(extraction_module, "complete_json", lambda *a, **k: {"term_months": "24 tháng"})
+    result = extract([doc], FAKE_LLM, send_documents_to_llm=True)
+    assert result.fields["loan_application"]["term_months"].value == 24

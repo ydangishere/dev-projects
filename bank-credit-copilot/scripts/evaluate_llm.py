@@ -33,7 +33,8 @@ os.environ.setdefault("DEEPEVAL_TELEMETRY_OPT_OUT", "YES")
 
 from app import extraction as extraction_module  # noqa: E402
 from app import guard  # noqa: E402
-from app.llm import LLMConfig  # noqa: E402
+from app.llm import CALL_LOG, LLMConfig  # noqa: E402
+from app.observability import langfuse_auth_ok  # noqa: E402
 from app.pipeline import CreditCopilot, Settings  # noqa: E402
 from app.textutil import norm  # noqa: E402
 
@@ -98,9 +99,9 @@ def main() -> int:
     prompts: list[str] = []
     original = extraction_module.complete_json
 
-    def recording(cfg, system, user, purpose="general"):
+    def recording(cfg, system, user, purpose="general", **kwargs):
         prompts.append(user)
-        return original(cfg, system, user, purpose=purpose)
+        return original(cfg, system, user, purpose=purpose, **kwargs)
 
     extraction_module.complete_json = recording
 
@@ -212,16 +213,38 @@ def main() -> int:
 
     quality["latency_seconds"] = {k: {"p50": percentile(v, 0.5), "p95": percentile(v, 0.95)}
                                   for k, v in timings.items()}
+    calls: dict[str, dict] = {}
+    for record in CALL_LOG:
+        stats = calls.setdefault(record["purpose"], {"calls": 0, "ok": 0, "seconds": [], "failures": []})
+        stats["calls"] += 1
+        stats["ok"] += record.get("outcome") == "ok"
+        stats["seconds"].append(record.get("seconds", 0))
+        if record.get("outcome") != "ok" and len(stats["failures"]) < 3:
+            stats["failures"].append({"outcome": record.get("outcome"), "raw": record.get("raw", "")[:200]})
+    for stats in calls.values():
+        stats["p50_seconds"] = percentile(stats.pop("seconds"), 0.5)
+    quality["llm_calls"] = calls
     report = {
         "model": config.model, "guard_model": guard.guard_model() or None,
         "judge_model": os.getenv("JUDGE_OLLAMA_MODEL", "qwen2.5:1.5b") if judge else None,
         "judge_note": judge_error, "pii_engine": results["HS-005"]["extraction"]["pii"].get("engine"),
+        "langfuse_auth": langfuse_auth_ok(),
         "checks": checks, "quality": quality, "judge_errors": judge_errors[:10], "details": details,
     }
     out = ROOT / "eval" / "llm_results.json"
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2, default=str) + "\n", encoding="utf-8")
-    print(json.dumps({k: report[k] for k in ("model", "guard_model", "judge_model", "pii_engine", "checks", "quality")},
-                     ensure_ascii=False, indent=2))
+    print(json.dumps({k: report[k] for k in ("model", "guard_model", "judge_model", "pii_engine", "langfuse_auth",
+                                             "checks", "quality")}, ensure_ascii=False, indent=2))
+    print("---- diagnostics ----")
+    for case_id, c in details["cases"].items():
+        print(case_id, c["verdict"], "llm_fields:", c["llm_fields"], "| memo:", c["narrative_source"],
+              c["narrative_fallback"] or "")
+        for miss in c["missed_fields"]:
+            print("   missed", miss)
+    for row in details["policy"]:
+        print("Q:", row["q"][:45], "| cited", row["cited"], "| source", row["source"], "|", row.get("fallback") or "",
+              "|", {k: (v or {}).get("score") for k, v in row.items() if k in ("faithfulness", "correctness")})
+    print("judge errors:", judge_errors[:5])
     return 0 if all(checks.values()) else 1
 
 

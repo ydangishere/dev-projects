@@ -109,13 +109,18 @@ jobs:
           OLLAMA_BASE_URL: http://localhost:11434
           LANGFUSE_PUBLIC_KEY: ${{ env.LANGFUSE_PK }}
           LANGFUSE_SECRET_KEY: ${{ env.LANGFUSE_SK }}
+          LANGFUSE_BASE_URL: ${{ env.LANGFUSE_HOST }}
         run: python scripts/evaluate_llm.py
       - name: Verify traces arrived in Langfuse
         continue-on-error: true
         run: |
-          sleep 20
-          curl -s -u "$LANGFUSE_PK:$LANGFUSE_SK" "$LANGFUSE_HOST/api/public/traces?limit=50" > traces.json
-          python -c "import json; d=json.load(open('traces.json')); names=sorted({t.get('name') for t in d.get('data', [])}); print('traces:', len(d.get('data', [])), names); assert d.get('data')"
+          for i in $(seq 1 18); do
+            curl -s -u "$LANGFUSE_PK:$LANGFUSE_SK" "$LANGFUSE_HOST/api/public/traces?limit=100" > traces.json
+            python -c "import json,sys; d=json.load(open('traces.json')); sys.exit(0 if d.get('data') else 1)" && break
+            sleep 10
+          done
+          head -c 600 traces.json; echo
+          python -c "import json; d=json.load(open('traces.json')); names=sorted({str(t.get('name')) for t in d.get('data', [])}); print('traces:', len(d.get('data', [])), names); assert d.get('data')"
       - name: LiteLLM proxy smoke test (gateway in front of Ollama)
         env:
           OLLAMA_API_BASE: http://localhost:11434

@@ -77,8 +77,12 @@ def parse_json_object(text: str) -> dict:
     return value
 
 
+CALL_LOG: list[dict] = []  # last calls (purpose, seconds, outcome) for evaluation diagnostics
+
+
 @traced("llm-call", as_type="generation")
-def complete_json(config: LLMConfig, system: str, user: str, purpose: str = "general") -> dict:
+def complete_json(config: LLMConfig, system: str, user: str, purpose: str = "general",
+                  max_tokens: int = 700) -> dict:
     """Ask the configured model for a JSON object. Raises LLMError on any failure."""
     if not config.enabled:
         raise LLMError("No LLM configured")
@@ -91,6 +95,8 @@ def complete_json(config: LLMConfig, system: str, user: str, purpose: str = "gen
         "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
         "temperature": 0,
         "response_format": {"type": "json_object"},
+        # JSON mode on small local models can loop on whitespace until the timeout; cap the output.
+        "max_tokens": max_tokens,
         "timeout": config.timeout,
         "num_retries": config.max_retries,
     }
@@ -100,10 +106,17 @@ def complete_json(config: LLMConfig, system: str, user: str, purpose: str = "gen
         kwargs["api_key"] = config.api_key
     if config.fallback_model:
         kwargs["fallbacks"] = [config.fallback_model]
+    import time
+
+    started = time.perf_counter()
+    record = {"purpose": purpose, "model": config.model}
+    CALL_LOG.append(record)
+    del CALL_LOG[:-200]
     try:
         with timer(LLM_SECONDS, purpose=purpose):
             response = litellm.completion(**kwargs)
         text = response.choices[0].message.content or ""
+        record["raw"] = text[:400]
         usage = getattr(response, "usage", None)
         if usage:
             LLM_TOKENS.labels(purpose=purpose, kind="prompt").inc(getattr(usage, "prompt_tokens", 0) or 0)
@@ -111,9 +124,13 @@ def complete_json(config: LLMConfig, system: str, user: str, purpose: str = "gen
         result = parse_json_object(text)
     except LLMError:
         LLM_CALLS.labels(purpose=purpose, outcome="bad_json").inc()
+        record.update(outcome="bad_json", seconds=round(time.perf_counter() - started, 2))
         raise
     except Exception as exc:  # noqa: BLE001 - provider errors vary widely
         LLM_CALLS.labels(purpose=purpose, outcome="error").inc()
+        record.update(outcome=f"error: {type(exc).__name__}: {str(exc)[:160]}",
+                      seconds=round(time.perf_counter() - started, 2))
         raise LLMError(f"LLM request failed: {type(exc).__name__}: {str(exc)[:200]}") from exc
     LLM_CALLS.labels(purpose=purpose, outcome="ok").inc()
+    record.update(outcome="ok", seconds=round(time.perf_counter() - started, 2))
     return result

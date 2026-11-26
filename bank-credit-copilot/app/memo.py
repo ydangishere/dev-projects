@@ -63,7 +63,7 @@ def llm_narrative(config: LLMConfig, application: dict, facts: Facts, rules: lis
               "cuối cùng. Trả về JSON: {\"summary\": str, \"risks\": [str], \"follow_ups\": [str]}.")
     context = json.dumps(masked, ensure_ascii=False)
     try:
-        answer = complete_json(config, system, context, purpose="memo")
+        answer = complete_json(config, system, context, purpose="memo", max_tokens=700)
     except LLMError as exc:
         return _fallback(fallback, str(exc), "llm_error")
     summary = str(answer.get("summary", "")).strip()

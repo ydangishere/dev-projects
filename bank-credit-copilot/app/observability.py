@@ -27,6 +27,13 @@ except Exception:  # noqa: BLE001
     Counter = Histogram = None
 
 
+# Newer SDKs read LANGFUSE_BASE_URL, older ones LANGFUSE_HOST: accept either.
+if os.getenv("LANGFUSE_HOST") and not os.getenv("LANGFUSE_BASE_URL"):
+    os.environ["LANGFUSE_BASE_URL"] = os.environ["LANGFUSE_HOST"]
+if os.getenv("LANGFUSE_BASE_URL") and not os.getenv("LANGFUSE_HOST"):
+    os.environ["LANGFUSE_HOST"] = os.environ["LANGFUSE_BASE_URL"]
+
+
 def langfuse_enabled() -> bool:
     return bool(_lf_observe and os.getenv("LANGFUSE_PUBLIC_KEY") and os.getenv("LANGFUSE_SECRET_KEY"))
 
@@ -40,6 +47,16 @@ def traced(name: str, as_type: str = "span"):
         return _lf_observe(name=name, as_type=as_type)(func)
 
     return wrap
+
+
+def langfuse_auth_ok() -> bool | None:
+    """None when tracing is off; otherwise whether the keys authenticate against the server."""
+    if not langfuse_enabled() or not _lf_get_client:
+        return None
+    try:
+        return bool(_lf_get_client().auth_check())
+    except Exception:  # noqa: BLE001
+        return False
 
 
 def flush_traces() -> None:

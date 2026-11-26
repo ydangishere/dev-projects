@@ -180,7 +180,7 @@ class CreditCopilot:
 
         try:
             result = complete_json(self.llm, system, f"Điều khoản:\n{context}\n\nCâu hỏi: {masked_question}",
-                                   purpose="policy_answer")
+                                   purpose="policy_answer", max_tokens=400)
         except LLMError as exc:
             return fallback(str(exc), "llm_error")
         valid_ids = {c.clause_id for c in clauses}

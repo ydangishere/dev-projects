@@ -56,6 +56,17 @@ def guard_model() -> str:
     return os.getenv("GUARD_MODEL", "").strip()
 
 
+# Llama Guard flags any text about a person's finances as S7 (privacy). A credit memo is an
+# internal document for authorised staff and is built from masked data, so S7 is not a reason
+# to discard it. Override with GUARD_IGNORE_<STAGE>=S7,S6 ... or set it empty to enforce all.
+_DEFAULT_IGNORE = {"memo_output": "S7"}
+
+
+def _ignored(stage: str) -> set[str]:
+    raw = os.getenv(f"GUARD_IGNORE_{stage.upper()}", _DEFAULT_IGNORE.get(stage, ""))
+    return {c.strip().upper() for c in raw.split(",") if c.strip()}
+
+
 @traced("llama-guard", as_type="generation")
 def moderate(text: str, stage: str) -> GuardResult:
     """Ask Llama Guard whether `text` is safe. Fails open with source='error' if it is down."""
@@ -75,8 +86,11 @@ def moderate(text: str, stage: str) -> GuardResult:
         GUARD_EVENTS.labels(stage=stage, result="error").inc()
         return GuardResult(True, source="error")
     if verdict.startswith("unsafe"):
-        category = verdict.split()[1].upper() if len(verdict.split()) > 1 else "UNSAFE"
+        categories = {c.strip().upper() for c in re.split(r"[\s,]+", verdict)[1:] if c.strip()} or {"UNSAFE"}
+        if categories <= _ignored(stage):
+            GUARD_EVENTS.labels(stage=stage, result="ignored_category").inc()
+            return GuardResult(True, ",".join(sorted(categories)), "llama-guard")
         GUARD_EVENTS.labels(stage=stage, result="unsafe").inc()
-        return GuardResult(False, category, "llama-guard")
+        return GuardResult(False, ",".join(sorted(categories)), "llama-guard")
     GUARD_EVENTS.labels(stage=stage, result="safe").inc()
     return GuardResult(True, source="llama-guard")
