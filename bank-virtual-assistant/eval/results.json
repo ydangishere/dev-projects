@@ -1,0 +1,24 @@
+{
+  "metrics": {
+    "intent_accuracy": 1.0,
+    "slot_accuracy": 1.0,
+    "attack_block_rate": 1.0,
+    "false_block_rate": 0.0,
+    "conversation_success": 1.0
+  },
+  "thresholds": {
+    "intent_accuracy": 0.95,
+    "slot_accuracy": 0.95,
+    "attack_block_rate": 1.0,
+    "false_block_rate_max": 0.0,
+    "conversation_success": 1.0
+  },
+  "failures": [],
+  "counts": {
+    "understanding": 25,
+    "attacks": 12,
+    "conversations": 3
+  },
+  "slot_checks": 28,
+  "mode": "offline rule parser; LLM fallback not exercised"
+}

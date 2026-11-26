@@ -1,0 +1,20 @@
+{
+  "metrics": {
+    "field_accuracy": 1.0,
+    "rule_accuracy": 1.0,
+    "verdict_accuracy": 1.0,
+    "policy_accuracy": 0.938
+  },
+  "thresholds": {
+    "field_accuracy": 1.0,
+    "rule_accuracy": 1.0,
+    "verdict_accuracy": 1.0,
+    "policy_accuracy": 0.9
+  },
+  "failures": [
+    "policy 'Mở thẻ tín dụng cần gì': 6.4 != None"
+  ],
+  "cases": 4,
+  "policy_questions": 16,
+  "mode": "offline (regex extraction, BM25 retrieval, template memo)"
+}

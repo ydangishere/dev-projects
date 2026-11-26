@@ -1,0 +1,26 @@
+[
+  {
+    "case_id": "HS-001",
+    "applicant": "Nguyễn Văn An",
+    "title": "Hồ sơ đầy đủ, thu nhập tốt",
+    "folder": "hs-001"
+  },
+  {
+    "case_id": "HS-002",
+    "applicant": "Trần Thị Bình",
+    "title": "Thu nhập cao nhưng nghĩa vụ nợ lớn",
+    "folder": "hs-002"
+  },
+  {
+    "case_id": "HS-003",
+    "applicant": "Lê Hoàng Cường",
+    "title": "Sao kê thiếu kỳ lương, số CCCD không khớp",
+    "folder": "hs-003"
+  },
+  {
+    "case_id": "HS-004",
+    "applicant": "Phạm Minh Dũng",
+    "title": "Quá tuổi và số tiền vay vượt hạn mức",
+    "folder": "hs-004"
+  }
+]
