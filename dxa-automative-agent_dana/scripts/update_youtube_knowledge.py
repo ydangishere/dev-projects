@@ -636,7 +636,13 @@ def apply(args):
             digest = hashlib.sha256((STAGE / "clean" / (vid + ".txt")).read_text(encoding="utf-8").encode("utf-8")).hexdigest()
             if digest != document["source_digests"][vid]:
                 raise ValueError("Prepared source changed since validation: " + vid)
-    gitdir = Path(subprocess.check_output(["git", "rev-parse", "--absolute-git-dir"], cwd=ROOT, text=True).strip())
+    git_executable = shutil.which("git")
+    if not git_executable:
+        raise FileNotFoundError("Git is required to create the pre-import backup")
+    # Resolved executable and literal read-only arguments; no shell is used.
+    gitdir = Path(subprocess.check_output(  # noqa: S603
+        [git_executable, "rev-parse", "--absolute-git-dir"], cwd=ROOT, text=True,
+    ).strip())
     backup = gitdir / "codex-knowledge-backups" / datetime.now().strftime("%Y%m%d-%H%M%S")
     backup.mkdir(parents=True, exist_ok=False)
     shutil.copy2(DATA / "videos.tsv", backup / "videos.tsv")

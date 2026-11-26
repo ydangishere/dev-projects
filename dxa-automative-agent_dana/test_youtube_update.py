@@ -108,6 +108,17 @@ class SourceChecks(unittest.TestCase):
             self.assertEqual(state["cases"][result["cases"][0]]["id"], "C28")
             rag.reset()
 
+    @unittest.skipUnless((Path(__file__).parent / "index" / "state.pkl").exists(), "Build the local index first")
+    def test_exact_symptom_precedes_related_prevention_case(self):
+        import gemini_client
+        import rag
+        with patch.object(gemini_client, "available", return_value=False):
+            rag.reset()
+            state = rag.state()
+            result = rag.retrieve("Bình xăng con chảy xăng khi dựng xe")
+            self.assertEqual(state["cases"][result["cases"][0]]["id"], "C02")
+            rag.reset()
+
 
 if __name__ == "__main__":
     unittest.main()

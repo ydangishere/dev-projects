@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import math
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -26,6 +27,9 @@ def main(args):
     model = None
     audio_dir = job.STAGE / "audio"
     audio_dir.mkdir(parents=True, exist_ok=True)
+    ffmpeg = shutil.which("ffmpeg")
+    if not ffmpeg:
+        raise FileNotFoundError("FFmpeg is required for local audio transcription")
     for record in records:
         vid = record["video_id"]
         raw_path = job.STAGE / "raw" / (vid + ".json")
@@ -48,8 +52,9 @@ def main(args):
         print(f"[audio] {vid}: transcribing", flush=True)
         # Decode through the installed FFmpeg: Dana's PyAV pin predates the
         # metadata_errors keyword used by newer faster-whisper releases.
-        audio = np.frombuffer(subprocess.check_output([
-            "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-i", str(audio_path),
+        # Fixed decoder and options; media is one argv element, never shell text.
+        audio = np.frombuffer(subprocess.check_output([  # noqa: S603
+            ffmpeg, "-nostdin", "-hide_banner", "-loglevel", "error", "-i", str(audio_path),
             "-ar", "16000", "-ac", "1", "-f", "f32le", "pipe:1",
         ]), dtype=np.float32)
         generated, info = model.transcribe(audio, language=None if args.language == "auto" else args.language, beam_size=5,

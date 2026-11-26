@@ -204,7 +204,7 @@ def retrieve(q, top_cases=TOP_CASES, top_chunks=TOP_CHUNKS):
     chunk_vec = _vec_rank("chunks", q2)
     t_vector = time.perf_counter()
     fused_cases = _rrf([case_bm, case_vec])
-    case_order = dxa.prefer_clear_keyword_match([i for i, _ in fused_cases], case_bm, case_scores)
+    case_order = dxa.prefer_specific_match([i for i, _ in fused_cases], case_bm, case_scores, st["cases"], queries)
     chunks = _rrf([chunk_bm, chunk_vec])[:top_chunks]
     levels = [dxa.scope_level(st, x) for x in queries]
     t_done = time.perf_counter()

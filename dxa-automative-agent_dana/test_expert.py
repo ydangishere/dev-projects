@@ -2,12 +2,13 @@
 
   1. Chưa đăng nhập thợ thì mọi API ghi / xem câu chưa trả lời đều bị chặn (401), kể cả gọi thẳng API.
   2. Sai mã thì không vào được, đúng mã thì có token.
-  3. Câu "lốp xe bị xì hơi" lúc đầu bị từ chối và nằm trong danh sách câu chưa trả lời được.
+  3. Câu về ruột xe thủng đinh, xẹp qua đêm lúc đầu bị từ chối và ghi vào danh sách cần bổ sung.
   4. Thợ lưu case T01 -> kho dựng lại -> DXA trả lời được bằng T01, câu đó biến khỏi danh sách.
   5. Thợ gỡ T01 -> DXA lại từ chối. Dữ liệu sai (thiếu triệu chứng) bị trả 422.
 
 Chạy:  python test_expert.py   (cần đã chạy `python dxa.py build`)
-Test tự dọn file knowledge_expert*.json và trả lại unanswered.jsonl như cũ khi chạy xong.
+Nếu đã có kiến thức thợ thật, test dùng kho tạm để giữ nguyên dữ liệu đó.
+Test tự dọn fixture knowledge_expert*.json và trả lại unanswered.jsonl khi chạy xong.
 """
 import os
 import sys
@@ -20,7 +21,9 @@ import api  # noqa: E402
 import dxa  # noqa: E402
 import expert  # noqa: E402
 
-Q = "lốp xe bị xì hơi"
+# The enlarged corpus includes tire inflation. This fixture specifically asks
+# about a puncture, which is not covered until the expert adds the test case.
+Q = "Ruột xe bị đinh đâm, xẹp dần sau một đêm"
 fails = []
 
 
@@ -33,7 +36,9 @@ def check(cond, msg):
 backup = expert.UNANSWERED_FILE.read_bytes() if expert.UNANSWERED_FILE.exists() else None
 had_expert = expert.EXPERT_FILE.exists()
 if had_expert:
-    sys.exit("Đã có data/knowledge_expert.json (kiến thức thợ thật): không chạy test để khỏi đụng dữ liệu đó.")
+    from scripts.test_expert_isolated import run_isolated
+
+    sys.exit(run_isolated())
 
 try:
     with TestClient(api.app) as cl:
@@ -59,7 +64,7 @@ try:
         # 4. thợ lưu kiến thức
         bad = cl.post("/tho/cases", headers=H, json={"symptom": "", "cause": "b", "fix": "c"})
         check(bad.status_code == 422, "thiếu triệu chứng -> 422")
-        case = {"symptom": "Lốp xe bị xì hơi, xẹp dần sau một đêm", "cause": "Ruột xe bị đinh đâm hoặc van ruột xe hở",
+        case = {"symptom": Q, "cause": "Ruột xe bị đinh đâm hoặc van ruột xe hở",
                 "fix": "Bơm hơi, nhúng ruột vào chậu nước tìm chỗ sủi bọt, vá ruột hoặc thay van", "system": "khác",
                 "parts": ["ruột xe", "van ruột xe"], "specs": [{"name": "áp suất lốp sau", "value": "33", "unit": "psi"}],
                 "author": "test", "from_question": Q}

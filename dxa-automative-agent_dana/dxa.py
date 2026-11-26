@@ -242,14 +242,21 @@ def rrf(rank_lists, k=60):
     return sorted(score, key=lambda i: -score[i])
 
 
-def prefer_clear_keyword_match(ranked, keyword_ranked, scores, ratio=1.5):
-    """Keep a clear lexical match from being lost in a larger offline corpus.
+def prefer_specific_match(ranked, keyword_ranked, scores, cases, queries, ratio=1.5):
+    """Keep exact symptoms and clear keyword matches in a larger corpus.
 
     RRF only sees positions, so a large BM25 score advantage can disappear when
     the offline vector ranks a broad, related case higher. Preserve fusion when
     the keyword scores are close; otherwise prefer the substantially stronger
     keyword result.
     """
+    def symptom_key(text):
+        return re.sub(r"[^a-z0-9]+", " ", strip_accents(normalize(text))).strip()
+
+    query_keys = {symptom_key(query) for query in queries}
+    exact = [index for index in ranked if symptom_key(cases[index]["symptom"]) in query_keys]
+    if exact:
+        return exact + [index for index in ranked if index not in exact]
     if len(keyword_ranked) < 2:
         return ranked
     first, second = keyword_ranked[:2]
@@ -312,7 +319,7 @@ def search(state, q, top=5):
         ranks_v = list(np.argsort(-v))[:20]
         fused = rrf([ranks_b, ranks_v])
         if prefer_keywords:
-            fused = prefer_clear_keyword_match(fused, ranks_b, b)
+            fused = prefer_specific_match(fused, ranks_b, b, state["cases"], [q])
         return [(i, float(b[i]), float(v[i])) for i in fused[:n]]
 
     return hybrid(state["bm25_cases"], state["E_cases"], 3, True), hybrid(state["bm25_chunks"], state["E_chunks"], top)

@@ -21,7 +21,7 @@ struct RepairAnswer:
 
 agent_blueprint DXAMechanic:
     name: str = "DXA"
-    description: str = "Trợ lý sửa xe máy, trả lời từ 30 video kênh y dang"
+    description: str = "Trợ lý sửa xe máy, trả lời từ kho kiến thức kênh y dang"
     domain: str = "Sửa xe máy"
 
 
