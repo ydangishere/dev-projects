@@ -7,7 +7,9 @@ import json
 import re
 import secrets
 import sqlite3
+from observability import observe, traced, update, result_metadata
 import time
+from contextlib import closing
 from pathlib import Path
 
 DB_PATH = Path(__file__).parent / "index" / "diagnostic_sessions.sqlite3"
@@ -56,7 +58,7 @@ def _save(c, session_id, state):
 def delete_session(session_id, db_path=DB_PATH):
     if not SESSION_RE.fullmatch(session_id):
         raise ValueError("Mã phiên chẩn đoán không hợp lệ")
-    with _connect(db_path) as c:
+    with closing(_connect(db_path)) as c, c:
         c.execute("DELETE FROM sessions WHERE id=?", (session_id,))
         c.commit()
 
@@ -83,6 +85,7 @@ def _context(state, actions):
     }
 
 
+@traced("dana.diagnose", "agent", result_metadata)
 def run_turn(message, session_id=None, *, planner=None, retriever=None, answerer=None, db_path=DB_PATH):
     """Run at most four planner decisions and persist state between HTTP calls.
 
@@ -100,7 +103,7 @@ def run_turn(message, session_id=None, *, planner=None, retriever=None, answerer
         import dxa_tools
         retriever = dxa_tools.retrieve
 
-    with _connect(db_path) as c:
+    with closing(_connect(db_path)) as c, c:
         sid, state = _load(c, session_id)
         if state["status"] != "active":
             raise ValueError("Phiên này đã kết thúc; hãy bắt đầu phiên chẩn đoán mới")
@@ -119,7 +122,12 @@ def run_turn(message, session_id=None, *, planner=None, retriever=None, answerer
             return finish("handoff", "Đã hết số lượt chẩn đoán an toàn. " + UNSUPPORTED)
 
         for _ in range(MAX_STEPS_PER_TURN):
-            decision = planner(_context(state, actions))
+            stage = "diagnostic.replan" if actions or state["turns"] > 1 else "diagnostic.plan"
+            with observe(stage, "chain") as span:
+                decision = planner(_context(state, actions))
+                action_name = decision.get("action") if isinstance(decision, dict) else None
+                allowed = {"search_rag", "ask_user", "answer", "handoff"}
+                update(span, metadata={"action": action_name if action_name in allowed else "invalid"})
             if not isinstance(decision, dict):
                 return finish("handoff", "AI không trả về kế hoạch hợp lệ. " + UNSUPPORTED)
             action = decision.get("action")
@@ -132,7 +140,8 @@ def run_turn(message, session_id=None, *, planner=None, retriever=None, answerer
                     continue
                 if len(state["queries"]) >= MAX_TOTAL_SEARCHES:
                     return finish("handoff", "Đã tới giới hạn tìm kiếm. " + UNSUPPORTED)
-                data = retriever(query)
+                with observe("diagnostic.search_rag", "tool"):
+                    data = retriever(query)
                 evidence = {
                     "query": query, "context": str(data.get("context") or "")[:9000],
                     "case_ids": list(data.get("case_ids") or [])[:10],

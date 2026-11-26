@@ -1,0 +1,1098 @@
+[
+  {
+    "id": "DXA-001",
+    "question": "bình xăng con bị chảy xăng hoài, kim xăng bị rỉ",
+    "expected_ids": [
+      "C01"
+    ],
+    "expected_answer": "C01: Bình xăng con chảy xăng, xăng rỉ ra khi dựng xe hoặc để lâu\nKim ngắt xăng bị rỉ sét, hoen ố do xăng ethanol để lâu (kể cả khi đã khóa xăng), kim không nhún được nên không ngắt xăng\nTháo chén xăng, tháo chốt phao lấy kim ra, chà kim bằng bàn chải mềm với nhớt sạch cho hết rỉ, xịt gió vào ổ kim, ráp lại",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-002",
+    "question": "xe de lau khong chay bi chay xang",
+    "expected_ids": [
+      "C01",
+      "C02",
+      "C04"
+    ],
+    "expected_answer": "C01: Bình xăng con chảy xăng, xăng rỉ ra khi dựng xe hoặc để lâu\nKim ngắt xăng bị rỉ sét, hoen ố do xăng ethanol để lâu (kể cả khi đã khóa xăng), kim không nhún được nên không ngắt xăng\nTháo chén xăng, tháo chốt phao lấy kim ra, chà kim bằng bàn chải mềm với nhớt sạch cho hết rỉ, xịt gió vào ổ kim, ráp lại\nC02: Bình xăng con chảy xăng khi dựng xe\nMức phao xăng sai, phao không nằm góc 90 độ hoặc không bật lên khi nhấn\nNhìn thẳng kiểm tra phao phải nằm góc 90 độ, nhấn nhẹ phao xem có bật lên; chỉnh cái cần (lưỡi gà) của phao cho đúng 90 độ\nC04: Xe dựng lâu không chạy, sợ kim xăng bị rỉ\nXăng ethanol đọng trong chén xăng làm rỉ kim; bình Takegawa, Mikuni, Daytona không có van xả xăng\nXả hết xăng trong chén trước khi cất xe bằng cách tháo chén ra (kiểu classic); vệ sinh ống thông hơi thường xuyên; đồ Nhật bãi chỉ thoa nhớt rồi lau khăn khô",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-003",
+    "question": "chỉnh phao xăng sao cho đúng",
+    "expected_ids": [
+      "C02",
+      "C03"
+    ],
+    "expected_answer": "C02: Bình xăng con chảy xăng khi dựng xe\nMức phao xăng sai, phao không nằm góc 90 độ hoặc không bật lên khi nhấn\nNhìn thẳng kiểm tra phao phải nằm góc 90 độ, nhấn nhẹ phao xem có bật lên; chỉnh cái cần (lưỡi gà) của phao cho đúng 90 độ\nC03: Chạy bị hụt xăng, mất ga hoài\nCần phao bị đạp xuống quá, phao ngỏng lên làm kim ngắt xăng quá sớm\nKhép cần phao lại một chút để hạ phao, chỉnh về góc 90 độ; chỉnh tới lui giữa hai bệnh chảy xăng và hụt xăng",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-004",
+    "question": "chạy hay bị hụt xăng mất ga",
+    "expected_ids": [
+      "C03"
+    ],
+    "expected_answer": "C03: Chạy bị hụt xăng, mất ga hoài\nCần phao bị đạp xuống quá, phao ngỏng lên làm kim ngắt xăng quá sớm\nKhép cần phao lại một chút để hạ phao, chỉnh về góc 90 độ; chỉnh tới lui giữa hai bệnh chảy xăng và hụt xăng",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-005",
+    "question": "đi bình PE24 mà ga không đều",
+    "expected_ids": [
+      "C05"
+    ],
+    "expected_answer": "C05: Ga không đều, ga cuối không đều khi đi bình xăng độ 24 với pô e bao tử zin\nCo gió zin và bao tử zin nhỏ hơn họng gió 45 mm của bình 24 (PE24, TM24, Yoshimura), bình bị thiếu gió\nThay co gió Vario 45 đúng size họng bình, khoét lỗ bao tử cho co vừa vào, đục 2 lỗ thoát nước dưới đáy, để kim xăng nấc giữa, không cần hạ kim",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-006",
+    "question": "co gió nào đi được bình 24 họng 45",
+    "expected_ids": [
+      "C05",
+      "C06"
+    ],
+    "expected_answer": "C05: Ga không đều, ga cuối không đều khi đi bình xăng độ 24 với pô e bao tử zin\nCo gió zin và bao tử zin nhỏ hơn họng gió 45 mm của bình 24 (PE24, TM24, Yoshimura), bình bị thiếu gió\nThay co gió Vario 45 đúng size họng bình, khoét lỗ bao tử cho co vừa vào, đục 2 lỗ thoát nước dưới đáy, để kim xăng nấc giữa, không cần hạ kim\nC06: Lắp co gió mới, sợ cặn cao su bị hút vào bình xăng con\nCo gió cao su mới còn bavia, bụi cao su\nVệ sinh cao su co gió sạch trước khi gắn; nguyên tắc họng gió của bình bao nhiêu thì đi co gió bấy nhiêu",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-007",
+    "question": "bugi cháy đen canh xăng không được",
+    "expected_ids": [
+      "C07"
+    ],
+    "expected_answer": "C07: Canh xăng hoài mà đầu bugi không ra màu nâu, cháy đen hoặc trắng, lửa không đều\nGắn bugi sai hướng: lưng của móc (cực âm) quay vào tâm buồng đốt thay vì mặt móc\nĐánh dấu lưng móc ở bên ngoài thân bugi, vặn vào xem hướng; kê thêm lông đền nhôm khoảng 0.5 đến 0.6 mm để mặt móc quay vào tâm buồng đốt",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-008",
+    "question": "gan bugi dung huong",
+    "expected_ids": [
+      "C07"
+    ],
+    "expected_answer": "C07: Canh xăng hoài mà đầu bugi không ra màu nâu, cháy đen hoặc trắng, lửa không đều\nGắn bugi sai hướng: lưng của móc (cực âm) quay vào tâm buồng đốt thay vì mặt móc\nĐánh dấu lưng móc ở bên ngoài thân bugi, vặn vào xem hướng; kê thêm lông đền nhôm khoảng 0.5 đến 0.6 mm để mặt móc quay vào tâm buồng đốt",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-009",
+    "question": "bình xăng con nóng, chạy xa bị giật",
+    "expected_ids": [
+      "C08"
+    ],
+    "expected_answer": "C08: Bình xăng con nóng, máy đờn, lăn tăn, giật khi chạy xa hoặc máy nóng\nCo xăng truyền nhiệt và rung từ đầu culass lên bình: co dài, co nhôm, thiếu phíp cách nhiệt\nĐi co càng ngắn càng tốt, có phíp nhựa ở chân co và phíp trên, dùng vai cao su xịn (Kijima)",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-010",
+    "question": "co xăng bị xì gió",
+    "expected_ids": [
+      "C09"
+    ],
+    "expected_answer": "C09: Xì gió ở co, canh xăng không chuẩn\nDùng loại co có ống buộc cổ dê hai đầu, ống dễ rách và xì\nĐi vai bắt ốc (Kijima của Nhật hoặc vai Việt Nam loại bắt ốc), không đi loại bắt cổ dê",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-011",
+    "question": "móc mắt piston sâu bao nhiêu thì không lủng",
+    "expected_ids": [
+      "C10"
+    ],
+    "expected_answer": "C10: Lủng mắt piston sau khi móc mắt\nMóc mắt piston quá sâu, mặt trái còn mỏng\nMóc mắt theo cỡ xupap (xupap 21/24 thì móc 22/25), móc vừa thôi; đo độ dày mắt trái bằng banme phải trên 3 ly",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-012",
+    "question": "phân biệt mắt nạp mắt xả trên piston",
+    "expected_ids": [
+      "C11"
+    ],
+    "expected_answer": "C11: Không biết mắt nào trên piston là nạp, mắt nào là xả\nTrái piston không ghi số, thợ tiện không đo giùm\nGắn xupap vào rồi đo: mắt lớn hơn là nạp, nằm ở trên khi nhìn máy từ bên trái; ghi bằng bút xóa lên mặt trên piston trước khi đem ra tiệm tiện",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-013",
+    "question": "cò mổ bị bó không có độ rơ",
+    "expected_ids": [
+      "C14"
+    ],
+    "expected_answer": "C14: Cò mổ bị bó, cấn, không có độ rơ khi ướm\nCò và ốc cò chưa được mài khớp\nDùng móng zin và lò xo mềm để ướm, ốc cò nhô khoảng 2 ly, để cam ở vị trí thấp nhất; mài cò từng chút đến khi vào ngọt, hơi rơ",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-014",
+    "question": "xe độ chạy một năm bị trễ cam",
+    "expected_ids": [
+      "C19"
+    ],
+    "expected_answer": "C19: Xe độ chạy 6 tháng đến 1 năm bị trễ cam, yếu đi\nNhông cam và sên cam mòn giãn làm cam bị trễ\nDùng bánh cam tăng chỉnh: lúc mới ráp canh trễ một chút, chạy một thời gian mở ra chỉnh sớm lại 1 đến 2 độ",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-015",
+    "question": "lá khóa bánh cam bị gãy",
+    "expected_ids": [
+      "C20"
+    ],
+    "expected_answer": "C20: Lá khóa ốc bánh cam bị gãy sau một thời gian chạy\nLấy kìm bẻ uốn lá khóa làm lá bị giòn\nChỉ mài sơ lá khóa, không bẻ uốn bằng kìm",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-016",
+    "question": "sên cam căng sau khi ráp đầu",
+    "expected_ids": [
+      "C12",
+      "C22"
+    ],
+    "expected_answer": "C12: Sên cam căng khi ráp đầu\nRáp sai hoặc chi tiết lệch\nLấy cây lục giác kéo sên cam lên nhẹ; vào nhẹ là OK, căng là mở ra làm lại; khi sạc máy nghiêng máy cho nhớt vào ống sáo tăng cam\nC22: Sên cam căng sau khi ráp đầu\nRon đầu zin 0.5 mm bị siết ép xuống còn 0.3 mm\nDùng ron độ lõi thép FCCI Thái Lan, siết kiểu gì cũng giữ 0.5 mm, sên cam đều",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-017",
+    "question": "đèn trợ sáng chưa bật đã sáng mờ",
+    "expected_ids": [
+      "C24"
+    ],
+    "expected_answer": "C24: Đèn trợ sáng sáng mờ khi chưa bật công tắc, mở lên thì sáng lu lu, chập chờn\nRơ le và dây đèn trợ sáng bị vô nước; bộ dây mua trôi nổi chưa đổ keo\nMở nắp hộp rơ le, xịt hơi, sấy hoặc phơi khô; chích keo 705 vào chân điện, đổ keo A300; cắt bao dây cao lên và quấn băng keo từ trên xuống; đặt rơ le đứng sau hộc bên hông",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-018",
+    "question": "gắn đèn báo xi nhan thì hai bên cùng sáng",
+    "expected_ids": [
+      "C25"
+    ],
+    "expected_answer": "C25: Gắn đèn LED báo xi nhan thì hai xi nhan trái phải cùng sáng\nNối chung dây cam (trái) và dây xanh (phải) vào đèn báo tạo điểm nối điện giữa hai bên\nDùng hai rơ le 4 chân: dây cam và dây xanh vào mạch kích (chân nhỏ, một đầu mát), mạch thông (chân lớn) cấp điện cho đèn LED báo",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-019",
+    "question": "dau role 4 chan nhu the nao",
+    "expected_ids": [
+      "C25"
+    ],
+    "expected_answer": "C25: Gắn đèn LED báo xi nhan thì hai xi nhan trái phải cùng sáng\nNối chung dây cam (trái) và dây xanh (phải) vào đèn báo tạo điểm nối điện giữa hai bên\nDùng hai rơ le 4 chân: dây cam và dây xanh vào mạch kích (chân nhỏ, một đầu mát), mạch thông (chân lớn) cấp điện cho đèn LED báo",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-020",
+    "question": "bánh trước bánh sau không ngay hàng",
+    "expected_ids": [
+      "C26",
+      "C38"
+    ],
+    "expected_answer": "C26: Bánh trước sau không ngay hàng, xe chạy lệch\nĐuôi sườn bị lệch (sườn Cub 10 chiếc lỗi 10), hoặc gấp bị méo, hoặc đùm thiếu phụ kiện\nKiểm tra theo thứ tự: đùm đủ phụ kiện; thước thủy kiểm tra gấp; luồn dây căng từ lỗ cốt phuộc trước về hai lỗ cốt gấp để kiểm tra sườn; đuôi lệch nhẹ thì gõ lại, nặng thì thay đuôi\nC38: Bánh trước bánh sau không ngay một hàng sau khi ráp xe\nCanh theo mép sườn hoặc dè thay vì theo bánh; đùm 88 trên gấp 86 bị thiếu bên trái\nDùng đèn laser lấy lằn tường làm chuẩn, búa cao su gõ cho laser nằm giữa bánh sau rồi bánh trước; nới trục, xả tăng sên, gõ đùm vào, hở bao nhiêu chêm lông đền bấy nhiêu vào cùi đùm",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-021",
+    "question": "binh yoshimura keo ga nhanh bi tat may",
+    "expected_ids": [
+      "C27"
+    ],
+    "expected_answer": "C27: Kéo ga nhanh thì không có ga, tắt máy; kéo từ từ mới có ga (bình Yoshimura)\nGíc lơ phụ chưa đúng; bình xài lâu 6 tháng đến 1 năm bình nào cũng bị\nCanh lại gíc lơ phụ cho đúng",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-022",
+    "question": "buông ga mà ga không về, bị ngâm ga",
+    "expected_ids": [
+      "C28"
+    ],
+    "expected_answer": "C28: Ngâm ga, ga treo, buông ga mà ga không về (bình Yoshimura)\nỐc ralenti thiếu phốt và lông đền; phao ngẩng quá cao do cần phao xiêu vẹo hoặc kim phao dơ; dây ga chỉnh cứng quá\nBổ sung lông đền rồi tới phốt cho ốc ralenti; chỉnh cần phao về 90 độ; vệ sinh kim phao và đế kim; chỉnh dây ga khúc đầu lỏng một chút; kiểm tra lò xo bình",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-023",
+    "question": "vệ sinh bình xăng con thế nào, có xịt gió mạnh được không",
+    "expected_ids": [
+      "C29"
+    ],
+    "expected_answer": "C29: Bình xăng con dơ, con trượt (xi lanh piston ga) hay bị kẹt cấn\nCặn dơ trong các lỗ và quanh con trượt\nXịt chai vệ sinh bình xăng con vào tất cả các lỗ, đặc biệt quanh con trượt; xịt gió thật nhẹ",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-024",
+    "question": "đồng hồ takegawa gắn ngoài chạy nhanh bị sút ra",
+    "expected_ids": [
+      "C30"
+    ],
+    "expected_answer": "C30: Đồng hồ Takegawa gắn ngoài gáo đèn bị sút, bung ra khi chạy tốc độ cao\nChỉ dùng lông đền dưới, thiếu tán ren nhuyễn và lông đền nón\nDùng tán 15 ly bước ren 1 ly (tán ren nhuyễn), thêm lông đền nón của nồi và hai lông đền thường để kẹp bát; còn rơ ngang thì nhỏ ít keo dán sắt, chừa đường thoát nước",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-025",
+    "question": "tay ga bị rơ xoay",
+    "expected_ids": [
+      "C31"
+    ],
+    "expected_answer": "C31: Bao tay (tay nắm ga) bị rơ, xoay\nChạy lâu năm keo cũ bong\nXịt hơi để rút bao tay cũ ra, vuốt bốn đường keo AB trên cùm và trong bao tay, đẩy vào từ từ, phơi nắng cho keo chạy",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-026",
+    "question": "đấu đèn báo xi nhan bóng tóc có cần rơ le không",
+    "expected_ids": [
+      "C25",
+      "C32"
+    ],
+    "expected_answer": "C25: Gắn đèn LED báo xi nhan thì hai xi nhan trái phải cùng sáng\nNối chung dây cam (trái) và dây xanh (phải) vào đèn báo tạo điểm nối điện giữa hai bên\nDùng hai rơ le 4 chân: dây cam và dây xanh vào mạch kích (chân nhỏ, một đầu mát), mạch thông (chân lớn) cấp điện cho đèn LED báo\nC32: Muốn gắn đèn báo xi nhan dạng bóng tóc trên đồng hồ\nBóng tóc tự lấy mát qua bên xi nhan không bật\nBắt hai dây của đèn báo vào dây cam và dây xanh (hai dây nóng), không cần rơ le",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-027",
+    "question": "đi sườn MD xuống đầu CD bị cạ hộp lọc gió",
+    "expected_ids": [
+      "C34"
+    ],
+    "expected_answer": "C34: Bao tử (hộp lọc gió) cạ dè trước khi chạy, sườn MD xuống dàn đầu CD với dè CT\nĐi bao tử 81 dài xuống thấp, dè CT lại cao\nĐi bao tử 82 cho ngắn lên; làm bass sắt hạ dè xuống",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-028",
+    "question": "bộ số độ không báo số N",
+    "expected_ids": [
+      "C37"
+    ],
+    "expected_answer": "C37: Bộ số độ không báo số N, heo số không có rãnh số N\nHeo số độ không có rãnh N như heo zin\nGá công tắc báo số (chấu nhỏ nhất là N, dây xanh sọc đỏ), đánh dấu vị trí N, vô số 1-4 rồi về N kiểm tra; cắt rãnh, gắn lông đền báo số zin, mài ốc lục giác 5 ly cho lọt",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-029",
+    "question": "canh bánh xe bằng đèn laser",
+    "expected_ids": [
+      "C38"
+    ],
+    "expected_answer": "C38: Bánh trước bánh sau không ngay một hàng sau khi ráp xe\nCanh theo mép sườn hoặc dè thay vì theo bánh; đùm 88 trên gấp 86 bị thiếu bên trái\nDùng đèn laser lấy lằn tường làm chuẩn, búa cao su gõ cho laser nằm giữa bánh sau rồi bánh trước; nới trục, xả tăng sên, gõ đùm vào, hở bao nhiêu chêm lông đền bấy nhiêu vào cùi đùm",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-030",
+    "question": "chén cổ bị rỗ tay lái lỏng",
+    "expected_ids": [
+      "C39"
+    ],
+    "expected_answer": "C39: Chén cổ lỏng, tay lái rơ (CD, 67)\nChén bị rỗ, lưng chén mòn\nChỉ thay khi rỗ hoặc lỏng; ưu tiên chén zin dày nặng, hàng gia công dùng được nhưng mỏng; dùng bạc đạn Suzuki",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-031",
+    "question": "côn bị trượt chưa bóp mà đạp đã tuột",
+    "expected_ids": [
+      "C40"
+    ],
+    "expected_answer": "C40: Côn bị trượt: chưa bóp côn mà đạp đã tuột\nCôn chỉnh sai\nMở nắp chỉnh côn, vặn ốc vào vừa chạm rồi siết tán lại; kiểm tra: vào số đạp thấy ăn nồi, bóp côn đạp tuột hết là đúng",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-032",
+    "question": "cần số bị quơ khi ráp máy lỏ trên lốc alpha",
+    "expected_ids": [
+      "C41"
+    ],
+    "expected_answer": "C41: Cần số bị quơ, rơ khi ráp máy lỏ cốt một nồi trên nền Alpha\nĐồ CD, 67 không dùng được; cần số Alpha là loại rời\nCắt cần, đo 6 ly (6 đến 6.2), đem đắp dài thêm 1 ly rồi tiện; kiểm tra rơ rút ra vào khoảng 3 đến 5 dem là OK",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-033",
+    "question": "ráp máy xong quay máy rất cứng",
+    "expected_ids": [
+      "C12",
+      "C22",
+      "C42"
+    ],
+    "expected_answer": "C12: Sên cam căng khi ráp đầu\nRáp sai hoặc chi tiết lệch\nLấy cây lục giác kéo sên cam lên nhẹ; vào nhẹ là OK, căng là mở ra làm lại; khi sạc máy nghiêng máy cho nhớt vào ống sáo tăng cam\nC22: Sên cam căng sau khi ráp đầu\nRon đầu zin 0.5 mm bị siết ép xuống còn 0.3 mm\nDùng ron độ lõi thép FCCI Thái Lan, siết kiểu gì cũng giữ 0.5 mm, sên cam đều\nC42: Ráp máy xong quay máy rất cứng\nSên cam căng quá\nChỉnh lại sên cam cho kéo lên nhẹ; khi vô nhớt nổ máy nghiêng xe sang trái nẹt hai ba cái cho nhớt vào ống sáo tăng cam",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-034",
+    "question": "pha nước tẩy rỉ sét lốc máy",
+    "expected_ids": [
+      "C44"
+    ],
+    "expected_answer": "C44: Lốc máy, đồ sắt bị rỉ sét hoặc đen lâu ngày chà không ra; sơn không bám\nCặn bẩn và oxy hóa bề mặt\nPha 200 ml nước rửa chén, 2 muỗng muối, 1 muỗng baking soda, nửa ly nước nguội; quét nhẹ lên, đồng thời dùng làm lớp xử lý trước khi sơn",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-035",
+    "question": "dây hàn gió đá bị xì ở đuôi chuột",
+    "expected_ids": [
+      "C47"
+    ],
+    "expected_answer": "C47: Mối nối dây hàn gió đá (oxy gas) bị xì\nĐuôi chuột 6 ly lỏng với dây lỗ 6.5 đến 7 ly; thiếu phốt; ren không đồng bộ\nDùng đuôi chuột 8 ly, gắn phốt, mua đồng bộ ren 17; kiểm tra bằng tay nghe và xem kim đồng hồ không tụt",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-036",
+    "question": "lắp van chống cháy ngược cho bình oxy gas",
+    "expected_ids": [
+      "C48"
+    ],
+    "expected_answer": "C48: Nguy cơ cháy ngược, cháy nổ khi hàn oxy gas\nThiếu van chống cháy ngược, xì mối nối, còn khí sót trong ống\nLắp van chống cháy ngược đúng chiều mũi tên ở đầu bình và giữa dây; bình luôn dựng đứng; nghe mối nối trước khi xài; tắt xong xả hết khí trong ống",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-037",
+    "question": "hàn sắt mỏng 1 ly bằng máy hàn điện bị lủng",
+    "expected_ids": [
+      "C49"
+    ],
+    "expected_answer": "C49: Hàn sắt mỏng 1 đến 2 ly bằng máy hàn điện bị lủng\nSắt mỏng ít thép, que 2 ly để trên 20 A là lủng\nChuyển sang hàn khí oxy gas béc số 1 (gió 2, gas 1.5), hàn thau hoặc hàn kẽm",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-038",
+    "question": "chỉnh lửa đèn cắt oxy gas",
+    "expected_ids": [
+      "C50"
+    ],
+    "expected_answer": "C50: Không biết canh lửa đèn cắt oxy gas\nChỉnh van sai thứ tự\nMở van gió thân 2 vòng rồi để yên, gas 1/4; béc 1 thì oxy 4 kg/cm2, gas 0.4 kg/cm2; thêm gas thì thêm gió cho tim lửa rút lại; hơ nóng rồi bấm cò oxy; tắt xong xả khí trong ống",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-039",
+    "question": "binh xang con buong ga ma ga khong ve",
+    "expected_ids": [
+      "C28"
+    ],
+    "expected_answer": "C28: Ngâm ga, ga treo, buông ga mà ga không về (bình Yoshimura)\nỐc ralenti thiếu phốt và lông đền; phao ngẩng quá cao do cần phao xiêu vẹo hoặc kim phao dơ; dây ga chỉnh cứng quá\nBổ sung lông đền rồi tới phốt cho ốc ralenti; chỉnh cần phao về 90 độ; vệ sinh kim phao và đế kim; chỉnh dây ga khúc đầu lỏng một chút; kiểm tra lò xo bình",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-040",
+    "question": "cách đấu đèn báo xi nhan khi không dùng đồng hồ km",
+    "expected_ids": [
+      "C25",
+      "C32"
+    ],
+    "expected_answer": "C25: Gắn đèn LED báo xi nhan thì hai xi nhan trái phải cùng sáng\nNối chung dây cam (trái) và dây xanh (phải) vào đèn báo tạo điểm nối điện giữa hai bên\nDùng hai rơ le 4 chân: dây cam và dây xanh vào mạch kích (chân nhỏ, một đầu mát), mạch thông (chân lớn) cấp điện cho đèn LED báo\nC32: Muốn gắn đèn báo xi nhan dạng bóng tóc trên đồng hồ\nBóng tóc tự lấy mát qua bên xi nhan không bật\nBắt hai dây của đèn báo vào dây cam và dây xanh (hai dây nóng), không cần rơ le",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:QUESTIONS"
+  },
+  {
+    "id": "DXA-041",
+    "question": "binh xang con chay xang khi dung xe",
+    "expected_ids": [
+      "C01",
+      "C02"
+    ],
+    "expected_answer": "C01: Bình xăng con chảy xăng, xăng rỉ ra khi dựng xe hoặc để lâu\nKim ngắt xăng bị rỉ sét, hoen ố do xăng ethanol để lâu (kể cả khi đã khóa xăng), kim không nhún được nên không ngắt xăng\nTháo chén xăng, tháo chốt phao lấy kim ra, chà kim bằng bàn chải mềm với nhớt sạch cho hết rỉ, xịt gió vào ổ kim, ráp lại\nC02: Bình xăng con chảy xăng khi dựng xe\nMức phao xăng sai, phao không nằm góc 90 độ hoặc không bật lên khi nhấn\nNhìn thẳng kiểm tra phao phải nằm góc 90 độ, nhấn nhẹ phao xem có bật lên; chỉnh cái cần (lưỡi gà) của phao cho đúng 90 độ",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:NO_ACCENT"
+  },
+  {
+    "id": "DXA-042",
+    "question": "co mo bi bo khong co do ro",
+    "expected_ids": [
+      "C14"
+    ],
+    "expected_answer": "C14: Cò mổ bị bó, cấn, không có độ rơ khi ướm\nCò và ốc cò chưa được mài khớp\nDùng móng zin và lò xo mềm để ướm, ốc cò nhô khoảng 2 ly, để cam ở vị trí thấp nhất; mài cò từng chút đến khi vào ngọt, hơi rơ",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:NO_ACCENT"
+  },
+  {
+    "id": "DXA-043",
+    "question": "con bi truot, chua bop con ma dap da tuot",
+    "expected_ids": [
+      "C40"
+    ],
+    "expected_answer": "C40: Côn bị trượt: chưa bóp côn mà đạp đã tuột\nCôn chỉnh sai\nMở nắp chỉnh côn, vặn ốc vào vừa chạm rồi siết tán lại; kiểm tra: vào số đạp thấy ăn nồi, bóp côn đạp tuột hết là đúng",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:NO_ACCENT"
+  },
+  {
+    "id": "DXA-044",
+    "question": "lap den bao xi nhan ma khong can dong ho",
+    "expected_ids": [
+      "C25",
+      "C32"
+    ],
+    "expected_answer": "C25: Gắn đèn LED báo xi nhan thì hai xi nhan trái phải cùng sáng\nNối chung dây cam (trái) và dây xanh (phải) vào đèn báo tạo điểm nối điện giữa hai bên\nDùng hai rơ le 4 chân: dây cam và dây xanh vào mạch kích (chân nhỏ, một đầu mát), mạch thông (chân lớn) cấp điện cho đèn LED báo\nC32: Muốn gắn đèn báo xi nhan dạng bóng tóc trên đồng hồ\nBóng tóc tự lấy mát qua bên xi nhan không bật\nBắt hai dây của đèn báo vào dây cam và dây xanh (hai dây nóng), không cần rơ le",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:NO_ACCENT"
+  },
+  {
+    "id": "DXA-045",
+    "question": "moc mat piston sau bao nhieu thi khong lung",
+    "expected_ids": [
+      "C10"
+    ],
+    "expected_answer": "C10: Lủng mắt piston sau khi móc mắt\nMóc mắt piston quá sâu, mặt trái còn mỏng\nMóc mắt theo cỡ xupap (xupap 21/24 thì móc 22/25), móc vừa thôi; đo độ dày mắt trái bằng banme phải trên 3 ly",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:NO_ACCENT"
+  },
+  {
+    "id": "DXA-046",
+    "question": "chay bi hut xang mat ga hoai",
+    "expected_ids": [
+      "C03"
+    ],
+    "expected_answer": "C03: Chạy bị hụt xăng, mất ga hoài\nCần phao bị đạp xuống quá, phao ngỏng lên làm kim ngắt xăng quá sớm\nKhép cần phao lại một chút để hạ phao, chỉnh về góc 90 độ; chỉnh tới lui giữa hai bệnh chảy xăng và hụt xăng",
+    "status": "verified_repo_label",
+    "task": "answer",
+    "provenance": "eval.py:NO_ACCENT"
+  },
+  {
+    "id": "DXA-047",
+    "question": "xe đề không nổ",
+    "expected_ids": [],
+    "expected_answer": "",
+    "status": "verified_repo_label",
+    "task": "refuse",
+    "provenance": "eval.py:OUT_OF_SCOPE"
+  },
+  {
+    "id": "DXA-048",
+    "question": "thay nhớt bao lâu một lần",
+    "expected_ids": [],
+    "expected_answer": "",
+    "status": "verified_repo_label",
+    "task": "refuse",
+    "provenance": "eval.py:OUT_OF_SCOPE"
+  },
+  {
+    "id": "DXA-049",
+    "question": "phanh đĩa bị kêu",
+    "expected_ids": [],
+    "expected_answer": "",
+    "status": "verified_repo_label",
+    "task": "refuse",
+    "provenance": "eval.py:OUT_OF_SCOPE"
+  },
+  {
+    "id": "DXA-050",
+    "question": "lốp xe bị xì",
+    "expected_ids": [],
+    "expected_answer": "",
+    "status": "verified_repo_label",
+    "task": "refuse",
+    "provenance": "eval.py:OUT_OF_SCOPE"
+  },
+  {
+    "id": "DXA-051",
+    "question": "đèn pha không sáng",
+    "expected_ids": [],
+    "expected_answer": "",
+    "status": "verified_repo_label",
+    "task": "refuse",
+    "provenance": "eval.py:OUT_OF_SCOPE"
+  },
+  {
+    "id": "DXA-052",
+    "question": "xe tay ga bị rung đầu",
+    "expected_ids": [],
+    "expected_answer": "",
+    "status": "verified_repo_label",
+    "task": "refuse",
+    "provenance": "eval.py:OUT_OF_SCOPE"
+  },
+  {
+    "id": "DXA-053",
+    "question": "ắc quy nhanh hết điện",
+    "expected_ids": [],
+    "expected_answer": "",
+    "status": "verified_repo_label",
+    "task": "refuse",
+    "provenance": "eval.py:OUT_OF_SCOPE"
+  },
+  {
+    "id": "DXA-054",
+    "question": "ô tô bị nóng máy",
+    "expected_ids": [],
+    "expected_answer": "",
+    "status": "verified_repo_label",
+    "task": "refuse",
+    "provenance": "eval.py:OUT_OF_SCOPE"
+  },
+  {
+    "id": "DXA-055",
+    "question": "Trường hợp “Bình xăng con chảy xăng, xăng rỉ ra khi dựng xe hoặc để lâu” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C01"
+    ],
+    "expected_answer": "C01: Bình xăng con chảy xăng, xăng rỉ ra khi dựng xe hoặc để lâu\nKim ngắt xăng bị rỉ sét, hoen ố do xăng ethanol để lâu (kể cả khi đã khóa xăng), kim không nhún được nên không ngắt xăng\nTháo chén xăng, tháo chốt phao lấy kim ra, chà kim bằng bàn chải mềm với nhớt sạch cho hết rỉ, xịt gió vào ổ kim, ráp lại",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C01"
+  },
+  {
+    "id": "DXA-056",
+    "question": "Trường hợp “Bình xăng con chảy xăng khi dựng xe” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C02"
+    ],
+    "expected_answer": "C02: Bình xăng con chảy xăng khi dựng xe\nMức phao xăng sai, phao không nằm góc 90 độ hoặc không bật lên khi nhấn\nNhìn thẳng kiểm tra phao phải nằm góc 90 độ, nhấn nhẹ phao xem có bật lên; chỉnh cái cần (lưỡi gà) của phao cho đúng 90 độ",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C02"
+  },
+  {
+    "id": "DXA-057",
+    "question": "Trường hợp “Chạy bị hụt xăng, mất ga hoài” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C03"
+    ],
+    "expected_answer": "C03: Chạy bị hụt xăng, mất ga hoài\nCần phao bị đạp xuống quá, phao ngỏng lên làm kim ngắt xăng quá sớm\nKhép cần phao lại một chút để hạ phao, chỉnh về góc 90 độ; chỉnh tới lui giữa hai bệnh chảy xăng và hụt xăng",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C03"
+  },
+  {
+    "id": "DXA-058",
+    "question": "Trường hợp “Xe dựng lâu không chạy, sợ kim xăng bị rỉ” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C04"
+    ],
+    "expected_answer": "C04: Xe dựng lâu không chạy, sợ kim xăng bị rỉ\nXăng ethanol đọng trong chén xăng làm rỉ kim; bình Takegawa, Mikuni, Daytona không có van xả xăng\nXả hết xăng trong chén trước khi cất xe bằng cách tháo chén ra (kiểu classic); vệ sinh ống thông hơi thường xuyên; đồ Nhật bãi chỉ thoa nhớt rồi lau khăn khô",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C04"
+  },
+  {
+    "id": "DXA-059",
+    "question": "Trường hợp “Ga không đều, ga cuối không đều khi đi bình xăng độ 24 với pô e bao tử zin” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C05"
+    ],
+    "expected_answer": "C05: Ga không đều, ga cuối không đều khi đi bình xăng độ 24 với pô e bao tử zin\nCo gió zin và bao tử zin nhỏ hơn họng gió 45 mm của bình 24 (PE24, TM24, Yoshimura), bình bị thiếu gió\nThay co gió Vario 45 đúng size họng bình, khoét lỗ bao tử cho co vừa vào, đục 2 lỗ thoát nước dưới đáy, để kim xăng nấc giữa, không cần hạ kim",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C05"
+  },
+  {
+    "id": "DXA-060",
+    "question": "Trường hợp “Lắp co gió mới, sợ cặn cao su bị hút vào bình xăng con” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C06"
+    ],
+    "expected_answer": "C06: Lắp co gió mới, sợ cặn cao su bị hút vào bình xăng con\nCo gió cao su mới còn bavia, bụi cao su\nVệ sinh cao su co gió sạch trước khi gắn; nguyên tắc họng gió của bình bao nhiêu thì đi co gió bấy nhiêu",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C06"
+  },
+  {
+    "id": "DXA-061",
+    "question": "Trường hợp “Canh xăng hoài mà đầu bugi không ra màu nâu, cháy đen hoặc trắng, lửa không đều” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C07"
+    ],
+    "expected_answer": "C07: Canh xăng hoài mà đầu bugi không ra màu nâu, cháy đen hoặc trắng, lửa không đều\nGắn bugi sai hướng: lưng của móc (cực âm) quay vào tâm buồng đốt thay vì mặt móc\nĐánh dấu lưng móc ở bên ngoài thân bugi, vặn vào xem hướng; kê thêm lông đền nhôm khoảng 0.5 đến 0.6 mm để mặt móc quay vào tâm buồng đốt",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C07"
+  },
+  {
+    "id": "DXA-062",
+    "question": "Trường hợp “Bình xăng con nóng, máy đờn, lăn tăn, giật khi chạy xa hoặc máy nóng” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C08"
+    ],
+    "expected_answer": "C08: Bình xăng con nóng, máy đờn, lăn tăn, giật khi chạy xa hoặc máy nóng\nCo xăng truyền nhiệt và rung từ đầu culass lên bình: co dài, co nhôm, thiếu phíp cách nhiệt\nĐi co càng ngắn càng tốt, có phíp nhựa ở chân co và phíp trên, dùng vai cao su xịn (Kijima)",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C08"
+  },
+  {
+    "id": "DXA-063",
+    "question": "Trường hợp “Xì gió ở co, canh xăng không chuẩn” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C09"
+    ],
+    "expected_answer": "C09: Xì gió ở co, canh xăng không chuẩn\nDùng loại co có ống buộc cổ dê hai đầu, ống dễ rách và xì\nĐi vai bắt ốc (Kijima của Nhật hoặc vai Việt Nam loại bắt ốc), không đi loại bắt cổ dê",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C09"
+  },
+  {
+    "id": "DXA-064",
+    "question": "Trường hợp “Lủng mắt piston sau khi móc mắt” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C10"
+    ],
+    "expected_answer": "C10: Lủng mắt piston sau khi móc mắt\nMóc mắt piston quá sâu, mặt trái còn mỏng\nMóc mắt theo cỡ xupap (xupap 21/24 thì móc 22/25), móc vừa thôi; đo độ dày mắt trái bằng banme phải trên 3 ly",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C10"
+  },
+  {
+    "id": "DXA-065",
+    "question": "Trường hợp “Không biết mắt nào trên piston là nạp, mắt nào là xả” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C11"
+    ],
+    "expected_answer": "C11: Không biết mắt nào trên piston là nạp, mắt nào là xả\nTrái piston không ghi số, thợ tiện không đo giùm\nGắn xupap vào rồi đo: mắt lớn hơn là nạp, nằm ở trên khi nhìn máy từ bên trái; ghi bằng bút xóa lên mặt trên piston trước khi đem ra tiệm tiện",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C11"
+  },
+  {
+    "id": "DXA-066",
+    "question": "Trường hợp “Sên cam căng khi ráp đầu” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C12"
+    ],
+    "expected_answer": "C12: Sên cam căng khi ráp đầu\nRáp sai hoặc chi tiết lệch\nLấy cây lục giác kéo sên cam lên nhẹ; vào nhẹ là OK, căng là mở ra làm lại; khi sạc máy nghiêng máy cho nhớt vào ống sáo tăng cam",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C12"
+  },
+  {
+    "id": "DXA-067",
+    "question": "Trường hợp “Xupap đụng piston sau khi vớt piston” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C13"
+    ],
+    "expected_answer": "C13: Xupap đụng piston sau khi vớt piston\nMắt piston chưa đủ hoặc đầu trái quá cao\nTạm gá đầu culass bằng hai con ốc, quay máy cho xupap mở hết, kiểm tra có lấn cấn không; đụng là quay không được",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C13"
+  },
+  {
+    "id": "DXA-068",
+    "question": "Trường hợp “Cò mổ bị bó, cấn, không có độ rơ khi ướm” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C14"
+    ],
+    "expected_answer": "C14: Cò mổ bị bó, cấn, không có độ rơ khi ướm\nCò và ốc cò chưa được mài khớp\nDùng móng zin và lò xo mềm để ướm, ốc cò nhô khoảng 2 ly, để cam ở vị trí thấp nhất; mài cò từng chút đến khi vào ngọt, hơi rơ",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C14"
+  },
+  {
+    "id": "DXA-069",
+    "question": "Trường hợp “Quay máy bằng tay thấy khựng, lấn cấn” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C15"
+    ],
+    "expected_answer": "C15: Quay máy bằng tay thấy khựng, lấn cấn\nChân cò đụng vào phốt cao su xupap\nQuay tay kiểm tra, khựng chỗ nào thì mài chỗ đó; chỉ khi quay mượt mới gắn vào chạy",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C15"
+  },
+  {
+    "id": "DXA-070",
+    "question": "Trường hợp “Ốc cò cao quá, không đậy được nắp xupap zin” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C16"
+    ],
+    "expected_answer": "C16: Ốc cò cao quá, không đậy được nắp xupap zin\nĐi cò lăng với ốc cò dài\nMài theo bốn mặt vuông có sẵn rồi cắt ngắn ốc cò; dùng ốc cò BRT vì cứng",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C16"
+  },
+  {
+    "id": "DXA-071",
+    "question": "Trường hợp “Cò mổ căng hơn khi máy nóng” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C17"
+    ],
+    "expected_answer": "C17: Cò mổ căng hơn khi máy nóng\nMáy nóng giãn nở làm rút con cò căng hơn lúc nguội\nKhi chỉnh lúc nguội để độ rơ cò dư thêm một chút",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C17"
+  },
+  {
+    "id": "DXA-072",
+    "question": "Trường hợp “Chén lò xo xupap không ngồi lọt rãnh” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C18"
+    ],
+    "expected_answer": "C18: Chén lò xo xupap không ngồi lọt rãnh\nChén gá lên thành thay vì ngồi vào rãnh (seat)\nChén dưới mài cả trong lẫn ngoài, mặt trên chỉ mài ngoài để chén ngồi lọt thỏm vào rãnh",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C18"
+  },
+  {
+    "id": "DXA-073",
+    "question": "Trường hợp “Xe độ chạy 6 tháng đến 1 năm bị trễ cam, yếu đi” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C19"
+    ],
+    "expected_answer": "C19: Xe độ chạy 6 tháng đến 1 năm bị trễ cam, yếu đi\nNhông cam và sên cam mòn giãn làm cam bị trễ\nDùng bánh cam tăng chỉnh: lúc mới ráp canh trễ một chút, chạy một thời gian mở ra chỉnh sớm lại 1 đến 2 độ",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C19"
+  },
+  {
+    "id": "DXA-074",
+    "question": "Trường hợp “Lá khóa ốc bánh cam bị gãy sau một thời gian chạy” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C20"
+    ],
+    "expected_answer": "C20: Lá khóa ốc bánh cam bị gãy sau một thời gian chạy\nLấy kìm bẻ uốn lá khóa làm lá bị giòn\nChỉ mài sơ lá khóa, không bẻ uốn bằng kìm",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C20"
+  },
+  {
+    "id": "DXA-075",
+    "question": "Trường hợp “Cây cam bị sàng tới sàng lui” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C21"
+    ],
+    "expected_answer": "C21: Cây cam bị sàng tới sàng lui\nBạc đạn cam không được giữ cố định\nĐi bass chặn cam, hoặc tiện ổ bạc đạn hạ sâu vào và cài phe giữ bạc đạn; nắp tròn giữ bạc đạn",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C21"
+  },
+  {
+    "id": "DXA-076",
+    "question": "Trường hợp “Sên cam căng sau khi ráp đầu” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C22"
+    ],
+    "expected_answer": "C22: Sên cam căng sau khi ráp đầu\nRon đầu zin 0.5 mm bị siết ép xuống còn 0.3 mm\nDùng ron độ lõi thép FCCI Thái Lan, siết kiểu gì cũng giữ 0.5 mm, sên cam đều",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C22"
+  },
+  {
+    "id": "DXA-077",
+    "question": "Trường hợp “Tuôn ren ốc bánh cam” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C23"
+    ],
+    "expected_answer": "C23: Tuôn ren ốc bánh cam\nSiết quá lực, ốc chỉ còn ăn khoảng 2.5 ly ren sau khi mài mặt\nDùng ốc cứng, cắt rãnh dùng vít dẹp, siết vừa tay hết đường ren",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C23"
+  },
+  {
+    "id": "DXA-078",
+    "question": "Trường hợp “Đèn trợ sáng sáng mờ khi chưa bật công tắc, mở lên thì sáng lu lu, chập chờn” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C24"
+    ],
+    "expected_answer": "C24: Đèn trợ sáng sáng mờ khi chưa bật công tắc, mở lên thì sáng lu lu, chập chờn\nRơ le và dây đèn trợ sáng bị vô nước; bộ dây mua trôi nổi chưa đổ keo\nMở nắp hộp rơ le, xịt hơi, sấy hoặc phơi khô; chích keo 705 vào chân điện, đổ keo A300; cắt bao dây cao lên và quấn băng keo từ trên xuống; đặt rơ le đứng sau hộc bên hông",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C24"
+  },
+  {
+    "id": "DXA-079",
+    "question": "Trường hợp “Gắn đèn LED báo xi nhan thì hai xi nhan trái phải cùng sáng” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C25"
+    ],
+    "expected_answer": "C25: Gắn đèn LED báo xi nhan thì hai xi nhan trái phải cùng sáng\nNối chung dây cam (trái) và dây xanh (phải) vào đèn báo tạo điểm nối điện giữa hai bên\nDùng hai rơ le 4 chân: dây cam và dây xanh vào mạch kích (chân nhỏ, một đầu mát), mạch thông (chân lớn) cấp điện cho đèn LED báo",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C25"
+  },
+  {
+    "id": "DXA-080",
+    "question": "Trường hợp “Bánh trước sau không ngay hàng, xe chạy lệch” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C26"
+    ],
+    "expected_answer": "C26: Bánh trước sau không ngay hàng, xe chạy lệch\nĐuôi sườn bị lệch (sườn Cub 10 chiếc lỗi 10), hoặc gấp bị méo, hoặc đùm thiếu phụ kiện\nKiểm tra theo thứ tự: đùm đủ phụ kiện; thước thủy kiểm tra gấp; luồn dây căng từ lỗ cốt phuộc trước về hai lỗ cốt gấp để kiểm tra sườn; đuôi lệch nhẹ thì gõ lại, nặng thì thay đuôi",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C26"
+  },
+  {
+    "id": "DXA-081",
+    "question": "Trường hợp “Kéo ga nhanh thì không có ga, tắt máy; kéo từ từ mới có ga (bình Yoshimura)” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C27"
+    ],
+    "expected_answer": "C27: Kéo ga nhanh thì không có ga, tắt máy; kéo từ từ mới có ga (bình Yoshimura)\nGíc lơ phụ chưa đúng; bình xài lâu 6 tháng đến 1 năm bình nào cũng bị\nCanh lại gíc lơ phụ cho đúng",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C27"
+  },
+  {
+    "id": "DXA-082",
+    "question": "Trường hợp “Ngâm ga, ga treo, buông ga mà ga không về (bình Yoshimura)” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C28"
+    ],
+    "expected_answer": "C28: Ngâm ga, ga treo, buông ga mà ga không về (bình Yoshimura)\nỐc ralenti thiếu phốt và lông đền; phao ngẩng quá cao do cần phao xiêu vẹo hoặc kim phao dơ; dây ga chỉnh cứng quá\nBổ sung lông đền rồi tới phốt cho ốc ralenti; chỉnh cần phao về 90 độ; vệ sinh kim phao và đế kim; chỉnh dây ga khúc đầu lỏng một chút; kiểm tra lò xo bình",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C28"
+  },
+  {
+    "id": "DXA-083",
+    "question": "Trường hợp “Bình xăng con dơ, con trượt (xi lanh piston ga) hay bị kẹt cấn” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C29"
+    ],
+    "expected_answer": "C29: Bình xăng con dơ, con trượt (xi lanh piston ga) hay bị kẹt cấn\nCặn dơ trong các lỗ và quanh con trượt\nXịt chai vệ sinh bình xăng con vào tất cả các lỗ, đặc biệt quanh con trượt; xịt gió thật nhẹ",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C29"
+  },
+  {
+    "id": "DXA-084",
+    "question": "Trường hợp “Đồng hồ Takegawa gắn ngoài gáo đèn bị sút, bung ra khi chạy tốc độ cao” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C30"
+    ],
+    "expected_answer": "C30: Đồng hồ Takegawa gắn ngoài gáo đèn bị sút, bung ra khi chạy tốc độ cao\nChỉ dùng lông đền dưới, thiếu tán ren nhuyễn và lông đền nón\nDùng tán 15 ly bước ren 1 ly (tán ren nhuyễn), thêm lông đền nón của nồi và hai lông đền thường để kẹp bát; còn rơ ngang thì nhỏ ít keo dán sắt, chừa đường thoát nước",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C30"
+  },
+  {
+    "id": "DXA-085",
+    "question": "Trường hợp “Bao tay (tay nắm ga) bị rơ, xoay” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C31"
+    ],
+    "expected_answer": "C31: Bao tay (tay nắm ga) bị rơ, xoay\nChạy lâu năm keo cũ bong\nXịt hơi để rút bao tay cũ ra, vuốt bốn đường keo AB trên cùm và trong bao tay, đẩy vào từ từ, phơi nắng cho keo chạy",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C31"
+  },
+  {
+    "id": "DXA-086",
+    "question": "Trường hợp “Muốn gắn đèn báo xi nhan dạng bóng tóc trên đồng hồ” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C32"
+    ],
+    "expected_answer": "C32: Muốn gắn đèn báo xi nhan dạng bóng tóc trên đồng hồ\nBóng tóc tự lấy mát qua bên xi nhan không bật\nBắt hai dây của đèn báo vào dây cam và dây xanh (hai dây nóng), không cần rơ le",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C32"
+  },
+  {
+    "id": "DXA-087",
+    "question": "Trường hợp “Đèn trợ sáng làm chói mắt người đi đường” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C33"
+    ],
+    "expected_answer": "C33: Đèn trợ sáng làm chói mắt người đi đường\nĐèn chiếu cao, người phía trước bị chói nên dễ tông\nChúi đèn trợ sáng xuống; dùng công tắc passing (X Pass) đổi chế độ",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C33"
+  },
+  {
+    "id": "DXA-088",
+    "question": "Trường hợp “Bao tử (hộp lọc gió) cạ dè trước khi chạy, sườn MD xuống dàn đầu CD với dè CT” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C34"
+    ],
+    "expected_answer": "C34: Bao tử (hộp lọc gió) cạ dè trước khi chạy, sườn MD xuống dàn đầu CD với dè CT\nĐi bao tử 81 dài xuống thấp, dè CT lại cao\nĐi bao tử 82 cho ngắn lên; làm bass sắt hạ dè xuống",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C34"
+  },
+  {
+    "id": "DXA-089",
+    "question": "Trường hợp “Co cao su bị giãn khi đi đường dài, cổ xăng nóng” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C35"
+    ],
+    "expected_answer": "C35: Co cao su bị giãn khi đi đường dài, cổ xăng nóng\nThiếu miếng phíp cách nhiệt giữa đầu máy và co\nGắn miếng phíp, bắt ốc lục giác vừa tay, vừa tới là ngưng",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C35"
+  },
+  {
+    "id": "DXA-090",
+    "question": "Trường hợp “Nước tạt vào họng gió khi đi mưa” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C36"
+    ],
+    "expected_answer": "C36: Nước tạt vào họng gió khi đi mưa\nHọng gió hở\nBọc họng gió bằng ống cao su đường kính trong 54 mm (ống xe Click hoặc Vision), cắt ngắn và chừa hai quai để nước chảy ra ngoài",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C36"
+  },
+  {
+    "id": "DXA-091",
+    "question": "Trường hợp “Bộ số độ không báo số N, heo số không có rãnh số N” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C37"
+    ],
+    "expected_answer": "C37: Bộ số độ không báo số N, heo số không có rãnh số N\nHeo số độ không có rãnh N như heo zin\nGá công tắc báo số (chấu nhỏ nhất là N, dây xanh sọc đỏ), đánh dấu vị trí N, vô số 1-4 rồi về N kiểm tra; cắt rãnh, gắn lông đền báo số zin, mài ốc lục giác 5 ly cho lọt",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C37"
+  },
+  {
+    "id": "DXA-092",
+    "question": "Trường hợp “Bánh trước bánh sau không ngay một hàng sau khi ráp xe” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C38"
+    ],
+    "expected_answer": "C38: Bánh trước bánh sau không ngay một hàng sau khi ráp xe\nCanh theo mép sườn hoặc dè thay vì theo bánh; đùm 88 trên gấp 86 bị thiếu bên trái\nDùng đèn laser lấy lằn tường làm chuẩn, búa cao su gõ cho laser nằm giữa bánh sau rồi bánh trước; nới trục, xả tăng sên, gõ đùm vào, hở bao nhiêu chêm lông đền bấy nhiêu vào cùi đùm",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C38"
+  },
+  {
+    "id": "DXA-093",
+    "question": "Trường hợp “Chén cổ lỏng, tay lái rơ (CD, 67)” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C39"
+    ],
+    "expected_answer": "C39: Chén cổ lỏng, tay lái rơ (CD, 67)\nChén bị rỗ, lưng chén mòn\nChỉ thay khi rỗ hoặc lỏng; ưu tiên chén zin dày nặng, hàng gia công dùng được nhưng mỏng; dùng bạc đạn Suzuki",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C39"
+  },
+  {
+    "id": "DXA-094",
+    "question": "Trường hợp “Côn bị trượt: chưa bóp côn mà đạp đã tuột” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C40"
+    ],
+    "expected_answer": "C40: Côn bị trượt: chưa bóp côn mà đạp đã tuột\nCôn chỉnh sai\nMở nắp chỉnh côn, vặn ốc vào vừa chạm rồi siết tán lại; kiểm tra: vào số đạp thấy ăn nồi, bóp côn đạp tuột hết là đúng",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C40"
+  },
+  {
+    "id": "DXA-095",
+    "question": "Trường hợp “Cần số bị quơ, rơ khi ráp máy lỏ cốt một nồi trên nền Alpha” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C41"
+    ],
+    "expected_answer": "C41: Cần số bị quơ, rơ khi ráp máy lỏ cốt một nồi trên nền Alpha\nĐồ CD, 67 không dùng được; cần số Alpha là loại rời\nCắt cần, đo 6 ly (6 đến 6.2), đem đắp dài thêm 1 ly rồi tiện; kiểm tra rơ rút ra vào khoảng 3 đến 5 dem là OK",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C41"
+  },
+  {
+    "id": "DXA-096",
+    "question": "Trường hợp “Ráp máy xong quay máy rất cứng” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C42"
+    ],
+    "expected_answer": "C42: Ráp máy xong quay máy rất cứng\nSên cam căng quá\nChỉnh lại sên cam cho kéo lên nhẹ; khi vô nhớt nổ máy nghiêng xe sang trái nẹt hai ba cái cho nhớt vào ống sáo tăng cam",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C42"
+  },
+  {
+    "id": "DXA-097",
+    "question": "Trường hợp “Đèn cóc gắn vào dè CM bị ngửa lên trời” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C43"
+    ],
+    "expected_answer": "C43: Đèn cóc gắn vào dè CM bị ngửa lên trời\nThiếu miếng bass nâng\nChế thêm miếng bass để nâng đèn; chụp Rawa thì cắt hai con ốc",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C43"
+  },
+  {
+    "id": "DXA-098",
+    "question": "Trường hợp “Lốc máy, đồ sắt bị rỉ sét hoặc đen lâu ngày chà không ra; sơn không bám” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C44"
+    ],
+    "expected_answer": "C44: Lốc máy, đồ sắt bị rỉ sét hoặc đen lâu ngày chà không ra; sơn không bám\nCặn bẩn và oxy hóa bề mặt\nPha 200 ml nước rửa chén, 2 muỗng muối, 1 muỗng baking soda, nửa ly nước nguội; quét nhẹ lên, đồng thời dùng làm lớp xử lý trước khi sơn",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C44"
+  },
+  {
+    "id": "DXA-099",
+    "question": "Trường hợp “Dè (chắn bùn) cũ bị rỉ mặt trong” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C45"
+    ],
+    "expected_answer": "C45: Dè (chắn bùn) cũ bị rỉ mặt trong\nKhông có lớp bảo vệ mặt trong\nChà nhớt, tẩy R7, rửa Omo, bắn keo K1K mặt trong; không sơn lại để giữ chỉ rêu zin",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C45"
+  },
+  {
+    "id": "DXA-100",
+    "question": "Trường hợp “Gắn dàn chân CD lên sườn MD thì tay thỏ (càng phuộc) ngắn hơn cổ sườn” trong kho DXA thì nên kiểm tra và xử lý thế nào?",
+    "expected_ids": [
+      "C46"
+    ],
+    "expected_answer": "C46: Gắn dàn chân CD lên sườn MD thì tay thỏ (càng phuộc) ngắn hơn cổ sườn\nCổ sườn MD cao\nLàm hai cái nhẫn (ống nối) để bù chiều dài",
+    "status": "unverified_prompt",
+    "task": "answer",
+    "provenance": "index/state.pkl:C46"
+  }
+]

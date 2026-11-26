@@ -178,3 +178,7 @@ Tài liệu kỹ thuật được đồng bộ với các PNG: [KY-THUAT.md](doc
 ## Phạm vi hiện tại
 
 Đây là **AI Agent demo trợ giúp thợ**, không phải hệ thống chẩn đoán xác thực qua thiết bị OBD/ECU. Phần tự lập kế hoạch thực hiện ở tầng điều phối hiện tại; không yêu cầu huấn luyện lại trọng số mô hình. Triển khai production cần bảo mật phiên, xác thực đa người dùng, kiểm thử an toàn hướng dẫn sửa chữa và đánh giá định lượng với dữ liệu thực.
+
+## Day 1 — AI Observability & Evaluation
+
+[Flow, Langfuse setup and baseline](docs/day1-observability.md) · [100 test cases](docs/day1-cases.json) · [Per-case results](docs/day1-baseline.json)

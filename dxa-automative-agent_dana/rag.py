@@ -25,6 +25,7 @@ import dxa
 import gemini_client as G
 import vn_text as V
 from vector_store import VectorStore
+from observability import observe, traced, update, result_metadata
 
 TOP_CASES = 3
 TOP_CHUNKS = 3
@@ -189,6 +190,7 @@ def _vec_rank(kind, query, n=20):
     return [int(i) for i in np.argsort(-s)[:n]]
 
 
+@traced("rag.retrieve", "retriever", lambda r: {"mode": r["mode"], "timings_ms": r["timings_ms"], "cases": len(r["cases"]), "chunks": len(r["chunks"])})
 def retrieve(q, top_cases=TOP_CASES, top_chunks=TOP_CHUNKS):
     t0 = time.perf_counter()
     st = state()
@@ -289,6 +291,7 @@ def _numbers(text):
     return out
 
 
+@traced("rag.validate", "guardrail", lambda r: {"problems": len(r)})
 def check_answer(text, ctx, q, allowed_ids):
     """Bộ kiểm 'bịa', giống tinh thần validate.py bước 3, áp cho câu trả lời của LLM."""
     problems = []
@@ -343,6 +346,7 @@ REFUSE = "Tôi đã tìm trong kho kiến thức DXA nhưng chưa thấy tài li
 NEAR_NOTE = "Câu hỏi chưa khớp hẳn với kiến thức trong kho, đây là câu trả lời gần nhất. Câu hỏi đã được lưu để thợ bổ sung."
 
 
+@traced("rag.answer", "chain", result_metadata)
 def answer(q, use_llm=True):
     st = state()
     r = retrieve(q)

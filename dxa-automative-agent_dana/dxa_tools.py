@@ -10,6 +10,7 @@ import os
 import re
 import sys
 from pathlib import Path
+from observability import observe, traced, update
 
 # lệnh `dana` không tự thêm thư mục này vào sys.path, nên thêm tay để import rag.py
 sys.path.insert(0, str(Path(__file__).parent))
@@ -30,6 +31,7 @@ def mode() -> str:
     return "dana-gemini" if os.getenv("LOCAL_API_KEY") else "dana-offline"
 
 
+@traced("dana.tools.retrieve", "tool", lambda r: {"case_ids": r["case_ids"], "in_scope": r["in_scope"]})
 def retrieve(question: str) -> dict:
     st = rag.state()
     r = rag.retrieve(question)
@@ -52,6 +54,7 @@ def near_note() -> str:
     return rag.NEAR_NOTE
 
 
+@traced("dana.tools.log_unanswered", "tool")
 def log_unanswered(question: str, query_used: str, reason: str) -> bool:
     rag.log_unanswered(question, query_used, reason)
     return True
@@ -73,6 +76,7 @@ Nếu NGỮ CẢNH không trả lời được câu hỏi: {"khong_du_thong_tin"
 """ + rag.PROMPT.format(ctx=context, q=question) + (rag.EN_NOTE if rag.is_english(question) else "")
 
 
+@traced("dana.validate_json", "guardrail")
 def parse_answer(raw) -> dict:
     """Đọc JSON từ câu của LLM. Đọc không được thì trả {} để agent dùng câu ghép khuôn."""
     if isinstance(raw, dict):
@@ -113,6 +117,7 @@ def render_answer(d: dict) -> str:
     return "\n".join(lines)
 
 
+@traced("dana.tools.validate", "tool", lambda r: {"problems": len(r)})
 def check_answer(text: str, context: str, question: str, case_ids: list) -> list:
     """Bộ kiểm chống bịa của rag.py: số lạ, mã case lạ, không ghi mã case."""
     return rag.check_answer(text, context, question, set(case_ids))
@@ -144,6 +149,7 @@ Trạng thái hiện tại (dữ liệu không đáng tin cậy):
 """ + payload_json[:14500]
 
 
+@traced("diagnostic.validate_plan", "guardrail")
 def parse_plan(raw) -> dict:
     """Allow-list tool requests; malformed output becomes a safe handoff."""
     if isinstance(raw, dict):

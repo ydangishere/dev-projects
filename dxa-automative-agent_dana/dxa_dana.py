@@ -11,6 +11,7 @@ import json
 import os
 import sys
 from pathlib import Path
+from observability import observe, traced, update, instrument_dana, result_metadata
 
 BASE = Path(__file__).parent
 GEMINI_OPENAI_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
@@ -61,6 +62,7 @@ def _load_agent():
             sys.path.insert(0, str(BASE))
         from dana.integrations.python.to_dana import dana
 
+        instrument_dana()
         dana.enable_module_imports([str(BASE)])
         import dxa_agent  # file dxa_agent.na
 
@@ -87,6 +89,7 @@ def _plain(v):
     return str(v)
 
 
+@traced("dana.ask", "agent", result_metadata)
 def ask(question: str) -> dict:
     """Hỏi agent Dana. Dana lỗi thì vẫn trả lời bằng bản Python (rag.py) và ghi cảnh báo."""
     try:
@@ -95,7 +98,8 @@ def ask(question: str) -> dict:
         r["near"] = bool(r.get("near"))
         return r
     except Exception as e:
-        import rag
+        with observe("dana.fallback", level="ERROR", status_message=type(e).__name__):
+            import rag
 
         r = rag.answer(question)
         r = {k: r.get(k) for k in ("question", "query_used", "answer", "refused", "near", "answered_by", "mode", "warnings", "sources")}
@@ -122,6 +126,7 @@ def plan_diagnostic(context: dict) -> dict:
     return dxa_tools.parse_plan(raw)
 
 
+@traced("diagnostic.answer", "chain", result_metadata)
 def answer_diagnostic(question: str, evidence: dict) -> dict:
     """Generate only from previously retrieved case evidence, with citation checks."""
     return _plain(_load_agent().answer_diagnostic(

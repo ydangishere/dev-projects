@@ -13,6 +13,7 @@ import json
 import os
 import time
 from pathlib import Path
+from observability import observe, traced, update, generation_usage
 
 import numpy as np
 
@@ -100,11 +101,13 @@ def embed(texts, task="RETRIEVAL_DOCUMENT"):
     todo = [i for i, k in enumerate(keys) if k not in _cache.data]
     for s in range(0, len(todo), BATCH):
         idx = todo[s:s + BATCH]
-        r = _retry(lambda: client().models.embed_content(
-            model=EMBED_MODEL,
-            contents=[texts[i] for i in idx],
-            config=types.EmbedContentConfig(task_type=task, output_dimensionality=EMBED_DIM),
-        ))
+        with observe("gemini.embed", "embedding", model=EMBED_MODEL) as span:
+            r = _retry(lambda: client().models.embed_content(
+                model=EMBED_MODEL,
+                contents=[texts[i] for i in idx],
+                config=types.EmbedContentConfig(task_type=task, output_dimensionality=EMBED_DIM),
+            ))
+            generation_usage(span, r)
         for i, e in zip(idx, r.embeddings):
             _cache.data[keys[i]] = np.asarray(e.values, dtype=np.float32)
         _cache.dirty = True
@@ -123,6 +126,8 @@ def generate(prompt, system=None, temperature=0.2, json_mode=False):
         temperature=temperature,
         response_mime_type="application/json" if json_mode else None,
     )
-    r = _retry(lambda: client().models.generate_content(model=LLM_MODEL, contents=prompt, config=cfg))
+    with observe("gemini.generate", "generation", model=LLM_MODEL) as span:
+        r = _retry(lambda: client().models.generate_content(model=LLM_MODEL, contents=prompt, config=cfg))
+        generation_usage(span, r)
     text = (r.text or "").strip()
     return json.loads(text) if json_mode else text

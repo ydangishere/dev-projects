@@ -1,0 +1,2091 @@
+{
+  "judge": null,
+  "summary": {
+    "unverified_prompt": {
+      "cases": 46,
+      "hit1": [
+        40,
+        46
+      ],
+      "hit3": [
+        45,
+        46
+      ],
+      "mean_recall_at_3": 0.9782608695652174,
+      "task_success_proxy": [
+        13,
+        46
+      ],
+      "refusal_success": [
+        0,
+        0
+      ],
+      "latency_p50_ms": 22.259,
+      "latency_p95_ms": 26.81225,
+      "modes": {
+        "dana-offline": 46
+      },
+      "answer_paths": {
+        "gate": 33,
+        "template": 13
+      },
+      "cases_with_warnings": 0,
+      "correctness": {
+        "mean": null,
+        "scored": 0
+      },
+      "faithfulness": {
+        "mean": null,
+        "scored": 0
+      },
+      "relevance": {
+        "mean": null,
+        "scored": 0
+      }
+    },
+    "verified_repo_label": {
+      "cases": 54,
+      "hit1": [
+        45,
+        46
+      ],
+      "hit3": [
+        46,
+        46
+      ],
+      "mean_recall_at_3": 0.9782608695652174,
+      "task_success_proxy": [
+        54,
+        54
+      ],
+      "refusal_success": [
+        8,
+        8
+      ],
+      "latency_p50_ms": 18.0845,
+      "latency_p95_ms": 23.85515,
+      "modes": {
+        "dana-offline": 54
+      },
+      "answer_paths": {
+        "template": 46,
+        "gate": 8
+      },
+      "cases_with_warnings": 0,
+      "correctness": {
+        "mean": null,
+        "scored": 0
+      },
+      "faithfulness": {
+        "mean": null,
+        "scored": 0
+      },
+      "relevance": {
+        "mean": null,
+        "scored": 0
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "DXA-001",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 11006.371,
+      "retrieved_ids": [
+        "C01",
+        "C04",
+        "C29"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-002",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 188.119,
+      "retrieved_ids": [
+        "C01",
+        "C04",
+        "C03"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 0.6666666666666666,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-003",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 13.991,
+      "retrieved_ids": [
+        "C02",
+        "C03",
+        "C28"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-004",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 14.606,
+      "retrieved_ids": [
+        "C03",
+        "C06",
+        "C29"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-005",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 15.364,
+      "retrieved_ids": [
+        "C05",
+        "C28",
+        "T02"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-006",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 16.038,
+      "retrieved_ids": [
+        "C05",
+        "C06",
+        "C36"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-007",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 15.72,
+      "retrieved_ids": [
+        "C07",
+        "C02",
+        "C01"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-008",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 15.237,
+      "retrieved_ids": [
+        "C07",
+        "C30",
+        "C47"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-009",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 15.556,
+      "retrieved_ids": [
+        "C08",
+        "T02",
+        "C04"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-010",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 15.218,
+      "retrieved_ids": [
+        "C09",
+        "C06",
+        "C01"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-011",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 18.73,
+      "retrieved_ids": [
+        "C10",
+        "C13",
+        "C11"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-012",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 16.835,
+      "retrieved_ids": [
+        "C11",
+        "C10",
+        "C29"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-013",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 17.457,
+      "retrieved_ids": [
+        "C14",
+        "C37",
+        "C17"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-014",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 19.49,
+      "retrieved_ids": [
+        "C19",
+        "C20",
+        "C31"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-015",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 17.652,
+      "retrieved_ids": [
+        "C20",
+        "C19",
+        "C23"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-016",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 17.764,
+      "retrieved_ids": [
+        "C12",
+        "C22",
+        "C42"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-017",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 17.594,
+      "retrieved_ids": [
+        "C24",
+        "C33",
+        "C25"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-018",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 19.747,
+      "retrieved_ids": [
+        "C25",
+        "C32",
+        "C24"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-019",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 18.91,
+      "retrieved_ids": [
+        "C25",
+        "C24",
+        "C32"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-020",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 18.634,
+      "retrieved_ids": [
+        "C38",
+        "C26",
+        "C20"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-021",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 18.992,
+      "retrieved_ids": [
+        "C27",
+        "C28",
+        "C05"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-022",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 18.013,
+      "retrieved_ids": [
+        "C28",
+        "C07",
+        "C03"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-023",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 20.872,
+      "retrieved_ids": [
+        "C29",
+        "C06",
+        "T02"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-024",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 21.674,
+      "retrieved_ids": [
+        "C30",
+        "C32",
+        "C04"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-025",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 15.661,
+      "retrieved_ids": [
+        "C31",
+        "C24",
+        "C14"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-026",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 23.187,
+      "retrieved_ids": [
+        "C32",
+        "C25",
+        "C24"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-027",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 19.17,
+      "retrieved_ids": [
+        "C34",
+        "C46",
+        "C05"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-028",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 25.096,
+      "retrieved_ids": [
+        "C37",
+        "C32",
+        "C41"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-029",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 16.083,
+      "retrieved_ids": [
+        "C38",
+        "C19",
+        "C20"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-030",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 18.156,
+      "retrieved_ids": [
+        "C39",
+        "C04",
+        "C18"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-031",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 18.262,
+      "retrieved_ids": [
+        "C40",
+        "C29",
+        "C24"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-032",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 18.531,
+      "retrieved_ids": [
+        "C41",
+        "C44",
+        "C42"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-033",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 16.033,
+      "retrieved_ids": [
+        "C42",
+        "C15",
+        "C13"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 0.3333333333333333,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-034",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 16.678,
+      "retrieved_ids": [
+        "C44",
+        "C01",
+        "C36"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-035",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 18.542,
+      "retrieved_ids": [
+        "C47",
+        "C48",
+        "C32"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-036",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 16.954,
+      "retrieved_ids": [
+        "C48",
+        "C50",
+        "C06"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-037",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 19.247,
+      "retrieved_ids": [
+        "C49",
+        "C44",
+        "C39"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-038",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 16.728,
+      "retrieved_ids": [
+        "C50",
+        "C49",
+        "C48"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-039",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 19.837,
+      "retrieved_ids": [
+        "T02",
+        "C29",
+        "C28"
+      ],
+      "hit1": false,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-040",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 19.842,
+      "retrieved_ids": [
+        "C32",
+        "C25",
+        "C30"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-041",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 19.438,
+      "retrieved_ids": [
+        "C02",
+        "C04",
+        "C01"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-042",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 20.256,
+      "retrieved_ids": [
+        "C14",
+        "C37",
+        "C17"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-043",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 19.995,
+      "retrieved_ids": [
+        "C40",
+        "C29",
+        "C24"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-044",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 21.627,
+      "retrieved_ids": [
+        "C32",
+        "C25",
+        "C37"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-045",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 19.948,
+      "retrieved_ids": [
+        "C10",
+        "C13",
+        "C11"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-046",
+      "status": "verified_repo_label",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 19.457,
+      "retrieved_ids": [
+        "C03",
+        "C07",
+        "C06"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-047",
+      "status": "verified_repo_label",
+      "task": "refuse",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 16.117,
+      "retrieved_ids": [
+        "C48",
+        "C04",
+        "C42"
+      ],
+      "hit1": null,
+      "hit3": null,
+      "recall_at_3": null,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-048",
+      "status": "verified_repo_label",
+      "task": "refuse",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 16.109,
+      "retrieved_ids": [
+        "C31",
+        "C01",
+        "C04"
+      ],
+      "hit1": null,
+      "hit3": null,
+      "recall_at_3": null,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-049",
+      "status": "verified_repo_label",
+      "task": "refuse",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 14.555,
+      "retrieved_ids": [
+        "C03",
+        "C19",
+        "C27"
+      ],
+      "hit1": null,
+      "hit3": null,
+      "recall_at_3": null,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-050",
+      "status": "verified_repo_label",
+      "task": "refuse",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 17.78,
+      "retrieved_ids": [
+        "C09",
+        "C25",
+        "C32"
+      ],
+      "hit1": null,
+      "hit3": null,
+      "recall_at_3": null,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-051",
+      "status": "verified_repo_label",
+      "task": "refuse",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 20.84,
+      "retrieved_ids": [
+        "C33",
+        "C24",
+        "C25"
+      ],
+      "hit1": null,
+      "hit3": null,
+      "recall_at_3": null,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-052",
+      "status": "verified_repo_label",
+      "task": "refuse",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 16.208,
+      "retrieved_ids": [
+        "C31",
+        "C53",
+        "C13"
+      ],
+      "hit1": null,
+      "hit3": null,
+      "recall_at_3": null,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-053",
+      "status": "verified_repo_label",
+      "task": "refuse",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 15.563,
+      "retrieved_ids": [
+        "C25",
+        "C49",
+        "C23"
+      ],
+      "hit1": null,
+      "hit3": null,
+      "recall_at_3": null,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-054",
+      "status": "verified_repo_label",
+      "task": "refuse",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 16.727,
+      "retrieved_ids": [
+        "C17",
+        "C08",
+        "C35"
+      ],
+      "hit1": null,
+      "hit3": null,
+      "recall_at_3": null,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-055",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 24.905,
+      "retrieved_ids": [
+        "C01",
+        "C04",
+        "C02"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-056",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 25.002,
+      "retrieved_ids": [
+        "T02",
+        "C01",
+        "C04"
+      ],
+      "hit1": false,
+      "hit3": false,
+      "recall_at_3": 0.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-057",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 24.085,
+      "retrieved_ids": [
+        "C03",
+        "T02",
+        "C26"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-058",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 25.855,
+      "retrieved_ids": [
+        "C04",
+        "C01",
+        "C44"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-059",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 25.118,
+      "retrieved_ids": [
+        "C05",
+        "C34",
+        "T02"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-060",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 36.915,
+      "retrieved_ids": [
+        "C06",
+        "T02",
+        "C29"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-061",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 26.002,
+      "retrieved_ids": [
+        "C07",
+        "T02",
+        "C26"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-062",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 26.839,
+      "retrieved_ids": [
+        "T02",
+        "C08",
+        "C17"
+      ],
+      "hit1": false,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-063",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 26.684,
+      "retrieved_ids": [
+        "T02",
+        "C47",
+        "C09"
+      ],
+      "hit1": false,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-064",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 25.269,
+      "retrieved_ids": [
+        "C10",
+        "C13",
+        "C11"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-065",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 30.96,
+      "retrieved_ids": [
+        "C11",
+        "C13",
+        "T02"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-066",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 25.168,
+      "retrieved_ids": [
+        "C12",
+        "C22",
+        "C42"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-067",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 25.597,
+      "retrieved_ids": [
+        "C13",
+        "C10",
+        "C15"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-068",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 26.732,
+      "retrieved_ids": [
+        "C14",
+        "C41",
+        "C47"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-069",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 24.279,
+      "retrieved_ids": [
+        "C15",
+        "C13",
+        "T02"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-070",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 24.964,
+      "retrieved_ids": [
+        "C16",
+        "C15",
+        "C13"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-071",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 20.956,
+      "retrieved_ids": [
+        "C17",
+        "T02",
+        "C26"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-072",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 20.254,
+      "retrieved_ids": [
+        "C18",
+        "C14",
+        "C15"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-073",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 20.348,
+      "retrieved_ids": [
+        "C19",
+        "C41",
+        "T02"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-074",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 20.477,
+      "retrieved_ids": [
+        "C20",
+        "C19",
+        "C44"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-075",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 18.183,
+      "retrieved_ids": [
+        "C21",
+        "T02",
+        "C26"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-076",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 20.608,
+      "retrieved_ids": [
+        "C12",
+        "C22",
+        "C42"
+      ],
+      "hit1": false,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-077",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 22.525,
+      "retrieved_ids": [
+        "C23",
+        "C26",
+        "C47"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-078",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 23.772,
+      "retrieved_ids": [
+        "C24",
+        "C33",
+        "T02"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-079",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 23.321,
+      "retrieved_ids": [
+        "C25",
+        "C32",
+        "C24"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-080",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 22.656,
+      "retrieved_ids": [
+        "C26",
+        "C38",
+        "C44"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-081",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 25.016,
+      "retrieved_ids": [
+        "C27",
+        "T02",
+        "C28"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-082",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 22.321,
+      "retrieved_ids": [
+        "C28",
+        "C27",
+        "T02"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-083",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 21.746,
+      "retrieved_ids": [
+        "C29",
+        "T02",
+        "C04"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-084",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 22.197,
+      "retrieved_ids": [
+        "C30",
+        "C47",
+        "C32"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-085",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 18.114,
+      "retrieved_ids": [
+        "C31",
+        "T02",
+        "C26"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-086",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 20.18,
+      "retrieved_ids": [
+        "C32",
+        "C25",
+        "C47"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-087",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 20.363,
+      "retrieved_ids": [
+        "C33",
+        "C24",
+        "C44"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-088",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 21.646,
+      "retrieved_ids": [
+        "C34",
+        "C46",
+        "C26"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-089",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 20.124,
+      "retrieved_ids": [
+        "C08",
+        "C35",
+        "C06"
+      ],
+      "hit1": false,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-090",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 20.331,
+      "retrieved_ids": [
+        "C36",
+        "T02",
+        "C44"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-091",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 23.34,
+      "retrieved_ids": [
+        "C37",
+        "C41",
+        "T02"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-092",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 20.485,
+      "retrieved_ids": [
+        "C38",
+        "C26",
+        "C44"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-093",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 17.995,
+      "retrieved_ids": [
+        "C39",
+        "C41",
+        "C47"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-094",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 19.636,
+      "retrieved_ids": [
+        "C40",
+        "T02",
+        "C29"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-095",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 21.777,
+      "retrieved_ids": [
+        "C41",
+        "C26",
+        "T02"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-096",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 17.658,
+      "retrieved_ids": [
+        "C15",
+        "C42",
+        "T02"
+      ],
+      "hit1": false,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-097",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 19.92,
+      "retrieved_ids": [
+        "C43",
+        "T02",
+        "C26"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-098",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 21.691,
+      "retrieved_ids": [
+        "C44",
+        "C01",
+        "C04"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-099",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "gate",
+      "latency_ms": 18.683,
+      "retrieved_ids": [
+        "C45",
+        "C44",
+        "C26"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": false,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    },
+    {
+      "id": "DXA-100",
+      "status": "unverified_prompt",
+      "task": "answer",
+      "mode": "dana-offline",
+      "answered_by": "template",
+      "latency_ms": 20.672,
+      "retrieved_ids": [
+        "C46",
+        "C26",
+        "C15"
+      ],
+      "hit1": true,
+      "hit3": true,
+      "recall_at_3": 1.0,
+      "task_success_proxy": true,
+      "warning_count": 0,
+      "scores": {},
+      "errors": {}
+    }
+  ]
+}
