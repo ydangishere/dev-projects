@@ -1,0 +1,72 @@
+{
+  "as_of": "2026-11-26",
+  "cases": [
+    {
+      "case_id": "HS-001",
+      "verdict": "APPROVE",
+      "rules": {"R01": "PASS", "R02": "PASS", "R03": "PASS", "R04": "PASS", "R05": "PASS",
+                "R06": "PASS", "R07": "PASS", "R08": "PASS", "R09": "PASS", "R10": "PASS"},
+      "fields": {
+        "cccd.full_name": "Nguyễn Văn An",
+        "cccd.id_number": "079090000001",
+        "loan_application.requested_amount": 120000000,
+        "loan_application.term_months": 36,
+        "labor_contract.monthly_salary": 25000000,
+        "bank_statement.account_holder": "NGUYEN VAN AN"
+      },
+      "salary_credits": 3
+    },
+    {
+      "case_id": "HS-002",
+      "verdict": "REJECT",
+      "rules": {"R01": "PASS", "R04": "PASS", "R05": "PASS", "R06": "PASS", "R08": "PASS", "R10": "FAIL"},
+      "fields": {
+        "cccd.full_name": "Trần Thị Bình",
+        "loan_application.requested_amount": 300000000,
+        "loan_application.existing_monthly_debt": 9000000,
+        "labor_contract.monthly_salary": 30000000
+      },
+      "salary_credits": 3
+    },
+    {
+      "case_id": "HS-003",
+      "verdict": "NEED_INFO",
+      "rules": {"R01": "PASS", "R04": "NEED_INFO", "R06": "NEED_INFO", "R07": "PASS", "R10": "PASS"},
+      "fields": {
+        "cccd.id_number": "079095000003",
+        "loan_application.id_number": "079095000083",
+        "labor_contract.end_date": "2027-08-31"
+      },
+      "salary_credits": 2
+    },
+    {
+      "case_id": "HS-004",
+      "verdict": "REJECT",
+      "rules": {"R02": "FAIL", "R03": "PASS", "R08": "FAIL", "R10": "PASS"},
+      "fields": {
+        "cccd.expiry_date": "khong thoi han",
+        "cccd.date_of_birth": "1965-05-10",
+        "loan_application.requested_amount": 250000000
+      },
+      "salary_credits": 3
+    }
+  ],
+  "policy_questions": [
+    {"q": "Thu nhập tối thiểu bao nhiêu thì được vay?", "expected": "4.1"},
+    {"q": "DTI tối đa là bao nhiêu", "expected": "5.3"},
+    {"q": "Vay tối đa bao nhiêu tiền", "expected": "5.1"},
+    {"q": "Thâm niên làm việc tối thiểu", "expected": "4.3"},
+    {"q": "CCCD hết hạn thì sao", "expected": "3.2"},
+    {"q": "Cần những giấy tờ gì để vay", "expected": "Điều 2"},
+    {"q": "Sao kê lương cần mấy tháng?", "expected": "4.2"},
+    {"q": "Khách 62 tuổi có vay được không?", "expected": "3.1"},
+    {"q": "Thời hạn vay dài nhất", "expected": "5.2"},
+    {"q": "Lãi suất tham chiếu để tính trả góp", "expected": "5.4"},
+    {"q": "Có được gửi hồ sơ khách hàng cho AI bên ngoài không", "expected": "7.2"},
+    {"q": "Mục đích vay nào được chấp nhận", "expected": "Điều 1"},
+    {"q": "Ai là người quyết định cho vay cuối cùng", "expected": "6.4"},
+    {"q": "Giá vàng hôm nay", "expected": null},
+    {"q": "Thời tiết Hà Nội ngày mai", "expected": null},
+    {"q": "Mở thẻ tín dụng cần gì", "expected": null}
+  ]
+}

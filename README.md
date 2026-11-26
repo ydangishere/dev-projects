@@ -1,5 +1,14 @@
 ## Dev Projects
 
+## Bank GenAI demos — hai bản demo cho khách hàng ngân hàng
+
+| Demo | Dành cho | Nội dung |
+| --- | --- | --- |
+| [**Credit Copilot**](./bank-credit-copilot/README.md) | Chuyên viên thẩm định tín dụng | Đọc bộ hồ sơ vay (CCCD, giấy đề nghị, HĐLĐ, sao kê) → trích xuất kèm nguồn → 10 điều kiện tín dụng có trích điều khoản → tờ trình; hỏi đáp chính sách bằng BM25 có từ chối câu ngoài phạm vi; audit che số CCCD |
+| [**Trợ lý ảo ngân hàng**](./bank-virtual-assistant/README.md) | Khách hàng trên app | Chat tiếng Việt (có/không dấu, "500k", "1tr5") → số dư, chi tiêu theo nhóm, giao dịch → soạn lệnh chuyển tiền chỉ thực hiện khi khách nhập OTP; guardrail chặn bỏ qua OTP, prompt injection, người nhận lạ |
+
+Cả hai chạy **offline không cần API key** (FastAPI, có tùy chọn Gemini hoặc LLM on-prem tương thích OpenAI). LLM không tự tính số và không ra quyết định; mọi con số do code tính hoặc lấy từ API. **Dữ liệu, chính sách và core banking đều là giả lập; đường LLM mới được kiểm thử bằng mock, chưa chạy với khóa API thật.**
+
 ## MMS AI Checker — Hai sơ đồ chính
 
 ### 1. Flow cài đặt và chạy AI Checker

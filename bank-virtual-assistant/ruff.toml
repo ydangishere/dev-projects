@@ -1,0 +1,7 @@
+line-length = 130
+target-version = "py311"
+
+[lint]
+select = ["E", "F", "W", "B", "UP", "I"]
+# B008: FastAPI's File(...) default is the documented pattern.
+ignore = ["B008"]

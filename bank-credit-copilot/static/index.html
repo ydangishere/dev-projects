@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Credit Copilot — Trợ lý thẩm định hồ sơ vay (demo)</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Credit Copilot</h1>
+      <p>Trợ lý thẩm định hồ sơ vay tiêu dùng tín chấp — bản demo</p>
+    </div>
+    <div class="badges">
+      <span class="badge warn">Dữ liệu giả lập</span>
+      <span class="badge" id="provider">…</span>
+      <span class="badge" id="policy-version">…</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="panel">
+      <h2>1. Chọn hồ sơ</h2>
+      <div id="samples" class="samples"></div>
+      <h3>Hoặc tải hồ sơ lên</h3>
+      <p class="hint">PDF có chữ hoặc TXT: CCCD, giấy đề nghị vay, hợp đồng lao động, sao kê lương.</p>
+      <input type="file" id="files" multiple accept=".pdf,.txt">
+      <button id="upload" class="primary">Thẩm định hồ sơ tải lên</button>
+    </aside>
+
+    <section class="panel result" id="result">
+      <div class="empty">Chọn một hồ sơ mẫu để xem tờ trình do Copilot soạn.</div>
+    </section>
+
+    <aside class="panel side">
+      <h2>Hỏi chính sách</h2>
+      <p class="hint">Trả lời dựa trên văn bản chính sách, có trích điều khoản.</p>
+      <form id="ask-form">
+        <input id="question" placeholder="VD: DTI tối đa là bao nhiêu?" maxlength="500">
+        <button class="primary">Hỏi</button>
+      </form>
+      <div class="chips">
+        <button class="chip" data-q="Thu nhập tối thiểu bao nhiêu thì được vay?">Thu nhập tối thiểu</button>
+        <button class="chip" data-q="Khách 62 tuổi có vay được không?">Giới hạn tuổi</button>
+        <button class="chip" data-q="Sao kê lương cần mấy tháng?">Sao kê</button>
+        <button class="chip" data-q="Giá vàng hôm nay bao nhiêu?">Câu hỏi ngoài phạm vi</button>
+      </div>
+      <div id="answers"></div>
+
+      <h2 class="spaced">Nhật ký audit <button id="refresh-audit" class="link">làm mới</button></h2>
+      <ul id="audit" class="audit"></ul>
+    </aside>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>

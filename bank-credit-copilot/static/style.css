@@ -1,0 +1,67 @@
+:root {
+  --bg: #f4f6f9; --card: #fff; --text: #1d2433; --muted: #637083; --line: #e2e6ee;
+  --brand: #0b5cad; --ok: #1f7a4d; --ok-bg: #e6f4ec; --warn: #9a6200; --warn-bg: #fff4dc;
+  --bad: #b42318; --bad-bg: #fdecea;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "Segoe UI", system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+.topbar { display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; background: var(--brand); color: #fff; }
+.topbar h1 { margin: 0; font-size: 20px; }
+.topbar p { margin: 2px 0 0; opacity: .85; }
+.badges { display: flex; gap: 8px; flex-wrap: wrap; }
+.badge { background: rgba(255,255,255,.15); padding: 4px 10px; border-radius: 999px; font-size: 12px; }
+.badge.warn { background: #ffd166; color: #4a3500; }
+.layout { display: grid; grid-template-columns: 260px 1fr 320px; gap: 16px; padding: 16px; align-items: start; }
+@media (max-width: 1100px) { .layout { grid-template-columns: 1fr; } }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+h2 { font-size: 15px; margin: 0 0 10px; }
+h3 { font-size: 13px; margin: 18px 0 6px; }
+.spaced { margin-top: 22px; display: flex; justify-content: space-between; }
+.hint { color: var(--muted); font-size: 12px; margin: 0 0 8px; }
+.samples { display: flex; flex-direction: column; gap: 8px; }
+.sample { text-align: left; border: 1px solid var(--line); background: #fafbfd; border-radius: 8px; padding: 10px; cursor: pointer; }
+.sample:hover, .sample.active { border-color: var(--brand); background: #eef5fc; }
+.sample strong { display: block; }
+.sample span { color: var(--muted); font-size: 12px; }
+button.primary { background: var(--brand); color: #fff; border: 0; border-radius: 6px; padding: 8px 12px; cursor: pointer; margin-top: 8px; }
+button.link { background: none; border: 0; color: var(--brand); cursor: pointer; font-size: 12px; }
+input[type=file] { width: 100%; font-size: 12px; }
+#ask-form { display: flex; gap: 6px; }
+#ask-form input { flex: 1; padding: 8px; border: 1px solid var(--line); border-radius: 6px; }
+#ask-form button { margin-top: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.chip { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 4px 10px; font-size: 12px; cursor: pointer; }
+.answer { border-left: 3px solid var(--brand); background: #f6f9fd; padding: 8px 10px; margin: 8px 0; border-radius: 0; }
+.answer .q { font-weight: 600; margin-bottom: 4px; }
+.answer .src { color: var(--muted); font-size: 12px; margin-top: 4px; }
+.empty { color: var(--muted); padding: 40px; text-align: center; }
+.verdict { border-radius: 8px; padding: 14px 16px; margin-bottom: 14px; }
+.verdict.APPROVE { background: var(--ok-bg); color: var(--ok); }
+.verdict.NEED_INFO { background: var(--warn-bg); color: var(--warn); }
+.verdict.REJECT { background: var(--bad-bg); color: var(--bad); }
+.verdict .label { font-size: 18px; font-weight: 700; }
+.verdict .meta { font-size: 12px; margin-top: 4px; opacity: .85; }
+.tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 12px 0; }
+.tile { border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+.tile .k { color: var(--muted); font-size: 12px; }
+.tile .v { font-size: 16px; font-weight: 600; margin-top: 2px; }
+.summary { line-height: 1.6; }
+.source-note { color: var(--muted); font-size: 12px; }
+table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; color: var(--muted); font-weight: 600; }
+.status { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.status.PASS { background: var(--ok-bg); color: var(--ok); }
+.status.FAIL { background: var(--bad-bg); color: var(--bad); }
+.status.NEED_INFO { background: var(--warn-bg); color: var(--warn); }
+details summary { cursor: pointer; color: var(--brand); font-size: 12px; }
+.clause { background: #f6f7f9; padding: 6px 8px; margin-top: 4px; font-size: 12px; }
+.evidence { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.evidence code { background: #f1f3f6; padding: 1px 4px; color: var(--text); }
+.followups li, .risks li { margin-bottom: 4px; }
+.disclaimer { margin-top: 16px; font-size: 12px; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 10px; }
+.audit { list-style: none; padding: 0; margin: 0; font-size: 12px; }
+.audit li { border-bottom: 1px solid var(--line); padding: 6px 0; }
+.audit .t { color: var(--muted); }
+.docs a { margin-right: 10px; font-size: 12px; }
+.error { color: var(--bad); }
