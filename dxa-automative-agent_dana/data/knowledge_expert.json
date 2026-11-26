@@ -1,0 +1,54 @@
+{
+ "_note": "Kiến thức do thợ nhập trên tab Bổ sung kiến thức. Mỗi case = Triệu chứng -> Nguyên nhân -> Cách sửa, không gắn video. status=rejected nghĩa là đã gỡ, giữ lại để truy vết.",
+ "cases": [
+  {
+   "id": "T01",
+   "source": "tho",
+   "video_id": null,
+   "t": null,
+   "system": "khác",
+   "symptom": "mũi khoan be tong dung de khoan sat duoc khong? Lam the nao de khoan duoc cho sat neu dung mui be tong",
+   "cause": "do mui khoan be tong duoc mai vuot 2 ben nhu kieu mài 1 mũi ten cho deu. De de cat vao betong",
+   "fix": "mai lai dau mui khoan co canh sắt ăn vào thị",
+   "parts": [],
+   "tools": [],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Thợ nhập trên tab Bổ sung kiến thức",
+   "author": "Y Ddang",
+   "created_at": "2026-11-19 00:22",
+   "from_question": "mũi khoan be tong dung de khoan sat duoc khong? Lam the nao de khoan duoc cho sat neu dung mui be tong"
+  },
+  {
+   "id": "T02",
+   "source": "tho",
+   "video_id": null,
+   "t": null,
+   "system": "nhiên liệu",
+   "symptom": "nổ máy rồi máy hú ga lên từ từ",
+   "cause": "lượng gió và xăng nạp nhiều hơn bình thường và tăng dần",
+   "fix": "Kiểm tra lần mò từ ống vặn ga, dây ga đến bình xăng con",
+   "parts": [
+    "có thế thay dây ga"
+   ],
+   "tools": [
+    "khóa 8",
+    "10 và dùng tay"
+   ],
+   "vehicles": [],
+   "specs": [],
+   "warnings": [
+    "nút vặng tăng độ căng dây ga có người phá"
+   ],
+   "reviewed": true,
+   "status": "active",
+   "review_note": "Thợ nhập trên tab Bổ sung kiến thức",
+   "author": "noname",
+   "created_at": "2026-11-19 08:03",
+   "from_question": ""
+  }
+ ]
+}

@@ -8,6 +8,7 @@ import re
 import secrets
 import sqlite3
 import time
+from contextlib import closing
 from pathlib import Path
 
 DB_PATH = Path(__file__).parent / "index" / "diagnostic_sessions.sqlite3"
@@ -56,7 +57,7 @@ def _save(c, session_id, state):
 def delete_session(session_id, db_path=DB_PATH):
     if not SESSION_RE.fullmatch(session_id):
         raise ValueError("Mã phiên chẩn đoán không hợp lệ")
-    with _connect(db_path) as c:
+    with closing(_connect(db_path)) as c:
         c.execute("DELETE FROM sessions WHERE id=?", (session_id,))
         c.commit()
 
@@ -100,7 +101,7 @@ def run_turn(message, session_id=None, *, planner=None, retriever=None, answerer
         import dxa_tools
         retriever = dxa_tools.retrieve
 
-    with _connect(db_path) as c:
+    with closing(_connect(db_path)) as c:
         sid, state = _load(c, session_id)
         if state["status"] != "active":
             raise ValueError("Phiên này đã kết thúc; hãy bắt đầu phiên chẩn đoán mới")

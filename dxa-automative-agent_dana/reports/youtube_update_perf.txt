@@ -1,0 +1,12 @@
+[DXA perf] warmup_ms=635.3
+01/10  40 ms  template  refused=False
+02/10  14 ms  template  refused=False
+03/10  11 ms  template  refused=False
+04/10  18 ms  template  refused=False
+05/10  23 ms  template  refused=False
+06/10  11 ms  gate  refused=True
+07/10  8 ms  gate  refused=True
+08/10  14 ms  gate  refused=True
+09/10  11 ms  template  refused=False
+10/10  8 ms  template  refused=False
+REAL OFFLINE RAG: 10/10 | p50=13 ms | max=40 ms

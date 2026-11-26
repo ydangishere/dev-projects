@@ -2,6 +2,57 @@
 
 **Hai chế độ:** tra cứu RAG theo workflow cố định (giữ nguyên) và **Agentic Diagnosis** (Planner tự chọn hành động, hỏi tiếp, tra cứu lại, đánh giá và điều chỉnh kế hoạch).
 
+## Cập nhật nguồn YouTube ngày 26/11/2026
+
+Đã xử lý 114 video còn lại của kênh `@ydang7076`: bổ sung **95 nguồn có nội dung kỹ thuật** và **70 ca kiến thức**, ghi nhận **19 video không có nội dung phù hợp**. Phụ đề gốc được giữ để đối chiếu; ca mới gắn video, mốc giây, bằng chứng và `reviewed: false`. Các nội dung kỹ thuật chưa phù hợp để biểu diễn thành ca sửa vẫn được giữ trong transcript và ghi chú nguồn.
+
+| Dữ liệu local | Trước cập nhật | Sau cập nhật |
+|---|---:|---:|
+| Video đã kiểm kê | 30 | 144 |
+| Video có nội dung trong kho | 27 | 122 |
+| Đoạn tài liệu | 259 | 1.148 |
+| Ca kiến thức, gồm 2 ca thợ đã nhập | 55 | 125 |
+
+Ba file kiến thức cũ và dữ liệu do thợ nhập được giữ nguyên. 14 đề xuất ca chưa đủ bằng chứng được lưu riêng để xem lại, không nạp vào kho ca. Các cảnh báo về phụ đề, từ nghe chưa rõ và phần chỉ thể hiện qua hình ảnh vẫn cần thợ đối chiếu; **đợt cập nhật này chưa phải kiểm duyệt chuyên môn toàn bộ video**.
+
+Kết quả trên kho local: kiểm tra cấu trúc/nguồn không có lỗi chặn; truy xuất đúng nguồn trong top 3 cho **40/40 câu hỏi cũ** và **10/10 câu hỏi mới**. Đây là kiểm tra truy xuất offline, không phải đánh giá độc lập về độ chính xác chẩn đoán. Phần gộp kết quả tìm kiếm đã được chỉnh để không làm mất ca có điểm khớp từ khóa vượt rõ các ca khác khi kho lớn lên.
+
+- [Báo cáo cập nhật](reports/youtube_knowledge_update.json)
+- [Danh sách 114 video và kết quả xử lý](reports/youtube_update_processed_videos.csv)
+- [70 ca mới để thợ duyệt](reports/youtube_new_cases_review.csv)
+- [Kết quả kiểm tra hỏi đáp](reports/youtube_update_qa.json)
+- [Các đề xuất ca cần xem lại](reports/youtube_flagged_cases.json)
+
+### Chạy lại job cập nhật nguồn
+
+Các lệnh sau chạy trên local; dùng Python trong `.venv` trên Windows. Cài `requirements.txt` trước, sau đó cài công cụ nhập nguồn tùy chọn:
+
+```bash
+python -m pip install -r requirements-ingest.txt
+python scripts/audit_youtube_channel.py
+python scripts/update_youtube_knowledge.py fetch
+python scripts/update_youtube_knowledge.py clean
+python scripts/update_youtube_knowledge.py extract --workers 2 --request-interval 6
+```
+
+`audit_youtube_channel.py` phân biệt video đã ghi nhận với video thực sự có nội dung trong kho và xuất danh sách chưa xử lý. Tải phụ đề có checkpoint; lỗi hoặc nguồn thiếu được ghi riêng. Việc trích xuất dùng Gemini key local, mặc định model nhập nguồn `gemini-3.5-flash-lite`; có thể đổi bằng `--model` hoặc `DXA_INGEST_MODEL` mà không đổi model của ứng dụng.
+
+Video không có phụ đề được xử lý riêng bằng `scripts/transcribe_youtube_gaps.py`; nếu kết quả âm thanh/mốc thời gian chưa đạt thì dùng `scripts/transcribe_audio_gaps.py --ids <video_id>` với FFmpeg, Node và Whisper local. Các mô tả hình ảnh được gắn nhãn riêng, không giả làm lời nói. Dữ liệu trung gian, media và checkpoint nằm trong `data/staging/`, được Git bỏ qua. Trích xuất có thể chạy tiếp sau lỗi; nguồn chưa giải quyết xong sẽ chặn bước chuẩn bị/nạp.
+
+Sau khi đủ nguồn và đã đối chiếu các điểm bị đánh dấu:
+
+```bash
+python scripts/update_youtube_knowledge.py prepare
+python scripts/update_youtube_knowledge.py check
+python scripts/update_youtube_knowledge.py apply
+python dxa.py build
+python validate.py
+python eval.py
+python test_youtube_update.py
+```
+
+`check` dựng kho thử trước. `apply` chỉ nhận dữ liệu đã kiểm tra, xác nhận fingerprint của nguồn, kiểm tra trùng ID và lưu bản dự phòng vào `.git/codex-knowledge-backups/`. Ca mới vẫn cần thợ duyệt qua bảng CSV; không tự đánh dấu đã duyệt. `diagnostic.py` đóng kết nối SQLite sau mỗi lượt để bộ kiểm tra hội thoại dọn được file trên Windows.
+
 ## Kiến trúc 7 tầng của DXA Dana
 
 ![DXA Dana — sơ đồ PNG 7 tầng kiến trúc, Agentic tích hợp ở tầng 3](docs/dxa_7_layers.png)

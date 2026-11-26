@@ -1,0 +1,5 @@
+# Optional tools for the local YouTube resource-update job.
+# Install after requirements.txt. FFmpeg and Node must be on PATH for audio fallback.
+youtube-transcript-api>=1.2.4
+yt-dlp[default]>=2026.11.23
+faster-whisper>=1.2.1

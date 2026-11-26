@@ -1,0 +1,578 @@
+[
+  {
+    "case": {
+      "t": 145,
+      "system": "động cơ",
+      "symptom": "Kiểm tra chiều dài xupap và độ cao lò xo để tránh đụng cốt cam và hở xupap",
+      "cause": "Xupap quá cao hoặc lò xo chưa đủ độ nén sẽ gây gõ cò hoặc hở xupap",
+      "fix": "Đo từ đầu xupap tới mặt xupap dưới 68; khoảng cách từ mặt trong chén đến chân lông đền đạt 25 đến 26.",
+      "parts": [
+        "xupap",
+        "chén lò xo",
+        "lông đền"
+      ],
+      "tools": [
+        "thước đo"
+      ],
+      "vehicles": [],
+      "specs": [
+        {
+          "name": "Chiều dài từ đầu tới mặt xupap",
+          "value": "68",
+          "unit": "Ly"
+        },
+        {
+          "name": "Khoảng cách mặt trong chén tới chân lông đền",
+          "value": "25 - 26",
+          "unit": "Ly"
+        }
+      ],
+      "warnings": [],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 145,
+          "quote": "từ đầu này cho tới mặt xupap lấy cây thước đo là 68 Nha dưới 68 là đụng cốt từ đầu này tới đầu này từ đầu này nè cho tới mặt này là 68"
+        }
+      ]
+    },
+    "reasons": [
+      "quote_not_in_source_at_timestamp"
+    ],
+    "video_id": "2fWv--H-9BY"
+  },
+  {
+    "case": {
+      "t": 369,
+      "system": "động cơ",
+      "symptom": "Canh chỉnh vị trí chân ốc cò ma sát xuống xupap",
+      "cause": "Chân ốc cò đạp quá sâu hoặc quá nông so với đầu xupap gây nguy cơ bung móng hoặc cạ đầu xupap",
+      "fix": "Canh sao cho chân ốc cò ma sát xuống xupap không qua khỏi 2 ly.",
+      "parts": [
+        "ốc cò",
+        "xupap",
+        "móng"
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [
+        {
+          "name": "Độ sâu ma sát tối đa của chân ốc cò",
+          "value": "2",
+          "unit": "Ly"
+        }
+      ],
+      "warnings": [
+        "Nếu qua khỏi 2 ly có khả năng mổ vào móng làm bung móng."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 369,
+          "quote": "Cái con cò cái mặt ốc cỏ đó cái chân ốc còn mà mà ma sát vô cái xupap không qua khỏi hai ly Tại vì nếu mà nó qua khỏi hai ly là khả năng nó mổ vô cái Cái Móng là bung móng"
+        }
+      ]
+    },
+    "reasons": [
+      "quote_not_in_source_at_timestamp"
+    ],
+    "video_id": "2fWv--H-9BY"
+  },
+  {
+    "case": {
+      "t": 83,
+      "system": "đánh lửa",
+      "symptom": "Kiểm tra cuộn lửa cọp ở dây đỏ sọc đen",
+      "cause": "Đo cuộn lửa cọp tại dây đỏ sọc đen",
+      "fix": "Đo ở dây đỏ sọc đen, xem số ôm như trong video. Người nói đọc 325 cho cuộn lửa đang đo; cần đối chiếu hình đồng hồ và màu dây thực tế trước khi áp dụng cho cuộn khác.",
+      "parts": [
+        "cuộn lửa"
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [
+        {
+          "name": "điện trở cuộn lửa",
+          "value": "325",
+          "unit": "ohm"
+        }
+      ],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 83,
+          "quote": "nó nhảy xuống là 3 2 4.2 325 đi"
+        }
+      ],
+      "video_id": "3pTEaUviyBo",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt."
+    },
+    "reasons": [
+      "measurement_demo_without_supported_symptom_cause_fix_chain_keep_in_transcript_and_notes"
+    ],
+    "video_id": "3pTEaUviyBo"
+  },
+  {
+    "case": {
+      "t": 71,
+      "system": "đánh lửa",
+      "symptom": "Cục kích đánh lửa đi sớm quá",
+      "cause": "Tín hiệu đánh lửa từ cục kích đi sớm",
+      "fix": "Tháo hai con ốc, mài phần dưới của lỗ trên và lỗ dưới để đẩy cục kích lên, dùng thước lá canh khoảng cách 0.9 ly giữa mặt cục kích và mặt nam châm vô lăng, sau đó siết ốc cố định vừa phải.",
+      "parts": [
+        "cục kích",
+        "vô lăng"
+      ],
+      "tools": [
+        "thước lá",
+        "ốc"
+      ],
+      "vehicles": [],
+      "specs": [
+        {
+          "name": "khoảng cách mặt nam châm với mặt cục kích",
+          "value": "0.5 đến 1",
+          "unit": "ly"
+        },
+        {
+          "name": "khoảng cách canh thực tế",
+          "value": "0.8 hoặc 0.9",
+          "unit": "ly"
+        }
+      ],
+      "warnings": [
+        "Gần quá thì cũng không nên",
+        "Không cần phải dùng lực",
+        "Khoan siết chặt quá, siết nhựa thôi"
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 71,
+          "quote": "cái kích đánh lửa của mình nó đi sớm quá thì mình phải đẩy nó lên ha"
+        }
+      ]
+    },
+    "reasons": [
+      "spec_number_not_in_transcript"
+    ],
+    "video_id": "DWEvYOKbRv4"
+  },
+  {
+    "case": {
+      "t": 113,
+      "system": "truyền động",
+      "symptom": "Xe đi máy 54 dên đôn dùng bộ số zin bị dư máy ở số 3 số 4, hạ nhông sên đĩa thì số 1 số 2 bị mắc phải (gắt)",
+      "cause": "Bộ số zin không phù hợp với công suất và hành trình của máy 54 dên đôn",
+      "fix": "Giữ lại số 1 và số 2 zin, lấy cặp số 3 và số 4 của Winner sàng qua (chỉ làm trên bộ số 3 chấu), riêng nhông số 4 của Winner phải đem đi tiện lại vì dày và lớn hơn số zin nhiều",
+      "parts": [
+        "bộ số zin Wave Thai",
+        "cặp số 3 Winner",
+        "cặp số 4 Winner",
+        "nhông số 4 cốt nồi Winner",
+        "nhông số 4 cốt nhông Winner"
+      ],
+      "tools": [],
+      "vehicles": [
+        "Dream",
+        "Wave",
+        "Wave Thai",
+        "Winner"
+      ],
+      "specs": [
+        {
+          "name": "số 3 cốt nồi Winner",
+          "value": "26",
+          "unit": "răng"
+        },
+        {
+          "name": "số 3 cốt nhông Winner",
+          "value": "26",
+          "unit": "răng"
+        },
+        {
+          "name": "nhông số 4 cốt nồi Winner",
+          "value": "24",
+          "unit": "răng"
+        },
+        {
+          "name": "nhông số 4 cốt nhông Winner",
+          "value": "22",
+          "unit": "răng"
+        }
+      ],
+      "warnings": [
+        "Phải kiểm tra loại chấu (chỉ làm trên bộ số 3 chấu, nếu cốt 4 chấu thì không sàng số 3 của Winner được)",
+        "Số 4 của Winner lớn hơn số 4 Wave/Dream nhiều nên phải đem ra thợ tiện cắt gọt lại theo mẫu mới lắp vừa"
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 113,
+          "quote": "mình đấu số Tức là mình giữ lại số 1 số 2 số 1 số 2 tại vì số 1 số 2 đi mấy 54 dân Đôn là ok"
+        },
+        {
+          "t": 140,
+          "quote": "mình phải đóng lại tập số 3 và số 4 thì mình lấy cặp số 3 của Windows và mình cảm thấy cặp số 4 của Winner"
+        },
+        {
+          "t": 415,
+          "quote": "riêng cái số 4 của Winner là mình phải về mình tiện mình có tiền lại là bởi vì nó lớn hơn cái cái số 4 của When II rất là nhiều"
+        }
+      ]
+    },
+    "reasons": [
+      "case_far_from_evidence"
+    ],
+    "video_id": "O19s7ZXVpNo"
+  },
+  {
+    "case": {
+      "t": 530,
+      "system": "truyen_dong",
+      "symptom": "Lắp lò xo nồi cho xe Raider Satria Fi",
+      "cause": "Nâng cấp bài pô xăng lửa nhẹ giữ bố zin",
+      "fix": "Lắp các lá bố và lá sắt theo thứ tự, ngâm nhớt trước khi lắp, siết ốc bắt lò xo nồi với lực siết 25 Nm.",
+      "parts": [
+        "lò xo nồi",
+        "lá bố",
+        "lá sắt"
+      ],
+      "tools": [
+        "cần siết lực"
+      ],
+      "vehicles": [
+        "Raider Satria Fi"
+      ],
+      "specs": [
+        {
+          "name": "Lực siết ốc bắt lò xo nồi",
+          "value": "25",
+          "unit": "Nm"
+        }
+      ],
+      "warnings": [
+        "Phải tẩm nhớt trước khi lắp các lá bố và lá sắt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 530,
+          "quote": "sắp ra năm cái sắp đưa mặt chữ lên hết rồi bây giờ là một bố này rồi mới tới một sắc nha mày trước khi lắp vào là phải Tấm nhớt ta"
+        }
+      ]
+    },
+    "reasons": [
+      "quote_not_in_source_at_timestamp",
+      "spec_number_not_in_transcript"
+    ],
+    "video_id": "OuhhpUkpFzw"
+  },
+  {
+    "case": {
+      "t": 73,
+      "system": "động cơ",
+      "symptom": "Xe độ máy nhỏ (như 54) xài bánh tăng cam cần dùng nắp thích hợp để giữ và chặn bánh tăng cam, đồng thời hạn chế tình trạng bắn nhớt.",
+      "cause": "Bánh tăng chỉnh dày hơn và có ba con ốc nên nắp zin không vừa, nếu đục lỗ trên nắp zin sẽ bị bắn nhớt ra ngoài do trong đầu máy chứa nhiều nhớt.",
+      "fix": "Sử dụng nắp tròn zin loại dày để chế, hàn thêm bát bên trong để mặt tròn chặn cây cam và bánh tăng cam, đồng thời che lỗ xả hơi giúp cản nhớt bắn và xả hơi nóng qua đường sên cam.",
+      "parts": [
+        "nắp tròn zin",
+        "bánh tăng cam"
+      ],
+      "tools": [],
+      "vehicles": [
+        "67",
+        "xe máy nhỏ độ 54"
+      ],
+      "specs": [
+        {
+          "name": "giá làm nắp tròn chế (khi đưa nắp zin)",
+          "value": "300.000",
+          "unit": "VNĐ"
+        },
+        {
+          "name": "giá làm nắp tròn chế hoàn chỉnh (không có nắp zin)",
+          "value": "500.000",
+          "unit": "VNĐ"
+        }
+      ],
+      "warnings": [],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 73,
+          "quote": "tăng cam thì khi đó anh chị buộc phải xài cái nắp tròn chế này ha cái nắp tròn chế này nó có cái cái cái cái cái cái cái cái cái cái cái cái bát này được hàng vô cái này là cái zin Cái này là zin mà chế ha"
+        }
+      ]
+    },
+    "reasons": [
+      "quote_not_in_source_at_timestamp"
+    ],
+    "video_id": "T9oRQ42Ge0c"
+  },
+  {
+    "case": {
+      "t": 254,
+      "system": "động cơ",
+      "symptom": "chuẩn bị ráp lại lốc giữa sau khi vệ sinh",
+      "cause": "bạc đạn cũ sau khi mở bụng máy",
+      "fix": "vô 4 cái bạc đạn mới ngay chỗ lốc giữa, không xài bạc đạn cũ",
+      "parts": [
+        "bạc đạn",
+        "lốc máy"
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 254,
+          "quote": "sau đó về vô bạc đạn mới nha đảm mở cái bụng mình máy giữa ra thì cứ vô bạc đạn mới cho tôi 4 cái bạc đạn ngay chỗ này"
+        }
+      ]
+    },
+    "reasons": [
+      "quote_not_in_source_at_timestamp"
+    ],
+    "video_id": "U84fnGx_9pc"
+  },
+  {
+    "case": {
+      "t": 36,
+      "system": "truyen_dong",
+      "symptom": "Bộ số xe cứng, khó sang số",
+      "cause": "Hư hỏng các bánh số hoặc càng cua trong hộp số",
+      "fix": "Thay nhông số 2, nhông số 3 và cặp càng cua số 3 chính hãng",
+      "parts": [
+        "nhông số 2",
+        "nhông số 3",
+        "càng cua số 3"
+      ],
+      "tools": [],
+      "vehicles": [
+        "Wave"
+      ],
+      "specs": [],
+      "warnings": [],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 36,
+          "quote": "hai nhông số hai và cặp số ba thường là nó sẽ bị hai vậy thôi gặp nhau số 3"
+        }
+      ]
+    },
+    "reasons": [
+      "quote_not_in_source_at_timestamp"
+    ],
+    "video_id": "WP9XFh09d48"
+  },
+  {
+    "case": {
+      "t": 380,
+      "system": "truyen_dong",
+      "symptom": "Lắp ráp cụm nồi sau khó khăn khi đưa vào cốt máy",
+      "cause": "Lắp ráp rời rạc các chi tiết nồi ngoài và lò xo trực tiếp trên cốt máy",
+      "fix": "Lắp lá bố, lá sắt, đế và lò xo vào cục nồi trước, siết đều lực 4 con ốc lò xo (khoảng 10 đến 12 Newton mét) để tạo thành một khối cố định rồi mới đưa nguyên cục vào cốt máy",
+      "parts": [
+        "lò xo nồi",
+        "lá bố",
+        "lá sắt",
+        "đế nồi"
+      ],
+      "tools": [
+        "cốt máy"
+      ],
+      "vehicles": [],
+      "specs": [
+        {
+          "name": "lực siết ốc lò xo nồi",
+          "value": "10 đến 12",
+          "unit": "Newton mét"
+        }
+      ],
+      "warnings": [],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 380,
+          "quote": "ship đều lực bốn cái lò xo này khoảng 10 tới 12 Newton mét"
+        }
+      ]
+    },
+    "reasons": [
+      "quote_not_in_source_at_timestamp"
+    ],
+    "video_id": "WP9XFh09d48"
+  },
+  {
+    "case": {
+      "t": 116,
+      "system": "khung sườn",
+      "symptom": "Canh bánh xe sau khi gắn gắp RCB để bánh quay nhẹ, không cạ bố heo và sên không lúc chùng lúc căng",
+      "cause": "Do kích thước cục canh giữa gắp và bát heo zin, và cục canh giữa bát heo với niềng xe",
+      "fix": "Canh chính xác kích thước cục canh: giữa gắp với bát heo zin là bốn ly [?], giữa bát heo với niềng xe là 14.2 mm (tổng cộng 18.2 mm). Phía bên kia giữa gắp với niềng cũng là 18.2 mm, riêng cục canh niềng Satria Raider có 17 nên tiện thêm miếng long đền 1.4 mm thành 18.4 mm. Gắn đủ mỗi bên 4 cái lông đền (tổng 8 cái) nhà sản xuất cho kèm theo gắp RCB.",
+      "parts": [
+        "gắp RCB",
+        "bát heo",
+        "long đền",
+        "cục canh"
+      ],
+      "tools": [],
+      "vehicles": [
+        "Raider",
+        "Satria"
+      ],
+      "specs": [
+        {
+          "name": "cục canh giữa gắp với bát heo zin",
+          "value": "4",
+          "unit": "ly"
+        },
+        {
+          "name": "cục canh giữa bát heo với niềng xe",
+          "value": "14.2",
+          "unit": "mm"
+        },
+        {
+          "name": "tổng kích thước canh mỗi bên",
+          "value": "18.2",
+          "unit": "mm"
+        },
+        {
+          "name": "long đền tiện thêm cho bên còn lại",
+          "value": "1.4",
+          "unit": "mm"
+        }
+      ],
+      "warnings": [],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 116,
+          "quote": "là cái cục canh giữa cái gấp Với lại cái pass her Dream là tôi đang nói cái hiệu riêng heo chế thì tôi không nói cái cục anh đó là bốn ly rồi giữa cái bát helene với lại cái này xe là cái cục canh 14ly chấm"
+        }
+      ]
+    },
+    "reasons": [
+      "quote_not_in_source_at_timestamp"
+    ],
+    "video_id": "f2lTyxV2wlY"
+  },
+  {
+    "case": {
+      "t": 91,
+      "system": "động cơ",
+      "symptom": "Xe sau khi ráp máy chạy bị kêu hú (thường bị nhầm là hú nồi hoặc hú bộ số) dù đã thay nhiều bộ nồi mới",
+      "cause": "Lốc mỏng (lốc bên phải) bị rút lóc quá căng, hàn đắp điểm tam giác bị biến dạng hoặc lốc gia công/lốc hàn lại, làm cho tâm cây dên bị lệch khi lắp vào, khiến cụm dên quay mất ly tâm và phát ra tiếng hú",
+      "fix": "Kiểm tra độ lọt của dên vào lốc mỏng. Nếu quá cứng phải dùng cảo, có thể mua lốc mỏng mới zin thay thế hoặc dùng đèn khò khò lại lốc cho nóng mềm ra, lắp dên vào cho đồng tâm rồi để nguội để lốc tự bóp lại",
+      "parts": [
+        "lốc mỏng",
+        "dên",
+        "lốc nồi",
+        "bộ nồi",
+        "bộ số"
+      ],
+      "tools": [
+        "cảo",
+        "đèn khò"
+      ],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Không nhúng nước khi khò lốc máy để làm mềm."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 304,
+          "quote": "các điểm người ta rút á là người ta sẽ chích hàng do đá vô đây một điểm chích thàng vô đá vô đây một điểm chích thàng vô đá vô đây một điểm tức là điểm t ba điểm tam giác á nhưng mà sẽ có một điểm nó già hơn những điểm khác thì chỗ đó Khi mà nó nguội lại thì nó sẽ co hơn nó sẽ bị biến dạng cái sơ mi này và nó làm cho Khi mà mình vô cây dên này thì cái tâm của cây dên nó bị lệch"
+        }
+      ]
+    },
+    "reasons": [
+      "case_far_from_evidence",
+      "quote_not_in_source_at_timestamp"
+    ],
+    "video_id": "otU1KZxTvlI"
+  },
+  {
+    "case": {
+      "t": 1,
+      "system": "động cơ",
+      "symptom": "Xe cũ để lâu không chạy, khó nổ khi để lâu",
+      "cause": "Để xe lâu ngày không nổ máy",
+      "fix": "Nổ máy 5 đến 10 phút, nẹt nhẹ xíu ga, vào số cho xe hoạt động, kiểm tra đèn kèn, sau đó về số mo và tắt máy",
+      "parts": [],
+      "tools": [],
+      "vehicles": [],
+      "specs": [
+        {
+          "name": "Thời gian nổ máy định kỳ",
+          "value": "2-3",
+          "unit": "tuần"
+        },
+        {
+          "name": "Thời gian nổ máy mỗi lần",
+          "value": "5-10",
+          "unit": "phút"
+        }
+      ],
+      "warnings": [],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 1,
+          "quote": "Hello mình giữ mấy chiếc xe cũ á mình không chạy lâu lâu mình nhớ đặt máy"
+        }
+      ]
+    },
+    "reasons": [
+      "spec_number_not_in_transcript"
+    ],
+    "video_id": "prODp7K3Stc"
+  },
+  {
+    "case": {
+      "t": 286,
+      "system": "truyen_dong",
+      "symptom": "Thay bạc đạn cho bố nồi 4 lỗ",
+      "cause": "Nâng cấp bộ nồi 67",
+      "fix": "Không xài bạc đạn zin theo nồi 4 lỗ, mua bạc đạn SKF về xài, khi đi mua cầm bạc đạn cũ ra đưa cho người ta xem.",
+      "parts": [
+        "bạc đạn",
+        "bố nồi 4 lỗ"
+      ],
+      "tools": [],
+      "vehicles": [
+        "xe 67"
+      ],
+      "specs": [
+        {
+          "name": "mã bạc đạn",
+          "value": "SKF",
+          "unit": ""
+        }
+      ],
+      "warnings": [],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 286,
+          "quote": "bố nát hết bốn lỗ mất 4 lỗ này anh em không xài cái mặt bạn của nó nha Ngon Tức là nó bún lỗi này là anh em bỏ các bạn đi Em mua cái bạc đạn skf về xài"
+        }
+      ]
+    },
+    "reasons": [
+      "quote_not_in_source_at_timestamp"
+    ],
+    "video_id": "uF7nHQdMtlE"
+  }
+]

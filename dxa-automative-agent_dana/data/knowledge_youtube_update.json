@@ -1,0 +1,2740 @@
+{
+  "_note": "YouTube resource update; source-grounded machine extraction, not expert approval.",
+  "updated_at_utc": "2026-11-26T11:19:05.333874+00:00",
+  "cases": [
+    {
+      "t": 1,
+      "system": "khung sườn",
+      "symptom": "Kiểm tra bánh trước và bánh sau có ngay giữa và thẳng hàng hay không",
+      "cause": "Chưa rõ độ thẳng hàng và tâm giữa của bánh trước và bánh sau",
+      "fix": "Để xe vào lằn đen, đặt đèn laser lên sao cho nằm ngay giữa bánh sau, sau đó kiểm tra xem đèn laser có nằm lên giữa bánh trước hay không; dựng xe lên lằn đen trước, canh sao cho lằn thẳng đỏ vuông góc với bánh rồi chạy ra buông tay thử xem có lệch không",
+      "parts": [
+        "bánh trước",
+        "bánh sau",
+        "đèn la"
+      ],
+      "tools": [
+        "đèn la"
+      ],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 1,
+          "quote": "để canh cái bánh trước và sau coi nó có ngay không thì mình để cái xe vô cái lần đen"
+        }
+      ],
+      "video_id": "27sBOCUvslw",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C54"
+    },
+    {
+      "t": 36,
+      "system": "động cơ",
+      "symptom": "Lắp đặt lò xo và chén cho bộ cam cò BRT R1 đầu nhỏ 67, Wave Dream",
+      "cause": "Cần chuẩn bị và bố trí số lượng lông đền chân lò xo chính xác",
+      "fix": "Chuẩn bị 6 cái lông đền: 2 cái dưới chân hai bên và dư 4 cái đặt ở mặt trên giữa chén và lò xo nếu cần thiết.",
+      "parts": [
+        "lông đền chân lò xo",
+        "chén lò xo",
+        "lò xo"
+      ],
+      "tools": [],
+      "vehicles": [
+        "67",
+        "Wave Dream"
+      ],
+      "specs": [
+        {
+          "name": "Số lượng lông đền tổng cộng",
+          "value": "6",
+          "unit": "cái"
+        },
+        {
+          "name": "Lông đền dưới chân",
+          "value": "2",
+          "unit": "cái"
+        }
+      ],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 36,
+          "quote": "mình phải có cái lông đặc ha mình ráp mình chuẩn bị 6 cái Long Đền giống như vậy hai cái dưới chân hai bên và chi tiết là dư 4 cái còn lại để trên trên mặt này"
+        }
+      ],
+      "video_id": "2fWv--H-9BY",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C55"
+    },
+    {
+      "t": 225,
+      "system": "động cơ",
+      "symptom": "Lắp xupap BRT ngắn (65-67) dễ bị đụng phốt cao su",
+      "cause": "Chiều dài xupap BRT ngắn hơn xupap thường (68), cây xả còn ngắn hơn nữa",
+      "fix": "Lấy chén xupap Dream mài tới cái ngấn của nó, đứt cái ngấn đó luôn; dùng móng zin màu trắng (vuông vức hơi bự xíu) và mài cùng 4 ly.3.",
+      "parts": [
+        "chén Dream",
+        "móng zin",
+        "xupap BRT"
+      ],
+      "tools": [],
+      "vehicles": [
+        "Dream"
+      ],
+      "specs": [
+        {
+          "name": "mài móng",
+          "value": "4.3",
+          "unit": "ly"
+        },
+        {
+          "name": "chiều dài xupap",
+          "value": "65 tới 67",
+          "unit": ""
+        }
+      ],
+      "warnings": [
+        "Thấp hơn 4 ly.3 là không gài được",
+        "Đừng lấy mấy cái móng màu vàng",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 225,
+          "quote": "Thì cái cách khắc phục đó là anh em lấy cái chén của Dream nha chén Dream mày ha mày tới cái ngấn của nó"
+        }
+      ],
+      "video_id": "3pGJNl-Uexk",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C56"
+    },
+    {
+      "t": 306,
+      "system": "động cơ",
+      "symptom": "Canh chỉnh khoảng cách xupap và lò xo BRT",
+      "cause": "Lắp ráp nguyên bộ cam cò lò xo xupap BRT cần đo đạc chính xác hành trình và độ nén lò xo để tránh lúng cam",
+      "fix": "Xỏ cây nạp vào lỗ, đo từ đỉnh đầu xuống chân không cần long đền phải là từ 30 tới 31 (cây xả khoảng 29). Khi gắn lò xo vào chụp chén nhét móng, khoảng cách từ chân lò xo tới mép trên lò xo ngay chỗ đó sau khi gài là khoảng 25 đến 26.",
+      "parts": [
+        "lò xo BRT",
+        "xupap",
+        "chén",
+        "móng"
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [
+        {
+          "name": "khoảng cách từ đỉnh đầu xuống chân",
+          "value": "30 tới 31",
+          "unit": ""
+        },
+        {
+          "name": "khoảng cách chân lò xo tới mép trên lò xo",
+          "value": "25 tới 26",
+          "unit": ""
+        }
+      ],
+      "warnings": [
+        "Đi không cần Long Đền, nếu đi Long Đền ép lò xo thêm một ly nữa nguy cơ lúng cam cao",
+        "Căng lò xo dưới mức 25 là rất dễ bị lúng cam",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 306,
+          "quote": "thì từ đỉnh này xuống đây nè phải là từ 30 cho tới 31"
+        }
+      ],
+      "video_id": "3pGJNl-Uexk",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C57"
+    },
+    {
+      "t": 335,
+      "system": "thân vỏ",
+      "symptom": "Cần sơn lại lốc máy đã cũ, sơn phun bị phù hoặc bề mặt không đều",
+      "cause": "Video lưu ý phải xử lý sơn cũ và bề mặt, không phun dồn vào một chỗ",
+      "fix": "Tẩy sơn cũ, rửa nước trước khi chà nhám; làm ấm vừa phải, lắc bình và phun đều từng lớp, sấy giữa các lớp. Phần chốt video thực hiện bốn lớp bạc và hai lớp phủ bóng, sau đó để yên tránh bụi; số lớp ban đầu nói khác nên cần đối chiếu lại nguồn trước khi làm.",
+      "parts": [
+        "lốc máy",
+        "sơn bạc H11",
+        "sơn phủ bóng"
+      ],
+      "tools": [
+        "máy sấy tóc",
+        "găng tay",
+        "giấy nhám"
+      ],
+      "warnings": [
+        "Video cảnh báo tránh hóa chất tẩy bắn vào mắt, tránh trẻ em và không nung quá nóng chi tiết.",
+        "Không dí sơn vào một chỗ vì có thể bị phù.",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "evidence": [
+        {
+          "t": 335,
+          "quote": "4 lần cái lớp sơn bạc rồi sau đó hai lần cái lớp sơn phủ"
+        }
+      ],
+      "vehicles": [],
+      "specs": [],
+      "reviewed": false,
+      "video_id": "4C19rXpz6uU",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C58"
+    },
+    {
+      "t": 1,
+      "system": "động cơ",
+      "symptom": "Róc máy",
+      "cause": "Tỉ số nén quá cao (từ 11 hoặc 12 trở lên)",
+      "fix": "Kiểm tra tỉ số nén động bằng thiết bị kiểm nén, giữ mức tỉ số nén từ 9.5 cho tới 10.5.",
+      "parts": [
+        "đầu quy lát",
+        "bugi"
+      ],
+      "tools": [
+        "thiết bị kiểm nén động"
+      ],
+      "vehicles": [
+        "xe máy"
+      ],
+      "specs": [
+        {
+          "name": "tỉ số nén tốt",
+          "value": "9.5 - 10.5",
+          "unit": ""
+        },
+        {
+          "name": "tỉ số nén gây róc máy",
+          "value": "11 - 12",
+          "unit": ""
+        }
+      ],
+      "warnings": [
+        "Đừng để mất ron của thiết bị kiểm nén.",
+        "Cố gắng đừng để mất răng hoặc ăn lộn răng ở lỗ bugi.",
+        "Đừng để tỉ số nén cao hơn 10.5.",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 1,
+          "quote": "hai anh em việc mà mình phải kiếm hơi của xe"
+        },
+        {
+          "t": 39,
+          "quote": "ngoài 11 là hơi bị căng mà hơi bị căng thì nó cũng gây ra góc máy nha"
+        }
+      ],
+      "video_id": "53SdpCac-BE",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C59"
+    },
+    {
+      "t": 253,
+      "system": "động cơ",
+      "symptom": "Cần kiểm tra dàn hơi máy xe 67 trước khi đi tour xa",
+      "cause": "Dàn hơi quá căng được video liên hệ với róc máy và bất lợi khi đi xa",
+      "fix": "Theo thao tác trong video: cho máy nổ ít rồi tháo bugi nhẹ nhàng, lắp đồng hồ; xả hết hơi đồng hồ, tắt chìa khóa, mở hết ga và giữ khi đạp đo. Lấy lần kim đầu tiên ngừng tăng, không cố nhồi thêm; xả đồng hồ trước khi tháo. Đơn vị và ngưỡng trên đồng hồ cần thợ đối chiếu hình ảnh.",
+      "tools": [
+        "đồng hồ đo dàn hơi",
+        "dụng cụ mở bugi"
+      ],
+      "vehicles": [
+        "67"
+      ],
+      "evidence": [
+        {
+          "t": 253,
+          "quote": "trước khi mình đạp là mình bấm cái nút này để mình xả hơi nó ra hết"
+        },
+        {
+          "t": 253,
+          "quote": "mình phải dặn hết ga nha anh em dặn hết ga và giữ đó"
+        }
+      ],
+      "parts": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "video_id": "560Kf9kVH6E",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C60"
+    },
+    {
+      "t": 182,
+      "system": "động cơ",
+      "symptom": "Tháo lắp bugi khi chuẩn bị đo dàn hơi",
+      "cause": "Video cảnh báo máy quá nóng hoặc làm lệch ren khi tháo lắp có thể làm hỏng chân bugi",
+      "fix": "Chỉ cho nổ máy ít trước khi đo, không để máy quá nóng rồi tháo bugi; tháo và lắp bugi nhẹ nhàng, tránh lệch ren.",
+      "parts": [
+        "bugi"
+      ],
+      "evidence": [
+        {
+          "t": 182,
+          "quote": "mình cho nổ máy ít thôi đừng có nổ nhiều tại vì nổi nhiều nó nóng máy"
+        }
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "video_id": "560Kf9kVH6E",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C61"
+    },
+    {
+      "t": 0,
+      "system": "động cơ",
+      "symptom": "Lắp supap mới TA và Sum có chiều cao khá cao",
+      "cause": "Supap mới mua về có chiều cao Sum khoảng 67, TA khoảng 68",
+      "fix": "Cắt và chích xuống cho vừa, sau đó rà miệng và xoáy lại để bỏ vô xài",
+      "parts": [
+        "supap TA",
+        "supap Sum"
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [
+        {
+          "name": "chiều cao supap Sum",
+          "value": "67",
+          "unit": ""
+        },
+        {
+          "name": "chiều cao supap TA",
+          "value": "68",
+          "unit": ""
+        },
+        {
+          "name": "kích thước supap",
+          "value": "23, 24, 27",
+          "unit": ""
+        }
+      ],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 35,
+          "spec": "",
+          "quote": "khoảng 67 còn ta là 68 nha điểm khá cao"
+        }
+      ],
+      "video_id": "7EJ4xKYZnVY",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C62"
+    },
+    {
+      "t": 0,
+      "system": "động cơ",
+      "symptom": "Lắp nắp ba lỗ nồi và lưu ý về đường nhớt",
+      "cause": "Tuồn nhớt ở nắp ba lỗ khiến nhớt bơm lên đầu không mạnh",
+      "fix": "Nhúng sim vô nhớt trước khi lắp, rửa sạch nắp ba lỗ, chọn ốc có mặt bằng phẳng chân phẳng để vặn, nhớ bỏ phốt sim vào để không bị tuồn nhớt",
+      "parts": [
+        "nắp ba lỗ",
+        "sim",
+        "phốt sim",
+        "ốc vít"
+      ],
+      "tools": [
+        "vít đóng",
+        "đầu nối",
+        "đầu lục giác tám"
+      ],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Không được dùng loại ốc có chân không phẳng vì sẽ lòn đường nhớt ra ngoài",
+        "Đường nhớt ở nắp ba lỗ rất quan trọng không được ỷ y",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 0,
+          "quote": "thường á Làm tới đây á anh em hay hay xóc cái này cái nắp này nó gọi là cái nắp ba lỗ"
+        }
+      ],
+      "video_id": "7FoeKzsrEEc",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C63"
+    },
+    {
+      "t": 216,
+      "system": "động cơ",
+      "symptom": "Ráp cục máy độ cấu hình 54 cho dòng xe Wave/Dream theo yêu cầu khách hàng",
+      "cause": "Khách hàng ưa chuộng cấu hình độ bền, đi xa (phượt, cà phê) nhưng vẫn êm và mạnh",
+      "fix": "Sử dụng đầu Wave xúp-báp 21/24 không dời gí, móc chảo, đi lòng 71 hoặc 76 tùy tay dên (tay 3 hoặc tay 6), dên từ dên zin 110 (7 ly) tới dên đôn 10 ly.",
+      "parts": [
+        "đầu Wave",
+        "lòng",
+        "dên",
+        "tay dên"
+      ],
+      "tools": [],
+      "vehicles": [
+        "Wave",
+        "Dream"
+      ],
+      "specs": [
+        {
+          "name": "Trái (Piston)",
+          "value": "54",
+          "unit": "mm"
+        },
+        {
+          "name": "Xúp-báp",
+          "value": "21/24",
+          "unit": "mm"
+        },
+        {
+          "name": "Hành trình dên",
+          "value": "7 hoặc 10",
+          "unit": "ly"
+        }
+      ],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 216,
+          "quote": "cục máy 54 Xịn nha Nói từ cái đầu đi xuống đi ha đầu là đầu quay nha"
+        }
+      ],
+      "video_id": "7xEi2wKbtkU",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C64"
+    },
+    {
+      "t": 159,
+      "system": "động cơ",
+      "symptom": "Satria hoặc Raider zin mất ralenti, hụt ga đầu sau vệ sinh buồng đốt",
+      "cause": "Theo ca trong video, vệ sinh bằng khí nén và làm hở xupap có thể gây xì/hở",
+      "fix": "Đối chiếu tình trạng xupap và độ kín. Với ca đã bị hở trong video, người nói tháo đầu để xoáy xupap và thay ron mới; cần thợ kiểm tra trực tiếp trước khi kết luận giống ca này.",
+      "vehicles": [
+        "Satria",
+        "Raider"
+      ],
+      "parts": [
+        "xupap",
+        "ron"
+      ],
+      "evidence": [
+        {
+          "t": 159,
+          "quote": "không dùng vòi xịt hơi xịt vô bùn đất khi Vệ Sinh buồng đốt"
+        },
+        {
+          "t": 196,
+          "quote": "thì sẽ phải đi sấy lại xấu quắc lại và thay cái Ron mới vô là sẽ hết"
+        }
+      ],
+      "tools": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "video_id": "8xIdlKZnfUY",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C65"
+    },
+    {
+      "t": 119,
+      "system": "động cơ",
+      "symptom": "Cần vệ sinh buồng đốt bằng dung dịch theo lưu ý của video Satria",
+      "cause": "Video cảnh báo làm hở xupap hoặc dùng khí nén khi vệ sinh có thể làm mất độ kín",
+      "fix": "Giữ xupap đóng khi vệ sinh, dùng máy hút lấy dung dịch ra; không xoay qua lăng để đẩy dung dịch qua miệng xả, không dùng vòi khí nén xịt vào buồng đốt. Đối chiếu vị trí đóng xupap và thao tác cụ thể trong hình ảnh trước khi thực hiện.",
+      "tools": [
+        "máy hút dung dịch"
+      ],
+      "vehicles": [
+        "Satria",
+        "Raider"
+      ],
+      "evidence": [
+        {
+          "t": 119,
+          "quote": "khi mà mình xả cái nước vệ sinh ra bằng máy hút nha"
+        },
+        {
+          "t": 159,
+          "quote": "dứt khoát không để hở miệng xu bắp khi Vệ Sinh buồng đốt"
+        }
+      ],
+      "parts": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "video_id": "8xIdlKZnfUY",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C66"
+    },
+    {
+      "t": 116,
+      "system": "động cơ",
+      "symptom": "cần lắp piston và bạc vào lòng máy",
+      "cause": "lắp bạc và piston theo cách truyền thống phải dùng móng tay bóp bạc nhét vào lòng rất lâu và cực",
+      "fix": "Canh vị trí các khe hở bạc trên piston, tiến hành lắp piston vào lòng trước bằng cách cầm trái và lồng xoay canh cho ngay ngắn (nạp trên xả dưới), thoa một ít nhớt vào lòng, vừa lắc lồng lên xuống vừa đẩy piston vào. Sau đó xỏ ắc vào tay dên, đóng ắc nhẹ nhàng nếu chưa vào hết và dùng kìm mỏ nhọn cài phe.",
+      "parts": [
+        "piston",
+        "bạc",
+        "lòng",
+        "tay dên",
+        "phe cài piston",
+        "ắc piston"
+      ],
+      "tools": [
+        "cây vít",
+        "kìm mỏ nhọn",
+        "khẩu trang"
+      ],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Phải đậy lỗ dên lại bằng khăn giấy hoặc khẩu trang trước khi làm việc với piston và phe dài piston.",
+        "Khi cài phe phải cầm đúng chiều để phe vô được.",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 116,
+          "quote": "mình để ý bạn mình vô và côn trùng khe hở và con sùng nằm ở trên nha"
+        }
+      ],
+      "video_id": "AlyryWrV9WA",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C67"
+    },
+    {
+      "t": 1,
+      "system": "điện",
+      "symptom": "Lắp đặt và bảo quản cục AFR và ECU trước khi đi phượt đường dài mùa tết",
+      "cause": "Cục AFR và ECU rất nhạy cảm, đắt tiền, nếu không cố định kỹ có thể bị cạ vào thiết bị gây nhiệt, dính nước hoặc bị hỏng khi chạy tốc độ cao",
+      "fix": "Quấn cục AFR chặt vừa phải trên lọc gió, tránh thiết bị gây nhiệt và nước; dùng keo giấy gá dàn điện của ECU, AFR và cảm biến ôm sát vào sườn xe, không siết quá chặt và cách điện kỹ trước khi lắp dàn áo lên",
+      "parts": [
+        "cục afr",
+        "ecu",
+        "lọc gió",
+        "dàn điện"
+      ],
+      "tools": [
+        "keo giấy"
+      ],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Không được để cục AFR dính nước và phạm vào thiết bị gây nhiệt vì rất nhạy cảm và mắc tiền",
+        "Không gá hoặc siết cục ECU và dây điện quá chặt tay",
+        "Nếu để lỏng lẻo khi đang chạy tốc độ cao có thể bị hỏng giữa đường",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 1,
+          "quote": "cái cục afr á là phải quấn cho Chặt nha xong rồi quấn vô cái học này nè"
+        }
+      ],
+      "video_id": "BZi2b3s-3Ow",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C68"
+    },
+    {
+      "t": 78,
+      "system": "truyen_dong",
+      "symptom": "Bệnh gõ sên cam trên cỗ máy 67, Wave, Dream khi sử dụng các phương pháp tăng lò xo hay tăng cam tự chỉnh bằng tay.",
+      "cause": "Các cách tăng lò xo căng hoặc tăng cam tự chỉnh bằng tay không giải quyết triệt để và gây ra tiếng kêu.",
+      "fix": "Mua bộ thằn lằn của Future Neo cốt thép cứng, tiến hành cắt gọt và mài theo hướng dẫn (mài nhẹ chỗ tiếp xúc, cắt ngang, mài vuông góc một phân nửa cái ống của thằn lằn dưới để lọt lò, mài rảnh chữ T trên lòng vừa đủ nửa vòng tròn của thằn lằn dưới), kết hợp xài bánh lừa Future Neo mài rảnh để khi lắp vào vẫn quay được nhẹ nhàng, chế thêm khâu (thau/nhẫn) và lắp ống sáo để tì nhẹ xuống.",
+      "parts": [
+        "thằn lằn Future Neo cốt thép cứng",
+        "bánh lừa Future Neo",
+        "ống sáo",
+        "lò xo zin",
+        "bánh cam 28",
+        "bánh cam 32"
+      ],
+      "tools": [],
+      "vehicles": [
+        "67",
+        "Wave",
+        "Dream",
+        "Future Neo"
+      ],
+      "specs": [
+        {
+          "name": "bánh cam đầu dream",
+          "value": "28",
+          "unit": "nhông"
+        },
+        {
+          "name": "bánh cam đầu wave",
+          "value": "32",
+          "unit": "nhông"
+        }
+      ],
+      "warnings": [
+        "Chạy tốc độ cao khi nhét lò xo căng rất dễ bị lúp máy.",
+        "Không mua cốt sắt tà lao, phải mua cốt thép cứng.",
+        "Sên cam căng quá hoặc thằn lằn tì quá mạnh sẽ gây hú bạo và đá sên cam vô lòng, chỉ để độ tì nhẹ.",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 78,
+          "quote": "để mà làm hai con thần lằng cho cái cụ máy 67 w Dream á thì anh em mua cái bộ thằng lần của Future nail cốt thép cứng á nha"
+        }
+      ],
+      "video_id": "BxPDYe_wl7M",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C69"
+    },
+    {
+      "t": 73,
+      "system": "truyen_dong",
+      "symptom": "Ráp máy mới cần thay thế linh kiện heo số",
+      "cause": "Ráp máy mới",
+      "fix": "Xài lại con heo số cũ nhưng phải thay hai cái tay mới (càng mới).",
+      "parts": [
+        "heo số",
+        "tay heo số",
+        "càng"
+      ],
+      "tools": [
+        "cục nam châm",
+        "vít nhỏ"
+      ],
+      "vehicles": [
+        "wave 110",
+        "Wave",
+        "Dream"
+      ],
+      "specs": [],
+      "warnings": [
+        "Cẩn thận chốt lớn chốt nhỏ tránh bị rớt mất",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 73,
+          "quote": "tháo cái chốt này ra tức là lấy cục 500 á hít lấy cái chốt này ra thấy không lấy cái chốt này ra chốt đen này nè thì lấy ra được thì nó sẽ lấy được cái con cái tay này ra cái này gọi là càng thì con heo về mình có thể xài con heo cũ nha Nhưng mà mình phải thay hai cái tay mới à ráp cái máy mới thì phải thay hai cái tay mới"
+        }
+      ],
+      "video_id": "DwJYqoddMB0",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C70"
+    },
+    {
+      "t": 0,
+      "system": "khung sườn",
+      "symptom": "Lắp baga Givi cho xe CD, CL, 67 cần điều chỉnh để vừa vặn và chắc chắn",
+      "cause": "Baga Givi nguyên bản cần được chế thêm chi tiết để phù hợp với khung xe CD, CL, 67",
+      "fix": "Chế hai cái tay dài ra thêm xíu nữa, dời hai cái bass ra đằng sau một xíu nếu muốn ngắn lại",
+      "parts": [
+        "baga Givi",
+        "bass"
+      ],
+      "tools": [],
+      "vehicles": [
+        "CD",
+        "CL",
+        "67"
+      ],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 0,
+          "quote": "Con này vô á là chế hai cái tay dài ra thêm xíu nữa là được nha"
+        }
+      ],
+      "video_id": "G90g52wV0mo",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C71"
+    },
+    {
+      "t": 113,
+      "system": "động cơ",
+      "symptom": "Vô sên cam xong úp nắp canh đồng tiền lại thấy chật nhét không vô",
+      "cause": "Một là tăng cam lắp sai, hai là cốt cam vô bị cấn với cái nắp cứng một chút xíu nhẹ",
+      "fix": "Mở mấy con ốc ra nhẹ cho lắc nhẹ mấy cái cam, tháo sên cam ra lắp nhẹ, sau đó vô sên cam lại, vô tăng cam lại",
+      "parts": [
+        "tăng cam",
+        "cốt cam",
+        "sên cam",
+        "nắp cam"
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Cốt cam vô bị cấn với cái nắp cứng một chút xíu nhẹ cũng không được",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 113,
+          "quote": "tức là trước khi vô sinh cam mình canh đồng tiền mình Úp cái mặt cái nắp cam lên kinh doanh đồng tiền mình thấy Ok nhưng mà vô xin cam xong mà mình up mà mình canh đồng tiền lại thì mình thấy nó nó chật nhét không vô thì điều đó có nghĩa là một là tăng cam mình lắc sai hai"
+        }
+      ],
+      "video_id": "GkolFU3Pd_E",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C72"
+    },
+    {
+      "t": 149,
+      "system": "động cơ",
+      "symptom": "Cần thao tác tăng cam khi lắp",
+      "cause": "Tháo tăng cam ra thì kim đi ra dài",
+      "fix": "Tháo cái này ra trước rồi tháo cái kia ra sau, lúc vô lại phải cho hạ cái kim thấp xuống rồi mới gắn cốt này vô, cốt này có lò xo đẩy kim đi vô tới mức vừa phải tự dừng lại",
+      "parts": [
+        "tăng cam",
+        "kim tăng cam",
+        "lò xo tăng cam"
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [
+        {
+          "name": "lực siết ốc",
+          "value": "10",
+          "unit": "nm"
+        }
+      ],
+      "warnings": [
+        "Nếu không vô tăng cam mà quay quay kiểm tra sẽ bị nhảy cam, trễ cam và xảy ra nhiều hiện tượng rất là kinh dị",
+        "Ốc siết đúng lực là 10 nm",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 149,
+          "quote": "sau khi vô sinh cam lại vô tăng cam lại vô tăng cam bằng cách là tháo hết ra luôn tháo luôn cái này ra luôn tháo cái này ra trước rồi tháo cái này tháo cái này ra trước rồi tháo cái"
+        }
+      ],
+      "video_id": "GkolFU3Pd_E",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C73"
+    },
+    {
+      "t": 0,
+      "system": "khung sườn",
+      "symptom": "Sở hữu phuộc xịn (như Takegawa) nhưng chiều cao ngắn (320 hoặc 340) gắn lên xe 67 hoặc CL không đúng kích thước 360 và làm dáng đuôi xe thấp không đẹp",
+      "cause": "Chiều cao phuộc ngắn hơn so với yêu cầu của xe 67 hoặc CL và phuộc xịn khó tìm đúng kích thước 360",
+      "fix": "Sử dụng pát tăng phuộc CNC để nâng chiều cao thêm 3 cm hoặc 4 cm",
+      "parts": [
+        "pát tăng phuộc",
+        "phuộc"
+      ],
+      "tools": [],
+      "vehicles": [
+        "xe 67",
+        "xe cl"
+      ],
+      "specs": [
+        {
+          "name": "chiều cao phuộc",
+          "value": "320",
+          "unit": ""
+        },
+        {
+          "name": "chiều cao phuộc",
+          "value": "340",
+          "unit": ""
+        },
+        {
+          "name": "chiều cao phuộc",
+          "value": "360",
+          "unit": ""
+        },
+        {
+          "name": "nâng chiều cao",
+          "value": "3",
+          "unit": "cm"
+        },
+        {
+          "name": "nâng chiều cao",
+          "value": "4",
+          "unit": "cm"
+        }
+      ],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 0,
+          "quote": "trường hợp mà anh em đang sở hữu mấy cây phục xịn nhá"
+        }
+      ],
+      "video_id": "ICcZrSzisRc",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C74"
+    },
+    {
+      "t": 35,
+      "system": "động cơ",
+      "symptom": "Kiểm tra xem chén xupap có bị đụng vào phốt cao su gây chảy nhớt hay không",
+      "cause": "Đít chén đụng vô cao su miệng phốt",
+      "fix": "Kiểm tra bằng cách kiếm một cái lò xo mềm lắp thiệt vậy đó nhấn bằng tay được, vô cam, chỉnh cò cho có độ rơ như thiệt rồi quay cây cam",
+      "parts": [
+        "xupap",
+        "phốt cao su",
+        "chén",
+        "lò xo",
+        "cam",
+        "cò"
+      ],
+      "tools": [],
+      "vehicles": [
+        "dream",
+        "cub"
+      ],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 35,
+          "quote": "Không thì mình sẽ kiểm tra bằng cách là mình kiếm một cái lò xo mềm một cái lò xo mềm lắp Thiệt vậy đó nhấn bằng tay được nè Rồi mình vô cam"
+        }
+      ],
+      "video_id": "JPjl8eo6nxE",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C75"
+    },
+    {
+      "t": 68,
+      "system": "truyen_dong",
+      "symptom": "Xe đi nước đề chán, nước hậu cũng chán, máy 54 đi số zin bị thiếu máy ở hậu và dư máy ở đề",
+      "cause": "Sử dụng bộ số zin theo xe không phù hợp với cấu hình máy 54",
+      "fix": "Thay bộ số Win mới (số 3 số 4 dài hơn, số 1 số 2 ngắn hơn), sàn bộ số Win qua cốt zin của xe, thay giò đạp 21 răng, thay cặp nhông hú 18-69 và thay con heo số phù hợp để đi số 1 tới 3 lùi",
+      "parts": [
+        "bộ số Win",
+        "cốt zin",
+        "giò đạp 21 răng",
+        "nhông hú 18-69",
+        "con heo số"
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [
+        {
+          "name": "Giò đạp",
+          "value": "21",
+          "unit": "răng"
+        },
+        {
+          "name": "Nhông hú",
+          "value": "18-69",
+          "unit": "răng"
+        },
+        {
+          "name": "Trái piston",
+          "value": "53.4",
+          "unit": "mm"
+        }
+      ],
+      "warnings": [
+        "Cốt nhông Win ngắn hơn cốt zin nên không gắn trực tiếp vào lốc mà phải sàn bộ số qua cốt zin",
+        "Phải gá lốc máy kiểm tra độ rơ của số trước khi lắp ráp hoàn chỉnh vì mỗi lốc máy có độ khác biệt",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 68,
+          "quote": "là mình đấu luôn số 1 số 2 vậy thì chiếc xe mình có bốn số 1 2 3 4 mà mình đấu số 3 số 4 với số 1 số 2 là có nghĩa là cái gì là mình thay bộ số mới luôn nha"
+        }
+      ],
+      "video_id": "KBt4hwefgZM",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C76"
+    },
+    {
+      "t": 38,
+      "system": "phanh",
+      "symptom": "dính thắng, dính tay thắng đỉnh trước sau",
+      "cause": "do bụi nó bám vào đây trong mùa mưa",
+      "fix": "lấy súng mình xịt là Ok nếu mà bán nhẹ còn không thì phải mở ra lau chùi vô bờ",
+      "parts": [
+        "tay thắng"
+      ],
+      "tools": [
+        "súng"
+      ],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 38,
+          "quote": "Mùa Mưa rất hay làm bị dính Thắng"
+        }
+      ],
+      "video_id": "LYTA3cJhd98",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C77"
+    },
+    {
+      "t": 124,
+      "system": "điện",
+      "symptom": "Cần thiết lập và hiệu chỉnh bướm ga cho ECU Aracer RC Mini 5",
+      "cause": "Lắp đặt hoặc reset ECU cần thực hiện học lại vị trí bướm ga (TPS)",
+      "fix": "Vào mục calibration, chọn phần học ga, bấm chữ start lên, vặn ga xong rồi để một lúc cho đến khi báo học xong thì buông ra",
+      "parts": [
+        "ECU Aracer RC Mini 5",
+        "Bướm ga"
+      ],
+      "tools": [
+        "Điện thoại thông minh chạy ứng dụng ECU"
+      ],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 124,
+          "quote": "đầu tiên là cái phần mà học gan.ha anh chị nhớ vô học cái cái bướm ra bằng cách là bấm chữ sạc lên nhưng xong mà giận ra xong rồi để một lúc vậy đó rồi nó sẽ báo học xong rồi thì buông ra"
+        }
+      ],
+      "video_id": "Moc9ivXocdw",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C78"
+    },
+    {
+      "t": 231,
+      "system": "điện",
+      "symptom": "Sử dụng tính năng autotune trên phần mềm ECU",
+      "cause": "Cần điều chỉnh tự động tỷ lệ xăng gió khi vận hành xe",
+      "fix": "Đảm bảo 3 điều kiện: máy bật, nhiệt độ máy trên 60 độ, đã gắn cảm biến oxy. Sau đó chạy xe để hệ thống tự động đọc và điều chỉnh, khi hoàn tất thì tắt và lưu lại map.",
+      "parts": [
+        "ECU Aracer RC Mini 5",
+        "Cảm biến oxy"
+      ],
+      "tools": [
+        "Điện thoại thông minh"
+      ],
+      "vehicles": [],
+      "specs": [
+        {
+          "name": "Nhiệt độ máy tối thiểu để bật autotune",
+          "value": "60",
+          "unit": "độ"
+        },
+        {
+          "name": "Tỷ lệ xăng gió tốt nhất",
+          "value": "13.3",
+          "unit": ""
+        }
+      ],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 231,
+          "quote": "ô totu lẻ nó làm việc dựa trên ba cái tiêu chí chỉ đi thứ nhất là máy phải được bật lên thứ hai là nhiệt độ máy phải trên 60 độ A và phải có cục cảm biến oxy gắng lên"
+        }
+      ],
+      "video_id": "Moc9ivXocdw",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C79"
+    },
+    {
+      "t": 181,
+      "system": "khung_sườn",
+      "symptom": "Dễ lúp bê cái lòng và xé sườn khi chạy tốc độ cao",
+      "cause": "Chạy bứt quá, kéo trên 110 đến 120 km/h đối với dòng xe Satria/Raider vì bản chất sườn không cứng",
+      "fix": "Nương tay ga, chỉ chạy tốc độ vừa phải khoảng 80-90 km/h hoặc 100 km/h, không kéo quá 120 km/h",
+      "parts": [
+        "sườn xe",
+        "lòng xe"
+      ],
+      "tools": [],
+      "vehicles": [
+        "Satria",
+        "Raider"
+      ],
+      "specs": [
+        {
+          "name": "tốc độ báo động",
+          "value": "120",
+          "unit": "km/h"
+        }
+      ],
+      "warnings": [
+        "Chạy trên 110-120 km/h dễ bị lúp bê lòng và xé sườn",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 181,
+          "quote": "tới 120 là báo động nha Còn chiếc này thì mình nói luôn là chạy một trăm rưỡi là bình thường là bình thường nhưng mà đường của mình không có"
+        }
+      ],
+      "video_id": "NECYJCDBACQ",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C80"
+    },
+    {
+      "t": 77,
+      "system": "khac",
+      "symptom": "xe không có ruột bị cán đinh xì hơi",
+      "cause": "cán đinh rất là lớn",
+      "fix": "Bước 1 là lấy đinh ra. Bước 2 là lấy cái mũi nhọn tạo một cái lỗ lớn hơn một tí bằng vừa với cái đầu nấm. Nhét đầu nấm vô trong dụng cụ, đổ dung dịch cho ướt rồi ghim vô cái lỗ tới đây luôn. Dùng lục giác vặn để đẩy đầu nấm vô cho tới khi kịch không còn vặn được nữa. Rút dụng cụ ra và lấy dao cắt phần đuôi thừa.",
+      "parts": [
+        "vỏ không ruột",
+        "đầu nấm"
+      ],
+      "tools": [
+        "ống điếu",
+        "dao cắt",
+        "mũi nhọn",
+        "lục"
+      ],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "nếu vá xong chạy thử mà vẫn còn xì nữa thì phải thay cái lớp nữa",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 77,
+          "quote": "cách Giá đó thì anh em lấy đinh ra bước 1 là lấy đinh ra bước hai là lấy cái mũi nhọn tạo một cái lỗ"
+        }
+      ],
+      "video_id": "NbQ3_Pwttjo",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C81"
+    },
+    {
+      "t": 39,
+      "system": "nhiên liệu",
+      "symptom": "Lắp đặt bình xăng con có đầu bình và ống xăng chênh lệch kích thước",
+      "cause": "Đầu bình là 24 xuống ống xăng là 22",
+      "fix": "Kiếm co nối như co 24-22 để kê ra lấy gió ngoài lọc và gió bánh ú",
+      "parts": [
+        "co 24 22",
+        "lọc gió bánh ú"
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [
+        {
+          "name": "đầu bình",
+          "value": "24",
+          "unit": ""
+        },
+        {
+          "name": "ống xăng",
+          "value": "22",
+          "unit": ""
+        }
+      ],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 39,
+          "quote": "Cái này là vô cái đầu nè Cái này là lấy gió nè Thì anh Em đi lọc gió lớn thì anh em lấy cái vai chuyển tại cái đầu này nó nhỏ cái đầu này là 24 xuống cái ống xăng là 22 kiếm cái co"
+        }
+      ],
+      "video_id": "NqYhHNegY4U",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C82"
+    },
+    {
+      "t": 68,
+      "system": "động cơ",
+      "symptom": "Lắp lòng 76 cho máy dùng lòng standard 72 và thớt đúng 4 ly làm sên cam bị căng",
+      "cause": "Đi thớt dày đúng 4 ly khiến khoảng cách bị căng sên cam",
+      "fix": "Sử dụng thớt dày 3.5 ly kết hợp ron giấy tẩm nhớt để sên cam không bị căng quá mức",
+      "parts": [
+        "lòng 76",
+        "thớt lòng",
+        "sên cam",
+        "nhông sên cam",
+        "ron giấy"
+      ],
+      "tools": [],
+      "vehicles": [
+        "Alpha",
+        "Z110"
+      ],
+      "specs": [
+        {
+          "name": "Độ dày thớt lòng",
+          "value": "3.5",
+          "unit": "ly"
+        },
+        {
+          "name": "Nhông sên cam",
+          "value": "14 28",
+          "unit": ""
+        },
+        {
+          "name": "Sên cam",
+          "value": "86",
+          "unit": "mắt"
+        }
+      ],
+      "warnings": [
+        "Thoa một miếng keo ron đỏ rất mỏng ở thớt và cẩn thận không để keo bít lỗ nhớt",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 68,
+          "quote": "kinh nghiệm á là cái thớt mà mình đi đúng 4 ly cho nó thành 76 và sau khi mình lắp xong là nó sẽ rất là căng căng x cam x cam mà đi nhông thì là 14 28 bài này đi nhông th 14 28 C cam nó là 86 m mà mình đi cái thớt là đúng 4 ly là nó sẽ rất là căng"
+        }
+      ],
+      "video_id": "NzG_nxXIrvA",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C83"
+    },
+    {
+      "t": 110,
+      "system": "động cơ",
+      "symptom": "Piston trong lòng xylanh vừa đóng sơ mi quá bó",
+      "cause": "Theo video, tiệm tiện có thể làm sơ mi quá bó nên piston không tuột xuống khi kiểm tra",
+      "fix": "Bỏ trái piston vào lòng sơ mi, gõ nhẹ để xem trái có xuống vài cm hay không. Nếu lòng quá bó thì đem ra tiệm tiện, yêu cầu buly thêm một lần rồi kiểm tra lại; không suy ra khe hở đo chuẩn từ mẹo này.",
+      "parts": [
+        "piston",
+        "sơ mi lòng"
+      ],
+      "evidence": [
+        {
+          "t": 110,
+          "quote": "Nếu như mà nó không có xuống vài cm có nghĩa rằng là cái cái lò này sơ mi lòng này nó bót quá"
+        }
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "video_id": "QtwNAvFpQnA",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C84"
+    },
+    {
+      "t": 38,
+      "system": "động cơ",
+      "symptom": "lắp ráp lốc giữa và các cây đũa cho máy làm lại",
+      "cause": "sử dụng đũa không đồng bộ (cây này cây kia) dẫn đến khi siết đồ nuôi, lồng, đầu vô lực không đều",
+      "fix": "sử dụng 4 cây đũa là một bộ; nếu đi lòng 76 trên Wave 110 thì mài 4 cái đầu đũa vô 2 ly",
+      "parts": [
+        "lốc máy",
+        "đũa đầu lòng"
+      ],
+      "tools": [],
+      "vehicles": [
+        "Wave 110",
+        "Wave Thái 110"
+      ],
+      "specs": [
+        {
+          "name": "lòng",
+          "value": "76",
+          "unit": ""
+        },
+        {
+          "name": "mài đầu đũa",
+          "value": "2",
+          "unit": "ly"
+        }
+      ],
+      "warnings": [
+        "Không xài cây đũa xe này qua xe kia vì siết không đều lực sau này dễ bị thổi ron.",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 38,
+          "quote": "bốn cây đũa là 4 cây đũa là một bộ nha chứ không có xài cây này cây kia xe này xe kia không có sàn kiểu đó"
+        }
+      ],
+      "video_id": "U84fnGx_9pc",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C85"
+    },
+    {
+      "t": 74,
+      "system": "động cơ",
+      "symptom": "chuẩn bị lốc giữa cho máy đi dên lớn",
+      "cause": "lên máy lớn cần không gian cho dên quay và cần hệ thống bơm nhớt",
+      "fix": "mở miệng, mở bụng lốc để kiểm tra dên quay có cạ không; kiểm tra bơm nhớt rời",
+      "parts": [
+        "lốc máy",
+        "dên",
+        "bơm nhớt"
+      ],
+      "tools": [],
+      "vehicles": [
+        "Wave 110",
+        "Wave Thái 110",
+        "Wave Alpha"
+      ],
+      "specs": [
+        {
+          "name": "bài",
+          "value": "54",
+          "unit": ""
+        }
+      ],
+      "warnings": [
+        "Nếu đi dên trên 96 mà xài lốc Wave Alpha là phải cắt bỏ chế lại, xài lốc Wave 110 Thái thì tốt hơn.",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 74,
+          "quote": "mở nắp tại vì mình đi lên lớn thì mình phải mở lock anh em phải để ý nha là mình phải mở nắp mở miệng ra mở miệng để cái Dên vô quay con nó có bán không"
+        }
+      ],
+      "video_id": "U84fnGx_9pc",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C86"
+    },
+    {
+      "t": 110,
+      "system": "động cơ",
+      "symptom": "So kiểm và căn chỉnh góc cam chưa khớp với thông số kỹ thuật",
+      "cause": "Góc độ đo thực tế có độ lệch so với bảng chỉ dẫn của cam Racing",
+      "fix": "Quay một ly cho cây cam xả, xác định điểm DTC, đi ngược chiều kim đồng hồ để lấy số độ, sau đó dịch cái dấu về phía trái chừng nào đạt được con số muốn ăn độ thì siết nhẹ lại ốc.",
+      "parts": [
+        "cam",
+        "cò",
+        "lò xo"
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [
+        {
+          "name": "độ lệch cho phép",
+          "value": "4",
+          "unit": "độ"
+        },
+        {
+          "name": "mở của xả",
+          "value": "58",
+          "unit": "độ"
+        },
+        {
+          "name": "nạp",
+          "value": "56",
+          "unit": "độ"
+        }
+      ],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 110,
+          "quote": "Bây giờ mình quay một ly cho cây cam sả lúc đó mình thấy cái điểm dtc nó nằm ở đây"
+        }
+      ],
+      "video_id": "Ug_PxWyXX3E",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C87"
+    },
+    {
+      "t": 220,
+      "system": "truyen_dong",
+      "symptom": "Kiểm tra tổng thể hộp số xem có hoạt động ngon hay không sau khi lắp gá vào lốc máy",
+      "cause": "Kiểm tra trước để tránh tình trạng ráp hoàn chỉnh xe mà hộp số lỗi phải rã máy ra lại",
+      "fix": "Gá tạm bộ số vào lốc máy, gắn lò xo giò đạp, siết 3 con ốc gá, lắp tay số, bông mai, dấu hỏi và cần số, sau đó vừa quay cốt vừa thao tác chuyển số để kiểm tra các cấp số từ mo đến số 4.",
+      "parts": [
+        "hộp số",
+        "cốt nồi",
+        "cốt sơ cấp",
+        "con heo số",
+        "lông đền",
+        "giò đạp",
+        "bông mai",
+        "dấu hỏi",
+        "cần số"
+      ],
+      "tools": [],
+      "vehicles": [
+        "Wave 110"
+      ],
+      "specs": [],
+      "warnings": [
+        "Số đạp không được quá mềm cũng không được quá cứng.",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 220,
+          "quote": "Bây giờ mình sẽ kiểm tra cái hộp số này coi coi nó có bộ số này coi nó ngon"
+        }
+      ],
+      "video_id": "VEcL-HPiC48",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C88"
+    },
+    {
+      "t": 112,
+      "system": "truyen_dong",
+      "symptom": "Nồi bắt không chặt, bị giật hoặc lò xo nồi quá cứng gây nặng tay côn/tay thắng",
+      "cause": "Sử dụng lò xo nồi độ quá cứng (trên 2.8) hoặc lò xo kém chất lượng",
+      "fix": "Sử dụng 4 lò xo độ có độ lớn khoảng 2.6, cứng hơn lò xo zin một tí nhưng vẫn đảm bảo bóp nhẹ và bám chắc",
+      "parts": [
+        "lò xo nồi"
+      ],
+      "tools": [],
+      "vehicles": [
+        "Wave 54"
+      ],
+      "specs": [
+        {
+          "name": "đường kính/độ dày lò xo nồi",
+          "value": "2.6",
+          "unit": ""
+        }
+      ],
+      "warnings": [
+        "Không dùng lò xo quá 2.8 vì quá cứng và không cần thiết",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 112,
+          "quote": "đi bốn lò xo được rồi nhưng mà lò xo 16 trở xuống nha"
+        }
+      ],
+      "video_id": "WP9XFh09d48",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C89"
+    },
+    {
+      "t": 2,
+      "system": "động cơ",
+      "symptom": "Lốc máy chảy nhớt sau khi tự mài miệng để lắp lòng độ",
+      "cause": "Mài rách mép ron làm ron không lắp kín và nhớt men theo đường rách đi ra",
+      "fix": "Kiểm tra đường mép ron bị rách; trong video người nói đem hàn lại mép để khôi phục chỗ lắp ron, sau đó kiểm tra độ kín.",
+      "parts": [
+        "lốc máy",
+        "ron"
+      ],
+      "evidence": [
+        {
+          "t": 2,
+          "quote": "mình phải đi hàn lại mấy cái mép guong mấy cái mép chỗ này nè Để cho nó đừng có chảy nhớt"
+        }
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "video_id": "WzNkmw93ekE",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C90"
+    },
+    {
+      "t": 299,
+      "system": "động cơ",
+      "symptom": "Máy rung, hú, ì và lắp dên vào lốc quá cứng",
+      "cause": "Ổ lắp dên trong lốc quá bó ghì cây dên, gây rung máy theo mô tả trong video",
+      "fix": "Kiểm tra độ lắp dên và ổ trong lốc, xử lý lại chỗ quá bó theo thao tác được minh họa. Với cấu hình đang làm, người nói yêu cầu còn lắp được bằng búa nhựa gõ nhẹ, không bó đến mức phải dùng cảo, cũng không lỏng đến mức tự rơi vào; cần thợ kiểm tra độ lắp thực tế.",
+      "parts": [
+        "dên",
+        "lốc máy",
+        "bạc đạn"
+      ],
+      "tools": [
+        "búa nhựa"
+      ],
+      "evidence": [
+        {
+          "t": 299,
+          "quote": "Tại vì cái này mà nó bóp quá đó là nó sẽ gị cây dên lại"
+        },
+        {
+          "t": 335,
+          "quote": "cái lốc nó không được Bó qu lóc này nè Đừng cứng tới mức phải dùng cảo"
+        }
+      ],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "video_id": "WzNkmw93ekE",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C91"
+    },
+    {
+      "t": 483,
+      "system": "truyền động",
+      "symptom": "Úp lốc máy vào thì cốt số quay nặng, bó dù dùng lông đền mỏng",
+      "cause": "Đường kính ngoài lông đền quá lớn nên ngồi lên bánh răng thay vì lọt vào ổ của nó",
+      "fix": "Chọn lông đền phải lọt lòng vô cái ổ của nó, không ngồi lên trên mấy cái bánh răng. Dùng lại lông đền nguyên thủy, lắp thử có ron rồi test còn bó không và có rơ không; không chỉ vớt mỏng lông đền.",
+      "parts": [
+        "lông đền số",
+        "cốt số",
+        "bánh răng",
+        "ron"
+      ],
+      "evidence": [
+        {
+          "t": 629,
+          "quote": "đường kính này nó ngồi lên trên mấy cái ổ bánh nhông chứ nó đâu có nằm vô trong cái ổ bánh nhông"
+        }
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "video_id": "WzNkmw93ekE",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C92"
+    },
+    {
+      "t": 35,
+      "system": "nhiên liệu",
+      "symptom": "ralenti phải chỉnh qua khỏi 3 vòng (6 mặt vít) mới có ralenti",
+      "cause": "ralenti chỉnh quá 3 vòng tương đương 6 mặt vít",
+      "fix": "Hạ béc phụ xuống một số",
+      "parts": [
+        "béc phụ",
+        "bugi"
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [
+        {
+          "name": "số vòng chỉnh ralenti",
+          "value": "3",
+          "unit": "vòng"
+        },
+        {
+          "name": "số mặt vít",
+          "value": "6",
+          "unit": "mặt vít"
+        }
+      ],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 35,
+          "quote": "khi nào mà mình hạ huyết phụ khi nào mà mình qua 6 mặt dứt nha"
+        }
+      ],
+      "video_id": "YNLa9TR-YBc",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C93"
+    },
+    {
+      "t": 72,
+      "system": "nhiên liệu",
+      "symptom": "Dưới 6 mặt vít mà có ralenti nhưng bugi vẫn đen",
+      "cause": "Vít 9 chưa chuẩn",
+      "fix": "Tiếp tục hạ vít 9 xuống cho đến khi không còn đen nữa mà thành nâu đen",
+      "parts": [
+        "bugi",
+        "vít 9"
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [
+        {
+          "name": "số mặt vít",
+          "value": "6",
+          "unit": "mặt vít"
+        }
+      ],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 72,
+          "quote": "dưới 6 Mặt vít là không hạ Bet phụ dưới 6 Mặt vít có ga lăng ti nhưng bugi đen thì tiếp tục Hạ bet9"
+        }
+      ],
+      "video_id": "YNLa9TR-YBc",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C94"
+    },
+    {
+      "t": 36,
+      "system": "nhiên liệu",
+      "symptom": "Gắn co cao su Kijima cho bình xăng TM24, PE24",
+      "cause": "Cần phương pháp lắp đặt kín hơi và phù hợp để không làm hư họng xăng",
+      "fix": "Lấy keo ron màu đỏ trám một lớp rất là mỏng ở trên mặt của cái co, sau đó nhét họng của bình xăng vào.",
+      "parts": [
+        "co cao su Kijima",
+        "bình tm24",
+        "pe24"
+      ],
+      "tools": [
+        "keo ron đỏ"
+      ],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 36,
+          "quote": "Mình chỉ cần lấy keo keo Ron kêu Ron màu đỏ trám một cái lớp rất là mỏng ở trên cái mặt này nha"
+        }
+      ],
+      "video_id": "YbuFiDZYyAg",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C95"
+    },
+    {
+      "t": 222,
+      "system": "đánh lửa",
+      "symptom": "Máy độ vẫn róc rách sau khi đã canh cò, xoáy xupap và canh xăng",
+      "cause": "Theo video, tín hiệu kích lửa có thể lệch với thời điểm đóng mở xupap do cốt cam và nhông thì không đồng bộ",
+      "fix": "Đối chiếu bộ lửa, tín hiệu kích và nhông thì với thời điểm đóng mở xupap. Khi cần canh lại trên máy đã ráp, video dùng bánh cam tăng chỉnh; các góc và loại lửa nghe không rõ phải được thợ đối chiếu trực tiếp, không áp dụng một góc chung.",
+      "parts": [
+        "bánh cam tăng chỉnh",
+        "cốt cam",
+        "nhông thì"
+      ],
+      "evidence": [
+        {
+          "t": 222,
+          "quote": "mà bây giờ cốt cam nó đi một nơi tín hiệu lửa đánh một nơi"
+        },
+        {
+          "t": 293,
+          "quote": "người ta phải xài tới cái bánh tăng chỉnh cam này"
+        }
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "video_id": "ZmeYSYOsRgs",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C96"
+    },
+    {
+      "t": 72,
+      "system": "điện",
+      "symptom": "Xe dùng bộ RC Mini 5 để lâu cần kiểm tra lại hệ thống",
+      "cause": "Xe để lâu, có cảm biến trục trặc và các bộ phận cần vệ sinh, kiểm tra lại",
+      "fix": "Kiểm tra tổng thể dàn cơ và điện, vệ sinh phần đầu/xupap và kim phun, kiểm tra dây nguồn và cảm biến; tên cảm biến nghe chưa rõ cần đối chiếu video trước khi thay.",
+      "evidence": [
+        {
+          "t": 72,
+          "quote": "kim phun thì mình vệ sinh kim phun"
+        },
+        {
+          "t": 72,
+          "quote": "Tại vì để lâu quá cho nên bây giờ cũng phải thay"
+        }
+      ],
+      "parts": [],
+      "tools": [],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "video_id": "Znhcr3wyu0I",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C97"
+    },
+    {
+      "t": 334,
+      "system": "động cơ",
+      "symptom": "Khó nổ khi sử dụng cuộn lửa ft gần 84",
+      "cause": "Gốc đánh lửa quá sớm hoặc do đặc tính của cuộn lửa và độ rơ/giãn của sên cam, nhông thì",
+      "fix": "Chỉnh gốc cam trễ lại một tí (không nên chỉnh quá 3 vạch, nếu quá 3 vạch nên thay lò xo ống sáo trước rồi thay sên cam).",
+      "parts": [
+        "bánh cam",
+        "sên cam",
+        "lò xo ống sáo",
+        "cuộn lửa ft gần 84"
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [
+        {
+          "name": "Giới hạn chỉnh cam",
+          "value": "không quá 3",
+          "unit": "vạch"
+        }
+      ],
+      "warnings": [
+        "Không chỉnh quá 3 vạch, nếu quá phải thay sên cam và lò xo ống sáo.",
+        "Canh xăng là phải đóng nắp cá lại, không mở nắp cá khi vô lăng quay vì rất dễ gây thương vong.",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 334,
+          "quote": "để mà khắc phục cái vấn đề mà cùng ft gần này khó nổ thì mình phải chỉnh gốc cam trễ lại một tí nha"
+        }
+      ],
+      "video_id": "_NBSqGLfwJ8",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C98"
+    },
+    {
+      "t": 73,
+      "system": "dụng cụ",
+      "symptom": "cần tháo lắp lưỡi cưa của đầu chuyển máy khoan thành máy cưa mini",
+      "cause": "lắp lưỡi cưa mới hoặc thay thế lưỡi cưa vào đầu chuyển",
+      "fix": "gắn lưỡi cưa có cái mắt chiều [?] vào, dùng cây lục giác số 5, sau đó nhấn cái này xuống cài vào",
+      "parts": [],
+      "tools": [
+        "lục giác số 5",
+        "lưỡi cưa",
+        "đầu chuyển máy khoan thành máy cưa"
+      ],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 73,
+          "quote": "tháo lắp cái lưỡi cưa rất là dễ nhận ra thì cái lưỡi cưa nó giá vô"
+        }
+      ],
+      "video_id": "cC-EUL9bFQE",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C99"
+    },
+    {
+      "t": 0,
+      "system": "truyền động",
+      "symptom": "Lắp nồi Takegawa 3 lá khi xe đã độ xài bơm nhớt rời nhưng khâu đi kèm theo nồi không có bánh răng bơm nhớt.",
+      "cause": "Khâu zin đi theo nồi Takegawa không có bánh răng do thiết kế ban đầu cho xe Wave xài bơm nhớt ti nhận.",
+      "fix": "Lấy kích thước độ dày khâu zin (10 ly, mặt âm vào 2 ly, phần còn lại 8 ly) để làm một cái khâu mới có gắn bánh răng bơm nhớt rồi lắp vào, kiểm tra đảm bảo không cạ nồi trong và quay ôm sát vừa tay.",
+      "parts": [
+        "nồi takegawa",
+        "khâu nồi",
+        "nhông bơm nhớt"
+      ],
+      "tools": [],
+      "vehicles": [
+        "Wave"
+      ],
+      "specs": [
+        {
+          "name": "độ cao khâu so với mặt nhông hú",
+          "value": "2 ly 3",
+          "unit": "ly"
+        },
+        {
+          "name": "độ dày của khâu",
+          "value": "10",
+          "unit": "ly"
+        },
+        {
+          "name": "phần mặt âm vô",
+          "value": "2",
+          "unit": "ly"
+        },
+        {
+          "name": "phần còn lại của khâu",
+          "value": "8",
+          "unit": "ly"
+        }
+      ],
+      "warnings": [
+        "Không để bánh răng bơm nhớt bán vào nồi trong.",
+        "Không quay lỏng le lỏng léc, nhúc nhích mà kêu cọc cọc là không được.",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 0,
+          "quote": "hai anh em Nếu mà anh em đi bơm nhất rồi và xài cái nồi ta kê á thì anh em lưu ý là cái khâu của cái nồi ta kê nó cao hơn cái mặt nhông hú tới hai ly ba dây ha"
+        }
+      ],
+      "video_id": "dza-SvbU5KI",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C100"
+    },
+    {
+      "t": 338,
+      "system": "dong_co",
+      "symptom": "Máy bị rốc nhẹ sau khi ráp máy và canh cam cò lò xo BRT",
+      "cause": "Do A (đầu kỳ xả) lớn hơn B (cuối kỳ nạp) quá nhiều và tỷ số nén quá cao (ví dụ đi bộ R1 của BRT m03 với tỷ số nén 11)",
+      "fix": "Nâng B lên để đạt 55 hoặc 56 độ (cao hơn A khoảng 2 độ), hạ tỷ số nén động xuống bằng cách canh chỉnh lại góc cam",
+      "parts": [
+        "cam",
+        "lò xo xupap",
+        "cò"
+      ],
+      "tools": [
+        "bảng chia độ"
+      ],
+      "vehicles": [],
+      "specs": [
+        {
+          "name": "Góc cuối kỳ nạp (B)",
+          "value": "55-56",
+          "unit": "độ"
+        },
+        {
+          "name": "Tỷ số nén",
+          "value": "11",
+          "unit": ""
+        }
+      ],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 338,
+          "quote": "khi mà b mà lên 55 56 hoặc 54 thì tỉ số nén của nó sẽ giảm xuống Tại vì nó bị rốc nhẹ thôi thì 3 hoặc 4 độ 5 độ nó sẽ fix được cái vấn đề đó"
+        }
+      ],
+      "video_id": "eHyZh0emGG8",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C101"
+    },
+    {
+      "t": 3,
+      "system": "truyền động",
+      "symptom": "lắp ráp bộ nồi xe wave 110 dên đôn (nồi trong và nồi ngoài)",
+      "cause": "tiến hành lắp đặt sau khi đã lắp bơm nhớt cẩn thận, kiểm tra phe và siết chặt",
+      "fix": "Mổ xẻ nồi trong gồm chuồng heo, lông đền mỏng cỡ một ly mấy và một mặt cỡ một ly mấy ốp lại hai mặt. Xếp thứ tự 4 lá bố và 3 lá sắt, dùng vít canh cho ngay ngắn rồi úp lại. Lắp lông đền sao cho độ cao từ chân khoảng 2 ly đến 3 ly rồi để vào cạt te. Lắp khâu xịn vào sao cho rơ ít và nằm cao hơn mặt một chút, tiếp tục lắp lông đền khía, khóa ba chân. Ở nồi ngoài, lắp bánh bơm nhớt, bỏ chuông vô, ướm nhẫn mỏng vào rồi đưa chuông vào, lắp bố ba càng, lắp bass chặn (outside) và siết ốc bằng tay hoặc bằng máy với lực nhẹ phù hợp.",
+      "parts": [
+        "chuồng heo",
+        "lá bố",
+        "lá sắt",
+        "lông đền",
+        "khâu",
+        "bố ba càng",
+        "chuông",
+        "bánh bơm nhớt",
+        "bass chặn",
+        "lò xo độ"
+      ],
+      "tools": [
+        "vít",
+        "cảo",
+        "súng siết ốc"
+      ],
+      "vehicles": [
+        "wave 110"
+      ],
+      "specs": [
+        {
+          "name": "độ cao chân nồi trong",
+          "value": "2 đến 3",
+          "unit": "ly"
+        }
+      ],
+      "warnings": [
+        "nhớ là không có số",
+        "nhớ xài khâu xịn đừng xài khâu lùn",
+        "110 là phải có cái nhẫn nha không có cái nhẫn nó không có chạy được đâu",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 3,
+          "quote": "Hi hôm nay là chúng ta bắt đầu làm việc với cái nồi chúng ta có cái nồi trong nồi ngoài"
+        }
+      ],
+      "video_id": "etevVEnWJeA",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C102"
+    },
+    {
+      "t": 87,
+      "system": "dụng cụ",
+      "symptom": "Cần siết lực (cần nổ) dùng lâu ngày bị sai số lực siết",
+      "cause": "Cần siết lực xài lâu năm bị sai số",
+      "fix": "Lấy một cây cần chuẩn mới chưa xài làm mốc (cài 20 Nm), đấu hai đầu cần lại với nhau, vặn kiểm tra xem cần cũ nổ ở mức nào để tính phần trăm sai số rồi cộng bù trừ tỉ lệ đó khi siết ốc.",
+      "parts": [],
+      "tools": [
+        "cần nổ",
+        "cần siết lực"
+      ],
+      "vehicles": [
+        "xe máy"
+      ],
+      "specs": [
+        {
+          "name": "dải lực cần nổ",
+          "value": "5 tới 40",
+          "unit": "Nm"
+        },
+        {
+          "name": "dải lực cần nổ",
+          "value": "5 tới 25",
+          "unit": "Nm"
+        },
+        {
+          "name": "lực chuẩn so sánh",
+          "value": "20",
+          "unit": "Nm"
+        }
+      ],
+      "warnings": [
+        "Không siết ốc quá tay gây tuôn ren (như ốc pô, ốc lốc máy).",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 87,
+          "quote": "mình lấy cái cần này mình làm cái chuẩn mình cài lên 20 Newton met là số 0 nè 20 nè Để mình test"
+        }
+      ],
+      "video_id": "hW4AjHZJI_I",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C103"
+    },
+    {
+      "t": 110,
+      "system": "khac",
+      "symptom": "Lốc máy xe cũ bám nhiều đất sình, bùn dày, dơ bẩn và ố vàng đen thui",
+      "cause": "Đất cát, sình lầy đóng lớp dày và bám lâu ngày trên lốc máy",
+      "fix": "Pha 50% dầu và 50% xăng đổ vào bình xịt lên lốc máy, để ngâm khoảng một tiếng cho bùn sình mềm ra rồi dùng bàn chải sắt chà từ trong ra ngoài. Xịt thêm một lần xăng dầu và chà lần 2. Bước tiếp theo dùng bột giặt Omo để chà tẩy vết vàng, sau đó xả nước sấy khô. Cuối cùng dùng dầu hoặc xăng lau một nước cuối rồi lấy giẻ chùi sấy khô.",
+      "parts": [
+        "lốc máy"
+      ],
+      "tools": [
+        "cọ bằng sắt",
+        "bình xịt",
+        "dầu",
+        "xăng",
+        "xà bông Omo",
+        "giẻ lau"
+      ],
+      "vehicles": [
+        "Wave Thái 110"
+      ],
+      "specs": [
+        {
+          "name": "tỷ lệ pha dung dịch ngâm",
+          "value": "50% dầu và 50% xăng",
+          "unit": ""
+        }
+      ],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 110,
+          "quote": "bằng sắt và cái cách mà mình làm là không hóa chất nha không có chất mình mua 50% dầu 50% xăng đổi vô đây Đầy Bình Minh xịt lên"
+        }
+      ],
+      "video_id": "izwj1inOszE",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C104"
+    },
+    {
+      "t": 38,
+      "system": "động cơ",
+      "symptom": "Sau đi tour dài máy có tiếng tạch tạch, gõ sên cam",
+      "cause": "Trong trường hợp video, lò xo ống sáo tăng cam yếu, dễ bấm xuống bằng một ngón tay",
+      "fix": "Kiểm tra ống sáo và lò xo tăng cam như video; người nói thay lò xo cứng hơn một chút rồi cho máy nổ kiểm tra lại tiếng kêu.",
+      "parts": [
+        "sên cam",
+        "lò xo ống sáo tăng cam"
+      ],
+      "evidence": [
+        {
+          "t": 38,
+          "quote": "đây là cái loại xe mình dùng một ngón tay mình bấm là nó cũng đi xuống luôn"
+        }
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "video_id": "jRbzVJ0Q_gc",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C105"
+    },
+    {
+      "t": 0,
+      "system": "động cơ",
+      "symptom": "Vô đạn (vòng bi) bị cứng hoặc xoay khó khăn",
+      "cause": "Trong quá trình lắp vòng bi vào lốc máy bị lệch hoặc kẹt",
+      "fix": "Dùng đồ cảo lấy vòng bi ra, bôi nhớt trước khi lắp, đóng nương tay đều các cạnh xung quanh cho đến khi vòng bi sập sát vào trong và quay êm",
+      "parts": [
+        "đạn",
+        "vòng bi"
+      ],
+      "tools": [
+        "đồ cảo"
+      ],
+      "vehicles": [
+        "Wave 110"
+      ],
+      "specs": [],
+      "warnings": [
+        "Không dùng lực quá mạnh hay bạo lực khi đóng đạn.",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 0,
+          "quote": "rồi mình vô rồi mình mặt chữ lên trên nha mặt chữ lên trên trong quá trình mình vô nếu như mà mình lỡ vô mà nó bị cứng cá mà nó say á thì mình lấy cái đồ cảo mình lấy nó ra"
+        }
+      ],
+      "video_id": "k_PbvDqhWAE",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C106"
+    },
+    {
+      "t": 181,
+      "system": "động cơ",
+      "symptom": "Cần lắp cây dên (trục khuỷu) vào lốc máy",
+      "cause": "Lắp ráp máy đoạn đưa trục khuỷu vào lốc",
+      "fix": "Gá dên vào lốc số trước, dùng búa gõ nhẹ vài cái trên đầu thanh dên để gá nhẹ vào, sau đó dùng bộ cảo chuyên dụng có thanh trượt và đầu khẩu để vặn ốc rút kéo cây dên vào lốc sát mép, đảm bảo tay dên luôn nằm ở chính giữa lỗ dên.",
+      "parts": [
+        "dên",
+        "trục khuỷu",
+        "lốc số",
+        "lốc nồi"
+      ],
+      "tools": [
+        "búa",
+        "bộ cảo dên"
+      ],
+      "vehicles": [
+        "Wave 110"
+      ],
+      "specs": [
+        {
+          "name": "nhông thì",
+          "value": "14 28",
+          "unit": ""
+        },
+        {
+          "name": "dên",
+          "value": "10",
+          "unit": "ly"
+        },
+        {
+          "name": "tay dên",
+          "value": "6",
+          "unit": ""
+        },
+        {
+          "name": "má dên",
+          "value": "96",
+          "unit": ""
+        }
+      ],
+      "warnings": [
+        "Tuyệt đối không gõ trực tiếp búa mạnh vào dên.",
+        "Khi rút lốc bằng cảo chỉ rút nhẹ đủ để cảo cây dên vào, không rút quá nhiều gây xào máy.",
+        "Phải để ý tay dên luôn nằm ở giữa lỗ dên, nếu lệch khi rút sẽ làm gãy tay dên.",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 181,
+          "quote": "Dên vô Dên là không gõ nha người ta săn Chê người ta kỹ từng nất một Dên là xn chê là dưới ba vạch là ok nha"
+        }
+      ],
+      "video_id": "k_PbvDqhWAE",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C107"
+    },
+    {
+      "t": 39,
+      "system": "động cơ",
+      "symptom": "Siết ốc lốc giữa (lốc nồi) máy wave 110",
+      "cause": "Cần siết lực xài lâu",
+      "fix": "Sử dụng cần siết lực điều chỉnh ở mức 11 newton (lực nhà sản xuất 10 newton), siết theo nguyên tắc hình tam giác bắn qua bắn lại cho đến khi cần kêu tạch/nổ là đủ lực",
+      "parts": [
+        "lốc giữa",
+        "lốc nồi",
+        "ốc lục giác"
+      ],
+      "tools": [
+        "cần cân lực kế",
+        "cần siết lực"
+      ],
+      "vehicles": [
+        "wave 110"
+      ],
+      "specs": [
+        {
+          "name": "Lực siết ốc lốc giữa",
+          "value": "11",
+          "unit": "newton"
+        }
+      ],
+      "warnings": [
+        "Nếu không siết đều lực và đúng lực thì sẽ bị chảy nhớt",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 39,
+          "quote": "Thì cái lực của nhà sản xuất là 10 new tin nhưng mà mình để 11 là do cái cần này của mình xài lâu rồi"
+        }
+      ],
+      "video_id": "l-oj1q7Gznk",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C108"
+    },
+    {
+      "t": 95,
+      "system": "động cơ",
+      "symptom": "Lốc giữa lốc số zin không chịu nổi máy lớn 96 và 100",
+      "cause": "Đi máy lớn cấu hình dên đôn lòng 54",
+      "fix": "Khoét lốc giữa lốc số, đi tiện vô mặt đạn skf",
+      "parts": [
+        "lốc giữa",
+        "lốc số"
+      ],
+      "tools": [],
+      "vehicles": [
+        "Wave"
+      ],
+      "specs": [
+        {
+          "name": "cấu hình máy",
+          "value": "96, 100",
+          "unit": ""
+        }
+      ],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 95,
+          "quote": "riêng cái lốc giữa lốc số thì mình phải khoét nha khoét mình đi cái máy 96 với lại cái máy 100 là lớn lắm"
+        }
+      ],
+      "video_id": "lOVRhuWjsAs",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C109"
+    },
+    {
+      "t": 115,
+      "system": "động cơ",
+      "symptom": "Cần tăng cường bơm nhớt khi lên máy lớn",
+      "cause": "Đi máy 54",
+      "fix": "Lên bơm nhớt rời (bơm nhớt SYM hoặc bơm nhớt Wave Thái 110)",
+      "parts": [
+        "bơm nhớt SYM",
+        "bơm nhớt Wave Thái 110"
+      ],
+      "tools": [],
+      "vehicles": [
+        "Wave"
+      ],
+      "specs": [
+        {
+          "name": "đường kính trái",
+          "value": "54",
+          "unit": "mm"
+        }
+      ],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 115,
+          "quote": "Thì mình đi máy 54 thì mình phải lên bơm nhớt rời thì mình sẽ gắn cho anh một là bơm nhớt SYM hai sẽ là bơm nhớt Wave Thái 110 ha"
+        }
+      ],
+      "video_id": "lOVRhuWjsAs",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C110"
+    },
+    {
+      "t": 221,
+      "system": "động cơ",
+      "symptom": "Làm máy cấu hình dên đôn",
+      "cause": "Nhu cầu làm máy độ đi xa",
+      "fix": "Lên dên đôn 10 ly, tay 3, đóng lại lòng, vô đũa Wave Thái 110 cắt, thay lá bố rưỡi, đi thớt 4 ly cho lòng cao 72 ly, đi nhông 14 28",
+      "parts": [
+        "dên",
+        "lòng",
+        "đũa Wave Thái 110",
+        "nhông"
+      ],
+      "tools": [],
+      "vehicles": [
+        "Wave"
+      ],
+      "specs": [
+        {
+          "name": "đôn dên",
+          "value": "10",
+          "unit": "ly"
+        },
+        {
+          "name": "chiều cao lòng",
+          "value": "72",
+          "unit": "ly"
+        },
+        {
+          "name": "thớt lòng",
+          "value": "4",
+          "unit": "ly"
+        },
+        {
+          "name": "nhông",
+          "value": "14 28",
+          "unit": ""
+        }
+      ],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 221,
+          "quote": "Thì mình sẽ lên trên 10 ly cho ảnh Bye bye 10 ly tay ba mình sẽ đi đóng lòng lại mới vô mấy cái đũa Wave Thái 110 cắt đó thay ly rưỡi nha đi lòng đi lòng này nó dài nó Cao 72 thì mình đi cái thớt 4 ly nữa ha Đi nhông thì nếu mà Vậy thì mình sẽ đi cây dên có cái nhông thì là 14 28"
+        }
+      ],
+      "video_id": "lOVRhuWjsAs",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C111"
+    },
+    {
+      "t": 256,
+      "system": "động cơ",
+      "symptom": "Yêu cầu đầu lòng bền, đi xa không bị nóng máy và không bị xì nhớt",
+      "cause": "Làm máy độ dên đôn",
+      "fix": "Kiếm đầu Dream, phá chảo, mở miệng su bắp 21 23",
+      "parts": [
+        "đầu Dream",
+        "su bắp"
+      ],
+      "tools": [],
+      "vehicles": [
+        "Dream",
+        "Wave"
+      ],
+      "specs": [
+        {
+          "name": "su bắp",
+          "value": "21 23",
+          "unit": ""
+        }
+      ],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 256,
+          "quote": "kiếm cái đầu kiếm cái đầu phá chảo mở miệng xuống Bắc 0 giờ viết Nha mở miệng xu bắp 21 23 đi bài bền mà không về đích về tiếp mất công nó xì nhớt nữa mua cái đầu Dream về giúp cho ảnh bắt đèn hơi ngoài để nó anh có thể đi xa được mà không bị nóng máy"
+        }
+      ],
+      "video_id": "lOVRhuWjsAs",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C112"
+    },
+    {
+      "t": 189,
+      "system": "nhiên liệu",
+      "symptom": "Khó mở gic lơ phụ của bình xăng con Mikuni TM24",
+      "cause": "Vị trí gic lơ phụ nằm sâu trong bình xăng con rất khó lấy ra và dễ làm hư ổ gic lơ nếu không dùng đúng dụng cụ",
+      "fix": "Sử dụng tua vít (dít) chỉnh ăng ti tay ngắn hoặc tay dài đã được mài hết (mài nhỏ phần đầu) để mở gic lơ phụ ra",
+      "parts": [
+        "gic lơ phụ",
+        "bình xăng con Mikuni TM24"
+      ],
+      "tools": [
+        "tua vít chỉnh ăng ti tay ngắn hoặc tay dài mài nhỏ"
+      ],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Không lấy gic lơ phụ bằng phương pháp thông thường vì có khả năng làm hư ổ gic lơ phụ và phải bỏ bình xăng",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 189,
+          "quote": "đây là cái dịch huyền thoại để mở đây thì anh em mình thường biết rồi Biết là dứt chỉnh nhân ti tay ngắn thì tay dài mài hết rồi nha"
+        }
+      ],
+      "video_id": "loY6-wzNIHY",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C113"
+    },
+    {
+      "t": 144,
+      "system": "nhiên liệu",
+      "symptom": "Canh xăng bình xăng con TM24 bị thiếu xăng ở các ngưỡng béc không có sẵn (ví dụ thiếu 28 khi hãng chỉ làm 27 và 30) mà thợ hay dùng cách khoan đục lỗ gió trên bình",
+      "cause": "Hãng không sản xuất đủ các cỡ béc ở giữa các mốc size khiến thợ phải khoan lỗ cấp gió thêm cho đủ lượng xăng",
+      "fix": "Chuẩn bị bộ béc chính (95, 100, 110, 115, 120) và béc phụ (27, 27.5, 30) chuẩn TM, thay đổi luân phiên kết hợp canh chỉnh vít gió có sẵn trên bình và làm co ngắn phù hợp thay vì đục lỗ",
+      "parts": [
+        "béc chính",
+        "béc phụ",
+        "co bình xăng con",
+        "bugi"
+      ],
+      "tools": [
+        "đồ mở béc phụ chế từ xupap và bugi"
+      ],
+      "vehicles": [
+        "xe gắn bình xăng con TM24, TM26, TM28"
+      ],
+      "specs": [
+        {
+          "name": "béc chính",
+          "value": "95, 100, 110, 115, 120",
+          "unit": ""
+        },
+        {
+          "name": "béc phụ",
+          "value": "27, 27.5, 30",
+          "unit": ""
+        },
+        {
+          "name": "lỗ co bình xăng con",
+          "value": "26",
+          "unit": "mm"
+        }
+      ],
+      "warnings": [
+        "Không dùng béc của bình VM hoặc bình bông mai để gắn cho bình TM vì sai cự ly và không canh được.",
+        "Không đục lỗ gió trên bình xăng con zin đặc biệt là các bản limited.",
+        "Bugi chạy thử về mà trắng hoặc nâu ửng hồng tươi là thiếu xăng, gây nóng máy không đi xa được.",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 144,
+          "quote": "thì anh em chuẩn bị cho mình 4 cái chính và ba cái cái phụ là 4m943 mét phụ"
+        }
+      ],
+      "video_id": "mYOPy8xxe7M",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C114"
+    },
+    {
+      "t": 36,
+      "system": "điện",
+      "symptom": "Độ đèn led hoặc đèn trợ sáng cần lên sạc lớn (sạc ex)",
+      "cause": "Lắp sạc lớn yêu cầu phải cắt mát mâm lửa",
+      "fix": "Cắt dây mát cuối nguồn mâm lửa, cắt sợi dây màu vàng, tước vỏ dây, móc nối các đầu dây lại với nhau, hàn chì và bọc ống co nhiệt.",
+      "parts": [
+        "sạc ex",
+        "mâm lửa",
+        "dây điện"
+      ],
+      "tools": [
+        "kìm",
+        "mỏ hàn",
+        "hột quẹt",
+        "ống co nhiệt"
+      ],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Không nên chỉ hàn chì mặt ngoài mà không móc gài cơ học vì dễ bị bung mối hàn giữa đường.",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 36,
+          "quote": "khi mà anh em đi sạc lớn á là anh em phải cắt mắt cắt mắt mâm lửa"
+        }
+      ],
+      "video_id": "oaNQjQUx41k",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C115"
+    },
+    {
+      "t": 1,
+      "system": "động cơ",
+      "symptom": "Lốc máy màu trắng hoặc màu bạc dễ bị dơ khi đi tour nhiều",
+      "cause": "Màu sáng dễ bám bẩn khi đi đường dài",
+      "fix": "Thay lốc màu ghi Takegawa và sơn lại lốc nồi với màu tương tự",
+      "parts": [
+        "lốc màu tatterawa",
+        "lốc nồi"
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 1,
+          "quote": "mình đã lên cái Block màu tatterawa màu ghi cho em nói rồi nè"
+        },
+        {
+          "t": 37,
+          "quote": "trắng màu bạc đó là nó dơ lắm thì lúc này nó tối tối"
+        }
+      ],
+      "video_id": "rI9u3vRGGEU",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C116"
+    },
+    {
+      "t": 60,
+      "system": "động cơ",
+      "symptom": "Kiểm tra ổ cam và bánh cam khi lắp vào đầu quy lát",
+      "cause": "Sai lệch chiều cao giữa mặt bạc đạn cam và mặt ổ cam khiến bánh cam bị cạ/bấn",
+      "fix": "Nhấn hết cỡ mặt bạc đạn cam xuống, bỏ bánh cam vô quay kiểm tra nếu không bị cản hoặc bấn vào mặt ổ cam là ok",
+      "parts": [
+        "ổ cam",
+        "bánh cam",
+        "bạc đạn cam",
+        "đầu quy lát"
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [
+        {
+          "name": "chiều cao mặt cam với bạc đạn cam",
+          "value": "hơn một ly, cỡ một ly rưỡi",
+          "unit": "ly"
+        },
+        {
+          "name": "độ thấp của mặt bạc đạn so với mặt ổ cam",
+          "value": "5",
+          "unit": "dem"
+        }
+      ],
+      "warnings": [
+        "Nếu quay mà bị cản lại hoặc bị bấn vô gì đó là không ok",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 60,
+          "quote": "cầm cái đầu kia gắn cái cam vô cắn đi càng vô mà nó bóp là Ok"
+        }
+      ],
+      "video_id": "rhQMdhulbYY",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C117"
+    },
+    {
+      "t": 299,
+      "system": "động cơ",
+      "symptom": "Phối hợp cò lăn và cam cao để tránh xupap đụng nắp",
+      "cause": "Theo video, đòn cò lăn ngắn hơn làm phần nhấn xupap đi sâu hơn",
+      "fix": "Cò lăn đâm sâu hơn nên khi còn đi cây cam cao nữa thì không được để xupap cao đến mức đụng nắp. Đối chiếu đúng bộ cam và cò trong video; không coi các số nói trong ví dụ là cấu hình chung.",
+      "parts": [
+        "cò chà",
+        "cò lăn",
+        "xúp-pắp",
+        "cam",
+        "GN5",
+        "M80",
+        "BRT"
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Cò lăn đâm sâu hơn, nếu đi cam cao (như cam 7 ly rưỡi) cùng xúp-pắp cao có thể gây đụng nắp xúp-pắp.",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 299,
+          "quote": "ngắn hơn thì nó sẽ nó sẽ đẩy cái con này đi sâu hơn"
+        },
+        {
+          "t": 338,
+          "quote": "không được số bắp cao đi nó đụng nắp XP"
+        }
+      ],
+      "video_id": "tmB6cBm25P4",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C118"
+    },
+    {
+      "t": 60,
+      "system": "truyen_dong",
+      "symptom": "Lắp nhông hú vào cốt",
+      "cause": "Cần độ rơ vừa phải cho nhông hú trên cốt",
+      "fix": "Phải mài dũa sơ tùy theo cái cốt trên, đừng bó quá và đừng lỏng le, sao cho hơi bó nhẹ nhưng vẫn đẩy tay vào được và lấy ra được.",
+      "parts": [
+        "nhông hú",
+        "cốt"
+      ],
+      "tools": [],
+      "vehicles": [
+        "xe 67"
+      ],
+      "specs": [],
+      "warnings": [
+        "Đừng bó quá nha mà cũng đừng có lỏng le lắm mát nha",
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 60,
+          "quote": "Phải mài dũa sơ Tùy theo cái cốt trên đừng bó quá nha Mà cũng đừng có lỏng le"
+        }
+      ],
+      "video_id": "uF7nHQdMtlE",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C119"
+    },
+    {
+      "t": 0,
+      "system": "động cơ",
+      "symptom": "Lắp bạc piston vào trái piston",
+      "cause": "Cần lắp bạc đúng kỹ thuật để kín hơi, không bị xì khói và không bị lúp bạc",
+      "fix": "Cầm trái piston coi mắt lớn mắt nhỏ, nạp xả. Lắp bạc dầu trước với khe hở bạc dầu cho lên trên. Lắp mặt có chữ lên trên (hoặc mặt bén hơn nếu không có chữ). Hai khe hở bạc hơi và bạc sào nằm ở dưới.",
+      "parts": [
+        "bạc piston",
+        "bạc dầu",
+        "bạc hơi",
+        "bạc sào",
+        "trái piston",
+        "lòng"
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 0,
+          "quote": "hôm nay mình hướng dẫn anh em vô bạc nha"
+        }
+      ],
+      "video_id": "v3DYQBTEzyA",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C120"
+    },
+    {
+      "t": 94,
+      "system": "khung sườn",
+      "symptom": "Bơm và kiểm tra áp suất cho loại lốp được minh họa trong video",
+      "cause": "Cần đọc thông số trên lốp và kiểm tra van, không lấy số ghi trên lốp làm áp suất áp dụng máy móc cho mọi trường hợp",
+      "fix": "Trong trường hợp lốp này người nói đọc 38 PSI rồi nói không bao giờ bơm 38, để 30 thôi; cứ mở 10 PSI là dừng lại kiểm tra bánh. Sau bơm kiểm tra cái vòi, cái van đã được vặn chặt. Các số này thuộc ví dụ trong video, phải xác nhận áp suất phù hợp của lốp thực tế trước khi áp dụng.",
+      "parts": [
+        "lốp",
+        "van hơi"
+      ],
+      "tools": [
+        "bơm hơi"
+      ],
+      "evidence": [
+        {
+          "t": 94,
+          "quote": "38 PSI thì mình không bao giờ bơm 38 đó để lúc nào phải 30 thôi"
+        }
+      ],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "video_id": "vPGQ5Xm5adA",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C121"
+    },
+    {
+      "t": 35,
+      "system": "truyen_dong",
+      "symptom": "Kiểm tra hiện tượng đờn khi vào số",
+      "cause": "Chưa được nêu rõ trong phụ đề",
+      "fix": "Vô số (số ba, số một) và chạy thử để nghe tiếng máy xem có bị đờn hay không",
+      "parts": [],
+      "tools": [],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 35,
+          "quote": "đó giờ mình vô số ha số ba Thấy không Đó ra"
+        }
+      ],
+      "video_id": "vo04KAQA9io",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C122"
+    },
+    {
+      "t": 37,
+      "system": "phanh",
+      "symptom": "Cần cải thiện hiệu quả bóp thắng",
+      "cause": "Sử dụng dây dầu thắng bình thường",
+      "fix": "Sử dụng dây áp lực cao kết hợp heo zin, má heo zin, piston zin",
+      "parts": [
+        "dây áp lực cao",
+        "heo",
+        "má heo",
+        "piston"
+      ],
+      "tools": [],
+      "vehicles": [],
+      "specs": [],
+      "warnings": [
+        "Kiến thức trích xuất tự động, chưa được thợ duyệt."
+      ],
+      "reviewed": false,
+      "evidence": [
+        {
+          "t": 37,
+          "quote": "thứ ba có thể là xài theo zin nha má heo chim piston zin Nếu mà Sợi dây là phải chơi dây áp lực cao nha"
+        }
+      ],
+      "video_id": "zWrNt11ovuU",
+      "status": "active",
+      "source": "video",
+      "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+      "id": "C123"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "completed_at_utc": "2026-11-26T11:22:37.039048+00:00",
+  "status": "completed_local",
+  "channel": "https://www.youtube.com/@ydang7076",
+  "remaining_video_job": {
+    "target": 114,
+    "processed": 114,
+    "technical_sources_added": 95,
+    "excluded_nontechnical": 19,
+    "new_structured_cases": 70,
+    "flagged_case_proposals_not_imported": 14,
+    "unresolved_videos": 0
+  },
+  "store_before": {
+    "listed_videos": 30,
+    "videos_with_content": 27,
+    "chunks": 259,
+    "cases_including_expert": 55
+  },
+  "store_after": {
+    "listed_videos": 144,
+    "videos_with_content": 122,
+    "chunks": 1148,
+    "cases_including_expert": 125
+  },
+  "verification": {
+    "source_validation_errors": 0,
+    "legacy_questions_expected_source_top3": 40,
+    "legacy_questions_total": 40,
+    "new_questions_expected_source_top3": 10,
+    "new_questions_total": 10,
+    "update_tests_passed": 7,
+    "agentic_tests_passed": 5,
+    "offline_api_requests_passed": 10,
+    "original_knowledge_files_unchanged": {
+      "knowledge.json": true,
+      "knowledge_batch2.json": true,
+      "knowledge_expert.json": true
+    }
+  },
+  "limitations": [
+    "New cases are machine-extracted and not expert-approved.",
+    "Coverage relies on captions/audio; visually-only details and uncertain units still require expert review.",
+    "14 unsupported case proposals are retained separately and excluded from the live case store.",
+    "Caption-quality and lexical-overlap warnings remain recorded in validate_after_knowledge_update.txt."
+  ]
+}

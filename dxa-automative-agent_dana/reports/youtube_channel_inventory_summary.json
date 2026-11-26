@@ -1,0 +1,30 @@
+{
+  "channel": "https://www.youtube.com/@ydang7076",
+  "scanned_at_utc": "2026-11-26T11:21:36.702287+00:00",
+  "tabs": {
+    "videos": {
+      "count": 126,
+      "status": "ok"
+    },
+    "shorts": {
+      "count": 18,
+      "status": "ok"
+    },
+    "streams": {
+      "count": 0,
+      "status": "ok",
+      "note": "no public streams tab"
+    }
+  },
+  "unique_public_video_ids_seen": 144,
+  "dxa_listed": 144,
+  "dxa_ids_found_in_scan": 144,
+  "missing_from_dxa_in_public_scan": 0,
+  "example_eHyZh0emGG8_found": true,
+  "example_eHyZh0emGG8_in_dxa": true,
+  "complete": true,
+  "knowledge_coverage": {
+    "in_knowledge": 122,
+    "previously_skipped": 22
+  }
+}

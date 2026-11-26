@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DXA Dana — từ dữ liệu đến câu trả lời</title>
+  <style>
+    :root {
+      --ink: #173046;
+      --muted: #516272;
+      --paper: #f5f3ed;
+      --card: #fffefa;
+      --line: #d8e1e2;
+      --blue: #236083;
+      --teal: #168076;
+      --amber: #b76b1b;
+      --red: #a84b3c;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Segoe UI", "Arial", "Noto Sans", sans-serif; }
+    .sheet { width: 1600px; min-height: 1960px; margin: 0 auto; padding: 56px 66px 48px; }
+    .hero { display: flex; justify-content: space-between; gap: 48px; align-items: flex-start; }
+    .eyebrow { font-size: 20px; font-weight: 800; letter-spacing: .11em; color: var(--teal); text-transform: uppercase; }
+    h1 { margin: 14px 0 12px; font-size: 58px; line-height: 1.04; letter-spacing: -.035em; }
+    .subtitle { font-size: 23px; line-height: 1.42; color: var(--muted); max-width: 940px; margin: 0; }
+    .hero-mark { flex: 0 0 176px; height: 158px; border-radius: 30px; background: var(--ink); color: white; display: grid; place-content: center; text-align: center; box-shadow: 0 16px 30px #17304622; }
+    .hero-mark strong { font-size: 52px; letter-spacing: -.06em; line-height: 1; }
+    .hero-mark span { font-size: 17px; letter-spacing: .18em; margin-top: 8px; color: #b6d8d4; }
+    .foundation { margin-top: 38px; background: #e7efed; border: 2px solid #c9dbd6; border-radius: 28px; padding: 23px 30px 27px; }
+    .foundation-label { font-size: 17px; font-weight: 800; letter-spacing: .12em; color: #286b62; text-transform: uppercase; margin-bottom: 18px; }
+    .foundation-row { display: grid; grid-template-columns: 1fr 64px 1fr 64px 1fr; gap: 10px; align-items: center; }
+    .foundation-cell { min-height: 112px; background: #fffefa; border: 1px solid #d2ded9; border-radius: 19px; padding: 18px 23px; }
+    .foundation-cell strong { display: block; font-size: 27px; line-height: 1.12; }
+    .foundation-cell span { display: block; margin-top: 8px; color: var(--muted); font-size: 18px; line-height: 1.25; }
+    .arrow { color: var(--teal); font-size: 48px; font-weight: 800; text-align: center; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 25px; }
+    .card { background: var(--card); border: 2px solid var(--line); border-radius: 28px; padding: 28px 31px 29px; box-shadow: 0 11px 26px #1730460b; display: flex; flex-direction: column; min-height: 568px; }
+    .card-top { display: flex; align-items: center; gap: 16px; margin-bottom: 17px; }
+    .num { width: 52px; height: 52px; border-radius: 15px; display: grid; place-items: center; color: white; font-size: 23px; font-weight: 800; flex: 0 0 auto; }
+    .blue .num { background: var(--blue); } .teal .num { background: var(--teal); } .amber .num { background: var(--amber); } .red .num { background: var(--red); }
+    h2 { margin: 0; font-size: 31px; line-height: 1.15; letter-spacing: -.018em; }
+    .lead { color: var(--muted); font-size: 20px; line-height: 1.42; margin: 0 0 17px; }
+    .sample { background: #edf4f6; border-left: 5px solid #5a92a8; border-radius: 13px; padding: 17px 20px; font-family: Consolas, "Courier New", monospace; font-size: 18px; line-height: 1.48; margin: 2px 0 16px; }
+    .sample em { font-style: normal; color: var(--blue); font-weight: 700; }
+    .chips { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 16px; }
+    .chip { background: #edf1ef; border: 1px solid #d5e2df; border-radius: 100px; padding: 8px 13px; color: #34575a; font-size: 17px; font-weight: 700; }
+    .why { margin-top: auto; padding: 17px 19px; background: #fff4df; border-radius: 15px; color: #654520; font-size: 19px; line-height: 1.4; }
+    .why strong { color: #8d561a; }
+    .note { margin-top: 13px; color: #8c5048; font-size: 17px; line-height: 1.35; }
+    .search-flow { display: grid; grid-template-columns: 1fr 38px 1fr; gap: 8px; align-items: stretch; margin: 1px 0 15px; }
+    .search-box { border-radius: 17px; padding: 15px; background: #eaf3f1; border: 1px solid #cce0da; min-height: 109px; }
+    .search-box:nth-child(1) { background: #eaf0f8; border-color: #ccdaeb; }
+    .search-box strong { display: block; font-size: 22px; }
+    .search-box span { display: block; margin-top: 6px; color: var(--muted); font-size: 17px; line-height: 1.3; }
+    .plus { display: grid; place-items: center; font-size: 36px; color: var(--teal); font-weight: 800; }
+    .search-result { border-radius: 15px; padding: 13px 17px; background: #e8edf1; font-size: 19px; line-height: 1.38; margin-bottom: 15px; }
+    .search-result strong { color: var(--blue); }
+    .small { font-size: 17px; line-height: 1.35; color: var(--muted); margin: 0 0 11px; }
+    .workflow { padding: 18px 18px; border-radius: 17px; background: #edf2f1; display: flex; align-items: center; justify-content: space-between; gap: 5px; margin: 4px 0 19px; }
+    .wf-box { padding: 13px 10px; background: white; border: 1px solid #ccdad8; border-radius: 11px; text-align: center; flex: 1; font-size: 17px; font-weight: 800; white-space: nowrap; }
+    .wf-arrow { font-size: 24px; color: var(--teal); font-weight: 800; }
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    .split > div { background: #f3f4f0; padding: 16px 17px; border-radius: 15px; font-size: 18px; line-height: 1.35; }
+    .split strong { display: block; color: var(--ink); font-size: 21px; margin-bottom: 5px; }
+    .metric-main { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 1px 0 13px; }
+    .metric { background: #f5ece8; border: 1px solid #ead8d0; border-radius: 16px; padding: 15px 18px; }
+    .metric strong { display: block; font-size: 25px; line-height: 1.13; }
+    .metric b { color: var(--red); }
+    .metric span { display: block; color: var(--muted); font-size: 17px; line-height: 1.32; margin-top: 4px; }
+    .metric-secondary { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 13px; }
+    .metric-secondary span { background: #edf2ef; border-radius: 10px; padding: 9px 12px; color: #325e54; font-size: 17px; font-weight: 700; }
+    .metric-reason { color: var(--muted); font-size: 17px; line-height: 1.4; margin: 0 0 10px; }
+    .metric-list { display: grid; gap: 7px; margin: 2px 0 12px; }
+    .metric-line { display: grid; grid-template-columns: 112px 1fr; gap: 10px; align-items: baseline; font-size: 16px; line-height: 1.3; color: var(--muted); }
+    .metric-line strong { color: var(--ink); }
+    .footer { border-top: 2px solid #d6deda; padding-top: 17px; margin-top: 28px; display: flex; justify-content: space-between; gap: 36px; font-size: 16px; line-height: 1.35; color: #607071; }
+    .footer strong { color: #345056; }
+  </style>
+</head>
+<body>
+  <main class="sheet">
+    <header class="hero">
+      <div>
+        <div class="eyebrow">DXA Dana · giải thích từ gốc dữ liệu</div>
+        <h1>Từ phụ đề video<br>đến câu trả lời</h1>
+        <p class="subtitle">Bốn câu hỏi về chia đoạn, tìm kiếm, Dana và cách đo kết quả — theo đúng phần code đang có trong project.</p>
+      </div>
+      <div class="hero-mark"><strong>DXA</strong><span>AGENT</span></div>
+    </header>
+
+    <section class="foundation" aria-label="Dữ liệu gốc">
+      <div class="foundation-label">Bắt đầu ở dữ liệu thật</div>
+      <div class="foundation-row">
+        <div class="foundation-cell"><strong>30 video</strong><span>Phụ đề đã làm sạch, mỗi dòng có mốc giây.</span></div>
+        <div class="arrow">→</div>
+        <div class="foundation-cell"><strong>259 đoạn phụ đề</strong><span>Giữ lời nói và vị trí để mở đúng giây.</span></div>
+        <div class="arrow">+</div>
+        <div class="foundation-cell"><strong>55 case</strong><span>53 từ video; 2 do thợ nhập. Mỗi case có triệu chứng, nguyên nhân, cách sửa.</span></div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card blue">
+        <div class="card-top"><div class="num">01</div><h2>Chunking strategy nào?</h2></div>
+        <p class="lead"><b>Pre-segmented, timestamp-aligned, variable-length chunking:</b> phụ đề sạch đã chia dòng <b>[mốc giây] nội dung</b>; code lấy mỗi dòng làm một chunk.</p>
+        <div class="sample"><em>[1]</em> Dây xi nhan …<br><em>[37]</em> Hai xi nhan cùng sáng …<br><em>[110]</em> Dùng rơ le 4 chân …<br><em>Trúng [37] → lấy [1] + [37] + [110]</em></div>
+        <div class="chips"><span class="chip">Không fixed-size</span><span class="chip">Không recursive splitter</span><span class="chip">Không semantic splitter</span></div>
+        <div class="why"><strong>Vì sao chọn?</strong> Phụ đề đã chia và gắn mốc giây nên giữ từng đoạn giúp trỏ đúng video; fixed-size/recursive có thể cắt lệch ranh giới, còn semantic splitter chưa được chứng minh tốt hơn trên kho này.</div>
+        <div class="note"><strong>Retrieval-time neighbor expansion (±1)</strong> nối ý qua ranh giới sau khi tìm; index vẫn không có overlap.</div>
+      </section>
+
+      <section class="card teal">
+        <div class="card-top"><div class="num">02</div><h2>Hai chiến lược search</h2></div>
+        <p class="lead">DXA dùng <b>hybrid retrieval</b>: chạy keyword search và vector search song song trên case và chunk.</p>
+        <div class="search-flow">
+          <div class="search-box"><strong>Keyword search · BM25</strong><span>Khớp chính xác từ/cụm từ như triệu chứng và tên phụ tùng.</span></div>
+          <div class="plus">+</div>
+          <div class="search-box"><strong>Vector search</strong><span>Tìm ý gần nghĩa khi khách diễn đạt bằng từ khác.</span></div>
+        </div>
+        <div class="search-result"><strong>RRF</strong> gộp thứ hạng → lấy <b>3 case + 3 chunk trúng</b> (kèm các chunk kề) → cổng phạm vi xét điểm BM25 và từ quan trọng.</div>
+        <p class="small">Hiện vector chạy offline bằng TF‑IDF + SVD. Gemini tạo vector ngữ nghĩa khi bật tùy chọn; Qdrant lưu/tìm các vector đó.</p>
+        <div class="why"><strong>Vì sao kết hợp?</strong> BM25-only dễ hụt khi khách dùng từ khác; vector-only có thể đúng chủ đề nhưng sai chi tiết. Ghép hai thứ giúp cân bằng khớp từ và khớp nghĩa.</div>
+        <div class="note"><strong>Qdrant không phải search strategy thứ ba:</strong> đó là kho vector. Project chưa benchmark các thuật toán khác; graph/SQLite hiện không xếp hạng kết quả.</div>
+      </section>
+
+      <section class="card amber">
+        <div class="card-top"><div class="num">03</div><h2>Dana giúp được gì?</h2></div>
+        <p class="lead">Agent <b>DXAMechanic chạy workflow Dana</b> cho mỗi câu hỏi; FastAPI nhận request rồi gọi agent.</p>
+        <div class="workflow"><div class="wf-box">Tìm</div><div class="wf-arrow">→</div><div class="wf-box">Chặn</div><div class="wf-arrow">→</div><div class="wf-box">Viết</div><div class="wf-arrow">→</div><div class="wf-box">Kiểm</div></div>
+        <div class="split">
+          <div><strong>Python cung cấp</strong>API, tìm kiếm BM25/vector, dựng ngữ cảnh và nguồn, cùng hàm kiểm kết quả.</div>
+          <div><strong>Dana điều phối</strong><code>find_cases | gate | write_answer | check</code>; <code>reason()</code> gọi LLM để tạo câu trả lời.</div>
+        </div>
+        <div class="why"><strong>Vai trò của Dana:</strong> Điều phối các bước agent; Python vẫn làm những việc có quy tắc rõ như tìm dữ liệu và kiểm số/mã case.</div>
+        <div class="note">Project dùng gói/runtime Dana, không phải bằng chứng đã triển khai toàn bộ nền tảng DanaOS.</div>
+      </section>
+
+      <section class="card red">
+        <div class="card-top"><div class="num">04</div><h2>Đo tìm kiếm ra sao?</h2></div>
+        <p class="lead"><code>eval.py</code> đo tìm case offline trên 40 câu có đáp án; mỗi metric nhìn một khía cạnh khác nhau của 3 kết quả đầu.</p>
+        <div class="metric-main">
+          <div class="metric"><strong>Hit@1 <b>39/40</b> · MRR <b>0.983</b></strong><span>Case đúng có ở vị trí đầu không; MRR chấm vị trí của case đúng đầu tiên.</span></div>
+          <div class="metric"><strong>Hit@3 <b>40/40</b> · NDCG@3 <b>0.968</b></strong><span>Có case đúng trong top 3 không; NDCG chấm thứ tự các case đúng trong top 3.</span></div>
+        </div>
+        <div class="metric-secondary"><span>Recall@3: 0.975</span><span>Precision@3: 0.392</span><span>Trong phạm vi: 40/40 · Ngoài phạm vi: 8/8</span><span>Không dấu top 3: 6/6</span></div>
+        <p class="metric-reason"><b>Vì sao cần đủ các metric?</b> Hit đo có tìm trúng không; Recall đo bỏ sót case đúng, Precision đo case nhiễu, còn MRR/NDCG đo thứ hạng để biết kết quả đúng có nằm gần đầu không.</p>
+        <div class="metric-list">
+          <div class="metric-line"><strong>Recall@3</strong><span>Trong các case được đánh dấu đúng, tìm lại được bao nhiêu; cần vì một câu có thể có nhiều case đúng.</span></div>
+          <div class="metric-line"><strong>Precision@3</strong><span>Trong 3 case trả về, bao nhiêu case đúng; cho biết ngữ cảnh agent nhận có bị loãng không.</span></div>
+          <div class="metric-line"><strong>MRR</strong><span>Case đúng đầu tiên càng đứng cao thì điểm càng tốt; hữu ích khi câu trả lời ưu tiên case xếp đầu.</span></div>
+          <div class="metric-line"><strong>NDCG@3</strong><span>Chấm thứ tự cả 3 kết quả; hiện coi case đúng quan trọng như nhau vì bộ test chỉ có nhãn đúng/sai.</span></div>
+        </div>
+        <div class="why"><strong>Cách đọc điểm:</strong> Recall/NDCG gần 1 cho thấy tìm đủ và xếp tốt; Precision thấp một phần vì nhiều câu chỉ có 1 case được gắn nhãn đúng trong 3 vị trí.</div>
+      </section>
+    </div>
+
+    <footer class="footer">
+      <div><strong>Nguồn code:</strong> dxa.py · rag.py · dxa_agent.na · dxa_dana.py · eval.py.<br><strong>Số đo:</strong> chạy eval.py trên index offline hiện tại; 40 câu có đáp án, 8 câu ngoài phạm vi.</div>
+      <div><strong>Phân biệt tên gọi:</strong> Dana là gói/ngôn ngữ dùng trong code;<br>DanaOS là nền tảng rộng hơn theo Aitomatic.</div>
+    </footer>
+  </main>
+</body>
+</html>

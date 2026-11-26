@@ -1,0 +1,1454 @@
+{
+  "mode": "actual_local_store_offline_no_model_calls",
+  "legacy_top3": 40,
+  "legacy_top1": 39,
+  "legacy_total": 40,
+  "new_source_top3": 10,
+  "new_answered": 10,
+  "new_total": 10,
+  "legacy_results": [
+    {
+      "question": "bình xăng con bị chảy xăng hoài, kim xăng bị rỉ",
+      "expected": [
+        "C01"
+      ],
+      "got": [
+        "C01",
+        "C04",
+        "C02"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "xe de lau khong chay bi chay xang",
+      "expected": [
+        "C01",
+        "C02",
+        "C04"
+      ],
+      "got": [
+        "C01",
+        "C04",
+        "C03"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "chỉnh phao xăng sao cho đúng",
+      "expected": [
+        "C02",
+        "C03"
+      ],
+      "got": [
+        "C02",
+        "C03",
+        "C01"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "chạy hay bị hụt xăng mất ga",
+      "expected": [
+        "C03"
+      ],
+      "got": [
+        "C03",
+        "C29",
+        "C04"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "đi bình PE24 mà ga không đều",
+      "expected": [
+        "C05"
+      ],
+      "got": [
+        "C05",
+        "C27",
+        "C95"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "co gió nào đi được bình 24 họng 45",
+      "expected": [
+        "C05",
+        "C06"
+      ],
+      "got": [
+        "C05",
+        "C06",
+        "C82"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "bugi cháy đen canh xăng không được",
+      "expected": [
+        "C07"
+      ],
+      "got": [
+        "C07",
+        "C114",
+        "C94"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "gan bugi dung huong",
+      "expected": [
+        "C07"
+      ],
+      "got": [
+        "C07",
+        "C61",
+        "C94"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "bình xăng con nóng, chạy xa bị giật",
+      "expected": [
+        "C08"
+      ],
+      "got": [
+        "C08",
+        "C04",
+        "C29"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "co xăng bị xì gió",
+      "expected": [
+        "C09"
+      ],
+      "got": [
+        "C09",
+        "C01",
+        "C06"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "móc mắt piston sâu bao nhiêu thì không lủng",
+      "expected": [
+        "C10"
+      ],
+      "got": [
+        "C10",
+        "C13",
+        "C11"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "phân biệt mắt nạp mắt xả trên piston",
+      "expected": [
+        "C11"
+      ],
+      "got": [
+        "C11",
+        "C120",
+        "C67"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "cò mổ bị bó không có độ rơ",
+      "expected": [
+        "C14"
+      ],
+      "got": [
+        "C14",
+        "C37",
+        "C92"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "xe độ chạy một năm bị trễ cam",
+      "expected": [
+        "C19"
+      ],
+      "got": [
+        "C19",
+        "C20",
+        "C31"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "lá khóa bánh cam bị gãy",
+      "expected": [
+        "C20"
+      ],
+      "got": [
+        "C20",
+        "C117",
+        "C19"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "sên cam căng sau khi ráp đầu",
+      "expected": [
+        "C12",
+        "C22"
+      ],
+      "got": [
+        "C12",
+        "C22",
+        "C42"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "đèn trợ sáng chưa bật đã sáng mờ",
+      "expected": [
+        "C24"
+      ],
+      "got": [
+        "C24",
+        "C33",
+        "C32"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "gắn đèn báo xi nhan thì hai bên cùng sáng",
+      "expected": [
+        "C25"
+      ],
+      "got": [
+        "C25",
+        "C32",
+        "C24"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "dau role 4 chan nhu the nao",
+      "expected": [
+        "C25"
+      ],
+      "got": [
+        "C25",
+        "C24",
+        "C32"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "bánh trước bánh sau không ngay hàng",
+      "expected": [
+        "C26",
+        "C38"
+      ],
+      "got": [
+        "C38",
+        "C54",
+        "C26"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "binh yoshimura keo ga nhanh bi tat may",
+      "expected": [
+        "C27"
+      ],
+      "got": [
+        "C27",
+        "C28",
+        "C05"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "buông ga mà ga không về, bị ngâm ga",
+      "expected": [
+        "C28"
+      ],
+      "got": [
+        "C28",
+        "C07",
+        "C05"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "vệ sinh bình xăng con thế nào, có xịt gió mạnh được không",
+      "expected": [
+        "C29"
+      ],
+      "got": [
+        "C29",
+        "C06",
+        "T02"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "đồng hồ takegawa gắn ngoài chạy nhanh bị sút ra",
+      "expected": [
+        "C30"
+      ],
+      "got": [
+        "C30",
+        "C04",
+        "C47"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "tay ga bị rơ xoay",
+      "expected": [
+        "C31"
+      ],
+      "got": [
+        "C31",
+        "C24",
+        "C106"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "đấu đèn báo xi nhan bóng tóc có cần rơ le không",
+      "expected": [
+        "C25",
+        "C32"
+      ],
+      "got": [
+        "C32",
+        "C25",
+        "C24"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "đi sườn MD xuống đầu CD bị cạ hộp lọc gió",
+      "expected": [
+        "C34"
+      ],
+      "got": [
+        "C34",
+        "C46",
+        "C05"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "bộ số độ không báo số N",
+      "expected": [
+        "C37"
+      ],
+      "got": [
+        "C37",
+        "C76",
+        "C88"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "canh bánh xe bằng đèn laser",
+      "expected": [
+        "C38"
+      ],
+      "got": [
+        "C54",
+        "C38",
+        "C19"
+      ],
+      "expected_top3": true,
+      "expected_top1": false
+    },
+    {
+      "question": "chén cổ bị rỗ tay lái lỏng",
+      "expected": [
+        "C39"
+      ],
+      "got": [
+        "C39",
+        "C55",
+        "C75"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "côn bị trượt chưa bóp mà đạp đã tuột",
+      "expected": [
+        "C40"
+      ],
+      "got": [
+        "C40",
+        "C88",
+        "C29"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "cần số bị quơ khi ráp máy lỏ trên lốc alpha",
+      "expected": [
+        "C41"
+      ],
+      "got": [
+        "C41",
+        "C88",
+        "C107"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "ráp máy xong quay máy rất cứng",
+      "expected": [
+        "C12",
+        "C22",
+        "C42"
+      ],
+      "got": [
+        "C42",
+        "C15",
+        "C106"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "pha nước tẩy rỉ sét lốc máy",
+      "expected": [
+        "C44"
+      ],
+      "got": [
+        "C44",
+        "C104",
+        "C58"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "dây hàn gió đá bị xì ở đuôi chuột",
+      "expected": [
+        "C47"
+      ],
+      "got": [
+        "C47",
+        "C48",
+        "C49"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "lắp van chống cháy ngược cho bình oxy gas",
+      "expected": [
+        "C48"
+      ],
+      "got": [
+        "C48",
+        "C50",
+        "C49"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "hàn sắt mỏng 1 ly bằng máy hàn điện bị lủng",
+      "expected": [
+        "C49"
+      ],
+      "got": [
+        "C49",
+        "C102",
+        "C44"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "chỉnh lửa đèn cắt oxy gas",
+      "expected": [
+        "C50"
+      ],
+      "got": [
+        "C50",
+        "C49",
+        "C115"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "binh xang con buong ga ma ga khong ve",
+      "expected": [
+        "C28"
+      ],
+      "got": [
+        "C28",
+        "T02",
+        "C29"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    },
+    {
+      "question": "cách đấu đèn báo xi nhan khi không dùng đồng hồ km",
+      "expected": [
+        "C25",
+        "C32"
+      ],
+      "got": [
+        "C32",
+        "C25",
+        "C37"
+      ],
+      "expected_top3": true,
+      "expected_top1": true
+    }
+  ],
+  "new_questions": [
+    {
+      "question": "RC5 muốn bật autotune thì cần điều kiện gì?",
+      "expected_video_id": "Moc9ivXocdw",
+      "got_video_ids": [
+        "Moc9ivXocdw",
+        "QIHgDPNwyw8",
+        "Moc9ivXocdw"
+      ],
+      "expected_source_top3": true,
+      "refused": false,
+      "answer": "Bệnh gần nhất: Sử dụng tính năng autotune trên phần mềm ECU [C79]\nNguyên nhân: Cần điều chỉnh tự động tỷ lệ xăng gió khi vận hành xe\nCách sửa: Đảm bảo 3 điều kiện: máy bật, nhiệt độ máy trên 60 độ, đã gắn cảm biến oxy. Sau đó chạy xe để hệ thống tự động đọc và điều chỉnh, khi hoàn tất thì tắt và lưu lại map.\nThông số: Nhiệt độ máy tối thiểu để bật autotune: 60 độ; Tỷ lệ xăng gió tốt nhất: 13.3\nLưu ý: Kiến thức trích xuất tự động, chưa được thợ duyệt.",
+      "sources": [
+        {
+          "type": "case",
+          "id": "C79",
+          "symptom": "Sử dụng tính năng autotune trên phần mềm ECU",
+          "cause": "Cần điều chỉnh tự động tỷ lệ xăng gió khi vận hành xe",
+          "fix": "Đảm bảo 3 điều kiện: máy bật, nhiệt độ máy trên 60 độ, đã gắn cảm biến oxy. Sau đó chạy xe để hệ thống tự động đọc và điều chỉnh, khi hoàn tất thì tắt và lưu lại map.",
+          "specs": [
+            {
+              "name": "Nhiệt độ máy tối thiểu để bật autotune",
+              "value": "60",
+              "unit": "độ"
+            },
+            {
+              "name": "Tỷ lệ xăng gió tốt nhất",
+              "value": "13.3",
+              "unit": ""
+            }
+          ],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Hướng dẫn sử dụng Ecu Aracer RC mini 5 - RC5",
+          "time": "3:51",
+          "link": "https://www.youtube.com/watch?v=Moc9ivXocdw&t=231s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C51",
+          "symptom": "Xe phun xăng FI muốn tỉ lệ xăng gió tối ưu ở mọi tốc độ",
+          "cause": "ECU zin không tự chỉnh theo cấu hình pô, kim phun mới",
+          "fix": "Gắn ECU Racer Mini 5 với cảm biến oxy, bật autotune khi máy đủ nóng; ralenti AFR khoảng 14, target khi tăng ga 13 đến 15",
+          "specs": [
+            {
+              "name": "AFR ralenti",
+              "value": "14",
+              "unit": ""
+            },
+            {
+              "name": "AFR target khi tăng ga",
+              "value": "13-15",
+              "unit": ""
+            }
+          ],
+          "reviewed": true,
+          "review_note": "Duyệt tạm, chưa xem kỹ",
+          "video_title": "Bán Satria nhập Indo zin, full option, full giấy",
+          "time": "6:41",
+          "link": "https://www.youtube.com/watch?v=QIHgDPNwyw8&t=401s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C78",
+          "symptom": "Cần thiết lập và hiệu chỉnh bướm ga cho ECU Aracer RC Mini 5",
+          "cause": "Lắp đặt hoặc reset ECU cần thực hiện học lại vị trí bướm ga (TPS)",
+          "fix": "Vào mục calibration, chọn phần học ga, bấm chữ start lên, vặn ga xong rồi để một lúc cho đến khi báo học xong thì buông ra",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Hướng dẫn sử dụng Ecu Aracer RC mini 5 - RC5",
+          "time": "2:04",
+          "link": "https://www.youtube.com/watch?v=Moc9ivXocdw&t=124s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "chunk",
+          "id": "Moc9ivXocdw#195",
+          "video_title": "Hướng dẫn sử dụng Ecu Aracer RC mini 5 - RC5",
+          "time": "3:15",
+          "text": "quan tới các phần ta ghét if you với lại các phần autotune thì mình sẽ đi tới các phần autotune trước rồi Mình vô có phần tags Apple rồi mình mới nói tới cái phần quay peneseal pro giúp closed-loop thì cái quay manusia Plus Lúc này anh chị Quý hiểu Nó là cái cổng xa nhịp cảm biến ông xã để biết được rằng là cái lộn xả là nó có nó có tương thích với lại cái quy trình À bơm xăng đốt sin cong sin nhiệt xả hay không thì nó cũng có liên",
+          "link": "https://www.youtube.com/watch?v=Moc9ivXocdw&t=195s"
+        },
+        {
+          "type": "chunk",
+          "id": "Moc9ivXocdw#639",
+          "video_title": "Hướng dẫn sử dụng Ecu Aracer RC mini 5 - RC5",
+          "time": "10:39",
+          "text": "đi đồ lót nè Thấy cái resort này nó là chỉnh các nhịp điệu của Genta là Thái Vân Tiên nhật lentillifera gì đó mà mình cũng không xài cái này mình để cho nó tự nhiên à ông thầy à mình đi qua cái ta gas-filled ha mình đi qua cái góc đánh lửa backlight mình đi qua autotune mình đi qua cái cảm biến oxy rồi Bây giờ mình lại đi lại Bây giờ mình đi luôn cái A anh kia siêu cách rồi mình cũng đi tới",
+          "link": "https://www.youtube.com/watch?v=Moc9ivXocdw&t=639s"
+        },
+        {
+          "type": "chunk",
+          "id": "Moc9ivXocdw#231",
+          "video_title": "Hướng dẫn sử dụng Ecu Aracer RC mini 5 - RC5",
+          "time": "3:51",
+          "text": "quan tới cái từ lúc đánh lửa luôn đó thì đó là những cái phần khó nhất Trồng cây kể việc cây apk sân này Cái app này thì nhưng mà nãy mình nói là mình đi tới cái phần autotune trước ha ô ô totu lẻ nó làm việc dựa trên ba cái tiêu chí chỉ đi thứ nhất là máy phải được bật lên thứ hai là nhiệt độ máy phải trên 60 độ A và phải có cục cảm biến oxy gắng lên 4 Ừ Thì sau khi mà ba cái tính năng đó thỏa mãn",
+          "link": "https://www.youtube.com/watch?v=Moc9ivXocdw&t=231s"
+        }
+      ]
+    },
+    {
+      "question": "Lắp cò lăn với cam cao có làm xupap đụng nắp không?",
+      "expected_video_id": "tmB6cBm25P4",
+      "got_video_ids": [
+        "tmB6cBm25P4",
+        "PM-LbM-w-Kk",
+        "JPjl8eo6nxE"
+      ],
+      "expected_source_top3": true,
+      "refused": false,
+      "answer": "Bệnh gần nhất: Phối hợp cò lăn và cam cao để tránh xupap đụng nắp [C118]\nNguyên nhân: Theo video, đòn cò lăn ngắn hơn làm phần nhấn xupap đi sâu hơn\nCách sửa: Cò lăn đâm sâu hơn nên khi còn đi cây cam cao nữa thì không được để xupap cao đến mức đụng nắp. Đối chiếu đúng bộ cam và cò trong video; không coi các số nói trong ví dụ là cấu hình chung.\nLưu ý: Cò lăn đâm sâu hơn, nếu đi cam cao (như cam 7 ly rưỡi) cùng xúp-pắp cao có thể gây đụng nắp xúp-pắp.; Kiến thức trích xuất tự động, chưa được thợ duyệt.",
+      "sources": [
+        {
+          "type": "case",
+          "id": "C118",
+          "symptom": "Phối hợp cò lăn và cam cao để tránh xupap đụng nắp",
+          "cause": "Theo video, đòn cò lăn ngắn hơn làm phần nhấn xupap đi sâu hơn",
+          "fix": "Cò lăn đâm sâu hơn nên khi còn đi cây cam cao nữa thì không được để xupap cao đến mức đụng nắp. Đối chiếu đúng bộ cam và cò trong video; không coi các số nói trong ví dụ là cấu hình chung.",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Tản mạn về cò - Cò lăn và cò chà",
+          "time": "4:59",
+          "link": "https://www.youtube.com/watch?v=tmB6cBm25P4&t=299s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C16",
+          "symptom": "Ốc cò cao quá, không đậy được nắp xupap zin",
+          "cause": "Đi cò lăng với ốc cò dài",
+          "fix": "Mài theo bốn mặt vuông có sẵn rồi cắt ngắn ốc cò; dùng ốc cò BRT vì cứng",
+          "specs": [],
+          "reviewed": true,
+          "review_note": "Duyệt tạm, chưa xem kỹ",
+          "video_title": "Mài cò mài ốc cò - set up đầu culass",
+          "time": "4:14",
+          "link": "https://www.youtube.com/watch?v=PM-LbM-w-Kk&t=254s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C75",
+          "symptom": "Kiểm tra xem chén xupap có bị đụng vào phốt cao su gây chảy nhớt hay không",
+          "cause": "Đít chén đụng vô cao su miệng phốt",
+          "fix": "Kiểm tra bằng cách kiếm một cái lò xo mềm lắp thiệt vậy đó nhấn bằng tay được, vô cam, chỉnh cò cho có độ rơ như thiệt rồi quay cây cam",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Kiểm xupap và phốt cao su",
+          "time": "0:35",
+          "link": "https://www.youtube.com/watch?v=JPjl8eo6nxE&t=35s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "chunk",
+          "id": "JPjl8eo6nxE#138",
+          "video_title": "Kiểm xupap và phốt cao su",
+          "time": "2:18",
+          "text": "xupap mà dài thì nó sẽ không đụng nhưng mà xuống tóc ngắn đi là nó đụng thôi không cần mài luôn nha của vrt Đây là cái chén chén Dream móng riêng lắp vô y thiệt luôn nhắn nó xuống coi nó có đụng không nhấn cho nó đụng phải không cho nó đụng",
+          "link": "https://www.youtube.com/watch?v=JPjl8eo6nxE&t=138s"
+        },
+        {
+          "type": "chunk",
+          "id": "3pGJNl-Uexk#190",
+          "video_title": "Lắp nguyên bộ cam cò lò xo và xupap BRT",
+          "time": "3:10",
+          "text": "em hay nói là cái cây xupap ta mình đi nó khoảng 68 nha Nhưng mà cây zin của BRT nó không được 68 đâu nó 66 67 thì nó rất dễ bị đụng phốt cao su đó là chưa kể cây sả cây sả nó còn ngắn hơn nữa nó có 66 mấy thôi cây này thì được 67 66 tới 67 cây này từ từ 65 tới 66 Vậy thì mình đi vẫn đi được cấp số bắp của BT mà mình phải đi làm sao để cho nó không bị đụng phốt ha",
+          "link": "https://www.youtube.com/watch?v=3pGJNl-Uexk&t=190s"
+        },
+        {
+          "type": "chunk",
+          "id": "3pGJNl-Uexk#451",
+          "video_title": "Lắp nguyên bộ cam cò lò xo và xupap BRT",
+          "time": "7:31",
+          "text": "không cần Long Đền Tại vì Long Đền Nó ép lò xo thêm một ly nữa thì nó nguy cơ lúng cam Cao Nếu mà đi tốc độ cao nhiều lún cam là bị chà lúng như thế này nè thì chỉ có vậy thôi Bây giờ mình sẽ gắn vô cho cái đầu này nhưng mà bây giờ trước khi gắn thì mình phải xoáy xupap lại ha rồi anh em cần cam cò lò xo xuống bắp BRT và cần tư vấn gắn lắp ráp nói Mình mình để giá tốt mới nha chào",
+          "link": "https://www.youtube.com/watch?v=3pGJNl-Uexk&t=451s"
+        }
+      ]
+    },
+    {
+      "question": "Úp lốc vào thì cốt số quay nặng dù lông đền đã mài mỏng, phải xem gì?",
+      "expected_video_id": "WzNkmw93ekE",
+      "got_video_ids": [
+        "WzNkmw93ekE",
+        "VEcL-HPiC48",
+        "uF7nHQdMtlE"
+      ],
+      "expected_source_top3": true,
+      "refused": false,
+      "answer": "Bệnh gần nhất: Úp lốc máy vào thì cốt số quay nặng, bó dù dùng lông đền mỏng [C92]\nNguyên nhân: Đường kính ngoài lông đền quá lớn nên ngồi lên bánh răng thay vì lọt vào ổ của nó\nCách sửa: Chọn lông đền phải lọt lòng vô cái ổ của nó, không ngồi lên trên mấy cái bánh răng. Dùng lại lông đền nguyên thủy, lắp thử có ron rồi test còn bó không và có rơ không; không chỉ vớt mỏng lông đền.\nLưu ý: Kiến thức trích xuất tự động, chưa được thợ duyệt.",
+      "sources": [
+        {
+          "type": "case",
+          "id": "C92",
+          "symptom": "Úp lốc máy vào thì cốt số quay nặng, bó dù dùng lông đền mỏng",
+          "cause": "Đường kính ngoài lông đền quá lớn nên ngồi lên bánh răng thay vì lọt vào ổ của nó",
+          "fix": "Chọn lông đền phải lọt lòng vô cái ổ của nó, không ngồi lên trên mấy cái bánh răng. Dùng lại lông đền nguyên thủy, lắp thử có ron rồi test còn bó không và có rơ không; không chỉ vớt mỏng lông đền.",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Thuốc trị bệnh rung máy, hú máy, ko êm, ì máy",
+          "time": "8:03",
+          "link": "https://www.youtube.com/watch?v=WzNkmw93ekE&t=483s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C88",
+          "symptom": "Kiểm tra tổng thể hộp số xem có hoạt động ngon hay không sau khi lắp gá vào lốc máy",
+          "cause": "Kiểm tra trước để tránh tình trạng ráp hoàn chỉnh xe mà hộp số lỗi phải rã máy ra lại",
+          "fix": "Gá tạm bộ số vào lốc máy, gắn lò xo giò đạp, siết 3 con ốc gá, lắp tay số, bông mai, dấu hỏi và cần số, sau đó vừa quay cốt vừa thao tác chuyển số để kiểm tra các cấp số từ mo đến số 4.",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Ráp full cục máy wave 110 dên đôn - Bài 3:  Ráp số cốt nồi và kiểm số tổng thể",
+          "time": "3:40",
+          "link": "https://www.youtube.com/watch?v=VEcL-HPiC48&t=220s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C119",
+          "symptom": "Lắp nhông hú vào cốt",
+          "cause": "Cần độ rơ vừa phải cho nhông hú trên cốt",
+          "fix": "Phải mài dũa sơ tùy theo cái cốt trên, đừng bó quá và đừng lỏng le, sao cho hơi bó nhẹ nhưng vẫn đẩy tay vào được và lấy ra được.",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Nồi 67 2 lá độ máy 54 có gì hay",
+          "time": "1:00",
+          "link": "https://www.youtube.com/watch?v=uF7nHQdMtlE&t=60s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "chunk",
+          "id": "rrgdLZLLgyQ#226",
+          "video_title": "Chế báo số zin cho bộ số độ",
+          "time": "3:46",
+          "text": "Mài một con ốc lục giác 5 ly (sắt hay inox đều được) cho đầu nhỏ lại, mỏng và lùn hơn để lọt thỏm vào trong, nếu không sẽ bị cạ. Ốc zin thì càng không vào được. Nhấn lông đền báo số zin vào, gắn vào chạy là báo đúng số.",
+          "link": "https://www.youtube.com/watch?v=rrgdLZLLgyQ&t=226s"
+        },
+        {
+          "type": "chunk",
+          "id": "PM-LbM-w-Kk#800",
+          "video_title": "Mài cò mài ốc cò - set up đầu culass",
+          "time": "13:20",
+          "text": "Lò xo xupap: chén lò xo dưới phải mài cả trong lẫn ngoài, mặt trên thì chỉ mài ngoài, để chén lò xo ngồi lọt thỏm vào rãnh (seat) của nó chứ không gá lên thành. Dưới có rãnh, có thể đắp lông đền lên rãnh. Đừng để vậy gắn vào chạy.",
+          "link": "https://www.youtube.com/watch?v=PM-LbM-w-Kk&t=800s"
+        },
+        {
+          "type": "chunk",
+          "id": "VEcL-HPiC48#192",
+          "video_title": "Ráp full cục máy wave 110 dên đôn - Bài 3:  Ráp số cốt nồi và kiểm số tổng thể",
+          "time": "3:12",
+          "text": "rồi giò đạp có cái lông đền nè lông đền mỏng để vô ha quay đó lúc nào quay theo chừ kim đồng hồ nè dặn ha đó dặn ở dưới đây coi nó có quay không ở dưới quay là đúng nha Rồi xong Bây giờ mình sẽ kiểm tra cái hộp số này coi coi nó có bộ số này coi nó ngon",
+          "link": "https://www.youtube.com/watch?v=VEcL-HPiC48&t=192s"
+        }
+      ]
+    },
+    {
+      "question": "Sơn lại lốc máy bằng H11 thì sơn mấy lớp và phủ bóng thế nào?",
+      "expected_video_id": "4C19rXpz6uU",
+      "got_video_ids": [
+        "4C19rXpz6uU",
+        "MAu2UAV8xhU",
+        "rI9u3vRGGEU"
+      ],
+      "expected_source_top3": true,
+      "refused": false,
+      "answer": "Bệnh gần nhất: Cần sơn lại lốc máy đã cũ, sơn phun bị phù hoặc bề mặt không đều [C58]\nNguyên nhân: Video lưu ý phải xử lý sơn cũ và bề mặt, không phun dồn vào một chỗ\nCách sửa: Tẩy sơn cũ, rửa nước trước khi chà nhám; làm ấm vừa phải, lắc bình và phun đều từng lớp, sấy giữa các lớp. Phần chốt video thực hiện bốn lớp bạc và hai lớp phủ bóng, sau đó để yên tránh bụi; số lớp ban đầu nói khác nên cần đối chiếu lại nguồn trước khi làm.\nLưu ý: Video cảnh báo tránh hóa chất tẩy bắn vào mắt, tránh trẻ em và không nung quá nóng chi tiết.; Không dí sơn vào một chỗ vì có thể bị phù.; Kiến thức trích xuất tự động, chưa được thợ duyệt.",
+      "sources": [
+        {
+          "type": "case",
+          "id": "C58",
+          "symptom": "Cần sơn lại lốc máy đã cũ, sơn phun bị phù hoặc bề mặt không đều",
+          "cause": "Video lưu ý phải xử lý sơn cũ và bề mặt, không phun dồn vào một chỗ",
+          "fix": "Tẩy sơn cũ, rửa nước trước khi chà nhám; làm ấm vừa phải, lắc bình và phun đều từng lớp, sấy giữa các lớp. Phần chốt video thực hiện bốn lớp bạc và hai lớp phủ bóng, sau đó để yên tránh bụi; số lớp ban đầu nói khác nên cần đối chiếu lại nguồn trước khi làm.",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Sơn xe, sơn lóc máy tại nhà dễ òm - để mình chỉ cho",
+          "time": "5:35",
+          "link": "https://www.youtube.com/watch?v=4C19rXpz6uU&t=335s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C44",
+          "symptom": "Lốc máy, đồ sắt bị rỉ sét hoặc đen lâu ngày chà không ra; sơn không bám",
+          "cause": "Cặn bẩn và oxy hóa bề mặt",
+          "fix": "Pha 200 ml nước rửa chén, 2 muỗng muối, 1 muỗng baking soda, nửa ly nước nguội; quét nhẹ lên, đồng thời dùng làm lớp xử lý trước khi sơn",
+          "specs": [
+            {
+              "name": "nước rửa chén",
+              "value": "200",
+              "unit": "ml"
+            }
+          ],
+          "reviewed": true,
+          "review_note": "Duyệt tạm, chưa xem kỹ",
+          "video_title": "Chất xử lý bề mặt đỉnh cao - giá nghèo",
+          "time": "0:00",
+          "link": "https://www.youtube.com/watch?v=MAu2UAV8xhU&t=0s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C116",
+          "symptom": "Lốc máy màu trắng hoặc màu bạc dễ bị dơ khi đi tour nhiều",
+          "cause": "Màu sáng dễ bám bẩn khi đi đường dài",
+          "fix": "Thay lốc màu ghi Takegawa và sơn lại lốc nồi với màu tương tự",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Nắp cá Takegawa chính hãng",
+          "time": "0:01",
+          "link": "https://www.youtube.com/watch?v=rI9u3vRGGEU&t=1s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "chunk",
+          "id": "4C19rXpz6uU#0",
+          "video_title": "Sơn xe, sơn lóc máy tại nhà dễ òm - để mình chỉ cho",
+          "time": "0:00",
+          "text": "Hôm nay mình có cái lốc trắng nó bể quá khách nói Bên Nồi nó còn mới thì bây giờ bên cá phải mới theo thì mình sơn lại nha đầu tiên là mình phải xả Sơn nó bằng cái này nha tẩy sau đó thì mình lấy mình không cần sơn lót mình lấy bạc sáng mình Sơn lên h11 Samurai nha Rồi sau đó mình lấy K1 K phủ phủ bóng",
+          "link": "https://www.youtube.com/watch?v=4C19rXpz6uU&t=0s"
+        },
+        {
+          "type": "chunk",
+          "id": "4C19rXpz6uU#225",
+          "video_title": "Sơn xe, sơn lóc máy tại nhà dễ òm - để mình chỉ cho",
+          "time": "3:45",
+          "text": "đừng có dí vào một chỗ Nha một chỗ là nó bị nó bị phù đó cứ đơn giản vậy thôi quay lắc cứ mỗi lần Sơn là đất đó thì sơn Samurai này nó [Vỗ tay] sau đó rồi lấy máy sấy nè thì đối với lớp phủ Tức là lớp ca một ca mình chỉ cần làm 2 lớp thôi nha",
+          "link": "https://www.youtube.com/watch?v=4C19rXpz6uU&t=225s"
+        },
+        {
+          "type": "chunk",
+          "id": "4C19rXpz6uU#372",
+          "video_title": "Sơn xe, sơn lóc máy tại nhà dễ òm - để mình chỉ cho",
+          "time": "6:12",
+          "text": "sơn phủ là đẹp rồi nha anh em và mình bao lên ghế cách làm là tẩy khò Sơn cháy Sơn và sấy là 4 lần cho lớp sơn bạc là lớp sơn chính và hai lần cho lớp sơn phủ không cần sơn lót nha không cần sơn lót H3 mười mấy không cần cái đó đâu ha Sơn xong rồi để yên vị trí như vậy ha và bây giờ cái lớp này nó bắt đầu nó khô rồi bây giờ mình làm thêm một lần cuối cùng cái lớp sơn ca một ca nữa là là được nha",
+          "link": "https://www.youtube.com/watch?v=4C19rXpz6uU&t=372s"
+        }
+      ]
+    },
+    {
+      "question": "Máy độ vẫn róc dù đã xoáy xupap và canh xăng, có liên quan tín hiệu kích lửa với cốt cam không?",
+      "expected_video_id": "ZmeYSYOsRgs",
+      "got_video_ids": [
+        "ZmeYSYOsRgs",
+        "8xIdlKZnfUY",
+        "eHyZh0emGG8"
+      ],
+      "expected_source_top3": true,
+      "refused": false,
+      "answer": "Bệnh gần nhất: Máy độ vẫn róc rách sau khi đã canh cò, xoáy xupap và canh xăng [C96]\nNguyên nhân: Theo video, tín hiệu kích lửa có thể lệch với thời điểm đóng mở xupap do cốt cam và nhông thì không đồng bộ\nCách sửa: Đối chiếu bộ lửa, tín hiệu kích và nhông thì với thời điểm đóng mở xupap. Khi cần canh lại trên máy đã ráp, video dùng bánh cam tăng chỉnh; các góc và loại lửa nghe không rõ phải được thợ đối chiếu trực tiếp, không áp dụng một góc chung.\nLưu ý: Kiến thức trích xuất tự động, chưa được thợ duyệt.",
+      "sources": [
+        {
+          "type": "case",
+          "id": "C96",
+          "symptom": "Máy độ vẫn róc rách sau khi đã canh cò, xoáy xupap và canh xăng",
+          "cause": "Theo video, tín hiệu kích lửa có thể lệch với thời điểm đóng mở xupap do cốt cam và nhông thì không đồng bộ",
+          "fix": "Đối chiếu bộ lửa, tín hiệu kích và nhông thì với thời điểm đóng mở xupap. Khi cần canh lại trên máy đã ráp, video dùng bánh cam tăng chỉnh; các góc và loại lửa nghe không rõ phải được thợ đối chiếu trực tiếp, không áp dụng một góc chung.",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Lỗi róc máy xe độ",
+          "time": "3:42",
+          "link": "https://www.youtube.com/watch?v=ZmeYSYOsRgs&t=222s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C65",
+          "symptom": "Satria hoặc Raider zin mất ralenti, hụt ga đầu sau vệ sinh buồng đốt",
+          "cause": "Theo ca trong video, vệ sinh bằng khí nén và làm hở xupap có thể gây xì/hở",
+          "fix": "Đối chiếu tình trạng xupap và độ kín. Với ca đã bị hở trong video, người nói tháo đầu để xoáy xupap và thay ron mới; cần thợ kiểm tra trực tiếp trước khi kết luận giống ca này.",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "\"Vệ sinh buồng đốt bằng dung dịch: \"\"Hết sức cẩn thận\"\"\"",
+          "time": "2:39",
+          "link": "https://www.youtube.com/watch?v=8xIdlKZnfUY&t=159s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C101",
+          "symptom": "Máy bị rốc nhẹ sau khi ráp máy và canh cam cò lò xo BRT",
+          "cause": "Do A (đầu kỳ xả) lớn hơn B (cuối kỳ nạp) quá nhiều và tỷ số nén quá cao (ví dụ đi bộ R1 của BRT m03 với tỷ số nén 11)",
+          "fix": "Nâng B lên để đạt 55 hoặc 56 độ (cao hơn A khoảng 2 độ), hạ tỷ số nén động xuống bằng cách canh chỉnh lại góc cam",
+          "specs": [
+            {
+              "name": "Góc cuối kỳ nạp (B)",
+              "value": "55-56",
+              "unit": "độ"
+            },
+            {
+              "name": "Tỷ số nén",
+              "value": "11",
+              "unit": ""
+            }
+          ],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Tuyệt chiêu tỉ số nén động giúp được gi",
+          "time": "5:38",
+          "link": "https://www.youtube.com/watch?v=eHyZh0emGG8&t=338s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "chunk",
+          "id": "ZmeYSYOsRgs#186",
+          "video_title": "Lỗi róc máy xe độ",
+          "time": "3:06",
+          "text": "lửa của cái bộ lửa cái này mình nói tới là lửa kích lửa ha tức là dây xanh dương sọc vàng thôi chứ chưa nói tới IC IC với mobin là nó là khác nữa rồi Bây giờ lửa cái kích lửa là nó ra cái nhịp để đánh lửa mà bây giờ cái nghiệp đánh lửa nó trật với lại cái thầy đánh của lửa của của của của của của của cái thì mở đóng mở của xupap tại vì cái thì đóng mở của xupap nó liên quan tới cái cốt cam",
+          "link": "https://www.youtube.com/watch?v=ZmeYSYOsRgs&t=186s"
+        },
+        {
+          "type": "chunk",
+          "id": "ZmeYSYOsRgs#333",
+          "video_title": "Lỗi róc máy xe độ",
+          "time": "5:33",
+          "text": "thì nó sẽ khắc phục được cái tình trạng là rock Bây giờ anh chị đã sấy xupap rồi Đã rà miệng rồi đã canh xăng rồi bugi nâu đen nhẹ là đẹp rồi vậy mà nó vẫn rất thì chỉ còn cách là xài cái này thôi nha Xin chào",
+          "link": "https://www.youtube.com/watch?v=ZmeYSYOsRgs&t=333s"
+        },
+        {
+          "type": "chunk",
+          "id": "ZmeYSYOsRgs#222",
+          "video_title": "Lỗi róc máy xe độ",
+          "time": "3:42",
+          "text": "mà bây giờ cốt cam nó đi một nơi tín hiệu lửa đánh một nơi thì làm sao mà nó đánh trúng ngay cái thì của nó được mà khi mà đánh không trúng thì nó kêu róc rách bởi vì nó không có đốt hết nhiên liệu nó kêu róc rách giống như nước thì bây giờ để khắc phục cái đó trong cái trường hợp mà anh em xài lửa xa lửa đánh sớm và già già già nhông thì sớm thì anh em chỉ khắc phục",
+          "link": "https://www.youtube.com/watch?v=ZmeYSYOsRgs&t=222s"
+        }
+      ]
+    },
+    {
+      "question": "Satria mất ralenti sau khi vệ sinh buồng đốt bằng khí nén thì xem lại gì?",
+      "expected_video_id": "8xIdlKZnfUY",
+      "got_video_ids": [
+        "8xIdlKZnfUY",
+        "8xIdlKZnfUY",
+        "3FBSlD0zJN4"
+      ],
+      "expected_source_top3": true,
+      "refused": false,
+      "answer": "Bệnh gần nhất: Cần vệ sinh buồng đốt bằng dung dịch theo lưu ý của video Satria [C66]\nNguyên nhân: Video cảnh báo làm hở xupap hoặc dùng khí nén khi vệ sinh có thể làm mất độ kín\nCách sửa: Giữ xupap đóng khi vệ sinh, dùng máy hút lấy dung dịch ra; không xoay qua lăng để đẩy dung dịch qua miệng xả, không dùng vòi khí nén xịt vào buồng đốt. Đối chiếu vị trí đóng xupap và thao tác cụ thể trong hình ảnh trước khi thực hiện.\nLưu ý: Kiến thức trích xuất tự động, chưa được thợ duyệt.",
+      "sources": [
+        {
+          "type": "case",
+          "id": "C66",
+          "symptom": "Cần vệ sinh buồng đốt bằng dung dịch theo lưu ý của video Satria",
+          "cause": "Video cảnh báo làm hở xupap hoặc dùng khí nén khi vệ sinh có thể làm mất độ kín",
+          "fix": "Giữ xupap đóng khi vệ sinh, dùng máy hút lấy dung dịch ra; không xoay qua lăng để đẩy dung dịch qua miệng xả, không dùng vòi khí nén xịt vào buồng đốt. Đối chiếu vị trí đóng xupap và thao tác cụ thể trong hình ảnh trước khi thực hiện.",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "\"Vệ sinh buồng đốt bằng dung dịch: \"\"Hết sức cẩn thận\"\"\"",
+          "time": "1:59",
+          "link": "https://www.youtube.com/watch?v=8xIdlKZnfUY&t=119s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C65",
+          "symptom": "Satria hoặc Raider zin mất ralenti, hụt ga đầu sau vệ sinh buồng đốt",
+          "cause": "Theo ca trong video, vệ sinh bằng khí nén và làm hở xupap có thể gây xì/hở",
+          "fix": "Đối chiếu tình trạng xupap và độ kín. Với ca đã bị hở trong video, người nói tháo đầu để xoáy xupap và thay ron mới; cần thợ kiểm tra trực tiếp trước khi kết luận giống ca này.",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "\"Vệ sinh buồng đốt bằng dung dịch: \"\"Hết sức cẩn thận\"\"\"",
+          "time": "2:39",
+          "link": "https://www.youtube.com/watch?v=8xIdlKZnfUY&t=159s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C28",
+          "symptom": "Ngâm ga, ga treo, buông ga mà ga không về (bình Yoshimura)",
+          "cause": "Ốc ralenti thiếu phốt và lông đền; phao ngẩng quá cao do cần phao xiêu vẹo hoặc kim phao dơ; dây ga chỉnh cứng quá",
+          "fix": "Bổ sung lông đền rồi tới phốt cho ốc ralenti; chỉnh cần phao về 90 độ; vệ sinh kim phao và đế kim; chỉnh dây ga khúc đầu lỏng một chút; kiểm tra lò xo bình",
+          "specs": [
+            {
+              "name": "góc phao xăng",
+              "value": "90",
+              "unit": "độ"
+            }
+          ],
+          "reviewed": true,
+          "review_note": "Duyệt tạm, chưa xem kỹ",
+          "video_title": "Yoshimura - Cô nàng đỏng đảnh",
+          "time": "4:01",
+          "link": "https://www.youtube.com/watch?v=3FBSlD0zJN4&t=241s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "chunk",
+          "id": "8xIdlKZnfUY#1",
+          "video_title": "\"Vệ sinh buồng đốt bằng dung dịch: \"\"Hết sức cẩn thận\"\"\"",
+          "time": "0:01",
+          "text": "hôm nay mình gặp cái ca Satria Raider zin nó bị là mất răng ti chạy bị hụt ga đầu xe zin chưa bao giờ rớt nắp cái nguyên do mà bị là do anh bạn này ảnh ảnh Vệ Sinh buồng đốt anh Vệ Sinh buồng đốt sau đó anh đem ra cái tiệm nào đó",
+          "link": "https://www.youtube.com/watch?v=8xIdlKZnfUY&t=1s"
+        },
+        {
+          "type": "chunk",
+          "id": "OuhhpUkpFzw#182",
+          "video_title": "Vài điều lưu ý khi lên pxl bài nhẹ, vệ sinh buồng đốt và lên lò xo nồi giữ bố zin - raider satria fi",
+          "time": "3:02",
+          "text": "mình làm mấy cái này là mày chỉ có anh mà Nhà Vệ Sinh buồng đốt dài vệ sinh Hồng thăng bằng cruzee k1 k2 11 đêm luôn nha chạy có hàng chục ngàn mà nó vô nói thiệt đen thui luôn từ cầu khói với chất Chỉnh ngay điểm thuận tao chỉ cho nó là tại vì à từ cầu khói là Cạo cái đầu đốt này",
+          "link": "https://www.youtube.com/watch?v=OuhhpUkpFzw&t=182s"
+        },
+        {
+          "type": "chunk",
+          "id": "8xIdlKZnfUY#196",
+          "video_title": "\"Vệ sinh buồng đốt bằng dung dịch: \"\"Hết sức cẩn thận\"\"\"",
+          "time": "3:16",
+          "text": "thì sẽ phải đi sấy lại xấu quắc lại và thay cái Ron mới vô là sẽ hết nha Xe này là xe zin thôi chứ không có gì hết thì anh em lưu ý cái chuyện Vệ Sinh buồng đốt Đây là cái máy Satria xe này là cái máy Satria nó rất là nặng nha anh em đồ của nó là nó đi đồng tiền anh em đi xe zin thì tháo ra xoáy xuống bắp thì không cần canh lại đồng tiền đâu",
+          "link": "https://www.youtube.com/watch?v=8xIdlKZnfUY&t=196s"
+        }
+      ]
+    },
+    {
+      "question": "Trong video bơm hơi, lốp ghi 38 PSI thì người nói bơm bao nhiêu?",
+      "expected_video_id": "vPGQ5Xm5adA",
+      "got_video_ids": [
+        "vPGQ5Xm5adA",
+        "WzNkmw93ekE",
+        "8xIdlKZnfUY"
+      ],
+      "expected_source_top3": true,
+      "refused": false,
+      "answer": "Bệnh gần nhất: Bơm và kiểm tra áp suất cho loại lốp được minh họa trong video [C121]\nNguyên nhân: Cần đọc thông số trên lốp và kiểm tra van, không lấy số ghi trên lốp làm áp suất áp dụng máy móc cho mọi trường hợp\nCách sửa: Trong trường hợp lốp này người nói đọc 38 PSI rồi nói không bao giờ bơm 38, để 30 thôi; cứ mở 10 PSI là dừng lại kiểm tra bánh. Sau bơm kiểm tra cái vòi, cái van đã được vặn chặt. Các số này thuộc ví dụ trong video, phải xác nhận áp suất phù hợp của lốp thực tế trước khi áp dụng.\nLưu ý: Kiến thức trích xuất tự động, chưa được thợ duyệt.",
+      "sources": [
+        {
+          "type": "case",
+          "id": "C121",
+          "symptom": "Bơm và kiểm tra áp suất cho loại lốp được minh họa trong video",
+          "cause": "Cần đọc thông số trên lốp và kiểm tra van, không lấy số ghi trên lốp làm áp suất áp dụng máy móc cho mọi trường hợp",
+          "fix": "Trong trường hợp lốp này người nói đọc 38 PSI rồi nói không bao giờ bơm 38, để 30 thôi; cứ mở 10 PSI là dừng lại kiểm tra bánh. Sau bơm kiểm tra cái vòi, cái van đã được vặn chặt. Các số này thuộc ví dụ trong video, phải xác nhận áp suất phù hợp của lốp thực tế trước khi áp dụng.",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Bơm hơi đúng cách",
+          "time": "1:34",
+          "link": "https://www.youtube.com/watch?v=vPGQ5Xm5adA&t=94s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C90",
+          "symptom": "Lốc máy chảy nhớt sau khi tự mài miệng để lắp lòng độ",
+          "cause": "Mài rách mép ron làm ron không lắp kín và nhớt men theo đường rách đi ra",
+          "fix": "Kiểm tra đường mép ron bị rách; trong video người nói đem hàn lại mép để khôi phục chỗ lắp ron, sau đó kiểm tra độ kín.",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Thuốc trị bệnh rung máy, hú máy, ko êm, ì máy",
+          "time": "0:02",
+          "link": "https://www.youtube.com/watch?v=WzNkmw93ekE&t=2s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C65",
+          "symptom": "Satria hoặc Raider zin mất ralenti, hụt ga đầu sau vệ sinh buồng đốt",
+          "cause": "Theo ca trong video, vệ sinh bằng khí nén và làm hở xupap có thể gây xì/hở",
+          "fix": "Đối chiếu tình trạng xupap và độ kín. Với ca đã bị hở trong video, người nói tháo đầu để xoáy xupap và thay ron mới; cần thợ kiểm tra trực tiếp trước khi kết luận giống ca này.",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "\"Vệ sinh buồng đốt bằng dung dịch: \"\"Hết sức cẩn thận\"\"\"",
+          "time": "2:39",
+          "link": "https://www.youtube.com/watch?v=8xIdlKZnfUY&t=159s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "chunk",
+          "id": "vPGQ5Xm5adA#0",
+          "video_title": "Bơm hơi đúng cách",
+          "time": "0:00",
+          "text": "Mình thay lớp, trong trường hợp này là lớp này là 17, 70, 1,4 Thì mình xem cái PSI, tức là số hơi mà nó có thể cho được là bao nhiêu Trong trường hợp cái lớp này là nó là 38psi, tức là nó đòi hơi khá nhiều nha",
+          "link": "https://www.youtube.com/watch?v=vPGQ5Xm5adA&t=0s"
+        },
+        {
+          "type": "chunk",
+          "id": "vPGQ5Xm5adA#94",
+          "video_title": "Bơm hơi đúng cách",
+          "time": "1:34",
+          "text": "Hồi sau đó mình sít cái ti hơi ra vô lại nên có cái tháo vòi ti này nha sau đó mình mới coi là 38 PSI thì mình không bao giờ bơm 38 đó để lúc nào phải 30 thôi sau đó mình mới dẫn cái gòi hơi nhiều rồi",
+          "link": "https://www.youtube.com/watch?v=vPGQ5Xm5adA&t=94s"
+        },
+        {
+          "type": "chunk",
+          "id": "vPGQ5Xm5adA#178",
+          "video_title": "Bơm hơi đúng cách",
+          "time": "2:58",
+          "text": "Lại sao đó mình mới mở ra Mình trước khi mở ra thì mình nhấn Nhấn ở đây mình thấy cứng vừa là được Không cần phải nhất thiết phải là 30 hay là 38 PSI giống như là cái vỏ Khi mà bơm là anh chỉ nhớ cái con tán này. Con tán này lúc mà mình xả hơn, mình bơm thì nó cũng phải lỏng gì nha. Bơm sống rồi thì mình mới xíu nhẹ thôi để dữ lại. Và kiểm tra cái vòi, cái vang này là nó được gặn trọng.",
+          "link": "https://www.youtube.com/watch?v=vPGQ5Xm5adA&t=178s"
+        }
+      ]
+    },
+    {
+      "question": "Đo dàn hơi trước đi tour thì phải giữ ga như thế nào?",
+      "expected_video_id": "560Kf9kVH6E",
+      "got_video_ids": [
+        "560Kf9kVH6E",
+        "LYTA3cJhd98",
+        "BZi2b3s-3Ow"
+      ],
+      "expected_source_top3": true,
+      "refused": false,
+      "answer": "Bệnh gần nhất: Cần kiểm tra dàn hơi máy xe 67 trước khi đi tour xa [C60]\nNguyên nhân: Dàn hơi quá căng được video liên hệ với róc máy và bất lợi khi đi xa\nCách sửa: Theo thao tác trong video: cho máy nổ ít rồi tháo bugi nhẹ nhàng, lắp đồng hồ; xả hết hơi đồng hồ, tắt chìa khóa, mở hết ga và giữ khi đạp đo. Lấy lần kim đầu tiên ngừng tăng, không cố nhồi thêm; xả đồng hồ trước khi tháo. Đơn vị và ngưỡng trên đồng hồ cần thợ đối chiếu hình ảnh.\nLưu ý: Kiến thức trích xuất tự động, chưa được thợ duyệt.",
+      "sources": [
+        {
+          "type": "case",
+          "id": "C60",
+          "symptom": "Cần kiểm tra dàn hơi máy xe 67 trước khi đi tour xa",
+          "cause": "Dàn hơi quá căng được video liên hệ với róc máy và bất lợi khi đi xa",
+          "fix": "Theo thao tác trong video: cho máy nổ ít rồi tháo bugi nhẹ nhàng, lắp đồng hồ; xả hết hơi đồng hồ, tắt chìa khóa, mở hết ga và giữ khi đạp đo. Lấy lần kim đầu tiên ngừng tăng, không cố nhồi thêm; xả đồng hồ trước khi tháo. Đơn vị và ngưỡng trên đồng hồ cần thợ đối chiếu hình ảnh.",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Kiểm tra quan trọng nhất trước khi đi tour xa - xe 67",
+          "time": "4:13",
+          "link": "https://www.youtube.com/watch?v=560Kf9kVH6E&t=253s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C77",
+          "symptom": "dính thắng, dính tay thắng đỉnh trước sau",
+          "cause": "do bụi nó bám vào đây trong mùa mưa",
+          "fix": "lấy súng mình xịt là Ok nếu mà bán nhẹ còn không thì phải mở ra lau chùi vô bờ",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Vi sao phải vệ sinh máy thật kỹ",
+          "time": "0:38",
+          "link": "https://www.youtube.com/watch?v=LYTA3cJhd98&t=38s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C68",
+          "symptom": "Lắp đặt và bảo quản cục AFR và ECU trước khi đi phượt đường dài mùa tết",
+          "cause": "Cục AFR và ECU rất nhạy cảm, đắt tiền, nếu không cố định kỹ có thể bị cạ vào thiết bị gây nhiệt, dính nước hoặc bị hỏng khi chạy tốc độ cao",
+          "fix": "Quấn cục AFR chặt vừa phải trên lọc gió, tránh thiết bị gây nhiệt và nước; dùng keo giấy gá dàn điện của ECU, AFR và cảm biến ôm sát vào sườn xe, không siết quá chặt và cách điện kỹ trước khi lắp dàn áo lên",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Kiểm tra xăng gió afr module, ecu, dàn điện trước khi bào tour mùa tết",
+          "time": "0:01",
+          "link": "https://www.youtube.com/watch?v=BZi2b3s-3Ow&t=1s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "chunk",
+          "id": "560Kf9kVH6E#253",
+          "video_title": "Kiểm tra quan trọng nhất trước khi đi tour xa - xe 67",
+          "time": "4:13",
+          "text": "nha tại vì anh em mà ráng đạp nữa thì nó vẫn ráng nó nó nhát hơi vô thì cái đó không phải là cái hơi vốn dĩ của nó khi mà mình đặt thì mình tắt chìa khóa nha không cần cái này mình lấy hơi thôi trước khi mình đạp là mình bấm cái nút này để mình xả hơi nó ra hết Rồi khi mình đạp là mình phải dặn hết ga nha anh em dặn hết ga và giữ đó không có trả về ha giữ Chừng nào mà mình đo xong mình lấy hết hơi xong rồi mình mới trả",
+          "link": "https://www.youtube.com/watch?v=560Kf9kVH6E&t=253s"
+        },
+        {
+          "type": "chunk",
+          "id": "560Kf9kVH6E#35",
+          "video_title": "Kiểm tra quan trọng nhất trước khi đi tour xa - xe 67",
+          "time": "0:35",
+          "text": "nó hơi căng nó bị bể nhẹ công xuống bậc đủ thứ bệnh nữa róc máy đặc biệt anh em đi cái cây cam BRT nó còn rốc ác nữa rất là dài thì khi mà cái overlap nó dài thì anh em đi nước hậu với lại đi nước dừa rất là ngon thì nó rất là hợp cho cái vị mà mình đi tour cái cây overlap dài nhưng mà ngược lại kêu grab dài nó không có chịu được hơi căng chị thì cái hơi căng là cái hơi như thế nào bây giờ máy đã ráp rồi mình đâu có đo",
+          "link": "https://www.youtube.com/watch?v=560Kf9kVH6E&t=35s"
+        },
+        {
+          "type": "chunk",
+          "id": "560Kf9kVH6E#144",
+          "video_title": "Kiểm tra quan trọng nhất trước khi đi tour xa - xe 67",
+          "time": "2:24",
+          "text": "xa đầu tiên là mình phải nổ máy nha mình nổ máy bình thường thường máy mà nó có vàng mà hơi mà nó căng là nó nổ rất là chắc [Vỗ tay] thì anh em nó cố gắng là khi mà mình nghe tiếng máy rồi mình cũng đã biết cái dàn hơi này là không có thể nào mà dưới 10 được nhưng mà mình coi coi nó dư bao nhiêu nha như tiếng hơi này là mình đi trong thành phố rồi này kia thôi",
+          "link": "https://www.youtube.com/watch?v=560Kf9kVH6E&t=144s"
+        }
+      ]
+    },
+    {
+      "question": "Đi tour dài về máy kêu tạch tạch thì kiểm tra lò xo tăng cam thế nào?",
+      "expected_video_id": "jRbzVJ0Q_gc",
+      "got_video_ids": [
+        "jRbzVJ0Q_gc",
+        "GkolFU3Pd_E",
+        "560Kf9kVH6E"
+      ],
+      "expected_source_top3": true,
+      "refused": false,
+      "answer": "Bệnh gần nhất: Sau đi tour dài máy có tiếng tạch tạch, gõ sên cam [C105]\nNguyên nhân: Trong trường hợp video, lò xo ống sáo tăng cam yếu, dễ bấm xuống bằng một ngón tay\nCách sửa: Kiểm tra ống sáo và lò xo tăng cam như video; người nói thay lò xo cứng hơn một chút rồi cho máy nổ kiểm tra lại tiếng kêu.\nLưu ý: Kiến thức trích xuất tự động, chưa được thợ duyệt.",
+      "sources": [
+        {
+          "type": "case",
+          "id": "C105",
+          "symptom": "Sau đi tour dài máy có tiếng tạch tạch, gõ sên cam",
+          "cause": "Trong trường hợp video, lò xo ống sáo tăng cam yếu, dễ bấm xuống bằng một ngón tay",
+          "fix": "Kiểm tra ống sáo và lò xo tăng cam như video; người nói thay lò xo cứng hơn một chút rồi cho máy nổ kiểm tra lại tiếng kêu.",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Tiếng kêu tạch tạch sau 1 tour",
+          "time": "0:38",
+          "link": "https://www.youtube.com/watch?v=jRbzVJ0Q_gc&t=38s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C73",
+          "symptom": "Cần thao tác tăng cam khi lắp",
+          "cause": "Tháo tăng cam ra thì kim đi ra dài",
+          "fix": "Tháo cái này ra trước rồi tháo cái kia ra sau, lúc vô lại phải cho hạ cái kim thấp xuống rồi mới gắn cốt này vô, cốt này có lò xo đẩy kim đi vô tới mức vừa phải tự dừng lại",
+          "specs": [
+            {
+              "name": "lực siết ốc",
+              "value": "10",
+              "unit": "nm"
+            }
+          ],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Lưu ý khi lắp đầu culass DOHC",
+          "time": "2:29",
+          "link": "https://www.youtube.com/watch?v=GkolFU3Pd_E&t=149s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C60",
+          "symptom": "Cần kiểm tra dàn hơi máy xe 67 trước khi đi tour xa",
+          "cause": "Dàn hơi quá căng được video liên hệ với róc máy và bất lợi khi đi xa",
+          "fix": "Theo thao tác trong video: cho máy nổ ít rồi tháo bugi nhẹ nhàng, lắp đồng hồ; xả hết hơi đồng hồ, tắt chìa khóa, mở hết ga và giữ khi đạp đo. Lấy lần kim đầu tiên ngừng tăng, không cố nhồi thêm; xả đồng hồ trước khi tháo. Đơn vị và ngưỡng trên đồng hồ cần thợ đối chiếu hình ảnh.",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Kiểm tra quan trọng nhất trước khi đi tour xa - xe 67",
+          "time": "4:13",
+          "link": "https://www.youtube.com/watch?v=560Kf9kVH6E&t=253s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "chunk",
+          "id": "jRbzVJ0Q_gc#0",
+          "video_title": "Tiếng kêu tạch tạch sau 1 tour",
+          "time": "0:00",
+          "text": "Hello anh em đây là cái trường hợp cái máy đã được đi tour về một cái tour dài mà nó đang bị gõ trên cam rồi nha gõ xin cam là xài Ống Sáo lò xo chính hãng nha Thì trong trường hợp này là mình phải xử lý cái phải mở con ốc cam này ra mình thay cái giọng lò xo Ống Sáo tăng cam thì cái lò xo này khi mà mình tháo ra từ",
+          "link": "https://www.youtube.com/watch?v=jRbzVJ0Q_gc&t=0s"
+        },
+        {
+          "type": "chunk",
+          "id": "jRbzVJ0Q_gc#73",
+          "video_title": "Tiếng kêu tạch tạch sau 1 tour",
+          "time": "1:13",
+          "text": "gần như nó mất luôn thì sau khi tăng cam thì nhớ nổ máy thì nghiêng máy xe xíu rồi nẹp ra cho nó nổ",
+          "link": "https://www.youtube.com/watch?v=jRbzVJ0Q_gc&t=73s"
+        },
+        {
+          "type": "chunk",
+          "id": "jRbzVJ0Q_gc#38",
+          "video_title": "Tiếng kêu tạch tạch sau 1 tour",
+          "time": "0:38",
+          "text": "trong cái lò xo din á thì đây nè Đây là cái loại xe mình dùng một ngón tay mình bấm là nó cũng đi xuống luôn Còn bây giờ thì mình giới thiệu với anh em cái lò xo mà mình độ lại nó cứng hơn một tí mình còn cũng khá nhiều anh em cần thì nói để lại hữu nghị cho vui vẻ thôi thì sau khi mà mình thay cái lò xo của mình vô thì bạn các bạn nghe là chỉ còn nghe tiếng máy hay cái tiếng là sạch Nó",
+          "link": "https://www.youtube.com/watch?v=jRbzVJ0Q_gc&t=38s"
+        }
+      ]
+    },
+    {
+      "question": "Lòng mới đóng sơ mi mà piston bó quá thì kiểm tra ra sao?",
+      "expected_video_id": "QtwNAvFpQnA",
+      "got_video_ids": [
+        "QtwNAvFpQnA",
+        "VEcL-HPiC48",
+        "WzNkmw93ekE"
+      ],
+      "expected_source_top3": true,
+      "refused": false,
+      "answer": "Bệnh gần nhất: Piston trong lòng xylanh vừa đóng sơ mi quá bó [C84]\nNguyên nhân: Theo video, tiệm tiện có thể làm sơ mi quá bó nên piston không tuột xuống khi kiểm tra\nCách sửa: Bỏ trái piston vào lòng sơ mi, gõ nhẹ để xem trái có xuống vài cm hay không. Nếu lòng quá bó thì đem ra tiệm tiện, yêu cầu buly thêm một lần rồi kiểm tra lại; không suy ra khe hở đo chuẩn từ mẹo này.\nLưu ý: Kiến thức trích xuất tự động, chưa được thợ duyệt.",
+      "sources": [
+        {
+          "type": "case",
+          "id": "C84",
+          "symptom": "Piston trong lòng xylanh vừa đóng sơ mi quá bó",
+          "cause": "Theo video, tiệm tiện có thể làm sơ mi quá bó nên piston không tuột xuống khi kiểm tra",
+          "fix": "Bỏ trái piston vào lòng sơ mi, gõ nhẹ để xem trái có xuống vài cm hay không. Nếu lòng quá bó thì đem ra tiệm tiện, yêu cầu buly thêm một lần rồi kiểm tra lại; không suy ra khe hở đo chuẩn từ mẹo này.",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Mẹo để có 1 cái lòng xylanh đóng sơ mi ngon",
+          "time": "1:50",
+          "link": "https://www.youtube.com/watch?v=QtwNAvFpQnA&t=110s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C88",
+          "symptom": "Kiểm tra tổng thể hộp số xem có hoạt động ngon hay không sau khi lắp gá vào lốc máy",
+          "cause": "Kiểm tra trước để tránh tình trạng ráp hoàn chỉnh xe mà hộp số lỗi phải rã máy ra lại",
+          "fix": "Gá tạm bộ số vào lốc máy, gắn lò xo giò đạp, siết 3 con ốc gá, lắp tay số, bông mai, dấu hỏi và cần số, sau đó vừa quay cốt vừa thao tác chuyển số để kiểm tra các cấp số từ mo đến số 4.",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Ráp full cục máy wave 110 dên đôn - Bài 3:  Ráp số cốt nồi và kiểm số tổng thể",
+          "time": "3:40",
+          "link": "https://www.youtube.com/watch?v=VEcL-HPiC48&t=220s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "case",
+          "id": "C91",
+          "symptom": "Máy rung, hú, ì và lắp dên vào lốc quá cứng",
+          "cause": "Ổ lắp dên trong lốc quá bó ghì cây dên, gây rung máy theo mô tả trong video",
+          "fix": "Kiểm tra độ lắp dên và ổ trong lốc, xử lý lại chỗ quá bó theo thao tác được minh họa. Với cấu hình đang làm, người nói yêu cầu còn lắp được bằng búa nhựa gõ nhẹ, không bó đến mức phải dùng cảo, cũng không lỏng đến mức tự rơi vào; cần thợ kiểm tra độ lắp thực tế.",
+          "specs": [],
+          "reviewed": false,
+          "review_note": "Trích xuất tự động từ phụ đề; chưa được thợ duyệt.",
+          "video_title": "Thuốc trị bệnh rung máy, hú máy, ko êm, ì máy",
+          "time": "4:59",
+          "link": "https://www.youtube.com/watch?v=WzNkmw93ekE&t=299s",
+          "source": "video",
+          "author": null,
+          "created_at": null
+        },
+        {
+          "type": "chunk",
+          "id": "QtwNAvFpQnA#110",
+          "video_title": "Mẹo để có 1 cái lòng xylanh đóng sơ mi ngon",
+          "time": "1:50",
+          "text": "anh em đã yêu quý mình nha khi anh em đem cái lòng mà mình đã đóng lòng sơ mi rồi đó anh em bỏ cái trái vô xong sau đó anh em để lên cỡ một tấc anh em gõ xuống gõ gõ cỡ lực cỡ Vậy thôi nha Coi coi cái trái của nó nó có xuống hay không xuống Khoảng vài cm hay không Nếu như mà nó không có xuống vài cm có nghĩa rằng là cái cái lò này sơ mi lòng này nó bót quá nha thì khi mà cái sơ mi lòng này nó bót quá thì mình chỉ cho anh em một cái mẹo",
+          "link": "https://www.youtube.com/watch?v=QtwNAvFpQnA&t=110s"
+        },
+        {
+          "type": "chunk",
+          "id": "5f-RHjR1OhI#658",
+          "video_title": "Vớt piston cần lưu ý gì",
+          "time": "10:58",
+          "text": "Quay máy kiểm tra không đụng, trơn tru là ngon. Dùng cây lục giác thò vào rà đầu piston: piston lên cao thì cây bị đẩy lên, xuống thấp thì cây quay về, để tìm điểm chết trên.",
+          "link": "https://www.youtube.com/watch?v=5f-RHjR1OhI&t=658s"
+        },
+        {
+          "type": "chunk",
+          "id": "QtwNAvFpQnA#181",
+          "video_title": "Mẹo để có 1 cái lòng xylanh đóng sơ mi ngon",
+          "time": "3:01",
+          "text": "Khi mà mình dọng giống như hồi nãy nó tuộc chừng vài cm là được là bởi vì sao khi mà anh em đi đóng sơ mi lò về là cái người thợ tiện nó theo quán tính nha lúc nào họ cũng làm cho nó bó Hết giờ mình đem ra buly như vậy họ sẽ lấy thêm Mình khoảng 10 15.000 20.000 không đáng nha Nhưng mà anh em không có biết á nếu mà anh em để như vậy mà anh em rai á là thời gian là cái nó bị rơ hết cái tay dên rơ ngay cái ắc ắc Dên n hư luôn tay Dên luôn thay ắc cũng được luôn cho nên cái lòng này á Nó bót vừa thôi nha nghe",
+          "link": "https://www.youtube.com/watch?v=QtwNAvFpQnA&t=181s"
+        }
+      ]
+    }
+  ]
+}

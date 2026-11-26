@@ -197,13 +197,14 @@ def retrieve(q, top_cases=TOP_CASES, top_chunks=TOP_CHUNKS):
     queries = [q] if q2 == q else [q, q2]
     t_normalize = time.perf_counter()
 
-    case_bm, _ = _bm25_rank(st["bm25_cases"], queries)
+    case_bm, case_scores = _bm25_rank(st["bm25_cases"], queries)
     chunk_bm, _ = _bm25_rank(st["bm25_chunks"], queries)
     t_bm25 = time.perf_counter()
     case_vec = _vec_rank("cases", q2)
     chunk_vec = _vec_rank("chunks", q2)
     t_vector = time.perf_counter()
-    cases = _rrf([case_bm, case_vec])[:top_cases]
+    fused_cases = _rrf([case_bm, case_vec])
+    case_order = dxa.prefer_clear_keyword_match([i for i, _ in fused_cases], case_bm, case_scores)
     chunks = _rrf([chunk_bm, chunk_vec])[:top_chunks]
     levels = [dxa.scope_level(st, x) for x in queries]
     t_done = time.perf_counter()
@@ -213,7 +214,7 @@ def retrieve(q, top_cases=TOP_CASES, top_chunks=TOP_CHUNKS):
         "query_used": q2,
         "in_scope": "in" in levels,
         "near": "in" not in levels and "near" in levels,
-        "cases": [i for i, _ in cases],
+        "cases": case_order[:top_cases],
         "chunks": [i for i, _ in chunks],
         "mode": mode(),
         "timings_ms": {

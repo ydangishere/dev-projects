@@ -1,0 +1,37 @@
+Bước 1 Lấy phụ đề   :  3 WARN
+    WARN  3pTEaUviyBo: chỉ 53 chữ/phút, video nhiều đoạn chỉ có hình
+    WARN  8jPviBuEki0: chỉ 53 chữ/phút, video nhiều đoạn chỉ có hình
+    WARN  nn_iK1KL32Y: phụ đề dừng ở 227s / 297s, có thể bị cắt
+Bước 2 Làm sạch     :  14 WARN
+    WARN  3nxaZW8df0w#147: đoạn quá ngắn (2 chữ)
+    WARN  LYTA3cJhd98#151: đoạn quá ngắn (7 chữ)
+    WARN  U84fnGx_9pc#363: đoạn quá ngắn (3 chữ)
+    WARN  VEcL-HPiC48#531: đoạn quá ngắn (1 chữ)
+    WARN  WP9XFh09d48#756: đoạn quá ngắn (6 chữ)
+    WARN  WP9XFh09d48#803: đoạn quá ngắn (2 chữ)
+    WARN  XgXEYTJH4vk#328: đoạn quá ngắn (2 chữ)
+    WARN  cC-EUL9bFQE#120: đoạn quá ngắn (4 chữ)
+    WARN  hW4AjHZJI_I#441: đoạn quá ngắn (6 chữ)
+    WARN  if9BYB5hLMY#727: đoạn quá ngắn (3 chữ)
+    WARN  oaNQjQUx41k#804: đoạn quá ngắn (2 chữ)
+    WARN  v3DYQBTEzyA#323: đoạn quá ngắn (6 chữ)
+    WARN  vo04KAQA9io#108: đoạn quá ngắn (6 chữ)
+    WARN  yj8b9idtyQk#41: đoạn quá ngắn (3 chữ)
+Bước 3 Rút tri thức :  14 WARN
+    WARN  C58: chỉ 11% cụm từ có trong phụ đề quanh 335s -> nên xem lại
+    WARN  C62: phụ tùng 'supap Sum' không thấy trong phụ đề
+    WARN  C67: chỉ 11% cụm từ có trong phụ đề quanh 116s -> nên xem lại
+    WARN  C71: phụ tùng 'baga Givi' không thấy trong phụ đề
+    WARN  C84: phụ tùng 'piston' không thấy trong phụ đề
+    WARN  C91: chỉ 12% cụm từ có trong phụ đề quanh 299s -> nên xem lại
+    WARN  C96: chỉ 15% cụm từ có trong phụ đề quanh 222s -> nên xem lại
+    WARN  C106: chỉ 10% cụm từ có trong phụ đề quanh 0s -> nên xem lại
+    WARN  C106: phụ tùng 'vòng bi' không thấy trong phụ đề
+    WARN  C107: phụ tùng 'trục khuỷu' không thấy trong phụ đề
+    WARN  C114: chỉ 13% cụm từ có trong phụ đề quanh 144s -> nên xem lại
+    WARN  C118: phụ tùng 'xúp-pắp' không thấy trong phụ đề
+    WARN  C120: phụ tùng 'lòng' không thấy trong phụ đề
+    WARN  C121: phụ tùng 'lốp' không thấy trong phụ đề
+Bước 4 Graph + SQL  : PASS
+
+Video: 144 | có nội dung: 122 | đoạn: 1148 | case: 125

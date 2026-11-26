@@ -241,6 +241,22 @@ def rrf(rank_lists, k=60):
             score[i] += 1 / (k + r)
     return sorted(score, key=lambda i: -score[i])
 
+
+def prefer_clear_keyword_match(ranked, keyword_ranked, scores, ratio=1.5):
+    """Keep a clear lexical match from being lost in a larger offline corpus.
+
+    RRF only sees positions, so a large BM25 score advantage can disappear when
+    the offline vector ranks a broad, related case higher. Preserve fusion when
+    the keyword scores are close; otherwise prefer the substantially stronger
+    keyword result.
+    """
+    if len(keyword_ranked) < 2:
+        return ranked
+    first, second = keyword_ranked[:2]
+    if scores[first] > 0 and scores[first] >= ratio * scores[second]:
+        return [first] + [index for index in ranked if index != first]
+    return ranked
+
 # Câu hỏi được coi là "có trong kho" khi đủ CẢ HAI điều kiện (đo trên eval.py, chỉnh lại mỗi lần thêm video):
 #   1. BM25 cao nhất >= MIN_BM25          -> câu hỏi khớp đủ nhiều chữ với một case
 #   2. Độ phủ chữ hiếm >= MIN_COVER       -> những chữ HIẾM trong câu hỏi (vd "lốp", "phanh") phải có trong case trả lời
@@ -289,15 +305,17 @@ def search(state, q, top=5):
     qt = tokens(q)
     qv = state["vec"].encode([q])[0]
 
-    def hybrid(bm, E, n):
+    def hybrid(bm, E, n, prefer_keywords=False):
         b = bm.scores(qt)
         v = E @ qv
         ranks_b = [i for i in np.argsort(-b) if b[i] > 0][:20]
         ranks_v = list(np.argsort(-v))[:20]
         fused = rrf([ranks_b, ranks_v])
+        if prefer_keywords:
+            fused = prefer_clear_keyword_match(fused, ranks_b, b)
         return [(i, float(b[i]), float(v[i])) for i in fused[:n]]
 
-    return hybrid(state["bm25_cases"], state["E_cases"], 3), hybrid(state["bm25_chunks"], state["E_chunks"], top)
+    return hybrid(state["bm25_cases"], state["E_cases"], 3, True), hybrid(state["bm25_chunks"], state["E_chunks"], top)
 
 def graph_context(state, case):
     """Từ triệu chứng, đi theo graph để lấy mọi nguyên nhân / cách sửa khác có cùng phụ tùng."""

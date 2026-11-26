@@ -4,3 +4,7 @@ __pycache__/
 *.pyc
 data/unanswered.jsonl
 .venv/
+data/staging/
+data/knowledge_expert_history.jsonl
+reports/*preview*
+reports/youtube_unused_workload.json

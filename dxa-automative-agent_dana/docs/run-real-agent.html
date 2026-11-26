@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DXA Dana — Hướng dẫn chạy agent thật</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f4ef;color:#18354b;font-family:"Segoe UI",Arial,sans-serif}.page{width:1600px;margin:auto;padding:48px 64px}.eyebrow{font-size:17px;font-weight:800;letter-spacing:.13em;color:#168076;text-transform:uppercase}h1{font-size:48px;margin:10px 0}.sub{font-size:20px;color:#566b78;line-height:1.4;margin:0 0 24px}.panel{background:#fffefa;border:1.5px solid #d6dfdf;border-radius:20px;padding:21px 24px;box-shadow:0 6px 18px #1730460b}.start{display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px}.step{background:#eef3f1;border-radius:15px;padding:17px 19px;min-height:124px}.step b{display:block;font-size:19px;margin-bottom:7px}.step p{font-size:16px;line-height:1.35;color:#526572;margin:0}.key{background:#fff1d9;border:1px solid #f1dfbb;border-radius:12px;padding:11px 15px;margin-top:14px;color:#654b28;font-size:16px}.key b{color:#8a561a}.section-title{font-size:23px;margin:24px 0 12px}.flow{display:grid;grid-template-columns:1fr 42px 1fr 42px 1fr 42px 1fr;align-items:stretch;gap:7px}.node{background:#fffefa;border:1.5px solid #d6dfdf;border-radius:16px;padding:17px 15px;min-height:140px}.node .tag{display:inline-block;background:#e1efec;border-radius:8px;padding:5px 8px;font-size:13px;font-weight:800;color:#226b63;margin-bottom:9px}.node b{display:block;font-size:19px;margin-bottom:7px}.node p{font-size:15px;line-height:1.35;color:#526572;margin:0}.arr{display:grid;place-items:center;color:#168076;font-size:29px;font-weight:800}.second{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.branch{border-radius:15px;padding:15px 18px;font-size:16px;line-height:1.4}.branch.bad{background:#f8e9e5;color:#754139}.branch.ok{background:#e8f2eb;color:#315949}.verify{display:grid;grid-template-columns:1fr 1fr;gap:15px}.verify .panel{padding:18px 21px}.verify h3{font-size:19px;margin:0 0 9px}.verify p{font-size:16px;line-height:1.42;color:#526572;margin:0}.code{margin-top:10px;padding:11px 13px;border-radius:10px;background:#edf2f4;font:15px Consolas,monospace;color:#214a5d}.small{font-size:14px;color:#687778;line-height:1.4;margin:10px 0}.footer{background:#18354b;color:white;padding:16px 20px;border-radius:14px;margin-top:17px;font-size:16px;line-height:1.4}.footer b{color:#a8ded5}
+</style></head>
+<body><main class="page">
+<div class="eyebrow">DXA Dana · runbook</div><h1>Chạy agent thật: từ bật máy đến câu trả lời</h1>
+<p class="sub">“Agent thật” ở đây là workflow Dana được nạp, Gemini thật viết câu trả lời, còn Python tìm nguồn và kiểm nội dung. Chạy app lên chưa đủ để xác nhận cả ba phần đang hoạt động.</p>
+<section class="start">
+<article class="step"><b>1 · Chuẩn bị</b><p>Windows, Python 3.12+, mạng Internet và Gemini API key hợp lệ. Lấy key ở Google AI Studio.</p></article>
+<article class="step"><b>2 · Bấm run.bat</b><p>Lần đầu tạo môi trường .venv và cài Dana/thư viện; nhập key khi được hỏi. Chờ tới dòng máy chủ chạy ở cổng 8000.</p></article>
+<article class="step"><b>3 · Mở giao diện</b><p>run.bat tự mở trình duyệt; nếu chưa mở, vào <b>http://localhost:8000</b>. Bật “Để Gemini viết câu trả lời”.</p></article>
+</section>
+<div class="key"><b>Key được lưu trong .env</b> ở máy chạy DXA; không gửi key vào chat, không commit file .env lên Git. Lần chạy sau, launcher dùng lại key đã lưu.</div>
+<h2 class="section-title">Một câu hỏi đi qua hệ thống thế nào?</h2>
+<section class="flow">
+<article class="node"><span class="tag">BROWSER</span><b>Người dùng hỏi</b><p>Giao diện gửi câu hỏi với use_llm=true tới API.</p></article><div class="arr">→</div>
+<article class="node"><span class="tag">FASTAPI</span><b>POST /ask</b><p>api.py chuyển câu hỏi cho cầu nối dxa_dana.py.</p></article><div class="arr">→</div>
+<article class="node"><span class="tag">DANA WORKFLOW</span><b>Tìm → chặn → viết → kiểm</b><p>dxa_agent.na điều phối; Python tools thực hiện luật và truy xuất.</p></article><div class="arr">→</div>
+<article class="node"><span class="tag">PYTHON RETRIEVAL</span><b>Tìm bằng chứng</b><p>BM25 + vector, gộp RRF; lấy case/đoạn trúng và đoạn kề ±1 cùng video.</p></article>
+</section>
+<section class="flow" style="margin-top:12px;grid-template-columns:1fr 42px 1fr 42px 1fr 42px 1fr">
+<article class="node"><span class="tag">GATE</span><b>Đủ căn cứ?</b><p>Nếu ngoài phạm vi, từ chối và lưu câu hỏi; không gọi Gemini để đoán.</p></article><div class="arr">→</div>
+<article class="node"><span class="tag">GEMINI</span><b>reason() viết</b><p>Gemini nhận câu hỏi cùng context đã tìm; không tự tìm dữ liệu ngoài kho.</p></article><div class="arr">→</div>
+<article class="node"><span class="tag">CHECK</span><b>Kiểm câu trả lời</b><p>Kiểm mã case và con số; nếu lỗi thì bỏ bản LLM và dùng câu ghép khuôn.</p></article><div class="arr">→</div>
+<article class="node"><span class="tag">KẾT QUẢ</span><b>Trả lời + nguồn</b><p>Giao diện hiện câu trả lời, case, link video và mốc thời gian.</p></article>
+</section>
+<section class="second">
+<div class="branch ok"><b>Đúng chế độ Gemini:</b> nhập câu hỏi có trong dữ liệu → giao diện ghi “Gemini viết từ các case bên phải” (answered_by=llm), có nguồn, không có cảnh báo fallback.</div>
+<div class="branch bad"><b>Chưa phải câu trả lời Gemini:</b> thiếu/sai key, lỗi Dana/Gemini hoặc kiểm thất bại → có thể dùng offline/template/Python; đọc dòng cảnh báo trong UI và cửa sổ terminal.</div>
+</section>
+<h2 class="section-title">Xác nhận trước khi demo hoặc bàn giao</h2>
+<section class="verify">
+<article class="panel"><h3>A · Kiểm tra dịch vụ và index</h3><p>Mở endpoint health. Cần thấy <b>ok=true</b>, <b>engine=dana</b>, có số cases/chunks/videos. <b>mode=gemini</b> xác nhận vector Gemini đã nạp; mode này tự nó chưa chứng minh câu trả lời được Gemini viết.</p><div class="code">http://localhost:8000/health</div></article>
+<article class="panel"><h3>B · Kiểm tra một câu trả lời thật</h3><p>Hỏi một câu có trong kho, ví dụ “Bình xăng con chảy xăng khi dựng xe”. Xác nhận nhãn “Gemini viết từ các case bên phải”, nguồn video hiện đúng và không có cảnh báo agent fallback.</p><div class="code">POST /ask → answered_by: "llm" · warnings: []</div></article>
+</section>
+<div class="small"><b>Nếu health báo offline:</b> xem key trong .env, kiểm tra internet rồi khởi động lại để chạy build_gemini.py. <b>Nếu giao diện nói ghép khuôn/Python:</b> xem cảnh báo ở terminal; dxa_dana tự fallback khi workflow lỗi. API key và số liệu chi phí phụ thuộc tài khoản Google AI Studio.</div>
+<div class="footer"><b>Luồng thật cần xác nhận:</b> Dana workflow được nạp + retrieval có nguồn + Gemini trả lời (answered_by=llm) + kiểm chống bịa qua + nguồn mở đúng video. Nếu thiếu một bước, chưa nên gọi đó là lần chạy Gemini end-to-end.</div>
+</main></body></html>
