@@ -263,3 +263,14 @@ def test_llm_extraction_accepts_plain_string_answers(monkeypatch):
     monkeypatch.setattr(extraction_module, "complete_json", lambda *a, **k: {"term_months": "24 tháng"})
     result = extract([doc], FAKE_LLM, send_documents_to_llm=True)
     assert result.fields["loan_application"]["term_months"].value == 24
+
+
+def test_placeholder_without_brackets_is_restored_and_short_ids_rejected(monkeypatch):
+    doc = load_document("don.txt", ("ĐƠN ĐỀ NGHỊ CẤP TÍN DỤNG\nSố căn cước: 001096000006\n"
+                                     "Tôi tên là: Đặng Quốc Huy").encode())
+    monkeypatch.setattr(extraction_module, "complete_json", lambda *a, **k: {
+        "id_number": {"value": "CCCD_1", "line": "L1"}})
+    fields = extract([doc], FAKE_LLM, send_documents_to_llm=True).fields["loan_application"]
+    assert fields["id_number"].value == "001096000006"
+    monkeypatch.setattr(extraction_module, "complete_json", lambda *a, **k: {"id_number": {"value": "1"}})
+    assert "id_number" not in extract([doc], FAKE_LLM, send_documents_to_llm=True).fields["loan_application"]

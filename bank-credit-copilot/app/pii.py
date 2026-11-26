@@ -129,6 +129,8 @@ class Masker:
         return "".join(out)
 
     def unmask(self, text: str) -> str:
+        # small models often drop the angle brackets: "CCCD_1" or "[PERSON_1]" -> "<CCCD_1>"
+        text = re.sub(r"[<\[]?\b(CCCD|PERSON|STK|SDT)_(\d+)\b[>\]]?", r"<\1_\2>", text)
         for placeholder, original in self.mapping.items():
             text = text.replace(placeholder, original)
         return text

@@ -36,7 +36,7 @@ def _text(value: str) -> str | None:
 
 def _id(value: str) -> str | None:
     digits = re.sub(r"\D", "", value)
-    return digits or None
+    return digits if 9 <= len(digits) <= 12 else None  # CMND has 9 digits, CCCD 12
 
 
 def _date_or_indefinite(value: str) -> date | str | None:
@@ -191,7 +191,8 @@ def _grounded(value: Any, line: str) -> bool:
         return any(form in line for form in (value.strftime("%d/%m/%Y"), f"{value.day}/{value.month}/{value.year}"))
     if isinstance(value, int):
         return re.search(rf"(?<!\d){value}(?!\d)", re.sub(r"(?<=\d)[.,\s](?=\d)", "", line)) is not None
-    return bool(norm(str(value))) and norm(str(value)) in norm(line)
+    text = norm(str(value))
+    return len(text) >= 2 and text in norm(line)
 
 
 @traced("llm-extract-fields")
