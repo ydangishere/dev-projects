@@ -58,3 +58,13 @@ The SDK HTTP export smoke also passed with a temporary loopback collector, inclu
 ## DeepEval local smoke
 
 Dolphin Mistral 7B through local Ollama scored DXA-001: correctness 0.20, faithfulness 0.75, relevance 0.25 (one case per metric). These are smoke results, not dataset-level estimates. The full semantic run targets the 46 answerable cases with repository labels and reports coverage independently of the 100-case operational baseline.
+
+## DeepEval baseline on the 46 answerable labelled cases
+
+| Metric | Mean valid score | Scored | Judge errors |
+| --- | ---: | ---: | ---: |
+| Correctness | 0.0462 | 39/46 | 7 |
+| Faithfulness | 0.3214 | 7/46 | 39 |
+| Relevance | 0.2589 | 45/46 | 1 |
+
+All 46 eligible cases were attempted with Dolphin Mistral 7B, DeepEval 3.9.9, a 384-token output cap and a 20-second provider timeout. Each mean uses the valid scores for that metric. Coverage is especially low for faithfulness, so its mean describes only the scored subset. Judge errors are preserved per case in [the semantic evaluation results](day1-deepeval.json). The operational baseline separately covers all 100 prompts.
