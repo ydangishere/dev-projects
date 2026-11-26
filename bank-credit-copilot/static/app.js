@@ -69,6 +69,8 @@ function renderResult(r) {
       <div class="label">${esc(r.verdict_label)}</div>
       <div class="meta">${esc(r.case_id)} · ${esc(r.applicant || "—")} · CCCD ${esc(r.applicant_id_masked)} · ngày thẩm định ${esc(r.as_of)} · audit ${esc(r.audit_id)}</div>
     </div>
+    ${r.extraction.security_flags.length ? `<div class="security">⚠ Phát hiện ${r.extraction.security_flags.length} dòng trong hồ sơ chứa câu lệnh nhắm vào AI. Các dòng này đã bị loại, không gửi cho mô hình, và không ảnh hưởng kết luận:<ul>${r.extraction.security_flags.map((f) => `<li>${esc(f.filename)} · trang ${esc(f.page)}: <code>${esc(f.line)}</code></li>`).join("")}</ul></div>` : ""}
+    ${r.extraction.pii && r.extraction.pii.masked ? `<p class="source-note">Đã che ${Object.values(r.extraction.pii.masked).reduce((a, b) => a + b, 0)} thông tin cá nhân (${esc(Object.keys(r.extraction.pii.masked).join(", ") || "không có")}) trước khi gửi mô hình · ${esc(r.extraction.pii.engine)}</p>` : ""}
     <div class="docs">${docLinks}</div>
     <div class="tiles">
       <div class="tile"><div class="k">Thu nhập xét duyệt</div><div class="v">${vnd(f.income_for_assessment)}</div></div>
@@ -78,7 +80,7 @@ function renderResult(r) {
     </div>
     <h2>Tờ trình tóm tắt</h2>
     <p class="summary">${esc(n.summary)}</p>
-    <p class="source-note">Soạn bởi: ${n.source === "template" ? "mẫu cố định (chế độ offline)" : esc(n.source)}${n.fallback_reason ? " · LLM bị bỏ qua: " + esc(n.fallback_reason) : ""}</p>
+    <p class="source-note">Soạn bởi: ${n.source === "template" ? "mẫu câu cố định" : esc(n.model || n.source) + " (đã kiểm tra: mọi con số có trong dữ liệu tính sẵn)"}${n.fallback_reason ? " · LLM bị bỏ qua: " + esc(n.fallback_reason) : ""}</p>
     ${n.risks.length ? `<h3>Rủi ro / điều kiện không đạt</h3><ul class="risks">${list(n.risks)}</ul>` : ""}
     ${n.follow_ups.length ? `<h3>Việc cần làm với khách hàng</h3><ul class="followups">${list(n.follow_ups)}</ul>` : ""}
     <h2 class="spaced">Kiểm tra điều kiện (${r.rules.filter((x) => x.status === "PASS").length}/${r.rules.length} đạt)</h2>
@@ -152,7 +154,10 @@ async function loadAudit() {
 
 async function init() {
   const health = await api("/health").catch(() => ({}));
-  $("#provider").textContent = "LLM: " + (health.provider || "?");
+  $("#provider").textContent = "LLM: " + (health.model || "offline");
+  $("#guard").textContent = "Guard: " + (health.guard_model ? health.guard_model.split("/").pop() : "tắt");
+  $("#pii").textContent = "Che PII: " + (health.pii ? health.pii.engine : "?");
+  $("#tracing").textContent = "Tracing: " + (health.tracing || "off");
   $("#policy-version").textContent = "Chính sách " + (health.policy_version || "?");
   samplesIndex = await api("/api/samples").catch(() => []);
   $("#samples").innerHTML = samplesIndex.map((s) => `

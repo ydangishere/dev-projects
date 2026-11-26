@@ -1,21 +1,23 @@
-"""Pluggable LLM providers.
+"""Language-model access through LiteLLM.
 
-* offline (default): no model at all; the pipeline uses regex extraction and templates.
-* gemini: Google Gemini REST API (needs GEMINI_API_KEY).
-* openai: any OpenAI-compatible /chat/completions endpoint, including an on-premise
-  vLLM/Ollama server, which is the usual choice for a bank (OPENAI_BASE_URL, OPENAI_API_KEY).
+One configuration string chooses the model, so the same code runs against:
+* a self-hosted Qwen via Ollama:   LLM_MODEL=ollama_chat/qwen2.5:7b  LLM_API_BASE=http://ollama:11434
+* Google Gemini:                   LLM_MODEL=gemini/gemini-2.5-flash  GEMINI_API_KEY=...
+* the bank's LiteLLM proxy:        LLM_MODEL=litellm_proxy/copilot   LLM_API_BASE=http://litellm:4000
+  (the proxy adds rate limits, budgets, key management and model fallbacks centrally).
 
-Only the Python standard library is used, so the offline demo has no extra dependency.
-The model is never trusted with numbers or decisions: callers validate every output.
+Unset LLM_MODEL means offline mode: no model is called at all.
+The model is never trusted with numbers or decisions; callers validate every output.
 """
 
 from __future__ import annotations
 
 import json
 import os
-import urllib.error
-import urllib.request
+import re
 from dataclasses import dataclass
+
+from .observability import LLM_CALLS, LLM_SECONDS, LLM_TOKENS, timer, traced
 
 
 class LLMError(RuntimeError):
@@ -24,80 +26,111 @@ class LLMError(RuntimeError):
 
 @dataclass
 class LLMConfig:
-    provider: str = "offline"
     model: str = ""
+    api_base: str = ""
     api_key: str = ""
-    base_url: str = ""
-    timeout: float = 30.0
+    fallback_model: str = ""
+    timeout: float = 90.0
+    max_retries: int = 1
 
     @classmethod
     def from_env(cls) -> LLMConfig:
-        provider = os.getenv("LLM_PROVIDER", "offline").strip().lower()
-        if provider == "gemini":
-            return cls(provider, os.getenv("GEMINI_MODEL", "gemini-2.5-flash"),
-                       os.getenv("GEMINI_API_KEY", ""),
-                       "https://generativelanguage.googleapis.com/v1beta")
-        if provider == "openai":
-            return cls(provider, os.getenv("OPENAI_MODEL", "gpt-4.1-mini"),
-                       os.getenv("OPENAI_API_KEY", ""),
-                       os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1").rstrip("/"))
-        return cls("offline")
+        model = os.getenv("LLM_MODEL", "").strip()
+        legacy = os.getenv("LLM_PROVIDER", "").strip().lower()
+        if not model and legacy == "gemini":  # backwards compatible with the first version
+            model = "gemini/" + os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+        if not model and legacy == "openai":
+            model = "openai/" + os.getenv("OPENAI_MODEL", "gpt-4.1-mini")
+        return cls(
+            model=model,
+            api_base=os.getenv("LLM_API_BASE", os.getenv("OPENAI_BASE_URL", "") if legacy == "openai" else ""),
+            api_key=os.getenv("LLM_API_KEY", ""),
+            fallback_model=os.getenv("LLM_FALLBACK_MODEL", ""),
+            timeout=float(os.getenv("LLM_TIMEOUT", "90")),
+            max_retries=int(os.getenv("LLM_MAX_RETRIES", "1")),
+        )
 
     @property
     def enabled(self) -> bool:
-        if self.provider == "gemini":
-            return bool(self.api_key)
-        if self.provider == "openai":
-            # A local OpenAI-compatible server (vLLM, Ollama) may not need a key.
-            return bool(self.api_key) or "api.openai.com" not in self.base_url
-        return False
+        return bool(self.model)
+
+    @property
+    def provider(self) -> str:
+        return self.model.split("/", 1)[0] if self.model else "offline"
 
 
-def _post_json(url: str, payload: dict, headers: dict, timeout: float) -> dict:
-    request = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"),
-                                     headers={"Content-Type": "application/json", **headers},
-                                     method="POST")
+def parse_json_object(text: str) -> dict:
+    """Small local models often wrap JSON in ``` fences or add a sentence; recover the object."""
+    text = re.sub(r"^```(?:json)?|```$", "", text.strip(), flags=re.MULTILINE).strip()
     try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
-            return json.loads(response.read().decode("utf-8"))
-    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
-        raise LLMError(f"LLM request failed: {exc}") from exc
+        value = json.loads(text)
+    except json.JSONDecodeError:
+        match = re.search(r"\{.*\}", text, flags=re.DOTALL)
+        if not match:
+            raise LLMError("Model did not return JSON") from None
+        try:
+            value = json.loads(match.group(0))
+        except json.JSONDecodeError as exc:
+            raise LLMError("Model returned malformed JSON") from exc
+    if not isinstance(value, dict):
+        raise LLMError("Model JSON is not an object")
+    return value
 
 
-def complete_json(config: LLMConfig, system: str, user: str) -> dict:
+CALL_LOG: list[dict] = []  # last calls (purpose, seconds, outcome) for evaluation diagnostics
+
+
+@traced("llm-call", as_type="generation")
+def complete_json(config: LLMConfig, system: str, user: str, purpose: str = "general",
+                  max_tokens: int = 700) -> dict:
     """Ask the configured model for a JSON object. Raises LLMError on any failure."""
     if not config.enabled:
-        raise LLMError("No LLM provider configured")
-    if config.provider == "gemini":
-        url = f"{config.base_url}/models/{config.model}:generateContent"
-        payload = {
-            "systemInstruction": {"parts": [{"text": system}]},
-            "contents": [{"role": "user", "parts": [{"text": user}]}],
-            "generationConfig": {"temperature": 0, "responseMimeType": "application/json"},
-        }
-        data = _post_json(url, payload, {"x-goog-api-key": config.api_key}, config.timeout)
-        try:
-            text = data["candidates"][0]["content"]["parts"][0]["text"]
-        except (KeyError, IndexError) as exc:
-            raise LLMError(f"Unexpected Gemini response: {str(data)[:200]}") from exc
-    else:
-        url = f"{config.base_url}/chat/completions"
-        payload = {
-            "model": config.model,
-            "temperature": 0,
-            "response_format": {"type": "json_object"},
-            "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
-        }
-        headers = {"Authorization": f"Bearer {config.api_key}"} if config.api_key else {}
-        data = _post_json(url, payload, headers, config.timeout)
-        try:
-            text = data["choices"][0]["message"]["content"]
-        except (KeyError, IndexError) as exc:
-            raise LLMError(f"Unexpected OpenAI-compatible response: {str(data)[:200]}") from exc
+        raise LLMError("No LLM configured")
     try:
-        result = json.loads(text)
-    except json.JSONDecodeError as exc:
-        raise LLMError("Model did not return valid JSON") from exc
-    if not isinstance(result, dict):
-        raise LLMError("Model JSON is not an object")
+        import litellm
+    except ImportError as exc:
+        raise LLMError("litellm is not installed") from exc
+    kwargs = {
+        "model": config.model,
+        "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
+        "temperature": 0,
+        "response_format": {"type": "json_object"},
+        # JSON mode on small local models can loop on whitespace until the timeout; cap the output.
+        "max_tokens": max_tokens,
+        "timeout": config.timeout,
+        "num_retries": config.max_retries,
+    }
+    if config.api_base:
+        kwargs["api_base"] = config.api_base
+    if config.api_key:
+        kwargs["api_key"] = config.api_key
+    if config.fallback_model:
+        kwargs["fallbacks"] = [config.fallback_model]
+    import time
+
+    started = time.perf_counter()
+    record = {"purpose": purpose, "model": config.model}
+    CALL_LOG.append(record)
+    del CALL_LOG[:-200]
+    try:
+        with timer(LLM_SECONDS, purpose=purpose):
+            response = litellm.completion(**kwargs)
+        text = response.choices[0].message.content or ""
+        record["raw"] = text[:400]
+        usage = getattr(response, "usage", None)
+        if usage:
+            LLM_TOKENS.labels(purpose=purpose, kind="prompt").inc(getattr(usage, "prompt_tokens", 0) or 0)
+            LLM_TOKENS.labels(purpose=purpose, kind="completion").inc(getattr(usage, "completion_tokens", 0) or 0)
+        result = parse_json_object(text)
+    except LLMError:
+        LLM_CALLS.labels(purpose=purpose, outcome="bad_json").inc()
+        record.update(outcome="bad_json", seconds=round(time.perf_counter() - started, 2))
+        raise
+    except Exception as exc:  # noqa: BLE001 - provider errors vary widely
+        LLM_CALLS.labels(purpose=purpose, outcome="error").inc()
+        record.update(outcome=f"error: {type(exc).__name__}: {str(exc)[:160]}",
+                      seconds=round(time.perf_counter() - started, 2))
+        raise LLMError(f"LLM request failed: {type(exc).__name__}: {str(exc)[:200]}") from exc
+    LLM_CALLS.labels(purpose=purpose, outcome="ok").inc()
+    record.update(outcome="ok", seconds=round(time.perf_counter() - started, 2))
     return result

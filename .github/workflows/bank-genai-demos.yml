@@ -25,7 +25,152 @@ jobs:
           cache: pip
           cache-dependency-path: ${{ matrix.project }}/requirements*.txt
       - run: pip install -r requirements-dev.txt
+      - name: spaCy model for Presidio (copilot only)
+        if: matrix.project == 'bank-credit-copilot'
+        run: python -m spacy download xx_ent_wiki_sm
       - run: ruff check app scripts tests
       - run: node --check static/app.js
       - run: python -m pytest -q
       - run: python scripts/evaluate.py
+
+  # Credit Copilot with a REAL model: Qwen 2.5 via Ollama, Llama Guard 3, DeepEval judge,
+  # LiteLLM proxy, and traces sent to a self-hosted Langfuse.
+  copilot-real-llm:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    services:
+      ollama:
+        image: ollama/ollama:latest
+        ports: ['11434:11434']
+    defaults:
+      run:
+        working-directory: bank-credit-copilot
+    env:
+      CI_MODEL: qwen2.5:1.5b
+      CI_GUARD: llama-guard3:1b
+      CI_JUDGE: qwen2.5:3b
+      LANGFUSE_HOST: http://localhost:3000
+      LANGFUSE_PK: pk-lf-ci-copilot
+      LANGFUSE_SK: sk-lf-ci-copilot
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: bank-credit-copilot/requirements*.txt
+      - name: Start self-hosted Langfuse (official docker-compose)
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/langfuse/langfuse/main/docker-compose.yml -o langfuse.yml
+          cat > langfuse.override.yml <<EOF
+          services:
+            langfuse-web:
+              environment:
+                LANGFUSE_INIT_ORG_ID: ci-org
+                LANGFUSE_INIT_ORG_NAME: CI
+                LANGFUSE_INIT_PROJECT_ID: ci-project
+                LANGFUSE_INIT_PROJECT_NAME: credit-copilot
+                LANGFUSE_INIT_PROJECT_PUBLIC_KEY: ${LANGFUSE_PK}
+                LANGFUSE_INIT_PROJECT_SECRET_KEY: ${LANGFUSE_SK}
+                LANGFUSE_INIT_USER_EMAIL: ci@example.com
+                LANGFUSE_INIT_USER_NAME: ci
+                LANGFUSE_INIT_USER_PASSWORD: ci-password-123
+          EOF
+          docker compose -f langfuse.yml -f langfuse.override.yml up -d
+      - name: Install Python packages
+        run: |
+          pip install -r requirements-eval.txt
+          python -m spacy download xx_ent_wiki_sm
+      - name: Pull models into Ollama
+        run: |
+          until curl -sf http://localhost:11434/api/version; do sleep 2; done
+          for m in "$CI_MODEL" "$CI_GUARD" "$CI_JUDGE"; do
+            echo "pulling $m"; curl -sf http://localhost:11434/api/pull -d "{\"name\":\"$m\",\"stream\":false}"
+            echo
+          done
+          curl -s http://localhost:11434/api/tags
+      - name: Wait for Langfuse
+        continue-on-error: true
+        run: |
+          for i in $(seq 1 60); do
+            curl -sf "$LANGFUSE_HOST/api/public/health" && exit 0; sleep 5
+          done
+          echo "Langfuse did not become healthy"; exit 1
+      - name: Evaluate with the real model (checks enforced, quality reported)
+        env:
+          LLM_MODEL: ollama_chat/${{ env.CI_MODEL }}
+          LLM_API_BASE: http://localhost:11434
+          GUARD_MODEL: ollama_chat/${{ env.CI_GUARD }}
+          GUARD_API_BASE: http://localhost:11434
+          LLM_SEND_DOCUMENTS: 'true'
+          JUDGE_OLLAMA_MODEL: ${{ env.CI_JUDGE }}
+          DEEPEVAL_PER_ATTEMPT_TIMEOUT_SECONDS_OVERRIDE: '300'
+          OLLAMA_BASE_URL: http://localhost:11434
+          LANGFUSE_PUBLIC_KEY: ${{ env.LANGFUSE_PK }}
+          LANGFUSE_SECRET_KEY: ${{ env.LANGFUSE_SK }}
+          LANGFUSE_BASE_URL: ${{ env.LANGFUSE_HOST }}
+        run: python scripts/evaluate_llm.py
+      - name: Verify traces arrived in Langfuse
+        continue-on-error: true
+        run: |
+          # Langfuse v4 serves reads from the Observations API v2 (the old /traces endpoint is gone)
+          for i in $(seq 1 18); do
+            curl -s -G -u "$LANGFUSE_PK:$LANGFUSE_SK" "$LANGFUSE_HOST/api/public/v2/observations" \
+              --data-urlencode "limit=200" --data-urlencode "fields=core,basic" > traces.json
+            python -c "import json,sys; d=json.load(open('traces.json')); sys.exit(0 if d.get('data') else 1)" && break
+            sleep 10
+          done
+          head -c 400 traces.json; echo
+          python -c "import json,collections; d=json.load(open('traces.json')).get('data', []); c=collections.Counter(str(o.get('name')) for o in d); print('observations:', len(d), dict(c.most_common(12))); assert d"
+      - name: LiteLLM proxy smoke test (gateway in front of Ollama)
+        env:
+          OLLAMA_API_BASE: http://localhost:11434
+          LITELLM_MASTER_KEY: sk-ci-proxy
+        run: |
+          pip install 'litellm[proxy]'
+          sed "s/qwen2.5:7b/$CI_MODEL/" deploy/litellm_config.yaml > /tmp/litellm.yaml
+          litellm --config /tmp/litellm.yaml --port 4000 > /tmp/litellm.log 2>&1 &
+          for i in $(seq 1 60); do curl -sf http://localhost:4000/health/liveliness && break; sleep 2; done
+          LLM_MODEL=litellm_proxy/copilot-default LLM_API_BASE=http://localhost:4000 LLM_API_KEY=sk-ci-proxy \
+          GUARD_MODEL=litellm_proxy/guard GUARD_API_BASE=http://localhost:4000 GUARD_API_KEY=sk-ci-proxy \
+          LLM_SEND_DOCUMENTS=true python scripts/proxy_smoke.py
+      - name: Show proxy log on failure
+        if: failure()
+        run: tail -50 /tmp/litellm.log || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: copilot-real-llm-results
+          path: |
+            bank-credit-copilot/eval/llm_results.json
+            bank-credit-copilot/traces.json
+
+  copilot-deploy-config:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: bank-credit-copilot
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose config -q
+      - run: docker build -t credit-copilot:ci .
+      - name: Image starts and serves /health and /metrics
+        run: |
+          docker run -d --name copilot -p 8000:8000 credit-copilot:ci
+          for i in $(seq 1 30); do curl -sf localhost:8000/health && break; sleep 2; done
+          curl -sf localhost:8000/health | python -c "import json,sys; h=json.load(sys.stdin); print(h); assert h['pii']['engine']=='presidio'"
+          curl -sf -X POST localhost:8000/api/assess/sample/HS-002 > /dev/null
+          curl -sf localhost:8000/metrics/ | grep copilot_assessments_total
+      - name: Prometheus config is valid
+        run: docker run --rm -v "$PWD/deploy/prometheus.yml:/p.yml" --entrypoint promtool prom/prometheus check config /p.yml
+      - name: Grafana loads the provisioned dashboard
+        run: |
+          docker run -d --name grafana -p 3000:3000 \
+            -v "$PWD/deploy/grafana/provisioning:/etc/grafana/provisioning:ro" \
+            -v "$PWD/deploy/grafana/dashboards:/var/lib/grafana/dashboards:ro" grafana/grafana:latest
+          for i in $(seq 1 60); do curl -sf localhost:3000/api/health && break; sleep 2; done
+          sleep 5
+          curl -sf -u admin:admin localhost:3000/api/dashboards/uid/credit-copilot | python -c "import json,sys; d=json.load(sys.stdin)['dashboard']; print(d['title'], len(d['panels']), 'panels')"

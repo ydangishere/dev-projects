@@ -1,0 +1,79 @@
+# Full stack on one machine:
+#   docker compose up -d --build
+#   Copilot http://localhost:8000 · Grafana http://localhost:3000 · Prometheus http://localhost:9090
+#   LiteLLM proxy http://localhost:4000 · Ollama http://localhost:11434
+# The first start downloads Qwen 2.5 7B (~4.7 GB) and Llama Guard 3 1B (~1.6 GB).
+# Tracing: set LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY / LANGFUSE_HOST in .env
+# (Langfuse Cloud, or a self-hosted Langfuse started from its official docker-compose).
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    ports: ["11434:11434"]
+    volumes: [ollama:/root/.ollama]
+    restart: unless-stopped
+
+  ollama-models:  # one-shot: pull the models into the ollama volume
+    image: curlimages/curl:latest
+    depends_on: [ollama]
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        until curl -sf http://ollama:11434/api/version >/dev/null; do sleep 2; done
+        for m in ${COPILOT_OLLAMA_MODEL:-qwen2.5:7b} ${GUARD_OLLAMA_MODEL:-llama-guard3:1b}; do
+          echo "pulling $$m"; curl -sf http://ollama:11434/api/pull -d "{\"name\":\"$$m\",\"stream\":false}" >/dev/null
+        done
+        echo done
+    restart: "no"
+
+  litellm:
+    image: ghcr.io/berriai/litellm:main-stable
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    environment:
+      OLLAMA_API_BASE: http://ollama:11434
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY:-sk-change-me}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    volumes: [./deploy/litellm_config.yaml:/app/config.yaml:ro]
+    ports: ["4000:4000"]
+    depends_on: [ollama]
+    restart: unless-stopped
+
+  copilot:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      LLM_MODEL: litellm_proxy/copilot-default
+      LLM_API_BASE: http://litellm:4000
+      LLM_API_KEY: ${LITELLM_MASTER_KEY:-sk-change-me}
+      LLM_SEND_DOCUMENTS: "true"          # allowed because the model runs inside the bank
+      GUARD_MODEL: litellm_proxy/guard
+      GUARD_API_BASE: http://litellm:4000
+      GUARD_API_KEY: ${LITELLM_MASTER_KEY:-sk-change-me}
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY:-}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY:-}
+      LANGFUSE_HOST: ${LANGFUSE_HOST:-}
+    volumes: [copilot-data:/app/data]
+    depends_on: [litellm]
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes: [./deploy/prometheus.yml:/etc/prometheus/prometheus.yml:ro]
+    ports: ["9090:9090"]
+    depends_on: [copilot]
+
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+    volumes:
+      - ./deploy/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./deploy/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports: ["3000:3000"]
+    depends_on: [prometheus]
+
+volumes:
+  ollama:
+  copilot-data:

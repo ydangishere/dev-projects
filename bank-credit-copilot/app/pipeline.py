@@ -11,8 +11,11 @@ from pathlib import Path
 from .audit import AuditLog
 from .documents import Document, DocumentError, load_document
 from .extraction import extract
+from .guard import moderate
 from .llm import LLMConfig, LLMError, complete_json
 from .memo import llm_narrative, numbers_in
+from .observability import ASSESSMENT_SECONDS, ASSESSMENTS, FALLBACKS, POLICY_QUESTIONS, flush_traces, timer, traced
+from .pii import Masker, mask_for_log
 from .policy import PolicyIndex
 from .rules import VERDICTS, evaluate
 from .textutil import mask_id, today
@@ -64,7 +67,14 @@ class CreditCopilot:
     # ---- assessment ----------------------------------------------------------------
     def assess_files(self, files: list[tuple[str, bytes]], as_of: date | None = None,
                      case_id: str = "UPLOAD") -> dict:
-        as_of = as_of or today()
+        with timer(ASSESSMENT_SECONDS):
+            result = self._assess(files, as_of or today(), case_id)
+        ASSESSMENTS.labels(verdict=result["verdict"]).inc()
+        flush_traces()
+        return result
+
+    @traced("credit-assessment")
+    def _assess(self, files: list[tuple[str, bytes]], as_of: date, case_id: str) -> dict:
         documents: list[Document] = []
         errors: list[str] = []
         for name, content in files:
@@ -93,7 +103,13 @@ class CreditCopilot:
             "applicant_id": mask_id(extraction.value("cccd", "id_number")),
             "documents": [{"file": d.filename, "type": d.doc_type, "sha256": d.sha256[:16]} for d in documents],
             "provider": self.llm.provider,
+            "model": self.llm.model or None,
+            "llm_fields": sorted(f"{dt}.{k}" for dt, fs in extraction.fields.items()
+                                 for k, ev in fs.items() if ev.method == "llm"),
             "narrative_source": narrative["source"],
+            "narrative_fallback": narrative.get("fallback_reason"),
+            "security_flags": len(extraction.security_flags),
+            "pii_masked": extraction.pii.get("masked", {}),
             "policy_version": self.policy.version,
             "rule_status": {r.rule_id: r.status for r in rules},
             "verdict": verdict,
@@ -111,25 +127,38 @@ class CreditCopilot:
             "extraction": extraction.to_dict(),
             "policy_version": self.policy.version,
             "provider": self.llm.provider,
+            "model": self.llm.model or None,
             "audit_id": audit_id,
             "disclaimer": "Kết quả chỉ mang tính đề xuất. Quyết định cuối cùng thuộc cấp phê duyệt (Điều 6.4).",
         }
 
     # ---- policy Q&A (RAG) ----------------------------------------------------------
     def ask_policy(self, question: str) -> dict:
-        question = question.strip()[:500]
+        result = self._ask(question.strip()[:500])
+        POLICY_QUESTIONS.labels(outcome=result["source"] if result["source"] in {"refusal", "extractive", "blocked"}
+                                else "llm").inc()
+        flush_traces()
+        return result
+
+    @traced("policy-question")
+    def _ask(self, question: str) -> dict:
         hits = [(c, s) for c, s in self.policy.search(question, k=3) if s >= MIN_POLICY_SCORE]
         if hits and self.policy.coverage(question, hits[0][0]) < MIN_QUERY_COVERAGE:
             hits = []  # best clause shares too few words with the question: likely off-topic
         sources = [{**c.to_dict(), "score": s} for c, s in hits]
-        if not hits:
+        guard = moderate(question, stage="policy_question") if self.llm.enabled else None
+        if guard is not None and not guard.safe:
+            answer = {"answer": "Câu hỏi không phù hợp nên không được xử lý.", "cited": [], "source": "blocked",
+                      "guard": guard.category}
+        elif not hits:
             answer = {"answer": "Không tìm thấy quy định liên quan trong chính sách hiện hành. "
                                 "Vui lòng hỏi lại hoặc liên hệ bộ phận quản lý chính sách.",
                       "cited": [], "source": "refusal"}
         else:
             answer = self._answer_from_clauses(question, [c for c, _ in hits])
-        self.audit.write("policy_question", {"question": question, "cited": answer["cited"],
-                                             "source": answer["source"], "provider": self.llm.provider})
+        self.audit.write("policy_question", {"question": mask_for_log(question), "cited": answer["cited"],
+                                             "source": answer["source"], "provider": self.llm.provider,
+                                             "fallback": answer.get("fallback_reason")})
         return {**answer, "sources": sources, "policy_version": self.policy.version}
 
     def _answer_from_clauses(self, question: str, clauses: list) -> dict:
@@ -140,17 +169,36 @@ class CreditCopilot:
         if not self.llm.enabled:
             return extractive
         context = "\n".join(f"[{c.clause_id}] {c.text}" for c in clauses)
-        system = ("Trả lời câu hỏi về chính sách cho vay CHỈ dựa trên các điều khoản được cung cấp. "
-                  "Nếu điều khoản không đủ để trả lời, nói rõ là không có thông tin. "
-                  "Trả về JSON {\"answer\": str, \"cited\": [mã điều khoản đã dùng]}.")
+        system = ("Trả lời câu hỏi về chính sách cho vay CHỈ dựa trên các điều khoản được cung cấp, bằng tiếng Việt, "
+                  "ngắn gọn. Nếu điều khoản không đủ để trả lời, nói rõ là không có thông tin. "
+                  "Trả về JSON {\"answer\": str, \"cited\": [mã điều khoản đã dùng, ví dụ \"5.3\"]}.")
+        masked_question = Masker().mask(question)  # a typed question may contain an ID or account number
+
+        def fallback(reason: str, code: str) -> dict:
+            FALLBACKS.labels(purpose="policy_answer", reason=code).inc()
+            return {**extractive, "fallback_reason": reason, "context": context}
+
         try:
-            result = complete_json(self.llm, system, f"Điều khoản:\n{context}\n\nCâu hỏi: {question}")
+            result = complete_json(self.llm, system, f"Điều khoản:\n{context}\n\nCâu hỏi: {masked_question}",
+                                   purpose="policy_answer", max_tokens=400)
         except LLMError as exc:
-            return {**extractive, "fallback_reason": str(exc)}
+            return fallback(str(exc), "llm_error")
         valid_ids = {c.clause_id for c in clauses}
-        cited = [str(x) for x in result.get("cited", []) if str(x) in valid_ids]
+        cited = []
+        for raw in result.get("cited", []) or []:
+            item = str(raw).strip().strip("[]")
+            for candidate in (item, item.removeprefix("Điều ").strip(), f"Điều {item}"):
+                if candidate in valid_ids and candidate not in cited:
+                    cited.append(candidate)
+                    break
         text = str(result.get("answer", "")).strip()
         unknown = numbers_in(text) - numbers_in(context + " " + question)
-        if not text or not cited or unknown:
-            return {**extractive, "fallback_reason": "answer not grounded in retrieved clauses"}
-        return {"answer": text, "cited": cited, "source": self.llm.provider}
+        if not text or not cited:
+            return fallback("answer did not cite a retrieved clause", "no_citation")
+        if unknown:
+            return fallback(f"numbers not in the clauses: {', '.join(sorted(unknown)[:5])}", "ungrounded_number")
+        guard = moderate(text, stage="policy_answer")
+        if not guard.safe:
+            return fallback(f"blocked by safety guard ({guard.category})", "guard")
+        return {"answer": text, "cited": cited, "source": self.llm.provider, "model": self.llm.model,
+                "context": context}

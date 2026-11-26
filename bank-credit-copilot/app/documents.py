@@ -19,9 +19,9 @@ DOC_TYPES = {
 
 # Title keywords (accent-free) used to recognise each document.
 _SIGNATURES = [
-    ("loan_application", ("giay de nghi vay",)),
+    ("loan_application", ("giay de nghi vay", "don de nghi vay", "de nghi cap tin dung")),
     ("labor_contract", ("hop dong lao dong",)),
-    ("bank_statement", ("sao ke tai khoan",)),
+    ("bank_statement", ("sao ke tai khoan", "bang ke giao dich")),
     ("cccd", ("can cuoc cong dan", "so dinh danh ca nhan")),
 ]
 

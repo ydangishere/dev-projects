@@ -65,3 +65,5 @@ details summary { cursor: pointer; color: var(--brand); font-size: 12px; }
 .audit .t { color: var(--muted); }
 .docs a { margin-right: 10px; font-size: 12px; }
 .error { color: var(--bad); }
+.security { background: var(--bad-bg); color: var(--bad); border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; font-size: 13px; }
+.security code { background: #fff; color: var(--text); }

@@ -9,7 +9,9 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from . import guard, pii
 from .envfile import load_env_file
+from .observability import langfuse_enabled
 from .pipeline import CreditCopilot
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,9 +27,26 @@ class PolicyQuestion(BaseModel):
     question: str = Field(min_length=2, max_length=500)
 
 
+try:  # Prometheus scrape endpoint (optional dependency)
+    from prometheus_client import make_asgi_app
+
+    app.mount("/metrics", make_asgi_app())
+except ImportError:  # pragma: no cover
+    pass
+
+
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok", "provider": copilot.llm.provider, "policy_version": copilot.policy.version}
+    return {
+        "status": "ok",
+        "provider": copilot.llm.provider,
+        "model": copilot.llm.model or None,
+        "send_documents_to_llm": copilot.settings.send_documents_to_llm,
+        "guard_model": guard.guard_model() or None,
+        "pii": pii.status(),
+        "tracing": "langfuse" if langfuse_enabled() else "off",
+        "policy_version": copilot.policy.version,
+    }
 
 
 @app.get("/api/samples")
