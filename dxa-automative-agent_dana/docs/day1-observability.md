@@ -37,7 +37,7 @@ From the Dana folder in an isolated copy with the existing index:
 
 ```powershell
 python day1_eval.py --output day1-baseline.json
-python day1_eval.py --judge gemma4-optimized:latest --output day1-judged-local.json
+python day1_eval.py --judge dolphin-mistral:7b --output day1-judged-local.json
 ```
 
 The first command exercises the current Dana offline path. The second adds the local Ollama judge through DeepEval and continues to exercise the same Dana offline path. Set `--judge-limit 1` to check the judge connection and metric adapters. The runner suppresses feedback writes and never calls Gemini. The gold references for correctness come from existing case entries. Faithfulness uses retrieved evidence. Relevance uses the submitted question. Semantic scoring is limited to labelled, in-scope cases that received answers. The baseline reports a task success proxy: answer with at least one gold case citation, or expected refusal with no sources. This proxy does not measure successful repair.
@@ -54,3 +54,7 @@ The 54 existing labels include 8 expected refusals, all of which passed. Hit and
 The built-in Agentic regression passed 5/5. Local Docker Engine denied pipe access, and port 3000 had no active Langfuse service during this run. A live dashboard and paid-provider usage and cost were therefore unverified.
 
 The SDK HTTP export smoke also passed with a temporary loopback collector, including a simulated usage-bearing Dana generation and a deliberately triggered error.
+
+## DeepEval local smoke
+
+Dolphin Mistral 7B through local Ollama scored DXA-001: correctness 0.20, faithfulness 0.75, relevance 0.25 (one case per metric). These are smoke results, not dataset-level estimates. The full semantic run targets the 46 answerable cases with repository labels and reports coverage independently of the 100-case operational baseline.
