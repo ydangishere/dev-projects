@@ -41,3 +41,12 @@ def test_policy_and_sample_file_guard(client):
     assert answer["cited"] == ["4.2"]
     assert client.get("/samples/hs-001/01_cccd.pdf").status_code == 200
     assert client.get("/samples/..%2F..%2Fapp/main.py").status_code == 404
+
+
+def test_health_reports_components_and_metrics(client):
+    health = client.get("/health").json()
+    assert health["provider"] == "offline" and health["tracing"] == "off"
+    assert health["pii"]["engine"] in {"presidio", "regex-fallback"}
+    client.post("/api/assess/sample/HS-001")
+    metrics = client.get("/metrics/").text
+    assert "copilot_assessments_total" in metrics

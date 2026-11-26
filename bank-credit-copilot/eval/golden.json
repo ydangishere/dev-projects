@@ -4,8 +4,18 @@
     {
       "case_id": "HS-001",
       "verdict": "APPROVE",
-      "rules": {"R01": "PASS", "R02": "PASS", "R03": "PASS", "R04": "PASS", "R05": "PASS",
-                "R06": "PASS", "R07": "PASS", "R08": "PASS", "R09": "PASS", "R10": "PASS"},
+      "rules": {
+        "R01": "PASS",
+        "R02": "PASS",
+        "R03": "PASS",
+        "R04": "PASS",
+        "R05": "PASS",
+        "R06": "PASS",
+        "R07": "PASS",
+        "R08": "PASS",
+        "R09": "PASS",
+        "R10": "PASS"
+      },
       "fields": {
         "cccd.full_name": "Nguyễn Văn An",
         "cccd.id_number": "079090000001",
@@ -19,7 +29,14 @@
     {
       "case_id": "HS-002",
       "verdict": "REJECT",
-      "rules": {"R01": "PASS", "R04": "PASS", "R05": "PASS", "R06": "PASS", "R08": "PASS", "R10": "FAIL"},
+      "rules": {
+        "R01": "PASS",
+        "R04": "PASS",
+        "R05": "PASS",
+        "R06": "PASS",
+        "R08": "PASS",
+        "R10": "FAIL"
+      },
       "fields": {
         "cccd.full_name": "Trần Thị Bình",
         "loan_application.requested_amount": 300000000,
@@ -31,7 +48,13 @@
     {
       "case_id": "HS-003",
       "verdict": "NEED_INFO",
-      "rules": {"R01": "PASS", "R04": "NEED_INFO", "R06": "NEED_INFO", "R07": "PASS", "R10": "PASS"},
+      "rules": {
+        "R01": "PASS",
+        "R04": "NEED_INFO",
+        "R06": "NEED_INFO",
+        "R07": "PASS",
+        "R10": "PASS"
+      },
       "fields": {
         "cccd.id_number": "079095000003",
         "loan_application.id_number": "079095000083",
@@ -42,31 +65,111 @@
     {
       "case_id": "HS-004",
       "verdict": "REJECT",
-      "rules": {"R02": "FAIL", "R03": "PASS", "R08": "FAIL", "R10": "PASS"},
+      "rules": {
+        "R02": "FAIL",
+        "R03": "PASS",
+        "R08": "FAIL",
+        "R10": "PASS"
+      },
       "fields": {
         "cccd.expiry_date": "khong thoi han",
         "cccd.date_of_birth": "1965-05-10",
         "loan_application.requested_amount": 250000000
       },
       "salary_credits": 3
+    },
+    {
+      "case_id": "HS-005",
+      "verdict": "NEED_INFO",
+      "note": "offline: regex cannot read this layout",
+      "rules": {
+        "R01": "PASS",
+        "R02": "NEED_INFO",
+        "R06": "PASS"
+      },
+      "fields": {
+        "cccd.id_number": "079092000005"
+      },
+      "salary_credits": 3
+    },
+    {
+      "case_id": "HS-006",
+      "verdict": "REJECT",
+      "note": "income 7.5M below 8M even offline",
+      "rules": {
+        "R05": "FAIL",
+        "R06": "PASS"
+      },
+      "fields": {
+        "cccd.id_number": "001096000006"
+      },
+      "salary_credits": 3
     }
   ],
   "policy_questions": [
-    {"q": "Thu nhập tối thiểu bao nhiêu thì được vay?", "expected": "4.1"},
-    {"q": "DTI tối đa là bao nhiêu", "expected": "5.3"},
-    {"q": "Vay tối đa bao nhiêu tiền", "expected": "5.1"},
-    {"q": "Thâm niên làm việc tối thiểu", "expected": "4.3"},
-    {"q": "CCCD hết hạn thì sao", "expected": "3.2"},
-    {"q": "Cần những giấy tờ gì để vay", "expected": "Điều 2"},
-    {"q": "Sao kê lương cần mấy tháng?", "expected": "4.2"},
-    {"q": "Khách 62 tuổi có vay được không?", "expected": "3.1"},
-    {"q": "Thời hạn vay dài nhất", "expected": "5.2"},
-    {"q": "Lãi suất tham chiếu để tính trả góp", "expected": "5.4"},
-    {"q": "Có được gửi hồ sơ khách hàng cho AI bên ngoài không", "expected": "7.2"},
-    {"q": "Mục đích vay nào được chấp nhận", "expected": "Điều 1"},
-    {"q": "Ai là người quyết định cho vay cuối cùng", "expected": "6.4"},
-    {"q": "Giá vàng hôm nay", "expected": null},
-    {"q": "Thời tiết Hà Nội ngày mai", "expected": null},
-    {"q": "Mở thẻ tín dụng cần gì", "expected": null}
+    {
+      "q": "Thu nhập tối thiểu bao nhiêu thì được vay?",
+      "expected": "4.1"
+    },
+    {
+      "q": "DTI tối đa là bao nhiêu",
+      "expected": "5.3"
+    },
+    {
+      "q": "Vay tối đa bao nhiêu tiền",
+      "expected": "5.1"
+    },
+    {
+      "q": "Thâm niên làm việc tối thiểu",
+      "expected": "4.3"
+    },
+    {
+      "q": "CCCD hết hạn thì sao",
+      "expected": "3.2"
+    },
+    {
+      "q": "Cần những giấy tờ gì để vay",
+      "expected": "Điều 2"
+    },
+    {
+      "q": "Sao kê lương cần mấy tháng?",
+      "expected": "4.2"
+    },
+    {
+      "q": "Khách 62 tuổi có vay được không?",
+      "expected": "3.1"
+    },
+    {
+      "q": "Thời hạn vay dài nhất",
+      "expected": "5.2"
+    },
+    {
+      "q": "Lãi suất tham chiếu để tính trả góp",
+      "expected": "5.4"
+    },
+    {
+      "q": "Có được gửi hồ sơ khách hàng cho AI bên ngoài không",
+      "expected": "7.2"
+    },
+    {
+      "q": "Mục đích vay nào được chấp nhận",
+      "expected": "Điều 1"
+    },
+    {
+      "q": "Ai là người quyết định cho vay cuối cùng",
+      "expected": "6.4"
+    },
+    {
+      "q": "Giá vàng hôm nay",
+      "expected": null
+    },
+    {
+      "q": "Thời tiết Hà Nội ngày mai",
+      "expected": null
+    },
+    {
+      "q": "Mở thẻ tín dụng cần gì",
+      "expected": null
+    }
   ]
 }

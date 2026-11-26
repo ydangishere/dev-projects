@@ -33,10 +33,15 @@ def parse_vnd(text: str) -> int | None:
 
 
 def parse_date(text: str) -> date | None:
-    match = re.search(r"(\d{1,2})/(\d{1,2})/(\d{4})", text)
-    if not match:
+    """dd/mm/yyyy (Vietnamese documents) or yyyy-mm-dd (what models often return)."""
+    match = re.search(r"(\d{1,2})[/-](\d{1,2})[/-](\d{4})", text)
+    iso = re.search(r"(\d{4})-(\d{1,2})-(\d{1,2})", text)
+    if match:
+        day, month, year = (int(g) for g in match.groups())
+    elif iso:
+        year, month, day = (int(g) for g in iso.groups())
+    else:
         return None
-    day, month, year = (int(g) for g in match.groups())
     try:
         return date(year, month, day)
     except ValueError:

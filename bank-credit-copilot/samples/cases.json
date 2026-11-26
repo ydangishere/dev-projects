@@ -22,5 +22,17 @@
     "applicant": "Phạm Minh Dũng",
     "title": "Quá tuổi và số tiền vay vượt hạn mức",
     "folder": "hs-004"
+  },
+  {
+    "case_id": "HS-005",
+    "applicant": "Võ Thị Hạnh",
+    "title": "Mẫu giấy tờ khác chuẩn (cần LLM đọc)",
+    "folder": "hs-005"
+  },
+  {
+    "case_id": "HS-006",
+    "applicant": "Đặng Quốc Huy",
+    "title": "Mẫu khác chuẩn, thu nhập thấp, có câu lệnh nhắm vào AI",
+    "folder": "hs-006"
   }
 ]

@@ -1,0 +1,27 @@
+# LiteLLM proxy: one gateway between the bank's apps and every model.
+# Apps call model names below; the proxy enforces limits, retries and timeouts centrally.
+model_list:
+  - model_name: copilot-default            # self-hosted Qwen: documents never leave the bank
+    litellm_params:
+      model: ollama_chat/qwen2.5:7b
+      api_base: os.environ/OLLAMA_API_BASE
+      rpm: 60                               # rate limit for this deployment
+      timeout: 120
+  - model_name: guard                       # Llama Guard safety classifier
+    litellm_params:
+      model: ollama_chat/llama-guard3:1b
+      api_base: os.environ/OLLAMA_API_BASE
+      rpm: 120
+  # Optional cloud model. Leave it out unless security has approved sending data outside.
+  # - model_name: copilot-gemini
+  #   litellm_params:
+  #     model: gemini/gemini-2.5-flash
+  #     api_key: os.environ/GEMINI_API_KEY
+
+router_settings:
+  num_retries: 2
+  timeout: 120
+  # fallbacks: [{"copilot-default": ["copilot-gemini"]}]
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY   # apps authenticate with this (or per-app virtual keys + DB)

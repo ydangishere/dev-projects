@@ -1,9 +1,12 @@
 """Extract applicant facts from the documents, keeping the source of every value.
 
-Regex extraction runs first and works offline on the labelled sample documents.
-If an LLM is configured AND sending documents to it is allowed, the model only fills
-fields that regex missed, and each model answer must quote a line that really exists
-in the document. Values are always re-parsed from that quote by deterministic code.
+Regex extraction runs first and works offline on documents with the usual labels.
+If an LLM is configured AND sending documents to it is allowed (LLM_SEND_DOCUMENTS),
+the model only fills the fields regex missed. Before that:
+* lines that try to instruct the AI are removed (guard.injection_lines);
+* ID numbers, account numbers and names are replaced by placeholders (pii.Masker).
+Each model answer must point to a line, and its value must literally appear in that
+line after unmasking; otherwise the answer is dropped as a fabrication.
 """
 
 from __future__ import annotations
@@ -16,8 +19,12 @@ from datetime import date
 from typing import Any
 
 from .documents import Document
+from .guard import injection_lines
 from .llm import LLMConfig, LLMError, complete_json
-from .textutil import norm, parse_date, parse_vnd
+from .observability import traced
+from .pii import Masker
+from .pii import engine_name as pii_engine_name
+from .textutil import norm, parse_date, parse_vnd, strip_accents
 
 INDEFINITE = "khong thoi han"
 
@@ -116,6 +123,9 @@ class Extraction:
     fields: dict[str, dict[str, Evidence]] = field(default_factory=dict)
     salary_credits: list[SalaryCredit] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
+    security_flags: list[dict] = field(default_factory=list)
+    pii: dict = field(default_factory=dict)
+    _skip: dict[str, set[int]] = field(default_factory=dict, repr=False)
 
     def get(self, doc_type: str, name: str) -> Evidence | None:
         return self.fields.get(doc_type, {}).get(name)
@@ -132,6 +142,8 @@ class Extraction:
             "fields": {dt: {k: ev.to_dict() for k, ev in fs.items()} for dt, fs in self.fields.items()},
             "salary_credits": [s.to_dict() for s in self.salary_credits],
             "warnings": self.warnings,
+            "security_flags": self.security_flags,
+            "pii": self.pii,
         }
 
 
@@ -164,39 +176,71 @@ def extract_regex(doc: Document) -> tuple[dict[str, Evidence], list[SalaryCredit
     return found, credits
 
 
-def _llm_fill(doc: Document, missing: list[tuple[str, Parser, str]], config: LLMConfig) -> dict[str, Evidence]:
-    """Ask the model for missing fields; keep only answers backed by a verbatim quote."""
-    schema = {name: f"{desc}. Trả về {{\"value\": ..., \"quote\": dòng nguyên văn}} hoặc null"
-              for name, _, desc in missing}
-    system = ("Bạn trích xuất thông tin từ giấy tờ ngân hàng. Chỉ dùng nội dung có trong văn bản. "
-              "Với mỗi trường, 'quote' phải là một dòng được sao chép nguyên văn từ văn bản. "
-              "Không suy đoán. Trường không có thì trả về null. Chỉ trả về JSON.")
-    body = "\n".join(f"[trang {p}] {line}" for p, line in doc.lines())
-    user = f"Các trường cần trích xuất:\n{json.dumps(schema, ensure_ascii=False)}\n\nVăn bản:\n{body[:12000]}"
+def _grounded(value: Any, line: str) -> bool:
+    """True when the value the model returned literally appears in the cited line."""
+    if value == INDEFINITE:
+        return INDEFINITE in norm(line)
+    if isinstance(value, date):
+        return any(form in line for form in (value.strftime("%d/%m/%Y"), f"{value.day}/{value.month}/{value.year}"))
+    if isinstance(value, int):
+        return re.search(rf"(?<!\d){value}(?!\d)", re.sub(r"(?<=\d)[.,\s](?=\d)", "", line)) is not None
+    return bool(norm(str(value))) and norm(str(value)) in norm(line)
+
+
+@traced("llm-extract-fields")
+def _llm_fill(doc: Document, missing: list[tuple[str, Parser, str]], config: LLMConfig,
+              masker: Masker, skip: set[int]) -> dict[str, Evidence]:
+    """Ask the model for fields the regex missed.
+
+    The model sees masked lines (no ID numbers or names) and must answer with a line id.
+    An answer is kept only if, after unmasking, its value literally appears in that line;
+    the value is then parsed by the same deterministic parser as the regex path.
+    """
+    lines = list(doc.lines())
+    shown = [(i, page, line) for i, (page, line) in enumerate(lines) if i not in skip]
+    body = "\n".join(f"[L{i}] {masker.mask(line)}" for i, _, line in shown)
+    schema = {name: desc for name, _, desc in missing}
+    system = ("Bạn trích xuất thông tin từ giấy tờ ngân hàng. Chỉ dùng nội dung có trong văn bản, không suy đoán. "
+              "Các giá trị dạng <PERSON_1>, <CCCD_1> là thông tin đã được che: giữ nguyên chúng. "
+              "Trả về JSON, mỗi khóa là tên trường, giá trị là {\"value\": chuỗi, \"line\": \"L<số dòng>\"} "
+              "hoặc null nếu văn bản không có. Ngày ghi dạng dd/mm/yyyy, số tiền ghi bằng chữ số.")
+    user = (f"Loại giấy tờ: {doc.label}\nCác trường cần lấy:\n{json.dumps(schema, ensure_ascii=False)}"
+            f"\n\nVăn bản (mỗi dòng có mã [L..]):\n{body[:12000]}")
     try:
-        answer = complete_json(config, system, user)
+        answer = complete_json(config, system, user, purpose="extract")
     except LLMError:
         return {}
+    by_id = {f"L{i}": (page, line) for i, page, line in shown}
     filled: dict[str, Evidence] = {}
-    lines = list(doc.lines())
     for name, parser, _ in missing:
         item = answer.get(name)
-        if not isinstance(item, dict) or not item.get("quote"):
+        if not isinstance(item, dict) or item.get("value") in (None, ""):
             continue
-        quote = norm(str(item["quote"]))
-        match = next(((p, ln) for p, ln in lines if quote and quote in norm(ln)), None)
-        if not match:
-            continue  # quote not found in the document: treat as a fabrication and drop it
-        page, line = match
-        value = parser(_value_after_label(line) or line)
-        if value is not None:
-            filled[name] = Evidence(value, line, doc.filename, page, method="llm")
+        raw = masker.unmask(str(item["value"]))
+        value = parser(raw)
+        if value is None:
+            continue
+        cited = by_id.get(str(item.get("line", "")).strip().upper().replace("[", "").replace("]", ""))
+        candidates = [cited] if cited else []
+        candidates += [(p, ln) for _, p, ln in shown if (p, ln) != cited]
+        match = next(((p, ln) for p, ln in candidates if _grounded(value, ln)), None)
+        if match:  # otherwise the value is not in the document: treat it as fabricated and drop it
+            filled[name] = Evidence(value, match[1], doc.filename, match[0], method="llm")
     return filled
 
 
+def _name_variants(names: list[str]) -> list[str]:
+    variants: list[str] = []
+    for name in names:
+        variants += [name, name.upper(), strip_accents(name).upper()]
+    return list(dict.fromkeys(v for v in variants if v))
+
+
+@traced("extract")
 def extract(documents: list[Document], config: LLMConfig | None = None,
             send_documents_to_llm: bool = False) -> Extraction:
     result = Extraction(documents=documents)
+    accepted: list[Document] = []
     seen_types: set[str] = set()
     for doc in documents:
         if doc.doc_type == "unknown":
@@ -206,12 +250,30 @@ def extract(documents: list[Document], config: LLMConfig | None = None,
             result.warnings.append(f"{doc.filename}: trùng loại '{doc.label}', bản sau được bỏ qua")
             continue
         seen_types.add(doc.doc_type)
+        accepted.append(doc)
         found, credits = extract_regex(doc)
-        if config and config.enabled and send_documents_to_llm:
-            missing = [(n, p, d) for n, _, p, d in FIELD_SPECS[doc.doc_type] if n not in found]
-            if missing:
-                found.update(_llm_fill(doc, missing, config))
         result.fields[doc.doc_type] = found
         result.salary_credits.extend(credits)
+        flagged = injection_lines([line for _, line in doc.lines()])
+        if flagged:
+            all_lines = list(doc.lines())
+            for index in flagged:
+                page, line = all_lines[index]
+                result.security_flags.append({"filename": doc.filename, "page": page, "line": line,
+                                              "type": "prompt_injection"})
+            result.warnings.append(f"{doc.filename}: có {len(flagged)} dòng chứa câu lệnh nhắm vào AI; "
+                                   "các dòng này không được gửi cho mô hình")
+        result._skip[doc.filename] = set(flagged)
+
+    if config and config.enabled and send_documents_to_llm:
+        names = [ev.value for fs in result.fields.values() for key, ev in fs.items()
+                 if key in {"full_name", "account_holder"} and isinstance(ev.value, str)]
+        masker = Masker(known_names=_name_variants(names))
+        for doc in accepted:
+            found = result.fields[doc.doc_type]
+            missing = [(n, p, d) for n, _, p, d in FIELD_SPECS[doc.doc_type] if n not in found]
+            if missing:
+                found.update(_llm_fill(doc, missing, config, masker, result._skip.get(doc.filename, set())))
+        result.pii = {"engine": pii_engine_name(), "masked": masker.counts}
     result.salary_credits.sort(key=lambda s: s.date)
     return result

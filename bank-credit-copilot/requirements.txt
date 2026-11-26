@@ -3,3 +3,8 @@ uvicorn==0.54.0
 pydantic==2.14.1
 python-multipart==0.0.33
 pypdf==6.21.4
+# LLM gateway, tracing, PII masking, metrics
+litellm>=1.70
+langfuse>=3.0,<6
+presidio-analyzer>=2.2.355
+prometheus-client>=0.20
