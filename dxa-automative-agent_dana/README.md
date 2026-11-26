@@ -161,6 +161,12 @@ flowchart TD
 
 ---
 
+### Trình tự triển khai các công cụ Agent
+
+![DXA Dana — 9 bước triển khai công cụ giám sát, đánh giá, tìm kiếm và tự động hóa](docs/agent-tool-implementation-flow.svg)
+
+Lộ trình đề xuất: thiết lập giám sát và baseline trước, tối ưu retrieval và Agent, tự động hóa, sau đó đo lại và giám sát liên tục. Haystack và Neo4j chỉ bổ sung khi có nhu cầu được xác nhận.
+
 ## Nạp kiến thức sửa xe
 
 `Video → Phụ đề → Trích xuất case → Kiểm chứng → Thợ duyệt → Kho tri thức → RAG → Agent`. Câu chưa trả lời được được ghi lại để thợ bổ sung, không tự bịa thông tin.
