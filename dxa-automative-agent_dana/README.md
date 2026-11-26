@@ -122,6 +122,45 @@ python test_expert.py
 
 `test_agentic.py` kiểm tra hội thoại hai lượt, lưu session, thay đổi kế hoạch sau dữ kiện mới, nguồn bằng chứng, giới hạn vòng lặp và hành động không hợp lệ bằng **LLM giả**; không chứng minh chất lượng chẩn đoán thực tế. Cần chạy thêm với model thật và các tình huống thợ đã xác minh trước khi sử dụng ngoài demo.
 
+## Phương pháp đo lường và giám sát Agent — kiến trúc đề xuất (CHƯA TRIỂN KHAI)
+
+```mermaid
+flowchart TD
+  subgraph OBS["LANGFUSE — giám sát toàn bộ flow"]
+    A["Airflow — lên lịch cập nhật kiến thức"] --> B["Data Processing — YouTube / tài liệu / chunk / embedding"]
+    B --> Q["Qdrant — Vector Search"]
+    B --> N["Neo4j — Graph Search"]
+    U["User Query"] --> D["Dana Agent — Planning / Reasoning / Tool Calling"]
+    D <--> Q
+    D <--> N
+    D --> L["Gemini / LLM — phân tích và đề xuất"]
+    L --> V{"Runtime Validator — kiểm chứng nguồn và an toàn"}
+    V -->|PASS| R["Final Report — kết quả có căn cứ và nguồn"]
+    V -->|FAIL / còn lượt| D
+    V -->|Hết lượt hoặc thiếu bằng chứng| H["Handoff — thợ kiểm tra"]
+    T["Golden Test Set — ca đã được chuyên gia xác minh"] --> E["DeepEval — đánh giá chất lượng offline"]
+    R -. "Kết quả chạy test" .-> E
+    E --> S["Scorecard — PASS / FAIL, metrics"]
+  end
+```
+
+| Công cụ | Vai trò đề xuất |
+|---|---|
+| Dana | Điều phối Agent, Planning, Replanning và Memory |
+| Airflow | Lên lịch thu thập và cập nhật kiến thức |
+| Qdrant | Truy xuất vector |
+| Neo4j | Truy xuất quan hệ thiết bị, triệu chứng, nguyên nhân và phương pháp xử lý |
+| Gemini / LLM | Suy luận và tạo kết quả |
+| DeepEval | Kiểm thử chất lượng AI bằng bộ ca chuẩn |
+| Langfuse | Tracing, monitoring, evaluation, latency, token, chi phí và lỗi |
+| FastAPI | Backend API |
+
+**Phương pháp đánh giá:** xây bộ Golden Test Set (ví dụ 100 ca, không phải số bắt buộc) được thợ/chuyên gia xác minh; đo Recall@K, MRR, NDCG, correctness, faithfulness, citation accuracy, task success, tool-call success, P95 latency và cost/run. So sánh baseline trước và sau nâng cấp; không công bố số liệu chưa đo. Theo dõi thêm tỷ lệ chuyển thợ, lỗi an toàn và thời gian chẩn đoán.
+
+**Ưu tiên:** DeepEval + Langfuse trước; Airflow và Neo4j bổ sung khi có nhu cầu. DeepEval là công cụ đánh giá, không thay thế Runtime Validator; Langfuse giám sát chứ không điều phối Agent. Vòng lặp runtime phải có giới hạn retry và handoff. Đây là kiến trúc mục tiêu, không xác nhận các công cụ mới đã được tích hợp hoặc đạt chất lượng production.
+
+---
+
 ## Nạp kiến thức sửa xe
 
 `Video → Phụ đề → Trích xuất case → Kiểm chứng → Thợ duyệt → Kho tri thức → RAG → Agent`. Câu chưa trả lời được được ghi lại để thợ bổ sung, không tự bịa thông tin.
