@@ -1,54 +1,52 @@
-// DXA Dana — 2 workflows: /ask (fixed) and /diagnose (bounded Agentic).
+// DXA Dana — simple knowledge collection and improvement loop.
 // Render: dot -Tpng -Gdpi=160 docs/pipeline.dot -o docs/pipeline.png
 digraph DXA {
-  graph [rankdir=TB, bgcolor="white", fontname="DejaVu Sans", fontsize=17, nodesep=.48, ranksep=.65, pad=.45, compound=true];
-  node [fontname="DejaVu Sans", fontsize=12, shape=box, style="rounded,filled", fillcolor="#F7F9FC", color="#0E233D", margin=".2,.13"];
-  edge [fontname="DejaVu Sans", fontsize=11, color="#106A84", fontcolor="#0E233D"];
+  graph [
+    rankdir=TB,
+    bgcolor="white",
+    fontname="DejaVu Sans",
+    fontsize=22,
+    labelloc="t",
+    label="VÒNG THU THẬP VÀ CẢI THIỆN KIẾN THỨC",
+    nodesep=.55,
+    ranksep=.72,
+    pad=.5
+  ];
 
-  subgraph cluster_kb {
-    label="1. Prepare verified knowledge"; style="rounded,filled"; fillcolor="#EDF3F9"; color="#BBCFDF";
-    VIDEO [label="YouTube video\nand transcripts"];
-    EXTRACT [label="Extract symptoms,\ncauses, checks, fixes"];
-    REVIEW [label="Mechanic reviews cases", fillcolor="#DDF0E4"];
-    INDEX [label="BM25 + Vector / Qdrant\nGraph + SQLite + JSON"];
-    VIDEO -> EXTRACT -> REVIEW -> INDEX;
-  }
+  node [
+    fontname="DejaVu Sans",
+    fontsize=14,
+    shape=box,
+    style="rounded,filled",
+    fillcolor="#F7F9FC",
+    color="#0E233D",
+    penwidth=1.5,
+    margin=".28,.18"
+  ];
 
-  subgraph cluster_ui {
-    label="2. UI and API"; style="rounded,filled"; fillcolor="#F0F6FB"; color="#BBCFDF";
-    UI [label="Web UI\nAsk / Agentic / Expert"];
-    API [label="FastAPI\n/ask | /diagnose"];
-    UI -> API;
-  }
+  edge [
+    fontname="DejaVu Sans",
+    fontsize=12,
+    color="#106A84",
+    fontcolor="#0E233D",
+    penwidth=1.6,
+    arrowsize=.8
+  ];
 
-  subgraph cluster_dana {
-    label="3. Dana Agent Orchestration"; style="rounded,filled"; fillcolor="#E9F5F9"; color="#106A84";
-    MODE [label="Workflow mode?",shape=diamond, fillcolor="#FFE5AA"];
-    CLASSIC [label="Fixed /ask\nfind_cases -> gate -> write_answer -> check"];
-    PLAN [label="Planner (Dana + LLM)\nChoose permitted action", fillcolor="#D7EDF6"];
-    TOOL [label="Tool selection\nask_user | search_rag | answer | handoff"];
-    MEMORY [label="Session Memory (SQLite)\nSymptoms, evidence, queries"];
-    EVAL [label="Evaluate evidence / limits",shape=diamond,fillcolor="#FFE5AA"];
-    REPLAN [label="Replanning (ask model again)\nwith updated state",fillcolor="#D7EDF6"];
-    FINAL [label="Grounded answer with source\nor handoff to mechanic", fillcolor="#DDF0E4"];
-    MODE -> CLASSIC -> FINAL;
-    MODE -> PLAN -> TOOL -> MEMORY -> EVAL;
-    EVAL -> REPLAN [label="insufficient"];
-    REPLAN -> PLAN [constraint=false];
-    EVAL -> FINAL [label="enough / stop"];
-  }
+  SOURCE [label="Nguồn kiến thức\nVideo / tài liệu", fillcolor="#EDF3F9"];
+  EXTRACT [label="AI trích xuất kiến thức\nTriệu chứng • Nguyên nhân • Cách sửa"];
+  REVIEW [label="Thợ kiểm duyệt", fillcolor="#DDF0E4"];
+  STORE [label="Kho kiến thức đã xác minh", fillcolor="#D7EDF6"];
+  DANA [label="Dana dùng kiến thức\nđể trả lời người dùng", fillcolor="#E9F5F9"];
+  CHECK [label="Đủ kiến thức?", shape=diamond, style="filled", fillcolor="#FFE5AA"];
+  ANSWER [label="Trả lời có nguồn", fillcolor="#DDF0E4"];
+  PENDING [label="Lưu câu hỏi chưa trả lời"];
+  ADD [label="Thợ bổ sung kiến thức", fillcolor="#EDF7F0"];
+  UPDATE [label="Cập nhật lại kho", fillcolor="#D7EDF6"];
 
-  subgraph cluster_expert {
-    label="4. Mechanic feedback (authenticated)"; style="rounded,filled"; fillcolor="#EDF7F0"; color="#539173";
-    PENDING [label="Unanswered questions"];
-    ADD [label="Mechanic adds or rejects case"];
-    PENDING -> ADD;
-  }
-
-  INDEX -> CLASSIC [lhead=cluster_dana];
-  INDEX -> TOOL [label="RAG tool", lhead=cluster_dana];
-  API -> MODE;
-  FINAL -> UI [constraint=false];
-  FINAL -> PENDING [style=dashed, label="no evidence"];
-  ADD -> INDEX [style=dashed, label="reindex", constraint=false];
+  SOURCE -> EXTRACT -> REVIEW -> STORE -> DANA -> CHECK;
+  CHECK -> ANSWER [label="Đủ"];
+  CHECK -> PENDING [label="Chưa đủ"];
+  PENDING -> ADD -> UPDATE;
+  UPDATE -> STORE [label="Học thêm cho lần sau", constraint=false];
 }

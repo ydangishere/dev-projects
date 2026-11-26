@@ -151,21 +151,17 @@ python test_expert.py
 
 **Ưu tiên:** DeepEval + Langfuse trước; Airflow và Neo4j bổ sung khi có nhu cầu. DeepEval là công cụ đánh giá, không thay thế Runtime Validator; Langfuse giám sát chứ không điều phối Agent. Vòng lặp runtime phải có giới hạn retry và handoff. Đây là kiến trúc mục tiêu, không xác nhận các công cụ mới đã được tích hợp hoặc đạt chất lượng production.
 
-## Nạp kiến thức sửa xe
+## Vòng thu thập và cải thiện kiến thức
 
-`Video → Phụ đề → Trích xuất case → Kiểm chứng → Thợ duyệt → Kho tri thức → RAG → Agent`. Câu chưa trả lời được được ghi lại để thợ bổ sung, không tự bịa thông tin.
+`Video/tài liệu → AI trích xuất → Thợ kiểm duyệt → Lưu vào kho → Dana trả lời → Câu chưa trả lời được → Thợ bổ sung → Cập nhật lại kho`.
 
-![Pipeline kiến thức và thợ duyệt](docs/pipeline.png)
+![Vòng thu thập và cải thiện kiến thức DXA Dana](docs/pipeline.png)
 
 ## Các sơ đồ bổ sung
 
 **Luồng khởi động, lựa chọn Agentic và xử lý offline:**
 
 ![Chạy DXA](docs/run-flow.png)
-
-**Pipeline tri thức, hai chế độ Agent và feedback thợ:**
-
-![Pipeline](docs/pipeline.png)
 
 **Giao diện DXA:**
 
