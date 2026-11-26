@@ -124,25 +124,17 @@ python test_expert.py
 
 ## Phương pháp đo lường và giám sát Agent — kiến trúc đề xuất (CHƯA TRIỂN KHAI)
 
-```mermaid
-flowchart TD
-  subgraph OBS["LANGFUSE — giám sát toàn bộ flow"]
-    A["Airflow — lên lịch cập nhật kiến thức"] --> B["Data Processing — YouTube / tài liệu / chunk / embedding"]
-    B --> Q["Qdrant — Vector Search"]
-    B --> N["Neo4j — Graph Search"]
-    U["User Query"] --> D["Dana Agent — Planning / Reasoning / Tool Calling"]
-    D <--> Q
-    D <--> N
-    D --> L["Gemini / LLM — phân tích và đề xuất"]
-    L --> V{"Runtime Validator — kiểm chứng nguồn và an toàn"}
-    V -->|PASS| R["Final Report — kết quả có căn cứ và nguồn"]
-    V -->|FAIL / còn lượt| D
-    V -->|Hết lượt hoặc thiếu bằng chứng| H["Handoff — thợ kiểm tra"]
-    T["Golden Test Set — ca đã được chuyên gia xác minh"] --> E["DeepEval — đánh giá chất lượng offline"]
-    R -. "Kết quả chạy test" .-> E
-    E --> S["Scorecard — PASS / FAIL, metrics"]
-  end
-```
+### 1. Kiến trúc giám sát, đo lường và luồng xử lý
+
+![DXA Dana Observability Architecture](docs/dxa-observability-architecture.png)
+
+### 2. Langfuse + DeepEval trong flow
+
+![DXA Dana Langfuse DeepEval Flow](docs/dxa-langfuse-deepeval-flow.png)
+
+### 3. Trình tự triển khai công cụ
+
+![DXA Dana Tool Implementation Sequence](docs/dxa-tools-implementation-sequence.png)
 
 | Công cụ | Vai trò đề xuất |
 |---|---|
@@ -158,14 +150,6 @@ flowchart TD
 **Phương pháp đánh giá:** xây bộ Golden Test Set (ví dụ 100 ca, không phải số bắt buộc) được thợ/chuyên gia xác minh; đo Recall@K, MRR, NDCG, correctness, faithfulness, citation accuracy, task success, tool-call success, P95 latency và cost/run. So sánh baseline trước và sau nâng cấp; không công bố số liệu chưa đo. Theo dõi thêm tỷ lệ chuyển thợ, lỗi an toàn và thời gian chẩn đoán.
 
 **Ưu tiên:** DeepEval + Langfuse trước; Airflow và Neo4j bổ sung khi có nhu cầu. DeepEval là công cụ đánh giá, không thay thế Runtime Validator; Langfuse giám sát chứ không điều phối Agent. Vòng lặp runtime phải có giới hạn retry và handoff. Đây là kiến trúc mục tiêu, không xác nhận các công cụ mới đã được tích hợp hoặc đạt chất lượng production.
-
----
-
-### Trình tự triển khai các công cụ Agent
-
-![DXA Dana — 9 bước triển khai công cụ giám sát, đánh giá, tìm kiếm và tự động hóa](docs/agent-tool-implementation-flow.svg)
-
-Lộ trình đề xuất: thiết lập giám sát và baseline trước, tối ưu retrieval và Agent, tự động hóa, sau đó đo lại và giám sát liên tục. Haystack và Neo4j chỉ bổ sung khi có nhu cầu được xác nhận.
 
 ## Nạp kiến thức sửa xe
 
