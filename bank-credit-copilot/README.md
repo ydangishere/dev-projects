@@ -81,43 +81,51 @@ Nó **không phải Agent** vì model không có mục tiêu riêng, không tự
 | Quyền | Chỉ đọc hồ sơ, sinh đề xuất; không ghi vào core | Có thể được cấp quyền thực hiện hành động |
 | Phù hợp nghiệp vụ | Dễ kiểm toán, ít quyền, hành vi dự đoán được | Chỉ nên dùng khi thật sự cần tự chủ nhiều bước và đã kiểm soát rủi ro |
 
-## 3. Sơ đồ đo đạc, giám sát và đánh giá
+## 3. Mỗi công cụ đo gì?
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"15px","primaryColor":"#F7F7F4","primaryBorderColor":"#0E233D","primaryTextColor":"#0E233D","lineColor":"#106A84","clusterBkg":"#EEF5FA","clusterBorder":"#B9CAD9"},"flowchart":{"curve":"basis","nodeSpacing":32,"rankSpacing":44}}}%%
 flowchart TB
-    subgraph RUNTIME["Runtime — đo từng request"]
+    subgraph RUNTIME["RUNTIME — hệ thống đang chạy có ổn không?"]
+        direction TB
         REQ["Thẩm định / hỏi chính sách"] --> APP["Credit Copilot"]
-        APP -. "span + generation" .-> LF["Langfuse<br/>trace input/output, latency, lỗi"]
+        APP -. "trace từng request" .-> LF["LANGFUSE<br/>Đo: các bước pipeline, input/output LLM,<br/>model, latency và lỗi từng lần gọi<br/>Biết: request sai ở bước nào?"]
         APP -. "counter + histogram" .-> METRICS["/metrics"]
-        METRICS --> PROM["Prometheus<br/>scrape và lưu chuỗi thời gian"]
-        PROM --> GRAF["Grafana<br/>8 biểu đồ vận hành"]
-        APP --> AUDIT[("audit.jsonl<br/>PII đã che")]
+        METRICS --> PROM["PROMETHEUS<br/>Đo: số hồ sơ theo verdict, latency,<br/>LLM call/token/fallback, guard và PII<br/>Biết: tải, tốc độ và tỷ lệ lỗi thay đổi ra sao?"]
+        PROM --> GRAF["GRAFANA — hiển thị 8 biểu đồ<br/>throughput · assessment p95 · LLM outcome<br/>LLM p95 · fallback · guard · PII · token<br/>Biết: hệ thống có bất thường không?"]
     end
 
-    subgraph EVALUATION["Offline / CI — đo chất lượng"]
-        GOLDEN[("golden.json<br/>golden_llm.json")] --> SCRIPT["evaluate.py<br/>evaluate_llm.py"]
-        SCRIPT --> RULEMETRIC["Accuracy trích xuất<br/>verdict · policy retrieval · guard"]
-        SCRIPT --> DEEP["DeepEval<br/>Faithfulness + GEval"]
-        RULEMETRIC --> REPORT[("eval/results.json")]
+    subgraph EVALUATION["OFFLINE / CI — câu trả lời có đúng và bám nguồn không?"]
+        direction TB
+        GOLDEN[("golden.json<br/>golden_llm.json")] --> SCRIPT["EVALUATE SCRIPTS<br/>Đo trực tiếp: field accuracy, verdict,<br/>đúng điều khoản, guard, p50/p95<br/>Biết: pipeline có cho kết quả đúng không?"]
+        SCRIPT --> DEEP["DEEPEVAL<br/>Faithfulness: có bám facts/điều khoản?<br/>GEval Correctness: có đúng ý đáp án mẫu?<br/>Biết: phần văn bản AI có đáng tin không?"]
+        SCRIPT --> REPORT[("results.json<br/>llm_results.json")]
         DEEP --> REPORT
-        REPORT --> CI["GitHub Actions<br/>gate an toàn + báo cáo chất lượng"]
+        REPORT --> CI["GITHUB ACTIONS<br/>Fail nếu kiểm tra an toàn sai;<br/>điểm chất lượng được báo cáo"]
     end
+
+    GRAF ~~~ GOLDEN
 
     classDef engine fill:#0E233D,stroke:#0E233D,color:#FFFFFF
     classDef observe fill:#DBEDF7,stroke:#106A84,color:#0E233D
     classDef gate fill:#FFE2A0,stroke:#AC7421,color:#0E233D
     classDef store fill:#E3F1E5,stroke:#2C8259,color:#0E233D
-    class APP,SCRIPT engine
-    class LF,METRICS,PROM,GRAF,DEEP,RULEMETRIC observe
+    class APP engine
+    class LF,METRICS,PROM,GRAF,SCRIPT,DEEP observe
     class CI gate
-    class AUDIT,GOLDEN,REPORT store
+    class GOLDEN,REPORT store
 ```
 
-- **Langfuse** cho biết một request đã đi qua bước nào và model đã nhận/trả gì.
-- **Prometheus + Grafana** theo dõi số lượt thẩm định, verdict, p95 latency, lỗi/fallback LLM, token, guardrail và số PII đã che.
-- **DeepEval** chạy ngoài runtime để chấm faithfulness/correctness trên bộ golden; nó không quyết định hồ sơ thật.
-- **Audit JSONL** phục vụ truy vết nghiệp vụ, không thay thế kho audit bất biến của production.
+| Công cụ | Đo chính xác cái gì? | Người xem dùng để trả lời câu hỏi nào? |
+| --- | --- | --- |
+| `evaluate.py` | Accuracy trích xuất trường, accuracy verdict và accuracy tìm đúng điều khoản trong chế độ offline | Logic code có đọc/tính/tìm đúng đáp án cố định không? |
+| `evaluate_llm.py` | Field/verdict accuracy khi bật LLM; tỷ lệ tờ trình LLM được chấp nhận; citation accuracy; phát hiện injection; rò PII; guard false positive; latency p50/p95; số call thành công/lỗi | Bật model thật có cải thiện hồ sơ khó mà vẫn giữ an toàn không? |
+| **DeepEval** | **Faithfulness:** tờ trình/câu trả lời có được hỗ trợ bởi facts và điều khoản đã đưa vào context không. **GEval Correctness:** câu trả lời chính sách có cùng ý nghĩa với đáp án mẫu không | Văn bản do AI sinh có bám nguồn và đúng ý không? DeepEval không tính DTI hay quyết định verdict |
+| **Langfuse** | Trace theo từng request và span: `credit-assessment`, `extract`, `llm-extract-fields`, `llm-call`, `memo`, `policy-question`, `llama-guard`; input/output, model, thời gian và lỗi của từng lần gọi | Một request cụ thể sai/chậm ở bước nào, model đã nhìn thấy và trả về gì? |
+| **Prometheus** | 9 nhóm counter/histogram: hồ sơ theo verdict, assessment latency, LLM call outcome, LLM latency, token, fallback, guard event, PII đã che và policy-question outcome | Theo thời gian, hệ thống đang chịu tải bao nhiêu, chậm ở đâu và lỗi/an toàn tăng hay giảm? |
+| **Grafana** | Không tự đo. Nó truy vấn Prometheus và hiển thị 8 panel: thẩm định/phút, assessment p95, LLM outcome, LLM p95, output bị loại, guardrail, PII đã che và token/phút | Operator có thể nhìn nhanh xu hướng và phát hiện bất thường nào? |
+
+`audit.jsonl` là nhật ký truy vết nghiệp vụ đã che PII, **không phải công cụ đo chất lượng**. DeepEval và bộ golden chỉ đánh giá test offline/CI, không chứng minh độ chính xác trên hồ sơ khách hàng thật.
 
 ## 4. Sơ đồ cập nhật dữ liệu và trạng thái lưu trữ
 
