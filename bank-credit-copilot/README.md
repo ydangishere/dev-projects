@@ -8,25 +8,34 @@ Bản này chạy với **LLM thật** (Qwen tự host qua Ollama, hoặc Gemini
 
 > **Phạm vi trung thực:** chỉ **dữ liệu là giả lập**: 6 bộ hồ sơ, chính sách cho vay và khách hàng đều do dự án tạo ra. Không kết nối LOS hay core banking (T24) thật. Các số đo bên dưới lấy từ GitHub CI chạy **Qwen 2.5 1.5B** trên CPU, model nhỏ để CI chạy được; triển khai thật nên dùng bản 7B trở lên. Công cụ chỉ **đề xuất**; quyết định cấp tín dụng thuộc về con người (Điều 6.4).
 
-## Kiến trúc
+## 1. Kiến trúc đơn giản
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"15px","primaryColor":"#F7F7F4","primaryBorderColor":"#0E233D","primaryTextColor":"#0E233D","lineColor":"#106A84","clusterBkg":"#EEF5FA","clusterBorder":"#B9CAD9"},"flowchart":{"curve":"basis","nodeSpacing":34,"rankSpacing":46}}}%%
 flowchart LR
-    A[Hồ sơ PDF] --> B[Đọc, phân loại]
-    B --> I[Quét câu lệnh<br/>nhắm vào AI]
-    I --> C[Trích xuất<br/>regex trước]
-    C -- trường còn thiếu --> M[Presidio<br/>che CCCD, STK, tên]
-    M --> L[LiteLLM → Qwen/Gemini]
-    L --> V[Kiểm tra: giá trị phải<br/>có thật trong dòng gốc]
-    V --> D[Bộ luật 10 điều kiện<br/>tính DTI, kết luận]
-    C --> D
-    P[(Chính sách)] --> R[BM25] --> D
-    D --> E[Tờ trình: LLM viết,<br/>số lạ thì loại]
-    E --> UI[Giao diện chuyên viên]
-    R --> Q[Hỏi đáp chính sách] --> G[Llama Guard<br/>vào và ra]
-    D --> AU[(Audit, che số)]
-    L -.-> LF[Langfuse traces]
-    D -.-> PR[Prometheus → Grafana]
+    OFFICER(["Chuyên viên tín dụng"])
+    UI["Web UI / LOS<br/>gửi hồ sơ qua API"]
+    API["Credit Copilot<br/>FastAPI + pipeline cố định"]
+    RULES["10 luật tín dụng<br/>tính DTI và đề xuất"]
+    GENAI["Generative AI<br/>đọc phần thiếu · viết tờ trình · Q&A"]
+    POLICY[("Chính sách Markdown<br/>BM25 trong bộ nhớ")]
+    VERIFY["Kiểm chứng bằng code<br/>nguồn · điều khoản · con số"]
+    RESULT["Tờ trình có bằng chứng<br/>để con người phê duyệt"]
+
+    OFFICER --> UI --> API
+    POLICY --> API
+    API --> RULES --> VERIFY
+    API --> GENAI --> VERIFY
+    VERIFY --> RESULT --> OFFICER
+
+    classDef actor fill:#0E233D,stroke:#0E233D,color:#FFFFFF
+    classDef ai fill:#DBEDF7,stroke:#106A84,color:#0E233D
+    classDef control fill:#FFE2A0,stroke:#AC7421,color:#0E233D
+    classDef store fill:#E3F1E5,stroke:#2C8259,color:#0E233D
+    class OFFICER,UI,API actor
+    class GENAI ai
+    class RULES,VERIFY control
+    class POLICY store
 ```
 
 **Nguyên tắc:**
@@ -41,10 +50,12 @@ flowchart LR
 
 **Vị trí trong ngân hàng:** Copilot là một service Python đứng cạnh LOS (hệ thống khởi tạo khoản vay). LOS gọi `POST /api/assess` rồi nhận tờ trình dạng JSON. Khi cần dư nợ thật hay kết quả CIC, Copilot gọi API **chỉ đọc** của lớp tích hợp Java. Copilot không ghi gì vào core.
 
-## Công cụ đã áp dụng
+## 2. Công nghệ được dùng và vì sao đây là Generative AI
 
 | Nhóm | Công cụ | Dùng ở đâu | Đã kiểm chứng trên CI |
 | --- | --- | --- | --- |
+| API và xử lý tài liệu | **Python 3.11+, FastAPI, Pydantic, pypdf** | Nhận tối đa 8 PDF/TXT, đọc chữ, phân loại giấy tờ và trả JSON | ✅ |
+| Logic xác định | **Regex, BM25, Python rules** | Trích xuất trước bằng code, tìm điều khoản, tính thu nhập/DTI và 10 điều kiện | ✅ |
 | Cổng LLM | **LiteLLM** (SDK và proxy) | `app/llm.py`, `deploy/litellm_config.yaml`: đổi model bằng một chuỗi, giới hạn tần suất, retry, timeout, master key | ✅ Gọi Ollama trực tiếp và qua proxy |
 | Model | **Qwen 2.5** qua **Ollama** | Đọc hồ sơ lộn xộn, viết tờ trình, trả lời chính sách | ✅ Qwen 2.5 1.5B |
 | Che dữ liệu cá nhân | **Microsoft Presidio** + spaCy đa ngôn ngữ | `app/pii.py`: nhận diện CCCD, số tài khoản, số điện thoại, tên; che có thể khôi phục | ✅ Không số CCCD nào lọt vào prompt |
@@ -54,6 +65,172 @@ flowchart LR
 | Đo đạc | **Prometheus** + **Grafana** | `/metrics/`, dashboard 8 biểu đồ tự nạp | ✅ Grafana nạp được dashboard |
 | Chấm điểm | **DeepEval** (Faithfulness, GEval), giám khảo là Qwen 2.5 3B | `scripts/evaluate_llm.py` | ✅ |
 | Kiểm thử | pytest, ruff, GitHub Actions | 34 test, 2 bộ đánh giá, build và chạy thử Docker image | ✅ |
+| Đóng gói | **Docker, Docker Compose** | Chạy Copilot, Ollama, LiteLLM, Prometheus và Grafana trên cùng một máy | ✅ |
+
+### Vì sao dùng Generative AI nhưng không thiết kế thành Agent?
+
+Credit Copilot cần **hiểu và sinh ngôn ngữ** ở ba điểm có giới hạn rõ ràng: điền các trường regex chưa đọc được, viết lại tờ trình từ số liệu đã tính, và trả lời từ các điều khoản đã truy xuất. Đây là bài toán phù hợp với Generative AI.
+
+Nó **không phải Agent** vì model không có mục tiêu riêng, không tự chọn công cụ, không lập kế hoạch, không lặp để thay đổi chiến lược và không có quyền thực hiện hành động trong LOS/core banking. Thứ tự xử lý do `app/pipeline.py` cố định; mọi phép tính và kết luận do `app/rules.py` quyết định; người có thẩm quyền vẫn phê duyệt cuối cùng.
+
+| Khía cạnh | Credit Copilot hiện tại | Nếu là Agent |
+| --- | --- | --- |
+| Luồng công việc | Code gọi từng bước theo thứ tự cố định | Model lập kế hoạch và chọn bước tiếp theo |
+| Dùng công cụ | Code quyết định khi nào gọi BM25, rules và LLM | Model tự chọn và gọi tool |
+| Vòng lặp | Không có replanning hay vòng tự hành | Có quan sát → hành động → đánh giá → lập kế hoạch lại |
+| Quyền | Chỉ đọc hồ sơ, sinh đề xuất; không ghi vào core | Có thể được cấp quyền thực hiện hành động |
+| Phù hợp nghiệp vụ | Dễ kiểm toán, ít quyền, hành vi dự đoán được | Chỉ nên dùng khi thật sự cần tự chủ nhiều bước và đã kiểm soát rủi ro |
+
+## 3. Sơ đồ đo đạc, giám sát và đánh giá
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"15px","primaryColor":"#F7F7F4","primaryBorderColor":"#0E233D","primaryTextColor":"#0E233D","lineColor":"#106A84","clusterBkg":"#EEF5FA","clusterBorder":"#B9CAD9"},"flowchart":{"curve":"basis","nodeSpacing":32,"rankSpacing":44}}}%%
+flowchart TB
+    subgraph RUNTIME["Runtime — đo từng request"]
+        REQ["Thẩm định / hỏi chính sách"] --> APP["Credit Copilot"]
+        APP -. "span + generation" .-> LF["Langfuse<br/>trace input/output, latency, lỗi"]
+        APP -. "counter + histogram" .-> METRICS["/metrics"]
+        METRICS --> PROM["Prometheus<br/>scrape và lưu chuỗi thời gian"]
+        PROM --> GRAF["Grafana<br/>8 biểu đồ vận hành"]
+        APP --> AUDIT[("audit.jsonl<br/>PII đã che")]
+    end
+
+    subgraph EVALUATION["Offline / CI — đo chất lượng"]
+        GOLDEN[("golden.json<br/>golden_llm.json")] --> SCRIPT["evaluate.py<br/>evaluate_llm.py"]
+        SCRIPT --> RULEMETRIC["Accuracy trích xuất<br/>verdict · policy retrieval · guard"]
+        SCRIPT --> DEEP["DeepEval<br/>Faithfulness + GEval"]
+        RULEMETRIC --> REPORT[("eval/results.json")]
+        DEEP --> REPORT
+        REPORT --> CI["GitHub Actions<br/>gate an toàn + báo cáo chất lượng"]
+    end
+
+    classDef engine fill:#0E233D,stroke:#0E233D,color:#FFFFFF
+    classDef observe fill:#DBEDF7,stroke:#106A84,color:#0E233D
+    classDef gate fill:#FFE2A0,stroke:#AC7421,color:#0E233D
+    classDef store fill:#E3F1E5,stroke:#2C8259,color:#0E233D
+    class APP,SCRIPT engine
+    class LF,METRICS,PROM,GRAF,DEEP,RULEMETRIC observe
+    class CI gate
+    class AUDIT,GOLDEN,REPORT store
+```
+
+- **Langfuse** cho biết một request đã đi qua bước nào và model đã nhận/trả gì.
+- **Prometheus + Grafana** theo dõi số lượt thẩm định, verdict, p95 latency, lỗi/fallback LLM, token, guardrail và số PII đã che.
+- **DeepEval** chạy ngoài runtime để chấm faithfulness/correctness trên bộ golden; nó không quyết định hồ sơ thật.
+- **Audit JSONL** phục vụ truy vết nghiệp vụ, không thay thế kho audit bất biến của production.
+
+## 4. Sơ đồ cập nhật dữ liệu và trạng thái lưu trữ
+
+> **Hiện trạng:** demo chưa có relational database hay vector database. Chính sách là file Markdown được nạp vào **BM25 trong bộ nhớ** khi service khởi động; PDF tải lên chỉ được xử lý trong request và không được lưu. Bản ghi duy nhất được ghi lâu dài là audit JSONL đã che định danh.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"15px","primaryColor":"#F7F7F4","primaryBorderColor":"#0E233D","primaryTextColor":"#0E233D","lineColor":"#106A84","clusterBkg":"#EEF5FA","clusterBorder":"#B9CAD9"},"flowchart":{"curve":"basis","nodeSpacing":32,"rankSpacing":44}}}%%
+flowchart LR
+    OWNER(["Chủ chính sách"])
+    REVIEW["Sửa đổi + review + phê duyệt qua Git"]
+    MD[("policies/<br/>consumer_loan_policy.md")]
+    DEPLOY["Deploy / restart service"]
+    PARSE["PolicyIndex<br/>tách điều khoản + tạo version"]
+    BM25[("BM25 trong bộ nhớ")]
+    USE["10 rules + hỏi đáp chính sách"]
+
+    OWNER --> REVIEW --> MD --> DEPLOY --> PARSE --> BM25 --> USE
+
+    PDF["PDF/TXT tải lên"] --> MEMORY["Xử lý trong bộ nhớ<br/>theo từng request"] --> RESPONSE["JSON trả về LOS/UI"]
+    MEMORY --> AUDIT[("data/audit.jsonl<br/>append-only, đã che PII")]
+    MEMORY -. "không lưu hồ sơ gốc" .-> DISCARD["Kết thúc request"]
+
+    MD -. "production, chưa triển khai" .-> ETL["Chunk + embedding + versioning"]
+    ETL -.-> VDB[("Qdrant / pgvector")]
+    VDB -. "thay adapter search/get" .-> USE
+
+    classDef actor fill:#0E233D,stroke:#0E233D,color:#FFFFFF
+    classDef process fill:#DBEDF7,stroke:#106A84,color:#0E233D
+    classDef future fill:#FFF4D6,stroke:#AC7421,color:#0E233D,stroke-dasharray: 5 5
+    classDef store fill:#E3F1E5,stroke:#2C8259,color:#0E233D
+    class OWNER actor
+    class REVIEW,DEPLOY,PARSE,USE,MEMORY,RESPONSE process
+    class ETL,VDB future
+    class MD,BM25,AUDIT store
+```
+
+Muốn cập nhật chính sách ở bản hiện tại: sửa file Markdown, review thay đổi, rồi restart/redeploy để `PolicyIndex` dựng lại chỉ mục. Nếu chuyển sang Qdrant/pgvector, cần thêm pipeline duyệt phiên bản, chunk, embedding, re-index và rollback; đường nét đứt trong sơ đồ là **hướng production, chưa có trong code**.
+
+## 5. Sơ đồ xử lý thông tin đầu vào
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"15px","primaryColor":"#F7F7F4","primaryBorderColor":"#0E233D","primaryTextColor":"#0E233D","lineColor":"#106A84","clusterBkg":"#EEF5FA","clusterBorder":"#B9CAD9"},"flowchart":{"curve":"basis","nodeSpacing":30,"rankSpacing":42}}}%%
+flowchart TB
+    INPUT["1–8 tệp PDF/TXT"] --> LIMIT["Kiểm tra định dạng<br/>và tối đa 10 MB/tệp"]
+    LIMIT --> READ["pypdf đọc chữ<br/>tạo SHA-256 + số trang"]
+    READ --> CLASSIFY["Phân loại: CCCD · đơn vay<br/>HĐLĐ · sao kê"]
+    CLASSIFY --> REGEX["Regex lấy trường chuẩn<br/>và dòng lương"]
+    REGEX --> SCAN["Quét prompt injection<br/>theo từng dòng"]
+    SCAN --> NEED{"Còn thiếu trường và<br/>được phép gửi tài liệu?"}
+    NEED -->|Không| RULES["Tính facts + 10 rules<br/>DTI và verdict"]
+    NEED -->|Có| MASK["Presidio che tên<br/>CCCD · STK · SĐT"]
+    MASK --> LLM["LiteLLM → Qwen/Gemini<br/>chỉ điền trường còn thiếu"]
+    LLM --> GROUND["Bỏ che + kiểm tra giá trị<br/>phải có trong dòng gốc"]
+    GROUND --> RULES
+    POLICY[("Điều khoản BM25")] --> RULES
+    RULES --> MEMO["Tờ trình template hoặc LLM<br/>loại mọi con số không có nguồn"]
+    MEMO --> OUTPUT["JSON: bằng chứng · điều khoản<br/>đề xuất · audit_id"]
+    OUTPUT --> AUDIT[("Audit đã che PII")]
+
+    classDef input fill:#0E233D,stroke:#0E233D,color:#FFFFFF
+    classDef ai fill:#DBEDF7,stroke:#106A84,color:#0E233D
+    classDef gate fill:#FFE2A0,stroke:#AC7421,color:#0E233D
+    classDef store fill:#E3F1E5,stroke:#2C8259,color:#0E233D
+    class INPUT,LIMIT,READ,CLASSIFY input
+    class MASK,LLM,MEMO ai
+    class SCAN,NEED,GROUND,RULES gate
+    class POLICY,AUDIT store
+```
+
+PDF scan chỉ có ảnh sẽ không có chữ để trích xuất vì demo chưa tích hợp OCR. Nếu model tắt hoặc lỗi, pipeline vẫn chạy bằng regex, rules và tờ trình mẫu.
+
+## 6. Sơ đồ phòng chống prompt injection và đầu ra độc hại
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"15px","primaryColor":"#F7F7F4","primaryBorderColor":"#0E233D","primaryTextColor":"#0E233D","lineColor":"#106A84","clusterBkg":"#EEF5FA","clusterBorder":"#B9CAD9"},"flowchart":{"curve":"basis","nodeSpacing":30,"rankSpacing":42}}}%%
+flowchart TB
+    UNTRUSTED["Input không tin cậy<br/>PDF/TXT hoặc câu hỏi"] --> SOURCE{"Nguồn input"}
+
+    SOURCE -->|Dòng trong hồ sơ| PATTERN["Chuẩn hóa + bộ mẫu injection<br/>Việt/Anh"]
+    PATTERN --> FLAG{"Có câu lệnh<br/>nhắm vào AI?"}
+    FLAG -->|Có| QUARANTINE["Gắn cờ · loại dòng khỏi prompt<br/>ghi audit + metric"]
+    FLAG -->|Không| MASK["Presidio che PII"]
+    QUARANTINE --> MASK
+
+    SOURCE -->|Câu hỏi chính sách| INPUTGUARD["Llama Guard kiểm tra input"]
+    INPUTGUARD --> ALLOW{"An toàn?"}
+    ALLOW -->|Không| REFUSE["Từ chối, không gọi model chính"]
+    ALLOW -->|Có| MODEL["LLM chỉ nhận context<br/>và nhiệm vụ giới hạn"]
+    MASK --> MODEL
+
+    MODEL --> PARSE["Chỉ nhận JSON<br/>giới hạn token + timeout"]
+    PARSE --> GROUND["Kiểm chứng bằng code:<br/>dòng gốc · citation · con số"]
+    GROUND --> OUTGUARD["Llama Guard output<br/>cho Q&A; memo là opt-in"]
+    OUTGUARD --> VALID{"Qua tất cả<br/>kiểm tra?"}
+    VALID -->|Không| FALLBACK["Bỏ output LLM<br/>dùng template/trích nguyên văn"]
+    VALID -->|Có| LIMITED["Chỉ nhận phần trích xuất<br/>hoặc nội dung tờ trình"]
+    FALLBACK --> LIMITED
+    LIMITED --> RULES["10 rules xác định verdict<br/>LLM không có quyền thay đổi"]
+    RULES --> HUMAN["Con người phê duyệt cuối cùng"]
+
+    classDef input fill:#0E233D,stroke:#0E233D,color:#FFFFFF
+    classDef ai fill:#DBEDF7,stroke:#106A84,color:#0E233D
+    classDef gate fill:#FFE2A0,stroke:#AC7421,color:#0E233D
+    classDef safe fill:#E3F1E5,stroke:#2C8259,color:#0E233D
+    classDef danger fill:#FCE3E3,stroke:#B44343,color:#0E233D
+    class UNTRUSTED input
+    class MODEL,MASK,INPUTGUARD,OUTGUARD ai
+    class SOURCE,FLAG,ALLOW,GROUND,VALID,RULES gate
+    class LIMITED,HUMAN safe
+    class QUARANTINE,REFUSE,FALLBACK danger
+```
+
+Các lớp bảo vệ hoạt động theo nguyên tắc **không tin input, không tin output của model và không trao quyền quyết định cho model**. Bộ mẫu injection có thể bị né bằng cách viết lách, còn Llama Guard hiện **fail-open** nếu model guard lỗi; vì vậy lớp bảo vệ quan trọng nhất vẫn là quyền hạn tối thiểu, kiểm chứng đầu ra bằng code, verdict do rules tính và người phê duyệt cuối cùng. Production cần thêm malware scan cho file, rate limit/WAF, classifier injection mạnh hơn, red-team định kỳ và audit bất biến.
 
 ## Kết quả với LLM thật (GitHub CI, Qwen 2.5 1.5B trên CPU)
 
